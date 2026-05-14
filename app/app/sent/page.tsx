@@ -393,7 +393,7 @@ export default function SentPage() {
       {showForwardModal && (
         <div className="fixed inset-0 z-30 flex items-center justify-center p-6" onClick={() => setShowForwardModal(false)}>
           <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" />
-          <Card className="relative w-[440px] max-w-full p-6" onClick={e => e.stopPropagation()}>
+          <div className="relative w-[440px] max-w-full p-6 rounded-[28px] bg-white/85 backdrop-blur-[14px] border border-white/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)]" onClick={e => e.stopPropagation()}>
             {!forwardDone ? (
               <>
                 <div className="flex items-start justify-between mb-5">
@@ -429,7 +429,7 @@ export default function SentPage() {
                 <div className="text-[13px] text-slate-500 mt-1">Sent to {forwardTo}</div>
               </div>
             )}
-          </Card>
+          </div>
         </div>
       )}
     </div>
