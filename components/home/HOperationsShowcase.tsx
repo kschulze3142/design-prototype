@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { HCard, HPill } from './primitives';
 
 type PillTone = 'teal' | 'emerald' | 'amber' | 'slate';
@@ -102,14 +102,6 @@ const tabs: TabData[] = [
 
 export function HOperationsShowcase() {
   const [activeTab, setActiveTab] = useState('send');
-  const [visible, setVisible] = useState(true);
-  const current = tabs.find((t) => t.id === activeTab) ?? tabs[0];
-
-  useEffect(() => {
-    setVisible(false);
-    const t = setTimeout(() => setVisible(true), 120);
-    return () => clearTimeout(t);
-  }, [activeTab]);
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
@@ -126,7 +118,7 @@ export function HOperationsShowcase() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`rounded-2xl px-4 py-2.5 text-sm font-semibold transition ${
-              current.id === tab.id
+              activeTab === tab.id
                 ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/10'
                 : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
             }`}
@@ -136,91 +128,103 @@ export function HOperationsShowcase() {
         ))}
       </div>
 
-      <div
-        className="grid gap-8 xl:grid-cols-[340px_1fr] xl:items-start"
-        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
-      >
-        <div>
-          <h3 className="text-3xl font-semibold tracking-tight text-slate-950">{current.title}</h3>
-          <p className="mt-4 text-base leading-7 text-slate-500">{current.description}</p>
-          <div className="mt-8 space-y-5">
-            {current.bullets.map(([label, text]) => (
-              <div key={label}>
-                <p className="text-base font-semibold text-slate-950">{label}</p>
-                <p className="mt-1 text-sm leading-6 text-slate-500">{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <HCard className="overflow-hidden p-0">
-          <div className="bg-[linear-gradient(90deg,rgba(20,184,166,0.14),rgba(20,184,166,0.06))] px-6 py-5">
-            <div className="flex items-center justify-between gap-4">
+      <div className="relative">
+        {tabs.map((tab) => (
+          <div
+            key={tab.id}
+            style={{
+              opacity: activeTab === tab.id ? 1 : 0,
+              pointerEvents: activeTab === tab.id ? 'auto' : 'none',
+              transition: 'opacity 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              position: activeTab === tab.id ? 'relative' : 'absolute',
+              top: 0, left: 0, right: 0,
+            }}
+          >
+            <div className="grid gap-8 xl:grid-cols-[340px_1fr] xl:items-start">
               <div>
-                <p className="text-lg font-semibold text-slate-950">{current.panelTitle}</p>
-                <p className="mt-1 text-sm text-slate-500">{current.panelSubtitle}</p>
-              </div>
-              <HPill tone={current.badgeTone}>{current.badge}</HPill>
-            </div>
-          </div>
-          <div className="grid lg:grid-cols-[240px_1fr]">
-            <div className="border-b border-slate-200 bg-slate-50/70 p-5 lg:border-b-0 lg:border-r">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Workspace</p>
-              <div className="space-y-3">
-                {current.leftItems.map((item, i) => (
-                  <div
-                    key={item}
-                    className={`rounded-2xl px-4 py-3 text-sm font-medium ring-1 ${
-                      i === 0 ? 'bg-white text-slate-900 ring-slate-200 shadow-sm' : 'bg-transparent text-slate-500 ring-transparent'
-                    }`}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-              <button className="mt-6 rounded-[18px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/15">
-                {current.cta}
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="mb-5 flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-base font-semibold text-slate-950">{current.rightTitle}</p>
-                    <p className="mt-1 text-sm text-slate-500">Preview of the selected workflow</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="h-3 w-3 rounded-full bg-slate-200" />
-                    <span className="h-3 w-3 rounded-full bg-slate-200" />
-                    <span className="h-3 w-3 rounded-full bg-slate-200" />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {current.rightRows.map((row, i) => (
-                    <div
-                      key={row}
-                      className={`flex items-center justify-between rounded-2xl px-4 py-4 ring-1 ${
-                        i === 0 ? 'bg-teal-50/70 ring-teal-100' : 'bg-slate-50 ring-slate-200'
-                      }`}
-                    >
-                      <div>
-                        <p className="text-sm font-semibold text-slate-900">{row}</p>
-                        <p className="mt-1 text-xs text-slate-500">Operational detail</p>
-                      </div>
-                      <span className="text-sm font-semibold text-slate-400">→</span>
+                <h3 className="text-3xl font-semibold tracking-tight text-slate-950">{tab.title}</h3>
+                <p className="mt-4 text-base leading-7 text-slate-500">{tab.description}</p>
+                <div className="mt-8 space-y-5">
+                  {tab.bullets.map(([label, text]) => (
+                    <div key={label}>
+                      <p className="text-base font-semibold text-slate-950">{label}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-500">{text}</p>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 rounded-[22px] border border-dashed border-teal-200 bg-teal-50/60 p-5">
-                  <div className="mb-3 h-3 w-28 rounded-full bg-teal-300" />
-                  <div className="mb-2 h-2 w-full rounded-full bg-teal-200" />
-                  <div className="mb-2 h-2 w-10/12 rounded-full bg-teal-200" />
-                  <div className="h-2 w-8/12 rounded-full bg-teal-200" />
-                </div>
               </div>
+
+              <HCard className="overflow-hidden p-0">
+                <div className="bg-[linear-gradient(90deg,rgba(20,184,166,0.14),rgba(20,184,166,0.06))] px-6 py-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-lg font-semibold text-slate-950">{tab.panelTitle}</p>
+                      <p className="mt-1 text-sm text-slate-500">{tab.panelSubtitle}</p>
+                    </div>
+                    <HPill tone={tab.badgeTone}>{tab.badge}</HPill>
+                  </div>
+                </div>
+                <div className="grid lg:grid-cols-[240px_1fr]">
+                  <div className="border-b border-slate-200 bg-slate-50/70 p-5 lg:border-b-0 lg:border-r">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Workspace</p>
+                    <div className="space-y-3">
+                      {tab.leftItems.map((item, i) => (
+                        <div
+                          key={item}
+                          className={`rounded-2xl px-4 py-3 text-sm font-medium ring-1 ${
+                            i === 0 ? 'bg-white text-slate-900 ring-slate-200 shadow-sm' : 'bg-transparent text-slate-500 ring-transparent'
+                          }`}
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <button className="mt-6 rounded-[18px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/15">
+                      {tab.cta}
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+                      <div className="mb-5 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-base font-semibold text-slate-950">{tab.rightTitle}</p>
+                          <p className="mt-1 text-sm text-slate-500">Preview of the selected workflow</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="h-3 w-3 rounded-full bg-slate-200" />
+                          <span className="h-3 w-3 rounded-full bg-slate-200" />
+                          <span className="h-3 w-3 rounded-full bg-slate-200" />
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        {tab.rightRows.map((row, i) => (
+                          <div
+                            key={row}
+                            className={`flex items-center justify-between rounded-2xl px-4 py-4 ring-1 ${
+                              i === 0 ? 'bg-teal-50/70 ring-teal-100' : 'bg-slate-50 ring-slate-200'
+                            }`}
+                          >
+                            <div>
+                              <p className="text-sm font-semibold text-slate-900">{row}</p>
+                              <p className="mt-1 text-xs text-slate-500">Operational detail</p>
+                            </div>
+                            <span className="text-sm font-semibold text-slate-400">→</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-6 rounded-[22px] border border-dashed border-teal-200 bg-teal-50/60 p-5">
+                        <div className="mb-3 h-3 w-28 rounded-full bg-teal-300" />
+                        <div className="mb-2 h-2 w-full rounded-full bg-teal-200" />
+                        <div className="mb-2 h-2 w-10/12 rounded-full bg-teal-200" />
+                        <div className="h-2 w-8/12 rounded-full bg-teal-200" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </HCard>
             </div>
           </div>
-        </HCard>
+        ))}
       </div>
     </section>
   );
