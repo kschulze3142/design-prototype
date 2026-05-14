@@ -171,3 +171,31 @@ body {
 .fg-foot-cta-arrow { transition: transform 200ms ease; }
 .fg-soc { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.04); color: #cbd5e1; transition: background 160ms ease, color 160ms ease; }
 .fg-soc:hover { background: rgba(255,255,255,0.10); color: white; }
+
+/* Login page utilities */
+.accent-bg { background-color: var(--accent); }
+.accent-bg-soft { background-color: oklch(0.96 0.04 var(--accent-h)); }
+.accent-text { color: var(--accent); }
+.accent-text-deep { color: var(--accent-deep); }
+.doc-line { background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 100%); height: 8px; border-radius: 4px; }
+.doc-line.short { width: 40%; }
+.doc-line.med { width: 70%; }
+.doc-line.long { width: 92%; }
+.progress-track { background: #eef2f6; height: 6px; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: var(--accent); }
+.stripe-ph {
+  background-image: repeating-linear-gradient(45deg, rgba(15,23,42,0.04) 0 8px, transparent 8px 16px);
+  background-color: rgba(241,245,249,0.6);
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 oklch(0.78 0.07 var(--accent-h) / 0.55); }
+  70% { box-shadow: 0 0 0 10px oklch(0.78 0.07 var(--accent-h) / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.78 0.07 var(--accent-h) / 0); }
+}
+.pulse-ring { animation: pulse-ring 2.2s ease-out infinite; }
+@keyframes draw-check {
+  to { stroke-dashoffset: 0; }
+}
+.draw-check path { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw-check 600ms ease forwards 120ms; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.fade-up { animation: fade-up 280ms ease both; }
