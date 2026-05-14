@@ -41,8 +41,8 @@ export function HSecurity() {
           {items.map(({ title, text }) => (
             <div
               key={title}
-              className="rounded-[24px] p-5 ring-1"
-              style={{ background: 'var(--accent-soft)', boxShadow: 'inset 0 0 0 1px var(--accent-mid)' }}
+              className="rounded-[24px] bg-white p-5 ring-1"
+              style={{ boxShadow: 'inset 0 0 0 1px var(--accent-mid)' }}
             >
               <p className="font-semibold text-slate-900">{title}</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
