@@ -199,3 +199,28 @@ body {
 .draw-check path { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw-check 600ms ease forwards 120ms; }
 @keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fade-up 280ms ease both; }
+
+/* App shell utilities */
+.glass-soft {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px; border-radius: 12px;
+  color: #475569; font-size: 14px; font-weight: 500;
+  transition: background-color 120ms ease, color 120ms ease;
+  cursor: pointer;
+}
+.nav-item:hover { background: rgba(255,255,255,0.85); color: #0f172a; }
+.nav-item.active { background: #0b1220; color: white; box-shadow: 0 6px 18px -8px rgba(2,6,23,0.45); }
+.nav-section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #94a3b8;
+  padding: 0 12px; margin: 18px 0 8px;
+}
+.scrollbar-thin::-webkit-scrollbar { width: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.10); border-radius: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
