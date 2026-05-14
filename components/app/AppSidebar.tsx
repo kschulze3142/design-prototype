@@ -30,7 +30,7 @@ export function AppSidebar() {
   const [menu, setMenu] = useState(false);
 
   return (
-    <aside className="w-[260px] shrink-0 sticky top-0 h-screen flex flex-col px-4 py-6 bg-white border-r border-slate-200/80">
+    <aside className="w-[260px] shrink-0 sticky top-0 h-screen flex flex-col px-4 py-6 border-r border-slate-200/40" style={{ background: 'rgba(255,255,255,0.55)', backdropFilter: 'saturate(140%) blur(16px)', WebkitBackdropFilter: 'saturate(140%) blur(16px)' }}>
       {/* Logo */}
       <Link href="/app/dashboard" className="flex items-center gap-2.5 px-2 mb-6">
         <span className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
