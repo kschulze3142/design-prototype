@@ -89,20 +89,20 @@ export function HPricing() {
         <p className="mt-4 text-base text-slate-500">Simple plans, honest pricing, no surprises.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 items-end">
+      <div className="grid gap-6 md:grid-cols-3 items-start">
         {plans.map((plan) => (
-          <div key={plan.id} className="flex flex-col">
+          <div key={plan.id} className={`flex flex-col${plan.badge ? ' relative' : ''}`}>
             {plan.badge ? (
-              <div className="h-8 flex items-end pl-6">
+              <div className="h-9 flex items-end pl-6">
                 <span
-                  className="inline-flex translate-y-3 rounded-t-2xl rounded-b-md px-4 py-2 text-xs font-semibold"
+                  className="relative z-10 inline-flex translate-y-3 rounded-t-2xl rounded-b-md px-4 py-2 text-xs font-semibold"
                   style={{ background: 'oklch(0.93 0.06 var(--accent-h))', color: 'var(--accent-deep)' }}
                 >
                   {plan.badge}
                 </span>
               </div>
             ) : (
-              <div className="h-8" />
+              <div className="h-9" />
             )}
             <HCard
               className={`flex flex-1 flex-col p-8 shadow-[0_24px_70px_rgba(15,23,42,0.06)] transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_32px_80px_rgba(15,23,42,0.12)]${
