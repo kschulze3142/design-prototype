@@ -43,7 +43,6 @@ body {
 @keyframes fg-ringPulse { 0% { box-shadow: 0 0 0 0 oklch(0.78 0.10 var(--accent-h) / 0.55); } 70% { box-shadow: 0 0 0 14px oklch(0.78 0.10 var(--accent-h) / 0); } 100% { box-shadow: 0 0 0 0 oklch(0.78 0.10 var(--accent-h) / 0); } }
 @keyframes fg-streamDot { 0% { transform: translateY(14px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
 @keyframes fg-spinSlow { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-@keyframes fg-tabpanel-in { 0% { opacity: 0; transform: translateY(10px) scale(0.995); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
 .fg-reveal { opacity: 0; transform: translateY(22px); transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1); }
 .fg-reveal.fg-in { opacity: 1; transform: translateY(0); }
@@ -86,7 +85,6 @@ body {
 }
 
 .fg-stream-item { animation: fg-streamDot 540ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.fg-tabpanel { animation: fg-tabpanel-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 .fg-dotgrid {
   background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1.2px, transparent 1.4px);

@@ -107,7 +107,7 @@ export function HOperationsShowcase() {
 
   useEffect(() => {
     setVisible(false);
-    const t = setTimeout(() => setVisible(true), 80);
+    const t = setTimeout(() => setVisible(true), 120);
     return () => clearTimeout(t);
   }, [activeTab]);
 
@@ -137,9 +137,8 @@ export function HOperationsShowcase() {
       </div>
 
       <div
-        key={current.id}
         className="grid gap-8 xl:grid-cols-[340px_1fr] xl:items-start"
-        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(6px)', transition: 'opacity 320ms cubic-bezier(0.16, 1, 0.3, 1), transform 320ms cubic-bezier(0.16, 1, 0.3, 1)' }}
+        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
       >
         <div>
           <h3 className="text-3xl font-semibold tracking-tight text-slate-950">{current.title}</h3>
