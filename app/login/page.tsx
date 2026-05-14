@@ -117,7 +117,10 @@ function LoginVisual() {
         }}
       />
       {/* Diagonal stripe texture overlay */}
-      <div className="absolute inset-0 pointer-events-none stripe-ph" style={{ opacity: 0.05 }} />
+      <div
+        className="absolute inset-0 opacity-[0.05]"
+        style={{ backgroundImage: "repeating-linear-gradient(45deg, #0f172a 0 1px, transparent 1px 22px)" }}
+      />
 
       {/* Top: logo + wordmark */}
       <div className="relative px-10 pt-9 flex items-center gap-3">
@@ -131,96 +134,90 @@ function LoginVisual() {
       </div>
 
       {/* Center: fax transmission mockup */}
-      <div className="relative flex-1 flex items-center justify-center px-10">
-        {/* All carriers green chip — top-left */}
-        <div
-          className="absolute top-8 left-4 bg-white rounded-2xl px-3.5 py-2.5 flex items-center gap-2 fade-up z-10"
-          style={{ boxShadow: "0 8px 28px rgba(15,23,42,0.10), 0 1px 4px rgba(15,23,42,0.06)", animationDelay: "380ms" }}
-        >
-          <div
-            className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"
-            style={{ boxShadow: "0 0 0 3px rgba(34,197,94,0.22)" }}
-          />
-          <span className="text-[11.5px] font-semibold text-slate-700">All carriers green</span>
-        </div>
-
-        {/* Main card */}
-        <div
-          className="relative w-full max-w-[320px] rounded-3xl bg-white"
-          style={{ boxShadow: "0 24px 64px rgba(15,23,42,0.11), 0 4px 16px rgba(15,23,42,0.06)" }}
-        >
-          {/* Header bar */}
-          <div
-            className="rounded-t-3xl px-5 py-3.5 flex items-center justify-between"
-            style={{ background: "linear-gradient(90deg, oklch(0.48 0.09 174), oklch(0.42 0.08 174))" }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-2.5 h-2.5 rounded-full bg-white/90 pulse-ring flex-shrink-0"
-              />
-              <span className="text-[10.5px] font-bold tracking-widest text-white/90 uppercase">Transmitting</span>
-            </div>
-            <span className="text-[10.5px] font-mono text-white/65">PG 4/7</span>
+      <div className="relative w-full h-full flex items-center justify-center p-12 overflow-hidden">
+        <div className="relative z-10 w-[360px] max-w-full">
+          {/* All carriers green chip — top-left */}
+          <div className="absolute -top-6 -left-10 bg-white rounded-2xl shadow-[0_20px_50px_-20px_rgba(15,23,42,0.3)] ring-1 ring-slate-200/80 px-3.5 py-2.5 flex items-center gap-2.5 z-20">
+            <div
+              className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"
+              style={{ boxShadow: "0 0 0 3px rgba(34,197,94,0.22)" }}
+            />
+            <span className="text-[11.5px] font-semibold text-slate-700">All carriers green</span>
           </div>
 
-          {/* Body */}
-          <div className="px-5 py-4">
-            {/* From / To */}
-            <div className="space-y-2.5 mb-4">
-              <div className="flex items-start gap-3">
-                <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 w-6 flex-shrink-0">From</span>
-                <div>
-                  <div className="text-[12px] font-semibold text-slate-800 leading-tight">Northwind Health · Cardiology</div>
-                  <div className="text-[10.5px] text-slate-400 font-mono">+1 (206) 555-0142</div>
+          {/* Main card */}
+          <div
+            className="relative w-full max-w-[320px] rounded-3xl bg-white"
+            style={{ boxShadow: "0 24px 64px rgba(15,23,42,0.11), 0 4px 16px rgba(15,23,42,0.06)" }}
+          >
+            {/* Header bar */}
+            <div
+              className="rounded-t-3xl px-5 py-3.5 flex items-center justify-between"
+              style={{ background: "linear-gradient(90deg, oklch(0.48 0.09 174), oklch(0.42 0.08 174))" }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-white/90 pulse-ring flex-shrink-0" />
+                <span className="text-[10.5px] font-bold tracking-widest text-white/90 uppercase">Transmitting</span>
+              </div>
+              <span className="text-[10.5px] font-mono text-white/65">PG 4/7</span>
+            </div>
+
+            {/* Body */}
+            <div className="px-5 py-4">
+              {/* From / To */}
+              <div className="space-y-2.5 mb-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 w-6 flex-shrink-0">From</span>
+                  <div>
+                    <div className="text-[12px] font-semibold text-slate-800 leading-tight">Northwind Health · Cardiology</div>
+                    <div className="text-[10.5px] text-slate-400 font-mono">+1 (206) 555-0142</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 w-6 flex-shrink-0">To</span>
+                  <div>
+                    <div className="text-[12px] font-semibold text-slate-800 leading-tight">BlueShield Prior Auth</div>
+                    <div className="text-[10.5px] text-slate-400 font-mono">+1 (888) 555-0903</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 w-6 flex-shrink-0">To</span>
-                <div>
-                  <div className="text-[12px] font-semibold text-slate-800 leading-tight">BlueShield Prior Auth</div>
-                  <div className="text-[10.5px] text-slate-400 font-mono">+1 (888) 555-0903</div>
-                </div>
+
+              <hr className="border-slate-100 mb-4" />
+
+              {/* Doc lines */}
+              <div className="space-y-2 mb-4">
+                <div className="doc-line long" />
+                <div className="doc-line med" />
+                <div className="doc-line long" />
+                <div className="doc-line short" />
+                <div className="doc-line med" />
+              </div>
+
+              {/* Progress */}
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] text-slate-400 font-mono">14400 baud · CRC OK</span>
+                <span className="text-[11px] font-semibold text-slate-700">57%</span>
+              </div>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: "57%" }} />
               </div>
             </div>
-
-            <hr className="border-slate-100 mb-4" />
-
-            {/* Doc lines */}
-            <div className="space-y-2 mb-4">
-              <div className="doc-line long" />
-              <div className="doc-line med" />
-              <div className="doc-line long" />
-              <div className="doc-line short" />
-              <div className="doc-line med" />
-            </div>
-
-            {/* Progress */}
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] text-slate-400 font-mono">14400 baud · CRC OK</span>
-              <span className="text-[11px] font-semibold text-slate-700">57%</span>
-            </div>
-            <div className="progress-track">
-              <div className="progress-fill" style={{ width: "57%" }} />
-            </div>
           </div>
-        </div>
 
-        {/* Delivered chip — bottom-right */}
-        <div
-          className="absolute bottom-8 right-4 bg-white rounded-2xl px-4 py-3 flex items-center gap-2.5 fade-up z-10"
-          style={{ boxShadow: "0 8px 28px rgba(15,23,42,0.10), 0 1px 4px rgba(15,23,42,0.06)", animationDelay: "180ms" }}
-        >
-          <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "oklch(0.94 0.06 160)" }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="oklch(0.38 0.10 160)" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 draw-check">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-[12px] font-semibold text-slate-800">Delivered</div>
-            <div className="text-[10.5px] text-slate-400 font-mono">FX-9824-1A · 7p</div>
+          {/* Delivered chip — bottom-right */}
+          <div className="absolute -bottom-6 -right-8 bg-white rounded-2xl shadow-[0_20px_50px_-20px_rgba(15,23,42,0.3)] ring-1 ring-slate-200/80 px-4 py-3 flex items-center gap-3 z-20">
+            <div
+              className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "oklch(0.94 0.06 160)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="oklch(0.38 0.10 160)" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 draw-check">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-[12px] font-semibold text-slate-800">Delivered</div>
+              <div className="text-[10.5px] text-slate-400 font-mono">FX-9824-1A · 7p</div>
+            </div>
           </div>
         </div>
       </div>
@@ -262,11 +259,10 @@ type Step = "email" | "password" | "mfa" | "sso-redirect";
 
 /* ── Email step ───────────────────────────────────────────────────────── */
 function EmailStep({
-  email, setEmail, loading, onContinue, onOkta,
+  email, setEmail, onContinue, onOkta,
 }: {
   email: string;
   setEmail: (v: string) => void;
-  loading: boolean;
   onContinue: () => void;
   onOkta: () => void;
 }) {
@@ -274,7 +270,12 @@ function EmailStep({
   return (
     <div className="fade-up">
       <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1">Welcome back</p>
-      <h1 className="text-[38px] font-semibold tracking-tight text-slate-950 leading-tight mb-1">Sign in.</h1>
+      <h1
+        className="text-[38px] tracking-tight text-slate-950 leading-tight mb-1"
+        style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: "-0.02em" }}
+      >
+        Sign in.
+      </h1>
       <p className="text-[14px] text-slate-500 mb-8">Continue to your workspace.</p>
 
       {/* SSO buttons */}
@@ -314,7 +315,7 @@ function EmailStep({
           placeholder="you@hospital.org"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && email && onContinue()}
+          onKeyDown={(e) => e.key === "Enter" && onContinue()}
           className="h-11 w-full rounded-[14px] border border-slate-200 bg-white px-3.5 text-[13.5px] outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition"
         />
         {showSSOHint && (
@@ -324,10 +325,9 @@ function EmailStep({
 
       <button
         onClick={onContinue}
-        disabled={!email || loading}
-        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition"
       >
-        {loading ? "Checking…" : <><span>Continue</span><ArrowRightIcon /></>}
+        <span>Continue</span><ArrowRightIcon />
       </button>
 
       <p className="mt-5 text-center text-[12.5px] text-slate-500">
@@ -340,14 +340,13 @@ function EmailStep({
 
 /* ── Password step ────────────────────────────────────────────────────── */
 function PasswordStep({
-  email, showPassword, setShowPassword, keepSignedIn, setKeepSignedIn, loading, onBack, onSignIn,
+  email, showPassword, setShowPassword, keepSignedIn, setKeepSignedIn, onBack, onSignIn,
 }: {
   email: string;
   showPassword: boolean;
   setShowPassword: (v: boolean) => void;
   keepSignedIn: boolean;
   setKeepSignedIn: (v: boolean) => void;
-  loading: boolean;
   onBack: () => void;
   onSignIn: () => void;
 }) {
@@ -409,10 +408,9 @@ function PasswordStep({
 
       <button
         onClick={onSignIn}
-        disabled={loading}
-        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition disabled:opacity-40"
+        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition"
       >
-        {loading ? "Signing in…" : <><span>Sign in</span><ArrowRightIcon /></>}
+        <span>Sign in</span><ArrowRightIcon />
       </button>
     </div>
   );
@@ -420,11 +418,10 @@ function PasswordStep({
 
 /* ── MFA step ─────────────────────────────────────────────────────────── */
 function MfaStep({
-  digits, digitRefs, allFilled, onDigit, onDigitKey, onVerify, onBack,
+  digits, digitRefs, onDigit, onDigitKey, onVerify, onBack,
 }: {
   digits: string[];
   digitRefs: { current: (HTMLInputElement | null)[] };
-  allFilled: boolean;
   onDigit: (idx: number, val: string) => void;
   onDigitKey: (idx: number, e: KeyboardEvent<HTMLInputElement>) => void;
   onVerify: () => void;
@@ -468,8 +465,7 @@ function MfaStep({
 
       <button
         onClick={onVerify}
-        disabled={!allFilled}
-        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full h-11 rounded-2xl bg-slate-950 text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition"
       >
         Verify and sign in <ArrowRightIcon />
       </button>
@@ -522,23 +518,11 @@ function SsoStep({ onBack, onOpen }: { onBack: () => void; onOpen: () => void })
 export default function LoginPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
   const digitRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  function handleEmailContinue() {
-    if (!email) return;
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("password"); }, 600);
-  }
-
-  function handleSignIn() {
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("mfa"); }, 700);
-  }
 
   function handleDigit(idx: number, val: string) {
     if (!/^\d?$/.test(val)) return;
@@ -554,12 +538,13 @@ export default function LoginPage() {
     }
   }
 
-  const allDigitsFilled = digits.every((d) => d !== "");
-
   return (
     <div className="min-h-screen flex" style={{ background: "#f3f7f6" }}>
       {/* Left panel */}
-      <div className="hidden lg:flex relative w-[52%] flex-col overflow-hidden border-r border-slate-200/70">
+      <div
+        className="hidden lg:flex relative w-[52%] flex-col overflow-hidden border-r border-slate-200/70"
+        style={{ background: "radial-gradient(circle at 30% 40%, oklch(0.92 0.07 var(--accent-h)) 0%, transparent 55%), radial-gradient(circle at 75% 70%, oklch(0.94 0.05 var(--accent-h)) 0%, transparent 50%), #f3f7f6" }}
+      >
         <LoginVisual />
       </div>
 
@@ -580,14 +565,13 @@ export default function LoginPage() {
         </div>
 
         {/* Form area */}
-        <div className="flex-1 flex items-center justify-center px-8 py-4">
+        <div className="flex-1 flex items-center justify-center px-6 py-10">
           <div className="w-full max-w-[420px] py-10">
             {step === "email" && (
               <EmailStep
                 email={email}
                 setEmail={setEmail}
-                loading={loading}
-                onContinue={handleEmailContinue}
+                onContinue={() => setStep("password")}
                 onOkta={() => setStep("sso-redirect")}
               />
             )}
@@ -598,16 +582,14 @@ export default function LoginPage() {
                 setShowPassword={setShowPassword}
                 keepSignedIn={keepSignedIn}
                 setKeepSignedIn={setKeepSignedIn}
-                loading={loading}
                 onBack={() => setStep("email")}
-                onSignIn={handleSignIn}
+                onSignIn={() => setStep("mfa")}
               />
             )}
             {step === "mfa" && (
               <MfaStep
                 digits={digits}
                 digitRefs={digitRefs}
-                allFilled={allDigitsFilled}
                 onDigit={handleDigit}
                 onDigitKey={handleDigitKey}
                 onVerify={() => router.push("/app/dashboard")}
