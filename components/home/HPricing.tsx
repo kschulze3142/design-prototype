@@ -4,10 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { HCard, HPill } from './primitives';
 
-interface PlanFeature {
-  text: string;
-}
-
 interface Plan {
   id: string;
   name: string;
@@ -16,6 +12,7 @@ interface Plan {
   billing?: string;
   badge?: string;
   featured?: boolean;
+  headline: string;
   features: string[];
   cta: string;
 }
@@ -27,6 +24,7 @@ const plans: Plan[] = [
     price: 'Free',
     period: '',
     billing: 'Free for 14 days',
+    headline: 'Try FaxGrid free — no commitment',
     features: [
       '50 pages included',
       '1 fax number',
@@ -43,6 +41,7 @@ const plans: Plan[] = [
     price: '$39',
     period: '/mo',
     billing: 'Billed monthly',
+    headline: 'Everything a small office needs',
     features: [
       'Number porting',
       '500 pages/mo',
@@ -60,9 +59,10 @@ const plans: Plan[] = [
     name: 'Professional',
     price: '$89',
     period: '/mo',
-    billing: 'Most popular',
+    billing: 'Billed monthly',
     badge: 'Most popular',
     featured: true,
+    headline: 'For growing practices',
     features: [
       'Number porting',
       '2,000 pages/mo',
@@ -84,23 +84,21 @@ export function HPricing() {
       <div className="mb-10 text-center">
         <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Simple pricing</p>
         <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
-          Start free. Scale when you&apos;re ready.
+          Start Free.<br />Scale when you&apos;re ready.
         </h2>
-        <p className="mt-4 text-base text-slate-500">30-day free trial on all plans. No credit card required.</p>
+        <p className="mt-4 text-base text-slate-500">Simple plans, honest pricing, no surprises.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         {plans.map((plan) => (
           <div key={plan.id} className="relative flex flex-col">
             {plan.badge && (
-              <div className="relative z-10 mb-[-1px] flex justify-center">
-                <span
-                  className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-semibold text-white shadow-md"
-                  style={{ background: 'var(--accent)' }}
-                >
-                  {plan.badge}
-                </span>
-              </div>
+              <span
+                className="absolute -top-3 left-6 z-10 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+                style={{ background: 'oklch(0.93 0.06 var(--accent-h))', color: 'var(--accent-deep)' }}
+              >
+                {plan.badge}
+              </span>
             )}
             <HCard
               className={`flex flex-1 flex-col p-8 ${plan.featured ? '' : ''}`}
@@ -123,6 +121,7 @@ export function HPricing() {
                 {plan.billing && (
                   <p className="mt-1 text-sm text-slate-500">{plan.billing}</p>
                 )}
+                <p className="mt-6 text-sm font-semibold text-slate-900">{plan.headline}</p>
               </div>
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.features.map((f) => (
