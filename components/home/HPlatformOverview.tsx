@@ -211,17 +211,11 @@ export function HPlatformOverview() {
   return (
     <section style={{ background: 'oklch(0.97 0.025 var(--accent-h))' }} className="py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <div className="mb-12 flex items-start justify-between gap-6">
-          <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Platform overview</p>
-            <h2 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
-              All your fax workflows in one platform
-            </h2>
-          </div>
-          <div className="hidden items-center gap-3 md:flex">
-            <button className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white/70 text-slate-300 shadow-sm backdrop-blur-xl">←</button>
-            <button className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm backdrop-blur-xl">→</button>
-          </div>
+        <div className="mb-12">
+          <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Platform overview</p>
+          <h2 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+            All your fax workflows in one platform
+          </h2>
         </div>
         <HSolutionsRow />
       </div>

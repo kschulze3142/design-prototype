@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import { HLogo } from './primitives';
 
@@ -140,6 +140,8 @@ function SocialIcon({ label, children }: { label: string; children: React.ReactN
 }
 
 export function HResourcesFooter() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
       {/* Resources band */}
@@ -154,11 +156,11 @@ export function HResourcesFooter() {
               <p className="mt-3 text-base text-slate-500">Articles, guides, and updates for fax-forward teams.</p>
             </div>
             <div className="hidden items-center gap-3 md:flex">
-              <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/70 text-slate-300 shadow-sm">←</button>
-              <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm">→</button>
+              <button onClick={() => scrollRef.current?.scrollBy({ left: -320, behavior: 'smooth' })} className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/70 text-slate-300 shadow-sm">←</button>
+              <button onClick={() => scrollRef.current?.scrollBy({ left: 320, behavior: 'smooth' })} className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm">→</button>
             </div>
           </div>
-          <div className="fg-blog-row">
+          <div ref={scrollRef} className="fg-blog-row">
             {blogCards.map((card) => (
               <div key={card.title} className="fg-blog-card">
                 <div className="fg-blog-art relative">
