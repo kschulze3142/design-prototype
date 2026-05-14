@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HCard, HPill } from './primitives';
 
 type PillTone = 'teal' | 'emerald' | 'amber' | 'slate';
@@ -102,7 +102,14 @@ const tabs: TabData[] = [
 
 export function HOperationsShowcase() {
   const [activeTab, setActiveTab] = useState('send');
+  const [visible, setVisible] = useState(true);
   const current = tabs.find((t) => t.id === activeTab) ?? tabs[0];
+
+  useEffect(() => {
+    setVisible(false);
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
+  }, [activeTab]);
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
@@ -129,7 +136,11 @@ export function HOperationsShowcase() {
         ))}
       </div>
 
-      <div key={current.id} className="fg-tabpanel grid gap-8 xl:grid-cols-[340px_1fr] xl:items-start">
+      <div
+        key={current.id}
+        className="grid gap-8 xl:grid-cols-[340px_1fr] xl:items-start"
+        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(6px)', transition: 'opacity 320ms cubic-bezier(0.16, 1, 0.3, 1), transform 320ms cubic-bezier(0.16, 1, 0.3, 1)' }}
+      >
         <div>
           <h3 className="text-3xl font-semibold tracking-tight text-slate-950">{current.title}</h3>
           <p className="mt-4 text-base leading-7 text-slate-500">{current.description}</p>
