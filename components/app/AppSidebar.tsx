@@ -19,7 +19,9 @@ const NAV = [
     { href: '/app/templates', label: 'Templates', icon: 'Templates' },
   ]},
   { group: 'Reporting', items: [
-    { href: '/app/analytics', label: 'Analytics', icon: 'Analytics' },
+    { href: '/app/analytics', label: 'Analytics',  icon: 'Analytics' },
+    { href: '/app/audit',     label: 'Audit Log',  icon: 'Audit' },
+    { href: '/app/compliance',label: 'Compliance', icon: 'Shield' },
   ]},
   { group: 'System', items: [
     { href: '/app/billing',   label: 'Billing & Usage', icon: 'Billing' },
