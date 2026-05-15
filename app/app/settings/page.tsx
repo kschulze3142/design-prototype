@@ -3,23 +3,36 @@ import React, { useState } from 'react';
 import { I } from '@/components/app/icons';
 import { Card, Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 
-const SETTINGS_SECTIONS = [
+type SettingsItem = {
+  id: string;
+  label: string;
+  icon: keyof typeof I;
+  desc: string;
+  danger: boolean;
+};
+
+type SettingsSection = {
+  group: string;
+  items: SettingsItem[];
+};
+
+const SETTINGS_SECTIONS: SettingsSection[] = [
   { group: 'Workspace', items: [
-    { id: 'workspace',     label: 'Workspace',     icon: 'Building' as const,  desc: 'Name, logo, identity',      danger: false },
-    { id: 'defaults',      label: 'Defaults',      icon: 'Cog' as const,       desc: 'Sender + cover defaults',   danger: false },
-    { id: 'notifications', label: 'Notifications', icon: 'Bell' as const,      desc: 'Email, Slack, SMS',         danger: false },
-    { id: 'integrations',  label: 'Integrations',  icon: 'Sparkle' as const,   desc: 'EHR, SSO, webhooks',        danger: false },
+    { id: 'workspace',     label: 'Workspace',     icon: 'Building',  desc: 'Name, logo, identity',    danger: false },
+    { id: 'defaults',      label: 'Defaults',      icon: 'Cog',       desc: 'Sender + cover defaults', danger: false },
+    { id: 'notifications', label: 'Notifications', icon: 'Bell',      desc: 'Email, Slack, SMS',       danger: false },
+    { id: 'integrations',  label: 'Integrations',  icon: 'Sparkle',   desc: 'EHR, SSO, webhooks',      danger: false },
   ]},
   { group: 'Security & Compliance', items: [
-    { id: 'security',   label: 'Security',      icon: 'Lock' as const,      desc: 'MFA, SSO, sessions',        danger: false },
-    { id: 'compliance', label: 'Compliance',    icon: 'Shield' as const,    desc: 'BAA, retention, audit',     danger: false },
-    { id: 'api',        label: 'API & webhooks',icon: 'Cog' as const,       desc: 'Programmatic access',       danger: false },
+    { id: 'security',    label: 'Security',       icon: 'Lock',      desc: 'MFA, SSO, sessions',      danger: false },
+    { id: 'compliance',  label: 'Compliance',     icon: 'Shield',    desc: 'BAA, retention, audit',   danger: false },
+    { id: 'api',         label: 'API & webhooks', icon: 'Cog',       desc: 'Programmatic access',     danger: false },
   ]},
   { group: 'Account', items: [
-    { id: 'profile', label: 'Your profile', icon: 'Contacts' as const, desc: 'Personal details',            danger: false },
-    { id: 'danger',  label: 'Danger zone',  icon: 'Trash' as const,    desc: 'Export, transfer, delete',    danger: true },
+    { id: 'profile', label: 'Your profile', icon: 'Contacts', desc: 'Personal details',        danger: false },
+    { id: 'danger',  label: 'Danger zone',  icon: 'Trash',    desc: 'Export, transfer, delete', danger: true },
   ]},
-] as const;
+];
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
