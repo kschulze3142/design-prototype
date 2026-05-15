@@ -7,8 +7,9 @@ import { useState } from 'react';
 
 const NAV = [
   { group: 'Core', items: [
-    { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
-    { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
+    { href: '/app/dashboard',  label: 'Dashboard',  icon: 'Dashboard' },
+    { href: '/app/onboarding', label: 'Onboarding', icon: 'Zap' },
+    { href: '/app/send',       label: 'Send Fax',   icon: 'Send' },
     { href: '/app/inbox',     label: 'Inbox',     icon: 'Inbox', badge: 4 },
     { href: '/app/sent',      label: 'Sent',      icon: 'Sent' },
   ]},
