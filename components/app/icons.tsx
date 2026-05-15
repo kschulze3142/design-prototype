@@ -53,4 +53,8 @@ export const I = {
   Zap: (p: any) => <Icon {...p}><path d="M13 2 3 14h7l-1 8 10-12h-7Z"/></Icon>,
   Help: (p: any) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h.01"/></Icon>,
   Cog: (p: any) => <Icon {...p}><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.2 4.2l2.1 2.1"/><path d="M17.7 17.7l2.1 2.1"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.2 19.8l2.1-2.1"/><path d="M17.7 6.3l2.1-2.1"/></Icon>,
+  Building: (p: any) => <Icon {...p}><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 7h.01"/><path d="M12 7h.01"/><path d="M16 7h.01"/><path d="M8 11h.01"/><path d="M16 11h.01"/></Icon>,
+  Sparkle: (p: any) => <Icon {...p}><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="M18.4 5.6-.7.7"/><path d="M6.3 17.7l-.7.7"/><path d="M5.6 5.6l.7.7"/><path d="M17.7 17.7l.7.7"/><circle cx="12" cy="12" r="4"/></Icon>,
+  Wand: (p: any) => <Icon {...p}><path d="m15 5 4 4"/><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2 2"/><path d="m2 22 5.5-5.5"/><path d="M13.4 15.9 15 22l6-6-6.1-1.6"/><path d="m13 13 4.5 4.5"/></Icon>,
+  Globe: (p: any) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></Icon>,
 };

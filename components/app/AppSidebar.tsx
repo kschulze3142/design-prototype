@@ -15,6 +15,8 @@ const NAV = [
   { group: 'Directory', items: [
     { href: '/app/numbers',   label: 'Numbers',   icon: 'Numbers' },
     { href: '/app/team',      label: 'Team',      icon: 'Team' },
+    { href: '/app/contacts',  label: 'Contacts',  icon: 'Contacts' },
+    { href: '/app/templates', label: 'Templates', icon: 'Templates' },
   ]},
   { group: 'Reporting', items: [
     { href: '/app/analytics', label: 'Analytics', icon: 'Analytics' },
