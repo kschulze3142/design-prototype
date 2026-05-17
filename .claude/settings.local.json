@@ -8,7 +8,8 @@
       "Bash(pnpm build *)",
       "Bash(pnpm dev *)",
       "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('app/app/inbox/page.tsx','utf8'\\); ['TagBadge','FaxListItem','FaxPreview','InboxPage','FAXES','TAG_COLORS','TABS','SENDER_FILTERS','height: 100vh','var\\(--color-phi-bg\\)','var\\(--color-primary\\)','var\\(--font-mono\\)','var\\(--font-heading\\)','scrollbar-thin'].forEach\\(k => console.log\\(src.includes\\(k\\) ? '✓ '+k : '✗ MISSING: '+k\\)\\)\")",
-      "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('app/app/inbox/page.tsx','utf8'\\); console.log\\(src.match\\(/height.*100vh/g\\)\\)\")"
+      "Bash(node -e \"const fs=require\\('fs'\\); const src=fs.readFileSync\\('app/app/inbox/page.tsx','utf8'\\); console.log\\(src.match\\(/height.*100vh/g\\)\\)\")",
+      "Bash(pnpm exec *)"
     ]
   }
 }
