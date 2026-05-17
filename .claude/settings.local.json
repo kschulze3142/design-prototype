@@ -5,7 +5,8 @@
       "Bash(pnpm tsc *)",
       "Bash(findstr /i \"accent teal emerald\")",
       "Bash(findstr /v \"node_modules\")",
-      "Bash(pnpm build *)"
+      "Bash(pnpm build *)",
+      "Bash(pnpm dev *)"
     ]
   }
 }
