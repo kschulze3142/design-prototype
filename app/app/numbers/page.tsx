@@ -100,7 +100,7 @@ function NumberCard({ n, onOpen }: { n: FaxNumber; onOpen: () => void }) {
     ? 'linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%)'
     : isInactive
     ? 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
-    : 'linear-gradient(135deg, rgba(204,251,241,0.5) 0%, rgba(240,253,244,0.7) 100%)';
+    : 'var(--color-primary-subtle)';
 
   const st = STATUS_TONES[n.statusTone] || STATUS_TONES.slate;
   const at = STATUS_TONES[n.assigneeTone] || STATUS_TONES.teal;

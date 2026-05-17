@@ -57,16 +57,16 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
       className={`w-full text-left rounded-[24px] p-1 transition ${selected ? 'ring-2 ring-[var(--color-primary)] ring-offset-2' : ''}`}>
       <div className="rounded-[20px] overflow-hidden border border-slate-200/70 bg-white">
         {/* Thumbnail */}
-        <div className="relative p-4" style={{ aspectRatio: '3/4', background: 'repeating-linear-gradient(45deg, rgba(15,118,110,0.04) 0px, rgba(15,118,110,0.04) 1px, transparent 1px, transparent 8px)' }}>
+        <div className="relative p-4" style={{ aspectRatio: '3/4', background: 'var(--color-surface)' }}>
           {t.featured && (
             <div className="absolute top-3 right-3 z-10">
               <Pill tone="teal" dot={false}>Default</Pill>
             </div>
           )}
           <div className="h-full rounded-xl bg-white border border-slate-100 shadow-sm flex flex-col overflow-hidden">
-            <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, rgba(204,251,241,0.5), white)' }}>
+            <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-1.5" style={{ background: 'var(--color-primary-subtle)' }}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-primary)' }} />
-              <span className="text-[8px] font-bold uppercase tracking-wider text-slate-500">{t.cat}</span>
+              <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-primary)' }}>{t.cat}</span>
             </div>
             <div className="flex-1 p-3 space-y-1.5">
               {t.lines.map((w, i) => (
