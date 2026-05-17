@@ -29,7 +29,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
     <button
       onClick={onClick}
       className={`px-4 py-1.5 rounded-full text-[13px] font-semibold transition ${active ? 'text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-      style={active ? { background: 'var(--accent)' } : undefined}
+      style={active ? { background: 'var(--color-primary)' } : undefined}
     >
       {children}
     </button>
@@ -53,10 +53,10 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
       <div className="bg-white rounded-2xl shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 overflow-hidden">
         <div
           className="flex items-center gap-2 px-5 py-3 border-b border-slate-100"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), white)' }}
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), white)' }}
         >
-          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-deep)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--color-primary)' }}>
             {title}
           </span>
           <span className="ml-auto text-[11px] text-slate-400 font-mono">PG 1/{pages}</span>
@@ -112,7 +112,7 @@ export default function OnboardingPage() {
 
   const activeStep = ONBOARDING_STEPS.find(s => s.id === active)!;
 
-  const inputClass = "w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400 transition";
+  const inputClass = "w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400 transition";
 
   return (
     <div>
@@ -148,7 +148,7 @@ export default function OnboardingPage() {
           <span className="text-[28px] font-semibold text-slate-900" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>{pct}%</span>
         </div>
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: 'var(--accent)' }} />
+          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: 'var(--color-primary)' }} />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-5">
           {ONBOARDING_STEPS.map((s, i) => {
@@ -156,15 +156,15 @@ export default function OnboardingPage() {
             const Ico = I[s.icon];
             return (
               <button key={s.id} onClick={() => setActive(s.id)}
-                className={`text-left p-3.5 rounded-2xl border transition ${isActive ? 'border-[var(--accent)] bg-white shadow-sm' : isDone ? 'border-emerald-100 bg-emerald-50/40' : 'border-slate-200/70 bg-white/50 hover:bg-white'}`}>
+                className={`text-left p-3.5 rounded-2xl border transition ${isActive ? 'border-[var(--color-primary)] bg-white shadow-sm' : isDone ? 'border-emerald-100 bg-emerald-50/40' : 'border-slate-200/70 bg-white/50 hover:bg-white'}`}>
                 <div className="flex items-center gap-2">
                   {isDone ? (
                     <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center"><I.Check size={13} strokeWidth={3} /></span>
                   ) : (
                     <span className={`w-6 h-6 rounded-full text-[11px] font-semibold flex items-center justify-center ${isActive ? 'text-white' : 'bg-slate-100 text-slate-500'}`}
-                      style={isActive ? { background: 'var(--accent)' } : undefined}>{i + 1}</span>
+                      style={isActive ? { background: 'var(--color-primary)' } : undefined}>{i + 1}</span>
                   )}
-                  <Ico size={15} style={{ color: isActive ? 'var(--accent-deep)' : '#64748b' }} />
+                  <Ico size={15} style={{ color: isActive ? 'var(--color-primary)' : '#64748b' }} />
                 </div>
                 <div className="text-[13px] font-semibold text-slate-900 mt-2">{s.title}</div>
                 <div className="text-[11.5px] text-slate-500 mt-0.5">{s.time}</div>
@@ -180,11 +180,11 @@ export default function OnboardingPage() {
             {/* Step header */}
             <div className="flex items-center gap-3 mb-1">
               <span className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-                style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+                style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                 {(() => { const Ico = I[activeStep.icon]; return <Ico size={18} />; })()}
               </span>
               <div>
-                <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--accent-deep)' }}>
+                <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-primary)' }}>
                   Step {ONBOARDING_STEPS.findIndex(s => s.id === active) + 1}
                 </div>
                 <div className="text-[20px] font-semibold text-slate-900">{activeStep.title}</div>
@@ -205,10 +205,10 @@ export default function OnboardingPage() {
                       const sel = n.number === selectedNumber;
                       return (
                         <label key={n.number}
-                          className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition ${sel ? 'border-[var(--accent)] bg-[oklch(0.98_0.04_var(--accent-h))]' : 'border-slate-200/70 bg-white/70 hover:border-slate-300'}`}>
+                          className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition ${sel ? 'border-[var(--color-primary)] bg-[var(--color-primary-subtle)]' : 'border-slate-200/70 bg-white/70 hover:border-slate-300'}`}>
                           <input type="radio" name="num" checked={sel} onChange={() => setSelectedNumber(n.number)} className="sr-only" />
-                          <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${sel ? 'border-[var(--accent)]' : 'border-slate-300'}`}>
-                            {sel && <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--accent)' }} />}
+                          <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${sel ? 'border-[var(--color-primary)]' : 'border-slate-300'}`}>
+                            {sel && <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-primary)' }} />}
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -257,11 +257,11 @@ export default function OnboardingPage() {
                   ))}
                 </div>
                 <button onClick={() => setInvites(arr => [...arr, { email: '', role: 'Member' }])}
-                  className="mt-3 text-[13px] font-semibold hover:underline flex items-center gap-1.5" style={{ color: 'var(--accent-deep)' }}>
+                  className="mt-3 text-[13px] font-semibold hover:underline flex items-center gap-1.5" style={{ color: 'var(--color-primary)' }}>
                   <I.Plus size={13} /> Add another
                 </button>
                 <SoftCard className="mt-5 p-4 flex items-start gap-3">
-                  <I.Info size={18} className="shrink-0 mt-0.5" style={{ color: 'var(--accent-deep)' }} />
+                  <I.Info size={18} className="shrink-0 mt-0.5" style={{ color: 'var(--color-primary)' }} />
                   <div className="text-[12.5px] text-slate-600">Members can send and read faxes assigned to them. Reviewers approve outbound faxes flagged as PHI. Admins manage billing and security.</div>
                 </SoftCard>
                 <div className="mt-6 flex justify-between items-center">
@@ -334,9 +334,9 @@ export default function OnboardingPage() {
             {active === 'secure' && (
               <div>
                 <div className="rounded-2xl p-6 border border-white"
-                  style={{ background: 'linear-gradient(135deg, oklch(0.97 0.04 var(--accent-h)), white)' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
                   <div className="flex items-center gap-3">
-                    <I.Shield size={22} style={{ color: 'var(--accent-deep)' }} />
+                    <I.Shield size={22} style={{ color: 'var(--color-primary)' }} />
                     <div>
                       <div className="text-[16px] font-semibold text-slate-900">Business Associate Agreement</div>
                       <div className="text-[12.5px] text-slate-500">Required for HIPAA-covered entities. Auto-generated from your workspace info.</div>
@@ -358,7 +358,7 @@ export default function OnboardingPage() {
                 </div>
                 <label className="flex items-start gap-3 mt-5 cursor-pointer">
                   <input type="checkbox" checked={hipaa} onChange={e => setHipaa(e.target.checked)}
-                    className="mt-1 w-4 h-4" style={{ accentColor: 'var(--accent)' }} />
+                    className="mt-1 w-4 h-4" style={{ accentColor: 'var(--color-primary)' }} />
                   <span className="text-[13.5px] text-slate-700">I confirm I'm authorized to sign on behalf of Northwind Health, Inc. and accept the terms of the BAA.</span>
                 </label>
                 <div className="mt-6 flex justify-between items-center">
@@ -418,8 +418,8 @@ export default function OnboardingPage() {
       {completedCount === ONBOARDING_STEPS.length && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
           <Card className="px-5 py-4 flex items-center gap-3"
-            style={{ background: 'linear-gradient(135deg, oklch(0.97 0.05 var(--accent-h)), white)' }}>
-            <span className="w-9 h-9 rounded-full text-white flex items-center justify-center" style={{ background: 'var(--accent)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
+            <span className="w-9 h-9 rounded-full text-white flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <I.Check size={16} strokeWidth={3} />
             </span>
             <div>

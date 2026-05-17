@@ -82,7 +82,7 @@ export function HPricing() {
   return (
     <section id="pricing" className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mb-10 text-center">
-        <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Simple pricing</p>
+        <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Simple pricing</p>
         <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
           Start Free.<br />Scale when you&apos;re ready.
         </h2>
@@ -96,7 +96,7 @@ export function HPricing() {
               <div className="h-9 flex items-end pl-6">
                 <span
                   className="relative z-10 inline-flex translate-y-3 rounded-t-2xl rounded-b-md px-4 py-2 text-xs font-semibold"
-                  style={{ background: 'oklch(0.93 0.06 var(--accent-h))', color: 'var(--accent-deep)' }}
+                  style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
                 >
                   {plan.badge}
                 </span>
@@ -112,7 +112,7 @@ export function HPricing() {
               }`}
               style={
                 plan.featured
-                  ? { boxShadow: '0 24px 70px rgba(15,23,42,0.08), inset 0 0 0 2px var(--accent)' }
+                  ? { boxShadow: '0 24px 70px rgba(15,23,42,0.08), inset 0 0 0 2px var(--color-primary)' }
                   : undefined
               }
             >
@@ -132,7 +132,7 @@ export function HPricing() {
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.features.map((f) => (
                   <li key={f} className="flex gap-3 text-sm font-medium text-slate-700">
-                    <span style={{ color: 'var(--accent)' }}>✓</span>
+                    <span style={{ color: 'var(--color-primary)' }}>✓</span>
                     {f}
                   </li>
                 ))}

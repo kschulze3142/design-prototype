@@ -21,7 +21,7 @@ type SentFax = typeof SENT_FAXES[number];
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   red:     { bg: '#fef2f2',               fg: '#b91c1c',             dot: '#ef4444' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
@@ -66,7 +66,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
 function Toggle({ checked, onChange, label, helper }: { checked: boolean; onChange: (v: boolean) => void; label: string; helper?: string }) {
   return (
     <label className="flex items-start gap-3 cursor-pointer select-none">
-      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--accent)' : '#cbd5e1' }}>
+      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}>
         <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all" style={{ left: checked ? '18px' : '2px' }} />
       </span>
       <span>
@@ -84,9 +84,9 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
         style={{ backgroundImage: 'repeating-linear-gradient(45deg, rgba(15,23,42,0.04) 0 8px, transparent 8px 16px)', backgroundColor: 'rgba(241,245,249,0.6)' }} />
       <div className="bg-white rounded-2xl shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-100"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), white)' }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-deep)' }}>{title}</span>
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), white)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--color-primary)' }}>{title}</span>
           <span className="ml-auto text-[11px] text-slate-400 font-mono">PG 1/{pages}</span>
         </div>
         <div className="px-7 py-6 space-y-5">
@@ -114,7 +114,7 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
 function SentListItem({ f, selected, onClick }: { f: SentFax; selected: boolean; onClick: () => void }) {
   const statusTone = f.status === 'Delivered' ? 'emerald' : f.status === 'Failed' ? 'red' : 'amber';
   return (
-    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 flex gap-3 transition border-l-2 ${selected ? 'bg-[var(--accent-soft)] border-l-[var(--accent)]' : 'border-l-transparent hover:bg-slate-50'}`}>
+    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 flex gap-3 transition border-l-2 ${selected ? 'bg-[var(--color-primary-subtle)] border-l-[var(--color-primary)]' : 'border-l-transparent hover:bg-slate-50'}`}>
       <Avatar name={f.to} size={36} tone={f.tone} />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
@@ -151,7 +151,7 @@ function SentDetail({ f, detailTab, setDetailTab, onForward }: {
     return (
       <Card className="overflow-hidden flex flex-col" style={{ maxHeight: 'calc(100vh - 240px)' }}>
         <div className="flex-1 flex flex-col items-center justify-center gap-3 p-10 text-center">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
             <I.Send size={26} />
           </div>
           <div className="text-[16px] font-semibold text-slate-900">No fax selected</div>
@@ -214,7 +214,7 @@ function SentDetail({ f, detailTab, setDetailTab, onForward }: {
             <div className="flex gap-2.5 overflow-x-auto pb-1">
               {Array.from({ length: thumbnailCount }).map((_, i) => (
                 <div key={i} className="shrink-0 w-16 aspect-[3/4] rounded-xl border flex flex-col p-2 gap-1.5 relative overflow-hidden"
-                  style={{ background: '#f8fafc', borderColor: i === 0 ? 'var(--accent)' : '#e2e8f0', boxShadow: i === 0 ? '0 0 0 1px var(--accent)' : undefined }}>
+                  style={{ background: '#f8fafc', borderColor: i === 0 ? 'var(--color-primary)' : '#e2e8f0', boxShadow: i === 0 ? '0 0 0 1px var(--color-primary)' : undefined }}>
                   {[70, 50, 80, 40, 60].map((w, j) => (
                     <div key={j} className="h-1 rounded-full bg-slate-200" style={{ width: `${w}%` }} />
                   ))}
@@ -233,8 +233,8 @@ function SentDetail({ f, detailTab, setDetailTab, onForward }: {
         {detailTab === 'receipt' && (
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-sm ring-1 ring-slate-100 text-center space-y-6">
-              <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center" style={{ background: 'oklch(0.96 0.04 var(--accent-h))' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-deep)' }} className="draw-check">
+              <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center" style={{ background: 'var(--color-primary-subtle)' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary)' }} className="draw-check">
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
               </div>
@@ -328,11 +328,11 @@ export default function SentPage() {
             <div className="relative">
               <I.Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search sent faxes…"
-                className="pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)] w-[240px] placeholder:text-slate-400" />
+                className="pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] w-[240px] placeholder:text-slate-400" />
             </div>
             <button className="relative w-10 h-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900">
               <I.Bell size={17} />
-              <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
+              <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
             </button>
             <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New fax</AppButton>
           </div>
@@ -406,7 +406,7 @@ export default function SentPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Forward to</label>
-                    <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400"
+                    <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
                       placeholder="email@hospital.org or +1 555…" value={forwardTo} onChange={e => setForwardTo(e.target.value)} />
                   </div>
                   <Toggle label="Include receipt PDF" helper="Adds the delivery confirmation as a second attachment." checked={true} onChange={() => {}} />
@@ -420,8 +420,8 @@ export default function SentPage() {
             ) : (
               <div className="py-10 text-center">
                 <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4"
-                  style={{ background: 'oklch(0.96 0.04 var(--accent-h))' }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-deep)' }} className="draw-check">
+                  style={{ background: 'var(--color-primary-subtle)' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary)' }} className="draw-check">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
                 </div>

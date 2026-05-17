@@ -8,7 +8,7 @@ function HDocumentPreview() {
   return (
     <div className="rounded-[28px] bg-slate-100/70 p-4 ring-1 ring-slate-200/70">
       <div className="rounded-[22px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div className="mb-5 h-3 w-28 rounded-full bg-teal-500" />
+        <div className="mb-5 h-3 w-28 rounded-full" style={{ background: 'var(--color-primary)' }} />
         <div className="mb-6">
           <div className="h-3 w-44 rounded-full bg-slate-300" />
           <div className="mt-3 h-2 w-56 rounded-full bg-slate-200" />
@@ -19,9 +19,9 @@ function HDocumentPreview() {
             className={`mb-2 h-2 rounded-full bg-slate-200 ${i % 3 === 0 ? 'w-full' : i % 2 === 0 ? 'w-10/12' : 'w-8/12'}`}
           />
         ))}
-        <div className="mt-8 rounded-2xl border border-dashed border-teal-200 bg-teal-50/70 p-4">
-          <div className="h-2 w-24 rounded-full bg-teal-300" />
-          <div className="mt-3 h-2 w-36 rounded-full bg-teal-200" />
+        <div className="mt-8 rounded-2xl border border-dashed p-4" style={{ borderColor: 'var(--color-border-strong)', background: 'var(--color-primary-subtle)' }}>
+          <div className="h-2 w-24 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <div className="mt-3 h-2 w-36 rounded-full" style={{ background: 'var(--color-border-strong)' }} />
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between text-xs font-medium text-slate-500">
@@ -43,8 +43,8 @@ const faxRows: [string, string, string, PillTone][] = [
 function HProductMockup() {
   return (
     <div className="rounded-[28px] border border-white/80 bg-white/85 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl relative overflow-hidden p-4 md:p-5">
-      <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-teal-200/60 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-16 left-10 h-44 w-44 rounded-full bg-emerald-100 blur-3xl pointer-events-none" />
+      <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(61,80,128,0.12)' }} />
+      <div className="absolute -bottom-16 left-10 h-44 w-44 rounded-full blur-3xl pointer-events-none" style={{ background: 'var(--color-primary-subtle)' }} />
       <div className="relative">
         <div className="mb-4 flex items-center justify-between px-2">
           <div>
@@ -102,10 +102,10 @@ export function HHero() {
       <div className="relative grid gap-10 xl:grid-cols-[1.05fr_0.95fr] xl:items-center">
         <div>
           <Reveal delay={0}>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-100 bg-white/70 px-4 py-2 text-sm font-semibold text-teal-800 shadow-sm backdrop-blur-xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-semibold shadow-sm backdrop-blur-xl" style={{ border: '1px solid var(--color-border)', color: 'var(--color-primary)' }}>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: 'var(--color-primary)' }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
               </span>
               Secure cloud fax for modern teams
             </div>

@@ -32,7 +32,7 @@ const PENDING = [
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
@@ -49,7 +49,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
 function Toggle({ checked, onChange, label, helper }: { checked: boolean; onChange: (v: boolean) => void; label: string; helper?: string }) {
   return (
     <label className="flex items-start gap-3 cursor-pointer select-none">
-      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--accent)' : '#cbd5e1' }}>
+      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}>
         <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all" style={{ left: checked ? '18px' : '2px' }} />
       </span>
       <span>
@@ -195,10 +195,10 @@ function MemberDetailModal({ m, onClose, onRoleChange }: { m: Member | null; onC
                     return (
                       <button key={r.id} onClick={() => onRoleChange(m.id, r.id)}
                         className="text-left p-4 rounded-2xl border-2 transition"
-                        style={{ borderColor: active ? 'var(--accent)' : '#e2e8f0', background: active ? 'oklch(0.96 0.04 var(--accent-h))' : 'white' }}>
+                        style={{ borderColor: active ? 'var(--color-primary)' : '#e2e8f0', background: active ? 'var(--color-primary-subtle)' : 'white' }}>
                         <div className="flex items-center justify-between">
                           <Pill tone={r.tone} dot={false}>{r.id}</Pill>
-                          {active && <span className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--accent)', color: 'white' }}><I.Check size={11} strokeWidth={2.5} /></span>}
+                          {active && <span className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--color-primary)', color: 'white' }}><I.Check size={11} strokeWidth={2.5} /></span>}
                         </div>
                         <div className="text-[12.5px] text-slate-500 mt-2 leading-relaxed">{r.desc}</div>
                       </button>
@@ -212,7 +212,7 @@ function MemberDetailModal({ m, onClose, onRoleChange }: { m: Member | null; onC
                   <div className="grid grid-cols-2">
                     {currentRole.perms.map((perm, i) => (
                       <div key={perm} className={`flex items-center gap-2.5 px-4 py-3 ${i < currentRole.perms.length - (currentRole.perms.length % 2 === 0 ? 2 : 1) ? 'border-b border-slate-100' : ''}`}>
-                        <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--accent)', color: 'white' }}>
+                        <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary)', color: 'white' }}>
                           <I.Check size={10} strokeWidth={2.5} />
                         </span>
                         <span className="text-[13px] text-slate-700">{perm}</span>
@@ -243,7 +243,7 @@ function MemberDetailModal({ m, onClose, onRoleChange }: { m: Member | null; onC
                 <div className="space-y-1">
                   {[
                     { color: '#10b981', label: 'Signed in', when: 'Today, 9:04 AM', detail: 'Chrome · Seattle, WA' },
-                    { color: 'var(--accent)', label: 'Sent fax', when: 'Today, 8:51 AM', detail: 'To +1 (206) 555-0199 · 3 pages' },
+                    { color: 'var(--color-primary)', label: 'Sent fax', when: 'Today, 8:51 AM', detail: 'To +1 (206) 555-0199 · 3 pages' },
                     { color: '#f59e0b', label: 'Approved PHI fax', when: 'Yesterday, 4:12 PM', detail: 'Authorization for Dr. Patel referral' },
                     { color: '#8b5cf6', label: 'Updated template', when: 'Mar 24, 2026', detail: '"Prior Auth Request" template v2' },
                   ].map((ev, i) => (
@@ -391,7 +391,7 @@ export default function TeamPage() {
               <div className="relative">
                 <I.Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search members…"
-                  className="pl-8 py-1.5 rounded-xl border border-slate-200 bg-white text-[12.5px] w-[200px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400" />
+                  className="pl-8 py-1.5 rounded-xl border border-slate-200 bg-white text-[12.5px] w-[200px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
               </div>
             </div>
             <div className="overflow-auto scrollbar-thin">
@@ -428,18 +428,18 @@ export default function TeamPage() {
                 </div>
               ))}
             </div>
-            <button className="mt-4 text-[12.5px] font-semibold flex items-center gap-1 hover:underline" style={{ color: 'var(--accent-deep)' }}>
+            <button className="mt-4 text-[12.5px] font-semibold flex items-center gap-1 hover:underline" style={{ color: 'var(--color-primary)' }}>
               <I.Cog size={12} /> Customize roles
             </button>
           </Card>
 
           <Card className="p-5">
             <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}><I.Shield size={15} /></span>
+              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}><I.Shield size={15} /></span>
               <div>
                 <div className="text-[13.5px] font-semibold text-slate-900">Security policy</div>
                 <div className="text-[12.5px] text-slate-500 mt-1 leading-relaxed">MFA required for all members. SSO via Okta. Session timeout: 12 hours.</div>
-                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Manage →</button>
+                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Manage →</button>
               </div>
             </div>
           </Card>

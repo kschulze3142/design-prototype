@@ -46,7 +46,7 @@ function IntegrationArt() {
       <div className="fg-blog-stripes" />
       <div className="relative z-10 space-y-2 px-6 w-full">
         <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2.5 ring-1 ring-white/8">
-          <span className="h-2 w-2 rounded-full bg-teal-400" />
+          <span className="h-2 w-2 rounded-full" style={{ background: 'var(--color-accent)' }} />
           <span className="text-xs text-white/70">Epic → FaxGrid route matched</span>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2.5 ring-1 ring-white/8">
@@ -71,7 +71,7 @@ function UptimeArt() {
           <div
             key={i}
             className="flex-1 rounded-sm"
-            style={{ height: `${h}%`, background: h === 100 ? 'var(--accent)' : '#1e3a2a' }}
+            style={{ height: `${h}%`, background: h === 100 ? 'var(--color-primary)' : 'rgba(61,80,128,0.25)' }}
           />
         ))}
       </div>
@@ -145,11 +145,11 @@ export function HResourcesFooter() {
   return (
     <>
       {/* Resources band */}
-      <section style={{ background: 'oklch(0.97 0.012 var(--accent-h))' }} className="py-16 md:py-20">
+      <section style={{ background: 'var(--color-bg)' }} className="py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="mb-10 flex items-end justify-between gap-6">
             <div>
-              <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>From the FaxGrid desk</p>
+              <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>From the FaxGrid desk</p>
               <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
                 From the FaxGrid desk.
               </h2>
@@ -167,7 +167,7 @@ export function HResourcesFooter() {
                   {card.art}
                 </div>
                 <div className="mt-4 px-1">
-                  <span className="text-xs font-semibold text-teal-700">{card.tag}</span>
+                  <span className="text-xs font-semibold" style={{ color: 'var(--color-primary)' }}>{card.tag}</span>
                   <p className="fg-blog-title mt-2 text-sm font-semibold leading-snug text-slate-950">{card.title}</p>
                   <p className="mt-2 text-xs leading-5 text-slate-500">{card.excerpt}</p>
                 </div>

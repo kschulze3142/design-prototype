@@ -24,7 +24,7 @@ export function HNav() {
           <Link
             href="/signup"
             className="inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-            style={{ background: 'var(--accent)', boxShadow: '0 16px 30px -16px var(--accent)' }}
+            style={{ background: 'var(--color-primary)', boxShadow: '0 16px 30px -16px var(--color-primary)' }}
           >
             Get started
           </Link>

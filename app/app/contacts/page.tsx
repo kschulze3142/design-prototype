@@ -36,7 +36,7 @@ type Contact = typeof CONTACTS[number];
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
@@ -64,7 +64,7 @@ function Sparkline({ data, w = 92, h = 28 }: { data: number[]; w?: number; h?: n
   const points = data.map((v, i) => `${i * stepX},${h - ((v - min) / span) * (h - 4) - 2}`).join(' ');
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="block">
-      <polyline points={points} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -77,7 +77,7 @@ function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
   const spark = sparkFor(c.id);
   return (
     <button onClick={onOpen}
-      className="shrink-0 w-[220px] text-left rounded-[20px] border border-slate-200/80 bg-white/85 backdrop-blur-[14px] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] hover:border-[var(--accent)] transition overflow-hidden flex flex-col">
+      className="shrink-0 w-[220px] text-left rounded-[20px] border border-slate-200/80 bg-white/85 backdrop-blur-[14px] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] hover:border-[var(--color-primary)] transition overflow-hidden flex flex-col">
       <div className="p-4 flex items-start gap-3">
         <Avatar name={c.name} size={42} tone={c.tone} />
         <div className="flex-1 min-w-0">
@@ -121,7 +121,7 @@ function ContactRow({ c, onOpen }: { c: Contact; onOpen: () => void }) {
         <div className="flex items-center gap-2">
           <span className="text-[13px] font-semibold text-slate-900">{c.deliveryRate}%</span>
           <div className="w-16 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: `${c.deliveryRate}%`, background: 'var(--accent)' }} />
+            <div className="h-full rounded-full" style={{ width: `${c.deliveryRate}%`, background: 'var(--color-primary)' }} />
           </div>
         </div>
       </td>
@@ -255,7 +255,7 @@ function ContactDrawer({ c, onClose }: { c: Contact | null; onClose: () => void 
                         <span className="font-semibold">{d.pct}%</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${d.pct}%`, background: 'var(--accent)' }} />
+                        <div className="h-full rounded-full" style={{ width: `${d.pct}%`, background: 'var(--color-primary)' }} />
                       </div>
                     </div>
                   ))}
@@ -340,13 +340,13 @@ export default function ContactsPage() {
           </Card>
           <Card className="p-5">
             <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                 <I.Sparkle size={15} />
               </span>
               <div>
                 <div className="text-[13.5px] font-semibold text-slate-900">Auto-cleanup</div>
                 <div className="text-[12.5px] text-slate-500 mt-1 leading-relaxed">5 contacts haven't received a fax in 12+ months. Review and archive?</div>
-                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Review →</button>
+                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Review →</button>
               </div>
             </div>
           </Card>
@@ -359,7 +359,7 @@ export default function ContactsPage() {
               <div className="relative flex-1 max-w-md">
                 <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts, numbers, ATTN…"
-                  className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-[13px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400" />
+                  className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-[13px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
               </div>
               <span className="text-[12px] text-slate-500 ml-2">{filtered.length} of {CONTACTS.length}</span>
               <div className="flex-1" />
@@ -392,7 +392,7 @@ export default function ContactsPage() {
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {filtered.map(c => (
                   <button key={c.id} onClick={() => setOpen(c)}
-                    className="text-left p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-[var(--accent)] transition flex gap-3">
+                    className="text-left p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-[var(--color-primary)] transition flex gap-3">
                     <Avatar name={c.name} size={40} tone={c.tone} />
                     <div className="flex-1 min-w-0">
                       <div className="text-[13.5px] font-semibold text-slate-900 truncate">{c.name}</div>

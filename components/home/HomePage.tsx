@@ -18,7 +18,7 @@ export function HomePage() {
       className="min-h-screen text-slate-900"
       style={{
         background:
-          'radial-gradient(circle at 20% 0%, oklch(0.94 0.07 var(--accent-h) / 0.85), transparent 32%), linear-gradient(135deg, #f8fffd, #f3f7f6)',
+          'radial-gradient(circle at 20% 0%, rgba(61,80,128,0.09), transparent 32%), linear-gradient(135deg, #f4f7fb, #eef1f7)',
       }}
     >
       <HNav />

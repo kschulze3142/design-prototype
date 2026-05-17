@@ -39,7 +39,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
     <span
       onClick={() => onChange(!checked)}
       className="inline-flex shrink-0 w-9 h-5 rounded-full cursor-pointer transition relative"
-      style={{ background: checked ? 'var(--accent)' : '#cbd5e1' }}
+      style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}
     >
       <span
         className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
@@ -104,7 +104,7 @@ function IntegrationCard({ name, desc, icon, status, accent }: {
   );
 }
 
-const inputCls = "w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400 transition";
+const inputCls = "w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400 transition";
 
 function WorkspaceSection() {
   return (
@@ -118,7 +118,7 @@ function WorkspaceSection() {
           <div className="flex items-center gap-3">
             <div
               className="w-11 h-11 rounded-2xl flex items-center justify-center text-white shrink-0"
-              style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))' }}
+              style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))' }}
             >
               <I.Document size={18} strokeWidth={1.8} />
             </div>
@@ -264,7 +264,7 @@ function NotificationsSection() {
 
 function IntegrationsSection() {
   const integrations: { name: string; desc: string; icon: React.ReactNode; status: 'connected' | 'available'; accent: { bg: string; fg: string } }[] = [
-    { name: 'Epic EHR',                desc: 'Push inbound faxes into patient records and send outbound from MyChart.', icon: <I.Building size={18} />, status: 'connected', accent: { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)' } },
+    { name: 'Epic EHR',                desc: 'Push inbound faxes into patient records and send outbound from MyChart.', icon: <I.Building size={18} />, status: 'connected', accent: { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)' } },
     { name: 'Slack',                   desc: 'Post alerts to a channel when faxes are delivered or fail.',              icon: <I.Sparkle size={18} />, status: 'connected', accent: { bg: '#f5f3ff', fg: '#6d28d9' } },
     { name: 'Okta SSO',                desc: 'Single sign-on with your existing identity provider.',                     icon: <I.Lock size={18} />,    status: 'connected', accent: { bg: '#fffbeb', fg: '#b45309' } },
     { name: 'Zapier',                  desc: 'No-code automations across 6,000+ apps.',                                 icon: <I.Zap size={18} />,     status: 'available', accent: { bg: '#fef2f2', fg: '#b91c1c' } },

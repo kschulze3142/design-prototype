@@ -49,14 +49,14 @@ type FormState = {
 
 // ─── SHARED INPUT CLASSNAME ───────────────────────────────────────────────────
 
-const inputCn = 'w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[oklch(0.92_0.05_var(--accent-h))] placeholder:text-slate-400 transition';
+const inputCn = 'w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10 placeholder:text-slate-400 transition';
 
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────────────
 
 function SignupMark({ size = 36 }: { size?: number }) {
   return (
     <span className="rounded-2xl flex items-center justify-center text-white shrink-0"
-      style={{ width: size, height: size, background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))', boxShadow: '0 8px 20px -10px var(--accent), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
+      style={{ width: size, height: size, background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary))', boxShadow: '0 8px 20px -10px var(--color-primary), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
       <svg viewBox="0 0 24 24" width={size * 0.5} height={size * 0.5} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/>
       </svg>
@@ -69,7 +69,7 @@ function StepDots({ count, current }: { count: number; current: number }) {
     <div className="flex items-center gap-1.5">
       {Array.from({ length: count }).map((_, i) => (
         <span key={i} className="h-1.5 rounded-full transition-all"
-          style={{ width: i === current ? 28 : 8, background: i <= current ? 'var(--accent)' : 'rgba(15,23,42,0.10)' }} />
+          style={{ width: i === current ? 28 : 8, background: i <= current ? 'var(--color-primary)' : 'rgba(15,23,42,0.10)' }} />
       ))}
     </div>
   );
@@ -92,20 +92,20 @@ function PlanCard({ plan, selected, onClick }: { plan: Plan; selected: boolean; 
   return (
     <div onClick={onClick} className="relative cursor-pointer rounded-[22px] border-2 p-5 transition-all"
       style={{
-        borderColor: selected ? 'var(--accent)' : 'rgba(148,163,184,0.5)',
-        background: selected ? 'oklch(0.97 0.03 var(--accent-h))' : 'white',
+        borderColor: selected ? 'var(--color-primary)' : 'rgba(148,163,184,0.5)',
+        background: selected ? 'var(--color-primary-subtle)' : 'white',
       }}>
       {plan.badge && (
         <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-white"
-          style={{ background: 'var(--accent-deep)' }}>
+          style={{ background: 'var(--color-primary)' }}>
           {plan.badge}
         </div>
       )}
       <div className="flex items-start gap-3 mb-3">
         <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all"
           style={{
-            borderColor: selected ? 'var(--accent)' : '#cbd5e1',
-            background: selected ? 'var(--accent)' : 'white',
+            borderColor: selected ? 'var(--color-primary)' : '#cbd5e1',
+            background: selected ? 'var(--color-primary)' : 'white',
           }}>
           {selected && <I.Check size={10} strokeWidth={3} className="text-white" />}
         </div>
@@ -124,7 +124,7 @@ function PlanCard({ plan, selected, onClick }: { plan: Plan; selected: boolean; 
       <div className="space-y-1.5">
         {plan.bullets.map((b, i) => (
           <div key={i} className="flex items-center gap-2 text-[12.5px] text-slate-600">
-            <span style={{ color: 'var(--accent)' }}><I.Check size={13} strokeWidth={2.5} /></span>
+            <span style={{ color: 'var(--color-primary)' }}><I.Check size={13} strokeWidth={2.5} /></span>
             {b}
           </div>
         ))}
@@ -139,7 +139,7 @@ function SelectedPlanCard({ plan, onChange }: { plan: Plan; onChange?: () => voi
       style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(148,163,184,0.2)' }}>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: 'oklch(0.94 0.06 var(--accent-h))', color: 'var(--accent-deep)' }}>
+          style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
           {plan.id === 'trial' ? <I.Sparkle size={15} strokeWidth={2} /> : <I.Billing size={15} strokeWidth={2} />}
         </div>
         <div>
@@ -149,7 +149,7 @@ function SelectedPlanCard({ plan, onChange }: { plan: Plan; onChange?: () => voi
       </div>
       {onChange && (
         <button onClick={onChange} className="text-[12px] font-medium hover:underline shrink-0"
-          style={{ color: 'var(--accent-deep)' }}>
+          style={{ color: 'var(--color-primary)' }}>
           Change
         </button>
       )}
@@ -172,7 +172,7 @@ function PrimaryBtn({ onClick, disabled, children, icon, iconRight, className = 
   return (
     <button onClick={onClick} disabled={disabled}
       className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-[14px] text-white transition disabled:opacity-40 disabled:cursor-not-allowed ${className}`}
-      style={{ background: disabled ? '#94a3b8' : 'var(--accent)', boxShadow: disabled ? 'none' : '0 6px 16px -8px var(--accent)' }}>
+      style={{ background: disabled ? '#94a3b8' : 'var(--color-primary)', boxShadow: disabled ? 'none' : '0 6px 16px -8px var(--color-primary)' }}>
       {icon && <span>{icon}</span>}
       {children}
       {iconRight && <span>{iconRight}</span>}
@@ -229,7 +229,7 @@ function StepAccount({ form, setField, next, back, stepLabel, plan, onChangePlan
   }, [form.password]);
 
   const strengthLabel = ['', 'Weak', 'Good', 'Strong'][pwStrength];
-  const strengthColor = ['', '#ef4444', '#f59e0b', 'var(--accent)'][pwStrength];
+  const strengthColor = ['', '#ef4444', '#f59e0b', 'var(--color-primary)'][pwStrength];
 
   return (
     <div>
@@ -240,7 +240,7 @@ function StepAccount({ form, setField, next, back, stepLabel, plan, onChangePlan
       </h1>
       <p className="text-[13.5px] text-slate-500 mb-6">
         Already have one?{' '}
-        <Link href="/login" className="font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Sign in</Link>
+        <Link href="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Sign in</Link>
       </p>
 
       <SelectedPlanCard plan={plan} onChange={onChangePlan} />
@@ -314,14 +314,14 @@ function StepAccount({ form, setField, next, back, stepLabel, plan, onChangePlan
       <div className="flex items-start gap-3 mb-6">
         <button type="button" onClick={() => setField('terms', !form.terms)}
           className="w-5 h-5 rounded-lg border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all"
-          style={{ borderColor: form.terms ? 'var(--accent)' : '#cbd5e1', background: form.terms ? 'var(--accent)' : 'white' }}>
+          style={{ borderColor: form.terms ? 'var(--color-primary)' : '#cbd5e1', background: form.terms ? 'var(--color-primary)' : 'white' }}>
           {form.terms && <I.Check size={11} strokeWidth={3} className="text-white" />}
         </button>
         <span className="text-[12.5px] text-slate-500 leading-relaxed">
           I agree to the{' '}
-          <a href="#" className="font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Terms of Service</a>
+          <a href="#" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Terms of Service</a>
           {' '}and{' '}
-          <a href="#" className="font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Privacy Policy</a>
+          <a href="#" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Privacy Policy</a>
         </span>
       </div>
 
@@ -356,7 +356,7 @@ function StepWorkspace({ form, setField, next, back, stepLabel, plan, onChangePl
         <input className={inputCn} placeholder="Northwind Health" value={form.workspace} onChange={e => setField('workspace', e.target.value)} />
         {slug && (
           <p className="mt-1.5 text-[11.5px] text-slate-400 font-mono">
-            faxgrid.com/<span style={{ color: 'var(--accent-deep)' }}>{slug}</span>
+            faxgrid.com/<span style={{ color: 'var(--color-primary)' }}>{slug}</span>
           </p>
         )}
       </div>
@@ -393,8 +393,8 @@ function StepWorkspace({ form, setField, next, back, stepLabel, plan, onChangePl
             <button key={r} onClick={() => setField('role', r)}
               className="px-3.5 py-1.5 rounded-xl text-[13px] font-medium border transition-all"
               style={{
-                background: form.role === r ? 'var(--accent)' : 'white',
-                borderColor: form.role === r ? 'var(--accent)' : '#e2e8f0',
+                background: form.role === r ? 'var(--color-primary)' : 'white',
+                borderColor: form.role === r ? 'var(--color-primary)' : '#e2e8f0',
                 color: form.role === r ? 'white' : '#475569',
               }}>
               {r}
@@ -410,8 +410,8 @@ function StepWorkspace({ form, setField, next, back, stepLabel, plan, onChangePl
             <button key={h} onClick={() => setField('hipaa', h)}
               className="px-3.5 py-1.5 rounded-xl text-[13px] font-medium border transition-all"
               style={{
-                background: form.hipaa === h ? 'var(--accent)' : 'white',
-                borderColor: form.hipaa === h ? 'var(--accent)' : '#e2e8f0',
+                background: form.hipaa === h ? 'var(--color-primary)' : 'white',
+                borderColor: form.hipaa === h ? 'var(--color-primary)' : '#e2e8f0',
                 color: form.hipaa === h ? 'white' : '#475569',
               }}>
               {h}
@@ -469,7 +469,7 @@ function StepVerify({ form, next, back, stepLabel, plan, onChangePlan }: {
       </h1>
       <p className="text-[13.5px] text-slate-500 mb-6">
         We sent a 6-digit code to <span className="font-semibold text-slate-700">{form.email}</span>.{' '}
-        <button className="hover:underline" style={{ color: 'var(--accent-deep)' }}>Wrong address?</button>
+        <button className="hover:underline" style={{ color: 'var(--color-primary)' }}>Wrong address?</button>
       </p>
 
       <SelectedPlanCard plan={plan} onChange={onChangePlan} />
@@ -482,18 +482,18 @@ function StepVerify({ form, next, back, stepLabel, plan, onChangePlan }: {
             value={d}
             onChange={e => handleDigit(i, e.target.value)}
             onKeyDown={e => handleKey(i, e)}
-            className="w-full h-14 rounded-2xl border border-slate-200 text-center font-mono text-xl font-semibold text-slate-900 focus:outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[oklch(0.92_0.05_var(--accent-h))] bg-white transition"
+            className="w-full h-14 rounded-2xl border border-slate-200 text-center font-mono text-xl font-semibold text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)] bg-white transition"
           />
         ))}
       </div>
 
       <div className="text-center mb-5">
         {resent ? (
-          <span className="text-[12.5px] font-medium" style={{ color: 'var(--accent)' }}>Resent ✓</span>
+          <span className="text-[12.5px] font-medium" style={{ color: 'var(--color-primary)' }}>Resent ✓</span>
         ) : (
           <button onClick={handleResend} className="text-[12.5px] text-slate-500 hover:text-slate-700">
             Didn&apos;t receive it?{' '}
-            <span className="font-semibold" style={{ color: 'var(--accent-deep)' }}>Resend code</span>
+            <span className="font-semibold" style={{ color: 'var(--color-primary)' }}>Resend code</span>
           </button>
         )}
       </div>
@@ -647,9 +647,9 @@ function StepDone({ form, plan, entry, onLaunch }: {
     <div className="text-center py-4">
       <div className="flex justify-center mb-6">
         <div className="w-20 h-20 rounded-full flex items-center justify-center"
-          style={{ background: 'oklch(0.94 0.06 var(--accent-h))', animation: 'fg-ringPulse 1.5s ease-out' }}>
+          style={{ background: 'var(--color-primary-subtle)', animation: 'fg-ringPulse 1.5s ease-out' }}>
           <svg viewBox="0 0 24 24" width={36} height={36} fill="none" strokeLinecap="round" strokeLinejoin="round"
-            style={{ stroke: 'var(--accent)', strokeWidth: 2.5 }}>
+            style={{ stroke: 'var(--color-primary)', strokeWidth: 2.5 }}>
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
@@ -743,7 +743,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex flex-col"
-      style={{ background: 'radial-gradient(circle at 20% 0%, oklch(0.94 0.07 var(--accent-h) / 0.85), transparent 32%), radial-gradient(circle at 90% 100%, oklch(0.94 0.05 var(--accent-h) / 0.7), transparent 35%), linear-gradient(135deg, #f8fffd, #f3f7f6)' }}>
+      style={{ background: 'radial-gradient(circle at 20% 0%, rgba(61,80,128,0.10), transparent 32%), radial-gradient(circle at 90% 100%, rgba(61,80,128,0.08), transparent 35%), linear-gradient(135deg, #f4f7fb, #f4f7fb)' }}>
 
       {/* Entry switcher (prototype only) */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-20">
@@ -774,7 +774,7 @@ export default function SignupPage() {
         </Link>
         <div className="text-[13px] text-slate-500">
           Already have an account?{' '}
-          <Link href="/login" className="font-semibold hover:underline" style={{ color: 'var(--accent-deep)' }}>Sign in</Link>
+          <Link href="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Sign in</Link>
         </div>
       </div>
 

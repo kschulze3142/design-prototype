@@ -52,7 +52,7 @@ const SHORTCUTS = [
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
@@ -70,7 +70,7 @@ function BarChart({ data, height = 200 }: { data: { label: string; value: number
         <div key={i} className="flex-1 flex flex-col items-center gap-2">
           <div className="relative w-full flex items-end" style={{ height: height - 24 }}>
             <div className="w-full rounded-t-lg transition-all"
-              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--accent)' : 'oklch(0.93 0.04 var(--accent-h))' }} />
+              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--color-primary)' : 'var(--color-primary-subtle)' }} />
           </div>
           <span className="text-[11px] text-slate-400">{d.label}</span>
         </div>
@@ -106,9 +106,9 @@ export default function DashboardPage() {
       {/* Onboarding-complete banner */}
       {!bannerDismissed && (
         <Card className="p-5 mb-6 flex items-center gap-4"
-          style={{ background: 'linear-gradient(90deg, oklch(0.97 0.04 var(--accent-h)), rgba(255,255,255,0.85))' }}>
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), rgba(255,255,255,0.85))' }}>
           <span className="w-10 h-10 rounded-2xl text-white flex items-center justify-center shrink-0"
-            style={{ background: 'var(--accent)' }}>
+            style={{ background: 'var(--color-primary)' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="draw-check">
               <path d="M20 6 9 17l-5-5" />
             </svg>
@@ -180,7 +180,7 @@ export default function DashboardPage() {
               {QUEUE.map(q => (
                 <div key={q.id} className="py-4 flex items-center gap-4">
                   <span className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 pulse-ring"
-                    style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+                    style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                     <I.Send size={15} />
                   </span>
                   <div className="flex-1 min-w-0">
@@ -196,7 +196,7 @@ export default function DashboardPage() {
                       <span>by {q.who}</span>
                     </div>
                     <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full rounded-full transition-all" style={{ width: `${q.progress * 100}%`, background: 'var(--accent)' }} />
+                      <div className="h-full rounded-full transition-all" style={{ width: `${q.progress * 100}%`, background: 'var(--color-primary)' }} />
                     </div>
                   </div>
                   <Pill tone={q.tone}>{q.status}</Pill>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                 const Ico = I[s.icon];
                 return (
                   <button key={i} className={`text-left p-3.5 rounded-2xl border transition ${s.accent ? 'border-transparent text-white' : 'border-slate-200/70 bg-white hover:border-slate-300 hover:shadow-sm'}`}
-                    style={s.accent ? { background: 'var(--accent)' } : undefined}>
+                    style={s.accent ? { background: 'var(--color-primary)' } : undefined}>
                     <span className={`w-9 h-9 rounded-xl flex items-center justify-center ${s.accent ? 'bg-white/15 text-white' : 'bg-slate-50 text-slate-500'}`}>
                       <Ico size={16} />
                     </span>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className={`text-[13.5px] truncate ${m.unread ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>{m.from}</span>
-                      {m.unread && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--accent)' }} />}
+                      {m.unread && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--color-primary)' }} />}
                     </div>
                     <div className="text-[12.5px] text-slate-500 truncate">{m.subject}</div>
                     <div className="text-[11.5px] text-slate-400 mt-0.5">{m.pages} pages</div>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
           <Card className="p-5">
             <div className="flex items-start gap-3">
               <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+                style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                 <I.Shield size={16} />
               </span>
               <div className="flex-1">

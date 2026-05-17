@@ -44,7 +44,7 @@ function BarChart({ data, height = 160 }: { data: { label: string; value: number
         <div key={i} className="flex-1 flex flex-col items-center gap-2">
           <div className="relative w-full flex items-end" style={{ height: height - 24 }}>
             <div className="w-full rounded-t-md transition-all"
-              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--accent)' : 'rgba(15,118,110,0.18)' }} />
+              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--color-primary)' : 'var(--color-primary-subtle)' }} />
           </div>
           <span className="text-[11px] text-slate-500">{d.label}</span>
         </div>
@@ -68,9 +68,9 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
         style={{ backgroundImage: 'repeating-linear-gradient(45deg, rgba(15,23,42,0.04) 0 8px, transparent 8px 16px)', backgroundColor: 'rgba(241,245,249,0.6)' }} />
       <div className="bg-white rounded-2xl shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-100"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), white)' }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-deep)' }}>{title}</span>
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), white)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--color-primary)' }}>{title}</span>
           <span className="ml-auto text-[11px] text-slate-400 font-mono">PG 1/{pages}</span>
         </div>
         <div className="px-7 py-6 space-y-5">
@@ -100,7 +100,7 @@ function UsageRing({ used, total, label, sub, tone = 'teal' }: {
 }) {
   const pct = Math.min(1, used / total);
   const C = 2 * Math.PI * 38;
-  const colors: Record<string, string> = { teal: 'var(--accent)', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444' };
+  const colors: Record<string, string> = { teal: 'var(--color-primary)', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444' };
   return (
     <div className="flex items-center gap-4">
       <div className="relative w-24 h-24 shrink-0">
@@ -174,7 +174,7 @@ export default function BillingPage() {
             <div className="flex items-start justify-between gap-6 flex-wrap">
               <div className="flex items-center gap-4">
                 <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
-                  style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))' }}>
                   <I.Star size={20} />
                 </span>
                 <div>
@@ -206,7 +206,7 @@ export default function BillingPage() {
                 subtitle="Pages sent and received across all numbers."
                 action={
                   <div className="flex items-center gap-2 text-[12.5px]">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--accent)' }} /> Sent</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Sent</span>
                     <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-slate-200" /> Received</span>
                   </div>
                 }
@@ -248,7 +248,7 @@ export default function BillingPage() {
                 <div className="flex justify-between text-[14px]">
                   <span className="text-slate-600 flex items-center gap-1.5">
                     Page overage
-                    <span className="text-[11px] px-1.5 py-0.5 rounded-md font-semibold" style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>est.</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded-md font-semibold" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>est.</span>
                   </span>
                   <span className="text-slate-400 font-medium">$0.00</span>
                 </div>
@@ -301,7 +301,7 @@ export default function BillingPage() {
           <Card className="p-4 flex items-center gap-3 flex-wrap">
             <div className="relative flex-1 min-w-[220px] max-w-md">
               <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400"
+              <input className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
                 placeholder="Search invoice number…" />
             </div>
             <AppButton variant="secondary" size="sm" icon={<I.Calendar size={13} />}>All time</AppButton>
@@ -320,7 +320,7 @@ export default function BillingPage() {
                 <tbody>
                   {INVOICES.map(inv => (
                     <tr key={inv.id} onClick={() => setOpenInvoice(inv)} className="hover:bg-slate-50/70 cursor-pointer transition border-b border-slate-100 last:border-0">
-                      <td className="px-4 py-4"><input type="checkbox" onClick={e => e.stopPropagation()} style={{ accentColor: 'var(--accent)' }} /></td>
+                      <td className="px-4 py-4"><input type="checkbox" onClick={e => e.stopPropagation()} style={{ accentColor: 'var(--color-primary)' }} /></td>
                       <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
                       <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
                       <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
@@ -374,17 +374,17 @@ export default function BillingPage() {
             <div className="mt-5 space-y-4">
               <div>
                 <label className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Contact</label>
-                <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)]"
+                <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)]"
                   defaultValue="finance@northwindhealth.example" />
               </div>
               <div>
                 <label className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Tax ID / VAT</label>
-                <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)]"
+                <input className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)]"
                   defaultValue="EIN 88-3902471" />
               </div>
               <div>
                 <label className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Address</label>
-                <textarea className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)] resize-none h-24"
+                <textarea className="w-full mt-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] resize-none h-24"
                   defaultValue={'Northwind Health, Inc.\n410 Linden Ave, Suite 220\nSeattle, WA 98109'} />
               </div>
               <AppButton variant="secondary" className="w-full justify-center">Save changes</AppButton>
@@ -417,10 +417,10 @@ export default function BillingPage() {
               ))}
             </div>
           </Card>
-          <Card className="p-7" style={{ background: 'linear-gradient(135deg, oklch(0.97 0.04 var(--accent-h)), white)' }}>
+          <Card className="p-7" style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
             <div className="flex items-center gap-6 flex-wrap">
               <div className="flex-1 min-w-[260px]">
-                <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--accent-deep)' }}>Save 18% annually</div>
+                <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-primary)' }}>Save 18% annually</div>
                 <div className="text-[28px] font-semibold text-slate-900 mt-1.5" style={{ fontFamily: 'Georgia, serif' }}>Switch to annual billing</div>
                 <div className="text-[13.5px] text-slate-600 mt-1.5 max-w-md">Lock in your rate, eliminate surprise overage with rollover pages, and get priority HIPAA support.</div>
               </div>
@@ -436,7 +436,7 @@ export default function BillingPage() {
           <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[3px]" />
           <div className="relative w-[860px] max-w-full max-h-[88vh] overflow-hidden flex flex-col rounded-[28px] bg-white/90 backdrop-blur-[14px] border border-white/85 shadow-[0_32px_80px_-24px_rgba(15,23,42,0.35)]"
             onClick={e => e.stopPropagation()}>
-            <div className="relative p-7 pb-5 border-b border-slate-100" style={{ background: 'linear-gradient(135deg, oklch(0.97 0.04 var(--accent-h)), white)' }}>
+            <div className="relative p-7 pb-5 border-b border-slate-100" style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
               <button onClick={() => setOpenInvoice(null)} className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-white/70 hover:bg-white flex items-center justify-center text-slate-500"><I.X size={16} /></button>
               <div className="flex items-start justify-between gap-6">
                 <div>
@@ -469,7 +469,7 @@ export default function BillingPage() {
                   </SoftCard>
                 </div>
                 <SoftCard className="p-4 flex items-start gap-3">
-                  <I.Lock size={16} className="shrink-0 mt-0.5" style={{ color: 'var(--accent-deep)' }} />
+                  <I.Lock size={16} className="shrink-0 mt-0.5" style={{ color: 'var(--color-primary)' }} />
                   <div className="text-[12.5px] text-slate-600 leading-relaxed">Charged automatically on the 1st of each month. Update your method anytime under Payment method.</div>
                 </SoftCard>
               </div>

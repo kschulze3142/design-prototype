@@ -35,9 +35,10 @@ function LiveAuditFeed() {
 
   const colorMap = {
     green: 'bg-emerald-500',
-    teal: 'bg-teal-500',
+    teal: '',
     slate: 'bg-slate-400',
   };
+  const colorStyle = (color: AuditRow['color']) => color === 'teal' ? { background: 'var(--color-primary)' } : {};
 
   return (
     <div ref={sectionRef as React.Ref<HTMLDivElement>} className="rounded-[28px] bg-slate-950 p-6 text-white">
@@ -59,17 +60,27 @@ function LiveAuditFeed() {
             className={`fg-stream-item flex items-center gap-3 rounded-xl bg-white/5 px-4 py-3 ring-1 ring-white/8 ${i < visibleCount ? '' : 'opacity-0 pointer-events-none'}`}
             style={{ animationDelay: `${i * 80}ms` }}
           >
-            <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${row.color === 'slate' ? 'bg-slate-800' : row.color === 'green' ? 'bg-emerald-900/60' : 'bg-teal-900/60'}`}>
+            <div
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${row.color === 'slate' ? 'bg-slate-800' : row.color === 'green' ? 'bg-emerald-900/60' : ''}`}
+              style={row.color === 'teal' ? { background: 'rgba(61,80,128,0.35)' } : {}}
+            >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" className={row.color === 'green' ? 'text-emerald-400' : row.color === 'teal' ? 'text-teal-400' : 'text-slate-400'} />
-                <path d="M3.5 6l2 2 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={row.color === 'green' ? 'text-emerald-400' : row.color === 'teal' ? 'text-teal-400' : 'text-slate-400'} />
+                <rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" strokeWidth="1.5"
+                  className={row.color === 'green' ? 'text-emerald-400' : row.color === 'slate' ? 'text-slate-400' : ''}
+                  style={row.color === 'teal' ? { color: 'var(--color-accent)' } : {}} />
+                <path d="M3.5 6l2 2 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+                  className={row.color === 'green' ? 'text-emerald-400' : row.color === 'slate' ? 'text-slate-400' : ''}
+                  style={row.color === 'teal' ? { color: 'var(--color-accent)' } : {}} />
               </svg>
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-semibold text-white">{row.org}</p>
               <p className="text-[11px] text-slate-400">{row.event}</p>
             </div>
-            <div className={`h-1.5 w-1.5 rounded-full shrink-0 ${colorMap[row.color]}`} />
+            <div
+              className={`h-1.5 w-1.5 rounded-full shrink-0 ${colorMap[row.color]}`}
+              style={colorStyle(row.color)}
+            />
           </div>
         ))}
       </div>
@@ -82,14 +93,14 @@ export function HTrustBand() {
     <section className="relative overflow-hidden py-16 md:py-24">
       <div
         className="pointer-events-none absolute inset-0 z-0"
-        style={{ background: 'radial-gradient(ellipse at 30% 50%, oklch(0.88 0.12 var(--accent-h) / 0.25), transparent 60%)' }}
+        style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(61,80,128,0.10), transparent 60%)' }}
       />
       <div className="relative z-10 mx-auto max-w-7xl px-5 md:px-8">
         <div className="grid gap-12 xl:grid-cols-2 xl:items-center">
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full" style={{ background: 'var(--accent)' }} />
-              <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Healthcare-grade trust</p>
+              <span className="h-2 w-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+              <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Healthcare-grade trust</p>
             </div>
             <h2 className="text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
               Quietly serious about security.

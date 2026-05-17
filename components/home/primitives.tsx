@@ -18,7 +18,7 @@ export function HButton({ variant = 'primary', className = '', children, href, .
   const styles: Record<ButtonVariant, { className: string; style?: React.CSSProperties }> = {
     primary: {
       className: 'text-white hover:opacity-90',
-      style: { background: 'var(--accent)', boxShadow: '0 16px 30px -16px var(--accent)' },
+      style: { background: 'var(--color-primary)', boxShadow: '0 16px 30px -16px var(--color-primary)' },
     },
     secondary: {
       className: 'border border-white/90 bg-white/80 text-slate-700 shadow-sm hover:bg-white',
@@ -69,11 +69,20 @@ interface HPillProps {
 }
 
 export function HPill({ children, tone }: HPillProps) {
-  const styles: Record<PillTone, string> = {
-    teal: 'bg-teal-50 text-teal-700 ring-teal-200',
+  if (tone === 'teal') {
+    return (
+      <span
+        className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+        style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)', border: '1px solid var(--color-border-strong)' }}
+      >
+        {children}
+      </span>
+    );
+  }
+  const styles: Record<Exclude<PillTone, 'teal'>, string> = {
     emerald: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-    amber: 'bg-amber-50 text-amber-700 ring-amber-200',
-    slate: 'bg-slate-100 text-slate-600 ring-slate-200',
+    amber:   'bg-amber-50 text-amber-700 ring-amber-200',
+    slate:   'bg-slate-100 text-slate-600 ring-slate-200',
   };
   return (
     <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${styles[tone]}`}>
@@ -118,13 +127,13 @@ export function HSignupField({ className = '' }: HSignupFieldProps) {
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-slate-500">
         <span className="flex items-center gap-2">
-          <span className="text-teal-600">✓</span> Free 30-day trial
+          <span style={{ color: 'var(--color-primary)' }}>✓</span> Free 30-day trial
         </span>
         <span className="flex items-center gap-2">
-          <span className="text-teal-600">✓</span> No credit card
+          <span style={{ color: 'var(--color-primary)' }}>✓</span> No credit card
         </span>
         <span className="flex items-center gap-2">
-          <span className="text-teal-600">✓</span> Cancel anytime
+          <span style={{ color: 'var(--color-primary)' }}>✓</span> Cancel anytime
         </span>
       </div>
     </div>

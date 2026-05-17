@@ -48,7 +48,7 @@ function FAQAccordion({ question, answer, defaultOpen = false }: FAQItem) {
         <span className="text-base font-semibold text-slate-950">{question}</span>
         <span
           className="fg-acc-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-slate-600 ring-1 ring-slate-200"
-          style={{ background: open ? 'var(--accent-soft)' : 'white', color: open ? 'var(--accent-deep)' : undefined }}
+          style={{ background: open ? 'var(--color-primary-subtle)' : 'white', color: open ? 'var(--color-primary)' : undefined }}
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <line x1="6" y1="2" x2="6" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -69,7 +69,7 @@ export function HFAQ() {
   return (
     <section id="faq" className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mb-10 max-w-3xl">
-        <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Questions</p>
+        <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Questions</p>
         <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
           Built for the messy middle between legacy fax and modern workflows.
         </h2>

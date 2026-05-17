@@ -26,10 +26,10 @@ export function HSecurity() {
     <section id="security" className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div
         className="rounded-[36px] border border-white/80 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl md:p-10"
-        style={{ background: 'oklch(0.97 0.02 var(--accent-h))' }}
+        style={{ background: 'var(--color-primary-subtle)' }}
       >
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Security without the heavy feel</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Security without the heavy feel</p>
           <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
             Built for teams that need trust, visibility, and control.
           </h2>
@@ -42,7 +42,7 @@ export function HSecurity() {
             <div
               key={title}
               className="rounded-[24px] bg-white p-5 ring-1"
-              style={{ boxShadow: 'inset 0 0 0 1px var(--accent-mid)' }}
+              style={{ boxShadow: 'inset 0 0 0 1px var(--color-border-strong)' }}
             >
               <p className="font-semibold text-slate-900">{title}</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>

@@ -19,8 +19,8 @@ const DAILY_VOLUME = (() => {
 })();
 
 const STATUS_MIX = [
-  { label: 'Delivered',      value: 8174, color: 'var(--accent)',                         pct: 97.2 },
-  { label: 'Retried & sent', value: 162,  color: 'oklch(0.78 0.07 var(--accent-h))',      pct: 1.9 },
+  { label: 'Delivered',      value: 8174, color: 'var(--color-primary)',                  pct: 97.2 },
+  { label: 'Retried & sent', value: 162,  color: 'var(--color-accent)',                   pct: 1.9 },
   { label: 'Failed',         value: 51,   color: '#f87171',                               pct: 0.6 },
   { label: 'Blocked (DNC)',  value: 25,   color: '#cbd5e1',                               pct: 0.3 },
 ];
@@ -122,10 +122,10 @@ function VolumeChart({ data, height = 220 }: { data: { day: number; out: number;
             const baseY = H - 4;
             return (
               <g key={i}>
-                <rect x={x} y={baseY - inH} width={barW} height={inH} fill="oklch(0.88 0.05 var(--accent-h))" rx="0.4" />
-                <rect x={x} y={baseY - inH - outH} width={barW} height={outH} fill="var(--accent)" rx="0.4" />
+                <rect x={x} y={baseY - inH} width={barW} height={inH} fill="var(--color-accent)" rx="0.4" />
+                <rect x={x} y={baseY - inH - outH} width={barW} height={outH} fill="var(--color-primary)" rx="0.4" />
                 {i === data.length - 1 && (
-                  <rect x={x - 0.3} y={baseY - inH - outH - 0.6} width={barW + 0.6} height={inH + outH + 0.6} fill="none" stroke="var(--accent-deep)" strokeWidth="0.25" rx="0.5" />
+                  <rect x={x - 0.3} y={baseY - inH - outH - 0.6} width={barW + 0.6} height={inH + outH + 0.6} fill="none" stroke="var(--color-primary)" strokeWidth="0.25" rx="0.5" />
                 )}
               </g>
             );
@@ -171,7 +171,7 @@ function Donut({ data, size = 168, thickness = 22, centerLabel, centerValue }: {
 }
 
 function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: string[]; data: number[][] }) {
-  const color = (v: number) => `oklch(${0.96 - 0.42 * Math.max(0.04, v)} ${0.04 + 0.06 * Math.max(0.04, v)} var(--accent-h))`;
+  const color = (v: number) => `rgba(61, 80, 128, ${0.06 + 0.94 * Math.max(0.04, v)})`;
   return (
     <div className="overflow-hidden">
       <div className="flex pl-[40px] gap-[3px] mb-2">
@@ -188,7 +188,7 @@ function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: strin
       <div className="flex items-center gap-3 mt-3 text-[11px] text-slate-500">
         <span>Low</span>
         <div className="h-2.5 flex-1 max-w-[160px] rounded-full"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), oklch(0.55 0.10 var(--accent-h)))' }} />
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), var(--color-primary))' }} />
         <span>High</span>
       </div>
     </div>
@@ -227,11 +227,11 @@ export default function AnalyticsPage() {
         {ANALYTICS_KPIS.map((s, i) => {
           const Ico = I[s.icon as keyof typeof I];
           return (
-            <Card key={i} className={`p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[oklch(0.85_0.08_var(--accent-h))]' : ''}`}>
+            <Card key={i} className={`p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}>
               <div className="flex items-center justify-between">
                 <span className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">{s.label}</span>
                 <span className={`w-7 h-7 rounded-xl flex items-center justify-center ${i === 0 ? 'text-white' : 'bg-slate-50 text-slate-500'}`}
-                  style={i === 0 ? { background: 'var(--accent)' } : undefined}>
+                  style={i === 0 ? { background: 'var(--color-primary)' } : undefined}>
                   <Ico size={14} />
                 </span>
               </div>
@@ -329,7 +329,7 @@ export default function AnalyticsPage() {
                         <td className="px-4 py-3 text-right">
                           <div className="inline-flex items-center gap-2 justify-end">
                             <div className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                              <div className="h-full" style={{ width: `${(d.count / maxCount) * 100}%`, background: 'var(--accent)' }} />
+                              <div className="h-full" style={{ width: `${(d.count / maxCount) * 100}%`, background: 'var(--color-primary)' }} />
                             </div>
                             <span className="text-slate-900 font-semibold font-mono">{d.count}</span>
                           </div>
@@ -423,7 +423,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
                       <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
-                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--accent)' }} />
+                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
                       </div>
                     </div>
                     <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
@@ -452,15 +452,15 @@ export default function AnalyticsPage() {
                       <span className="ml-auto text-[12px] font-mono font-semibold text-slate-900">{n.rate}%</span>
                     </div>
                     <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
-                      <div style={{ width: `${outPct}%`, background: 'var(--accent)' }} />
-                      <div style={{ width: `${100 - outPct}%`, background: 'oklch(0.88 0.05 var(--accent-h))' }} />
+                      <div style={{ width: `${outPct}%`, background: 'var(--color-primary)' }} />
+                      <div style={{ width: `${100 - outPct}%`, background: 'var(--color-accent)' }} />
                     </div>
                     <div className="flex items-center gap-3 mt-1.5 text-[11.5px] text-slate-500">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--accent)' }} /> Out {n.out.toLocaleString()}
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Out {n.out.toLocaleString()}
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'oklch(0.88 0.05 var(--accent-h))' }} /> In {n.in.toLocaleString()}
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-accent)' }} /> In {n.in.toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -470,9 +470,9 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Compliance footer */}
-          <Card className="p-5 flex items-center gap-3" style={{ background: 'linear-gradient(135deg, oklch(0.97 0.04 var(--accent-h)), white)' }}>
+          <Card className="p-5 flex items-center gap-3" style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
             <span className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 ring-1 ring-white shadow-sm"
-              style={{ color: 'var(--accent-deep)' }}>
+              style={{ color: 'var(--color-primary)' }}>
               <I.Shield size={16} />
             </span>
             <div className="flex-1 min-w-0">

@@ -23,7 +23,7 @@ const SUBPROCESSORS = [
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
 };
@@ -75,7 +75,7 @@ export default function CompliancePage() {
             <div className="relative w-44 h-44 mx-auto">
               <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                 <circle cx="50" cy="50" r="42" stroke="#eef2f6" strokeWidth="8" fill="none" />
-                <circle cx="50" cy="50" r="42" stroke="var(--accent)" strokeWidth="8" fill="none"
+                <circle cx="50" cy="50" r="42" stroke="var(--color-primary)" strokeWidth="8" fill="none"
                   strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 42}`}
                   strokeDashoffset={`${2 * Math.PI * 42 * (1 - score / 100)}`}
@@ -83,13 +83,13 @@ export default function CompliancePage() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[44px] leading-none font-semibold" style={{ color: 'var(--accent-deep)', fontFamily: 'Georgia, serif' }}>{score}</span>
+                <span className="text-[44px] leading-none font-semibold" style={{ color: 'var(--color-primary)', fontFamily: 'Georgia, serif' }}>{score}</span>
                 <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mt-1">Posture score</span>
               </div>
             </div>
           </div>
           <div className="col-span-12 md:col-span-8">
-            <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--accent-deep)' }}>HIPAA · SOC 2 Type II</div>
+            <div className="text-[12px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-primary)' }}>HIPAA · SOC 2 Type II</div>
             <div className="text-[28px] font-semibold text-slate-900 mt-1.5 leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
               {warnItems.length} item{warnItems.length !== 1 ? 's' : ''} need attention.
             </div>
@@ -100,7 +100,7 @@ export default function CompliancePage() {
                   <Pill tone="amber">Action needed</Pill>
                   <div className="text-[13.5px] font-semibold text-slate-900 mt-2">{c.label}</div>
                   <div className="text-[12.5px] text-slate-600 mt-1">{c.note}</div>
-                  <button className="mt-3 text-[12.5px] font-semibold hover:underline flex items-center gap-1" style={{ color: 'var(--accent-deep)' }}>
+                  <button className="mt-3 text-[12.5px] font-semibold hover:underline flex items-center gap-1" style={{ color: 'var(--color-primary)' }}>
                     Resolve <I.Chevron size={12} />
                   </button>
                 </div>
@@ -140,7 +140,7 @@ export default function CompliancePage() {
               return (
                 <div key={i} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200/70 bg-white/70">
                   <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+                    style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                     <Ico size={16} />
                   </span>
                   <div className="flex-1 min-w-0">

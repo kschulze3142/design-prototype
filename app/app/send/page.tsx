@@ -23,7 +23,7 @@ const SAMPLE_FILE = { name: 'PriorAuth_A24189.pdf', size: '284 KB', pages: 7 };
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',            dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',            dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',              fg: '#475569',            dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',              fg: '#6d28d9',            dot: '#8b5cf6' },
@@ -47,7 +47,7 @@ const defaultForm = {
 
 // ── SHARED INPUT CLASS ────────────────────────────────────────────────────────
 
-const inputCls = 'w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[oklch(0.92_0.05_var(--accent-h))] placeholder:text-slate-400 transition';
+const inputCls = 'w-full px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 placeholder:text-slate-400 transition';
 
 // ── LOCAL SUB-COMPONENTS ──────────────────────────────────────────────────────
 
@@ -59,7 +59,7 @@ function Toggle({ checked, onChange, label, helper }: {
       <span
         onClick={() => onChange(!checked)}
         className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative"
-        style={{ background: checked ? 'var(--accent)' : '#cbd5e1' }}
+        style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}
       >
         <span
           className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
@@ -83,11 +83,11 @@ function Steps({ steps, current }: { steps: string[]; current: number }) {
           <li key={i} className="flex items-center gap-3">
             <span
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[12.5px] font-semibold transition ${active ? 'bg-slate-900 text-white' : done ? 'text-white' : 'bg-slate-100 text-slate-500'}`}
-              style={done ? { background: 'var(--accent-soft)', color: 'var(--accent-deep)' } : undefined}
+              style={done ? { background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' } : undefined}
             >
               <span
                 className={`w-4 h-4 rounded-full text-[10px] inline-flex items-center justify-center ${active ? 'bg-white text-slate-900' : done ? 'text-white' : 'bg-white text-slate-400'}`}
-                style={done ? { background: 'var(--accent)', color: 'white' } : undefined}
+                style={done ? { background: 'var(--color-primary)', color: 'white' } : undefined}
               >
                 {done ? '✓' : i + 1}
               </span>
@@ -114,10 +114,10 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
       <div className="bg-white rounded-2xl shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 overflow-hidden">
         <div
           className="flex items-center gap-2 px-5 py-3 border-b border-slate-100"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), white)' }}
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), white)' }}
         >
-          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-deep)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--color-primary)' }}>
             {title}
           </span>
           <span className="ml-auto text-[11px] text-slate-400 font-mono">PG 1/{pages}</span>
@@ -175,7 +175,7 @@ function StepCompose({ form, setForm, onNext }: {
           <div className="grid grid-cols-12 gap-3">
             <div className="col-span-7">
               <label className="block text-[12.5px] font-medium text-slate-500 mb-1.5">Fax number</label>
-              <div className="flex items-center rounded-2xl border border-slate-200 bg-white overflow-hidden focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[oklch(0.92_0.05_var(--accent-h))] transition">
+              <div className="flex items-center rounded-2xl border border-slate-200 bg-white overflow-hidden focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/10 transition">
                 <span className="px-3.5 text-[12px] font-semibold text-slate-400 border-r border-slate-200 py-2.5 select-none">FAX</span>
                 <input
                   className="flex-1 px-3 py-2.5 text-[14px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400 font-mono"
@@ -225,7 +225,7 @@ function StepCompose({ form, setForm, onNext }: {
                     className="flex items-center gap-2.5 px-3 py-2 rounded-2xl border text-left transition hover:shadow-sm"
                     style={
                       active
-                        ? { borderColor: 'var(--accent)', background: 'var(--accent-soft)' }
+                        ? { borderColor: 'var(--color-primary)', background: 'var(--color-primary-subtle)' }
                         : { borderColor: '#e2e8f0', background: 'white' }
                     }
                   >
@@ -298,7 +298,7 @@ function StepCompose({ form, setForm, onNext }: {
             <div className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}
+                style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
               >
                 <I.Document size={18} />
               </div>
@@ -313,7 +313,7 @@ function StepCompose({ form, setForm, onNext }: {
             </div>
           ) : (
             <div
-              className={`flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed transition cursor-pointer ${dragOver ? 'border-[var(--accent)] bg-[var(--accent-soft)]' : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-slate-50'}`}
+              className={`flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed transition cursor-pointer ${dragOver ? 'border-[var(--color-primary)] bg-[var(--color-primary-subtle)]' : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-slate-50'}`}
               onClick={() => setForm(f => ({ ...f, file: SAMPLE_FILE }))}
               onDragOver={e => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
@@ -321,7 +321,7 @@ function StepCompose({ form, setForm, onNext }: {
             >
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}
+                style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
               >
                 <I.Upload size={22} />
               </div>
@@ -350,7 +350,7 @@ function StepCompose({ form, setForm, onNext }: {
                   className="w-full flex items-start gap-3 p-3.5 rounded-2xl border text-left transition"
                   style={
                     active
-                      ? { borderColor: 'var(--accent)', background: 'var(--accent-soft)' }
+                      ? { borderColor: 'var(--color-primary)', background: 'var(--color-primary-subtle)' }
                       : { borderColor: '#e2e8f0', background: 'white' }
                   }
                 >
@@ -358,7 +358,7 @@ function StepCompose({ form, setForm, onNext }: {
                     className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition"
                     style={
                       active
-                        ? { background: 'var(--accent)', color: 'white' }
+                        ? { background: 'var(--color-primary)', color: 'white' }
                         : { background: '#f1f5f9', color: '#94a3b8' }
                     }
                   >
@@ -406,7 +406,7 @@ function StepCompose({ form, setForm, onNext }: {
           <div className="flex items-start gap-3">
             <span
               className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}
+              style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
             >
               <I.Shield size={16} />
             </span>
@@ -530,16 +530,16 @@ function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sendin
 
             <div
               className="flex items-center gap-3 p-3 rounded-2xl"
-              style={{ background: 'var(--accent-soft)' }}
+              style={{ background: 'var(--color-primary-subtle)' }}
             >
               <span
                 className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: 'var(--accent)', color: 'white' }}
+                style={{ background: 'var(--color-primary)', color: 'white' }}
               >
                 <I.Inbox size={14} />
               </span>
               <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--accent-deep)', opacity: 0.65 }}>To</div>
+                <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--color-primary)', opacity: 0.65 }}>To</div>
                 <div className="text-[13px] font-medium text-slate-900 font-mono">{form.recipientNumber}</div>
                 <div className="text-[12px] text-slate-600">
                   {form.recipientName}{form.recipientAttn ? ` · ${form.recipientAttn}` : ''}
@@ -572,7 +572,7 @@ function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sendin
             <div>
               <div
                 className="text-[42px] font-semibold leading-none tracking-tight"
-                style={{ color: 'var(--accent)', fontFamily: 'var(--font-inter-tight), system-ui' }}
+                style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-inter-tight), system-ui' }}
               >
                 {credits}
               </div>
@@ -588,7 +588,7 @@ function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sendin
           <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
             <div
               className="h-full rounded-full transition-all"
-              style={{ width: `${usagePct}%`, background: 'var(--accent)' }}
+              style={{ width: `${usagePct}%`, background: 'var(--color-primary)' }}
             />
           </div>
           <div className="text-[11.5px] text-slate-400">{credits} of {CREDIT_BALANCE} credits used for this send</div>
@@ -600,7 +600,7 @@ function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sendin
             <div className="flex items-center gap-3">
               <span
                 className="w-3 h-3 rounded-full shrink-0 animate-pulse"
-                style={{ background: 'var(--accent)' }}
+                style={{ background: 'var(--color-primary)' }}
               />
               <div>
                 <div className="text-[13.5px] font-semibold text-slate-900">Connecting to recipient…</div>
@@ -645,7 +645,7 @@ function StepConfirm({ form, sender, totalPages, onSendAnother }: {
   };
 
   const timelineSteps = [
-    { title: 'Queued',       tone: 'teal',  time: 'Just now',    desc: 'Fax queued for transmission.',   via: 'via FaxGrid scheduler' },
+    { title: 'Queued',       tone: 'slate', time: 'Just now',    desc: 'Fax queued for transmission.',   via: 'via FaxGrid scheduler' },
     { title: 'Connecting',   tone: 'amber', time: 'Moments ago', desc: 'Dialing recipient line.',         via: 'via Telnyx carrier' },
     { title: 'Transmitting', tone: 'slate', time: 'Pending',     desc: 'Sending pages to device.',       via: 'via ECM protocol' },
     { title: 'Delivered',    tone: 'slate', time: 'Pending',     desc: 'Delivery confirmed by carrier.', via: 'via Telnyx confirmation' },
@@ -670,11 +670,11 @@ function StepConfirm({ form, sender, totalPages, onSendAnother }: {
 
           <div
             className="w-20 h-20 rounded-full flex items-center justify-center"
-            style={{ background: 'var(--accent-soft)' }}
+            style={{ background: 'var(--color-primary-subtle)' }}
           >
             <svg
               width="40" height="40" viewBox="0 0 24 24"
-              fill="none" stroke="var(--accent)"
+              fill="none" stroke="var(--color-primary)"
               strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             >
               <path className="draw-check-path" d="M20 6 9 17l-5-5" />
@@ -774,7 +774,7 @@ function StepConfirm({ form, sender, totalPages, onSendAnother }: {
           <div className="flex items-start gap-3">
             <span
               className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}
+              style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
             >
               <I.Star size={16} />
             </span>
@@ -785,7 +785,7 @@ function StepConfirm({ form, sender, totalPages, onSendAnother }: {
               </div>
               <button
                 className="mt-2 text-[12.5px] font-semibold hover:underline transition"
-                style={{ color: 'var(--accent-deep)' }}
+                style={{ color: 'var(--color-primary)' }}
               >
                 Create template →
               </button>

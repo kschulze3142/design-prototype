@@ -30,7 +30,7 @@ const SENDER_FILTERS = ['All senders', 'Labs', 'Insurance', 'Providers', 'Record
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
@@ -51,10 +51,10 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
       <div className="bg-white rounded-2xl shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 overflow-hidden">
         <div
           className="flex items-center gap-2 px-5 py-3 border-b border-slate-100"
-          style={{ background: 'linear-gradient(90deg, oklch(0.96 0.04 var(--accent-h)), white)' }}
+          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), white)' }}
         >
-          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-deep)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+          <span className="text-[12px] font-semibold tracking-wide uppercase" style={{ color: 'var(--color-primary)' }}>
             {title}
           </span>
           <span className="ml-auto text-[11px] text-slate-400 font-mono">PG 1/{pages}</span>
@@ -100,7 +100,7 @@ function FaxListItem({ f, selected, onClick }: { f: Fax; selected: boolean; onCl
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-4 py-3.5 transition ${selected ? 'bg-[var(--accent-soft)] border-l-2 border-l-[var(--accent)]' : 'border-l-2 border-l-transparent hover:bg-slate-50'}`}
+      className={`w-full text-left px-4 py-3.5 transition ${selected ? 'bg-[var(--color-primary-subtle)] border-l-2 border-l-[var(--color-primary)]' : 'border-l-2 border-l-transparent hover:bg-slate-50'}`}
     >
       <div className="flex gap-3">
         <Avatar name={f.from} size={36} tone={f.tone} />
@@ -124,7 +124,7 @@ function FaxListItem({ f, selected, onClick }: { f: Fax; selected: boolean; onCl
           {/* Row 4: unread dot + pages + routedTo + tags */}
           <div className="flex items-center gap-2 pt-0.5">
             {f.unread && (
-              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--accent)' }} />
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--color-primary)' }} />
             )}
             <span className="text-[11px] font-mono text-slate-400 shrink-0">{f.pages}p</span>
             {f.routedTo && (
@@ -152,7 +152,7 @@ function InboxDetail({ f, onMarkRead, onToggleFlag }: { f: Fax | undefined; onMa
         <div className="flex-1 flex flex-col items-center justify-center gap-3 p-10 text-center">
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center"
-            style={{ background: 'var(--accent-soft)', color: 'var(--accent-deep)' }}
+            style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}
           >
             <I.Inbox size={26} />
           </div>
@@ -249,8 +249,8 @@ function InboxDetail({ f, onMarkRead, onToggleFlag }: { f: Fax | undefined; onMa
               className="shrink-0 w-16 aspect-[3/4] rounded-xl border flex flex-col p-2 gap-1.5 relative overflow-hidden"
               style={{
                 background: '#f8fafc',
-                borderColor: i === 0 ? 'var(--accent)' : '#e2e8f0',
-                boxShadow: i === 0 ? '0 0 0 1px var(--accent)' : undefined,
+                borderColor: i === 0 ? 'var(--color-primary)' : '#e2e8f0',
+                boxShadow: i === 0 ? '0 0 0 1px var(--color-primary)' : undefined,
               }}
             >
               {[70, 50, 80, 40, 60].map((w, j) => (
@@ -269,15 +269,15 @@ function InboxDetail({ f, onMarkRead, onToggleFlag }: { f: Fax | undefined; onMa
         </div>
 
         {/* Auto-extracted OCR card */}
-        <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--accent-soft)' }}>
+        <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--color-primary-subtle)' }}>
           <div className="flex items-center gap-2">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
-              strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-deep)' }}>
+              strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary)' }}>
               <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5Z"/>
               <path d="M18 15l.75 2.25L21 18l-2.25.75L18 21l-.75-2.25L15 18l2.25-.75Z"/>
               <path d="M5 3l.5 1.5L7 5l-1.5.5L5 7l-.5-1.5L3 5l1.5-.5Z"/>
             </svg>
-            <span className="text-[12.5px] font-semibold" style={{ color: 'var(--accent-deep)' }}>Auto-extracted</span>
+            <span className="text-[12.5px] font-semibold" style={{ color: 'var(--color-primary)' }}>Auto-extracted</span>
           </div>
           <p className="text-[12.5px] text-slate-600 leading-relaxed">{f.snippet}</p>
           <div className="grid grid-cols-3 gap-3 pt-1">
@@ -341,11 +341,11 @@ export default function InboxPage() {
             <div className="relative">
               <I.Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search faxes, contacts…"
-                className="pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--accent)] w-[260px] placeholder:text-slate-400" />
+                className="pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] text-slate-900 focus:outline-none focus:border-[var(--color-primary)] w-[260px] placeholder:text-slate-400" />
             </div>
             <button className="relative w-10 h-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900">
               <I.Bell size={17} />
-              <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
+              <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
             </button>
             <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New fax</AppButton>
             <AppButton variant="secondary" icon={<I.Cog size={14} />}>Routing rules</AppButton>
@@ -386,7 +386,7 @@ export default function InboxPage() {
         <div className="relative">
           <I.Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search inbox…"
-            className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-[12.5px] w-[220px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400" />
+            className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-[12.5px] w-[220px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
         </div>
       </Card>
 
@@ -395,7 +395,7 @@ export default function InboxPage() {
         <div className="col-span-12 lg:col-span-5">
           <Card className="overflow-hidden">
             <div className="px-4 py-2.5 border-b border-slate-100 flex items-center gap-2 bg-slate-50/50">
-              <input type="checkbox" className="rounded" style={{ accentColor: 'var(--accent)' }} />
+              <input type="checkbox" className="rounded" style={{ accentColor: 'var(--color-primary)' }} />
               <span className="text-[12px] text-slate-500">{filtered.length} fax{filtered.length !== 1 ? 'es' : ''}</span>
               <div className="flex-1" />
               <button className="text-[12px] text-slate-500 hover:text-slate-900 flex items-center gap-1">

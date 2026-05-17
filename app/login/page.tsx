@@ -316,7 +316,7 @@ function EmailStep({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onContinue()}
-          className="h-11 w-full rounded-[14px] border border-slate-200 bg-white px-3.5 text-[13.5px] outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition"
+          className="h-11 w-full rounded-[14px] border border-slate-200 bg-white px-3.5 text-[13.5px] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 transition"
         />
         {showSSOHint && (
           <p className="mt-1.5 text-[11.5px] accent-text-deep">SSO may be enforced for your domain.</p>
@@ -373,7 +373,7 @@ function PasswordStep({
           <input
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
-            className="h-11 w-full rounded-[14px] border border-slate-200 bg-white px-3.5 pr-11 text-[13.5px] outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition"
+            className="h-11 w-full rounded-[14px] border border-slate-200 bg-white px-3.5 pr-11 text-[13.5px] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 transition"
           />
           <button
             type="button"
@@ -392,8 +392,8 @@ function PasswordStep({
           role="switch"
           aria-checked={keepSignedIn}
           onClick={() => setKeepSignedIn(!keepSignedIn)}
-          className="relative flex-shrink-0 w-9 h-5 rounded-full transition-colors duration-200 mt-0.5 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-          style={{ background: keepSignedIn ? "var(--accent)" : "#cbd5e1" }}
+          className="relative flex-shrink-0 w-9 h-5 rounded-full transition-colors duration-200 mt-0.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          style={{ background: keepSignedIn ? "var(--color-primary)" : "#cbd5e1" }}
         >
           <span
             className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200"
@@ -431,7 +431,7 @@ function MfaStep({
     <div className="fade-up">
       <div
         className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-        style={{ background: "oklch(0.94 0.06 174)" }}
+        style={{ background: "var(--color-primary-subtle)" }}
       >
         <ShieldIcon className="w-7 h-7 accent-text" />
       </div>
@@ -452,7 +452,7 @@ function MfaStep({
             value={d}
             onChange={(e) => onDigit(i, e.target.value)}
             onKeyDown={(e) => onDigitKey(i, e)}
-            className="w-12 h-14 rounded-2xl border border-slate-200 text-center font-mono text-xl font-semibold text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition bg-white"
+            className="w-12 h-14 rounded-2xl border border-slate-200 text-center font-mono text-xl font-semibold text-slate-900 outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 transition bg-white"
           />
         ))}
       </div>
@@ -543,7 +543,7 @@ export default function LoginPage() {
       {/* Left panel */}
       <div
         className="hidden lg:flex relative w-[52%] flex-col overflow-hidden border-r border-slate-200/70"
-        style={{ background: "radial-gradient(circle at 30% 40%, oklch(0.92 0.07 var(--accent-h)) 0%, transparent 55%), radial-gradient(circle at 75% 70%, oklch(0.94 0.05 var(--accent-h)) 0%, transparent 50%), #f3f7f6" }}
+        style={{ background: "radial-gradient(circle at 30% 40%, var(--color-primary-subtle) 0%, transparent 55%), radial-gradient(circle at 75% 70%, var(--color-primary-subtle) 0%, transparent 50%), #f4f7fb" }}
       >
         <LoginVisual />
       </div>

@@ -106,7 +106,7 @@ export function HOperationsShowcase() {
   return (
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto mb-10 max-w-4xl text-center">
-        <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Interactive overview</p>
+        <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Interactive overview</p>
         <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
           Everything you need to run modern fax operations
         </h2>
@@ -200,9 +200,8 @@ export function HOperationsShowcase() {
                         {tab.rightRows.map((row, i) => (
                           <div
                             key={row}
-                            className={`flex items-center justify-between rounded-2xl px-4 py-4 ring-1 ${
-                              i === 0 ? 'bg-teal-50/70 ring-teal-100' : 'bg-slate-50 ring-slate-200'
-                            }`}
+                            className="flex items-center justify-between rounded-2xl px-4 py-4 ring-1 ring-slate-200"
+                            style={i === 0 ? { background: 'var(--color-primary-subtle)' } : { background: '#f8fafc' }}
                           >
                             <div>
                               <p className="text-sm font-semibold text-slate-900">{row}</p>
@@ -212,11 +211,11 @@ export function HOperationsShowcase() {
                           </div>
                         ))}
                       </div>
-                      <div className="mt-6 rounded-[22px] border border-dashed border-teal-200 bg-teal-50/60 p-5">
-                        <div className="mb-3 h-3 w-28 rounded-full bg-teal-300" />
-                        <div className="mb-2 h-2 w-full rounded-full bg-teal-200" />
-                        <div className="mb-2 h-2 w-10/12 rounded-full bg-teal-200" />
-                        <div className="h-2 w-8/12 rounded-full bg-teal-200" />
+                      <div className="mt-6 rounded-[22px] border border-dashed p-5" style={{ borderColor: 'var(--color-border-strong)', background: 'var(--color-primary-subtle)' }}>
+                        <div className="mb-3 h-3 w-28 rounded-full" style={{ background: 'var(--color-primary)' }} />
+                        <div className="mb-2 h-2 w-full rounded-full" style={{ background: 'var(--color-border-strong)' }} />
+                        <div className="mb-2 h-2 w-10/12 rounded-full" style={{ background: 'var(--color-border-strong)' }} />
+                        <div className="h-2 w-8/12 rounded-full" style={{ background: 'var(--color-border-strong)' }} />
                       </div>
                     </div>
                   </div>

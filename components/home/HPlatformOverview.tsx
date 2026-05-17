@@ -32,9 +32,9 @@ function SendPreview() {
         </div>
         <div className="flex flex-col gap-1">
           {['referral.pdf', 'auth.pdf', 'notes.pdf'].map((f) => (
-            <div key={f} className="flex items-center gap-2 rounded-lg bg-teal-50 px-2 py-1.5 ring-1 ring-teal-100">
-              <span className="text-xs text-teal-600">📄</span>
-              <span className="text-xs font-medium text-teal-700">{f}</span>
+            <div key={f} className="flex items-center gap-2 rounded-lg px-2 py-1.5" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border)' }}>
+              <span className="text-xs" style={{ color: 'var(--color-primary)' }}>📄</span>
+              <span className="text-xs font-medium" style={{ color: 'var(--color-primary)' }}>{f}</span>
             </div>
           ))}
         </div>
@@ -63,7 +63,10 @@ function ReviewPreview() {
         {rows.map((r) => (
           <div key={r.name} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
             <span className="text-xs font-medium text-slate-700 truncate max-w-[120px]">{r.name}</span>
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${r.tone === 'amber' ? 'bg-amber-50 text-amber-700' : 'bg-teal-50 text-teal-700'}`}>{r.status}</span>
+            <span
+              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${r.tone === 'amber' ? 'bg-amber-50 text-amber-700' : ''}`}
+              style={r.tone !== 'amber' ? { background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' } : {}}
+            >{r.status}</span>
           </div>
         ))}
       </div>
@@ -91,7 +94,7 @@ function RoutePreview() {
         {rules.map((r) => (
           <div key={r.num} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
             <span className="text-xs font-mono text-slate-600">{r.num}</span>
-            <span className="text-xs font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full">{r.team}</span>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>{r.team}</span>
           </div>
         ))}
       </div>
@@ -209,10 +212,10 @@ function HSolutionsRow() {
 
 export function HPlatformOverview() {
   return (
-    <section style={{ background: 'oklch(0.97 0.025 var(--accent-h))' }} className="py-12 md:py-20">
+    <section style={{ background: 'var(--color-primary-subtle)' }} className="py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="mb-12">
-          <p className="text-sm font-semibold" style={{ color: 'var(--accent-deep)' }}>Platform overview</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Platform overview</p>
           <h2 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
             All your fax workflows in one platform
           </h2>

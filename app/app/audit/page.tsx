@@ -34,7 +34,7 @@ const CATEGORIES = ['All', 'PHI access', 'Transmission', 'Security', 'Configurat
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   red:     { bg: '#fef2f2',               fg: '#b91c1c',             dot: '#ef4444' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
@@ -57,7 +57,7 @@ function BarChart({ data, height = 160 }: { data: { label: string; value: number
         <div key={i} className="flex-1 flex flex-col items-center gap-2">
           <div className="relative w-full flex items-end" style={{ height: height - 24 }}>
             <div className="w-full rounded-t-md transition-all"
-              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--accent)' : 'rgba(15,118,110,0.18)' }} />
+              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--color-primary)' : 'var(--color-primary-subtle)' }} />
           </div>
           <span className="text-[11px] text-slate-500">{d.label}</span>
         </div>
@@ -159,7 +159,7 @@ function EventModal({ e, onClose }: { e: AuditEvent; onClose: () => void }) {
                 <div className="col-span-5 space-y-4">
                   <SoftCard className="p-5">
                     <div className="flex items-center gap-2 mb-2">
-                      <I.Lock size={13} className="text-emerald-600" />
+                      <I.Lock size={13} style={{ color: 'var(--color-primary)' }} />
                       <span className="text-[12.5px] font-semibold text-slate-700">Write-once record</span>
                     </div>
                     <p className="text-[12px] text-slate-500 leading-relaxed">This event cannot be modified or deleted. SHA-256 signed and anchored to the audit chain.</p>
@@ -173,7 +173,7 @@ function EventModal({ e, onClose }: { e: AuditEvent; onClose: () => void }) {
                         { label: 'Receipt issued',time: '10:43:19', active: false },
                       ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2.5">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${item.active ? 'bg-[var(--accent)]' : 'bg-slate-300'}`} style={item.active ? { background: 'var(--accent)' } : undefined} />
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${item.active ? 'bg-[var(--color-primary)]' : 'bg-slate-300'}`} style={item.active ? { background: 'var(--color-primary)' } : undefined} />
                           <span className={`text-[12.5px] flex-1 ${item.active ? 'font-semibold text-slate-900' : 'text-slate-500'}`}>{item.label}</span>
                           <span className="text-[11.5px] font-mono text-slate-400">{item.time}</span>
                         </div>
@@ -224,7 +224,7 @@ function EventModal({ e, onClose }: { e: AuditEvent; onClose: () => void }) {
                 ].map((step, i) => (
                   <div key={i} className="flex items-start gap-4">
                     <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                      style={{ background: 'var(--accent)', color: 'white' }}>
+                      style={{ background: 'var(--color-primary)', color: 'white' }}>
                       <I.Check size={12} strokeWidth={2.5} />
                     </span>
                     <div className="flex-1">
@@ -237,7 +237,7 @@ function EventModal({ e, onClose }: { e: AuditEvent; onClose: () => void }) {
               </div>
               <SoftCard className="p-5">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <I.Shield size={14} style={{ color: 'var(--accent-deep)' }} />
+                  <I.Shield size={14} style={{ color: 'var(--color-primary)' }} />
                   <span className="text-[13px] font-semibold text-slate-700">HIPAA compliance</span>
                 </div>
                 <p className="text-[12.5px] text-slate-500 leading-relaxed">This audit log meets the HIPAA Security Rule requirement for audit controls (§164.312(b)). All records are retained for 7 years and are cryptographically verifiable.</p>
@@ -320,7 +320,7 @@ export default function AuditPage() {
           <div className="relative flex-1 min-w-[260px] max-w-md">
             <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
-              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--accent)] placeholder:text-slate-400"
+              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
               placeholder="Search actor, action, target…"
               value={search}
               onChange={e => setSearch(e.target.value)}

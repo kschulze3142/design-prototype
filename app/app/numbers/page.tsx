@@ -25,7 +25,7 @@ const PORT_STEPS = [
 
 const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'rgba(204,251,241,0.6)', fg: 'var(--accent-deep)', dot: 'var(--accent)' },
+  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
   amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
@@ -44,7 +44,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
 function Toggle({ checked, onChange, label, helper }: { checked: boolean; onChange: (v: boolean) => void; label: string; helper?: string }) {
   return (
     <label className="flex items-start gap-3 cursor-pointer select-none">
-      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--accent)' : '#cbd5e1' }}>
+      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}>
         <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all" style={{ left: checked ? '18px' : '2px' }} />
       </span>
       <span>
@@ -63,7 +63,7 @@ function Sparkline({ data, w = 92, h = 28 }: { data: number[]; w?: number; h?: n
   const points = data.map((v, i) => `${i * stepX},${h - ((v - min) / span) * (h - 4) - 2}`).join(' ');
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="block">
-      <polyline points={points} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -76,7 +76,7 @@ function BarChart({ data, height = 160 }: { data: { label: string; value: number
         <div key={i} className="flex-1 flex flex-col items-center gap-2">
           <div className="relative w-full flex items-end" style={{ height: height - 24 }}>
             <div className="w-full rounded-t-md transition-all"
-              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--accent)' : 'rgba(15,118,110,0.18)' }} />
+              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--color-primary)' : 'rgba(15,118,110,0.18)' }} />
           </div>
           <span className="text-[11px] text-slate-500">{d.label}</span>
         </div>
@@ -108,7 +108,7 @@ function NumberCard({ n, onOpen }: { n: FaxNumber; onOpen: () => void }) {
   return (
     <button
       onClick={onOpen}
-      className="text-left rounded-[20px] border border-slate-200/80 bg-white/85 backdrop-blur-[14px] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] transition hover:border-[var(--accent)] hover:shadow-[0_20px_40px_-30px_rgba(15,23,42,0.25)] flex flex-col min-h-[300px] overflow-hidden w-full"
+      className="text-left rounded-[20px] border border-slate-200/80 bg-white/85 backdrop-blur-[14px] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] transition hover:border-[var(--color-primary)] hover:shadow-[0_20px_40px_-30px_rgba(15,23,42,0.25)] flex flex-col min-h-[300px] overflow-hidden w-full"
     >
       {/* Top strip */}
       <div className="p-5 relative" style={{ background: stripBg }}>
@@ -201,7 +201,7 @@ function NumberDetailModal({ n, onClose }: { n: FaxNumber | null; onClose: () =>
             <I.X size={14} />
           </button>
           <div className="flex items-start gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))', color: 'white' }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))', color: 'white' }}>
               <I.Numbers size={22} />
             </div>
             <div className="flex-1 min-w-0">
@@ -237,14 +237,14 @@ function NumberDetailModal({ n, onClose }: { n: FaxNumber | null; onClose: () =>
                     { match: 'All other inbound', team: n.assignee, tone: n.assigneeTone },
                   ].map((rule, i) => (
                     <SoftCard key={i} className="p-3.5 flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full text-[12px] font-bold flex items-center justify-center shrink-0" style={{ background: 'var(--accent)', color: 'white' }}>{i + 1}</span>
+                      <span className="w-6 h-6 rounded-full text-[12px] font-bold flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary)', color: 'white' }}>{i + 1}</span>
                       <span className="text-[13px] text-slate-600 flex-1">If <span className="font-medium text-slate-900">{rule.match}</span></span>
                       <I.Arrow size={13} className="text-slate-400 shrink-0" />
                       <Pill tone={rule.tone} dot={false}>{rule.team}</Pill>
                     </SoftCard>
                   ))}
                 </div>
-                <button className="mt-2 text-[12.5px] font-semibold hover:underline flex items-center gap-1" style={{ color: 'var(--accent-deep)' }}>
+                <button className="mt-2 text-[12.5px] font-semibold hover:underline flex items-center gap-1" style={{ color: 'var(--color-primary)' }}>
                   <I.Plus size={12} strokeWidth={2.4} /> Add rule
                 </button>
               </div>
@@ -309,16 +309,16 @@ function NumberDetailModal({ n, onClose }: { n: FaxNumber | null; onClose: () =>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[12px] font-semibold text-slate-600 mb-1.5">Caller ID name</label>
-                  <input defaultValue={n.callerId} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] font-mono bg-white focus:outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10" />
+                  <input defaultValue={n.callerId} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] font-mono bg-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10" />
                 </div>
                 <div>
                   <label className="block text-[12px] font-semibold text-slate-600 mb-1.5">Internal label</label>
-                  <input defaultValue={n.label} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] bg-white focus:outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10" />
+                  <input defaultValue={n.label} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] bg-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10" />
                 </div>
               </div>
               <div>
                 <label className="block text-[12px] font-semibold text-slate-600 mb-1.5">Fax header line</label>
-                <input defaultValue={`${n.callerId} · {{number}} · Page {{page}} of {{total}}`} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] font-mono bg-white focus:outline-none focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10" />
+                <input defaultValue={`${n.callerId} · {{number}} · Page {{page}} of {{total}}`} className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-[13.5px] font-mono bg-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary)]/10" />
                 <div className="text-[12px] text-slate-400 mt-1.5">Variables: <code className="font-mono bg-slate-100 px-1 rounded">{'{{number}}'}</code>, <code className="font-mono bg-slate-100 px-1 rounded">{'{{page}}'}</code>, <code className="font-mono bg-slate-100 px-1 rounded">{'{{total}}'}</code>, <code className="font-mono bg-slate-100 px-1 rounded">{'{{date}}'}</code></div>
               </div>
               <SoftCard className="p-4 flex items-start gap-3">
@@ -392,7 +392,7 @@ function PortStatusModal({ n, onClose }: { n: FaxNumber | null; onClose: () => v
                 <div key={step.id} className="flex gap-4 items-start">
                   <div className="flex flex-col items-center">
                     {done ? (
-                      <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'var(--accent)', color: 'white' }}>
+                      <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'var(--color-primary)', color: 'white' }}>
                         <I.Check size={13} strokeWidth={2.5} />
                       </span>
                     ) : active ? (
@@ -404,7 +404,7 @@ function PortStatusModal({ n, onClose }: { n: FaxNumber | null; onClose: () => v
                       <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[12px] font-semibold text-slate-400">{i + 1}</span>
                     )}
                     {i < PORT_STEPS.length - 1 && (
-                      <span className="w-px flex-1 my-1" style={{ background: done ? 'var(--accent)' : '#e2e8f0', minHeight: 20 }} />
+                      <span className="w-px flex-1 my-1" style={{ background: done ? 'var(--color-primary)' : '#e2e8f0', minHeight: 20 }} />
                     )}
                   </div>
                   <div className="pb-4">
@@ -519,9 +519,9 @@ export default function NumbersPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {filtered.map(n => <NumberCard key={n.id} n={n} onOpen={() => setOpen(n)} />)}
         {/* Add new number CTA card */}
-        <button className="text-left rounded-[20px] border-2 border-dashed border-slate-200 hover:border-[var(--accent)] transition p-6 flex flex-col items-start justify-between min-h-[300px]">
+        <button className="text-left rounded-[20px] border-2 border-dashed border-slate-200 hover:border-[var(--color-primary)] transition p-6 flex flex-col items-start justify-between min-h-[300px]">
           <div>
-            <span className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'oklch(0.96 0.04 var(--accent-h))', color: 'var(--accent-deep)' }}>
+            <span className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
               <I.Plus size={20} strokeWidth={2.2} />
             </span>
             <div className="text-[24px] font-semibold text-slate-900 leading-tight mt-4" style={{ fontFamily: 'Georgia, serif' }}>Add another line.</div>
