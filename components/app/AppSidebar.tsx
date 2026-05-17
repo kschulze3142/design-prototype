@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { I } from './icons';
 import { useState } from 'react';
 
@@ -143,8 +143,7 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
 
 export function AppSidebar() {
   const pathname     = usePathname();
-  const searchParams = useSearchParams();
-  const activeNumber = searchParams.get('number');
+  const activeNumber = null;
   const [menu, setMenu] = useState(false);
 
   const initials = 'AP';
