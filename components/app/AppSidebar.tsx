@@ -1,16 +1,24 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { I } from './icons';
 import { useState } from 'react';
 
-type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number };
+type SubNavItem = { href: string; label: string; badge?: number };
+type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
 
 const CORE: NavItem[] = [
   { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
   { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
-  { href: '/app/inbox',    label: 'Inbox',     icon: 'Inbox', badge: 4 },
-  { href: '/app/sent',     label: 'Sent',      icon: 'Sent' },
+  {
+    href: '/app/inbox', label: 'Inbox', icon: 'Inbox', badge: 4,
+    subItems: [
+      { href: '/app/inbox?number=0142', label: 'Cardiology · 0142', badge: 2 },
+      { href: '/app/inbox?number=0319', label: 'Front desk · 0319', badge: 1 },
+      { href: '/app/inbox?number=0903', label: 'Toll-free · 0903',  badge: 1 },
+    ],
+  },
+  { href: '/app/sent', label: 'Sent', icon: 'Sent' },
 ];
 const DIRECTORY: NavItem[] = [
   { href: '/app/numbers',   label: 'Numbers',   icon: 'Numbers' },
@@ -28,51 +36,105 @@ const SYSTEM: NavItem[] = [
   { href: '/app/settings', label: 'Settings', icon: 'Settings' },
 ];
 
-function NavGroup({ items, separator, pushDown, pathname }: {
+function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
   items: NavItem[];
   separator?: boolean;
   pushDown?: boolean;
   pathname: string;
+  activeNumber: string | null;
 }) {
   return (
     <div style={{
-      ...(separator ? {
-        marginTop: 4,
-        paddingTop: 4,
-        borderTop: '1px solid var(--color-border)',
-      } : {}),
-      ...(pushDown ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--color-border)' } : {}),
+      ...(separator ? { marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--color-border)' } : {}),
+      ...(pushDown   ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--color-border)' } : {}),
     }}>
       {items.map(item => {
         const Ico = I[item.icon];
         const active = pathname === item.href ||
           (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
+        const showSubs = active && item.subItems;
+
         return (
-          <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`}>
-            <span className="nav-icon" style={{ width: 16, height: 16, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-              <Ico size={16} />
-            </span>
-            <span style={{ flex: 1 }}>{item.label}</span>
-            {item.badge && item.badge > 0 && (
-              <span style={{
-                background: 'var(--color-primary)',
-                color: 'white',
-                fontSize: 10,
-                fontWeight: 700,
-                fontFamily: 'var(--font-body)',
-                height: 18,
-                minWidth: 18,
-                borderRadius: 9,
-                padding: '0 5px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 'auto',
-              }}>
-                {item.badge}
+          <div key={item.href}>
+            <Link href={item.href} className={`nav-item${active ? ' active' : ''}`}>
+              <span className="nav-icon" style={{ width: 16, height: 16, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                <Ico size={16} />
               </span>
-            )}
-          </Link>
+              <span style={{ flex: 1 }}>{item.label}</span>
+              {item.badge && item.badge > 0 && (
+                <span style={{
+                  background: 'var(--color-primary)',
+                  color: 'white',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  fontFamily: 'var(--font-body)',
+                  height: 18,
+                  minWidth: 18,
+                  borderRadius: 9,
+                  padding: '0 5px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 'auto',
+                }}>
+                  {item.badge}
+                </span>
+              )}
+            </Link>
+
+            {showSubs && item.subItems!.map(sub => {
+              const subNumber = sub.href.split('number=')[1] ?? '';
+              const subActive = activeNumber === subNumber;
+              return (
+                <Link
+                  key={sub.href}
+                  href={sub.href}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingLeft: 28,
+                    paddingRight: 8,
+                    height: 30,
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12,
+                    fontWeight: subActive ? 600 : 500,
+                    color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                    textDecoration: 'none',
+                    borderRadius: 'var(--radius-sm)',
+                    transition: 'color var(--duration-fast)',
+                  }}
+                >
+                  <span style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {sub.label}
+                  </span>
+                  {sub.badge && sub.badge > 0 && (
+                    <span style={{
+                      height: 16,
+                      minWidth: 16,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      fontFamily: 'var(--font-body)',
+                      background: 'var(--color-primary)',
+                      color: 'white',
+                      borderRadius: 8,
+                      padding: '0 4px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      {sub.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         );
       })}
     </div>
@@ -80,12 +142,14 @@ function NavGroup({ items, separator, pushDown, pathname }: {
 }
 
 export function AppSidebar() {
-  const pathname = usePathname();
+  const pathname     = usePathname();
+  const searchParams = useSearchParams();
+  const activeNumber = searchParams.get('number');
   const [menu, setMenu] = useState(false);
 
   const initials = 'AP';
-  const name = 'Amelia Park';
-  const role = 'Workspace admin';
+  const name     = 'Amelia Park';
+  const role     = 'Workspace admin';
 
   return (
     <aside style={{
@@ -138,10 +202,10 @@ export function AppSidebar() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        <NavGroup items={CORE} pathname={pathname} />
-        <NavGroup items={DIRECTORY} separator pathname={pathname} />
-        <NavGroup items={COMPLIANCE} separator pathname={pathname} />
-        <NavGroup items={SYSTEM} pushDown pathname={pathname} />
+        <NavGroup items={CORE}       pathname={pathname} activeNumber={activeNumber} />
+        <NavGroup items={DIRECTORY}  pathname={pathname} activeNumber={activeNumber} separator />
+        <NavGroup items={COMPLIANCE} pathname={pathname} activeNumber={activeNumber} separator />
+        <NavGroup items={SYSTEM}     pathname={pathname} activeNumber={activeNumber} pushDown />
       </nav>
 
       {/* User area */}
@@ -154,7 +218,6 @@ export function AppSidebar() {
         gap: 10,
         position: 'relative',
       }}>
-        {/* Avatar */}
         <span style={{
           width: 28,
           height: 28,
@@ -172,7 +235,6 @@ export function AppSidebar() {
           {initials}
         </span>
 
-        {/* Name / role */}
         <div style={{ flex: 1, minWidth: 0, lineHeight: 1.25 }}>
           <div style={{
             fontSize: 13,
@@ -197,7 +259,6 @@ export function AppSidebar() {
           </div>
         </div>
 
-        {/* Three-dot menu */}
         <button
           onClick={() => setMenu(m => !m)}
           style={{
@@ -215,7 +276,6 @@ export function AppSidebar() {
           <I.More size={16} />
         </button>
 
-        {/* Dropdown */}
         {menu && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setMenu(false)} />
