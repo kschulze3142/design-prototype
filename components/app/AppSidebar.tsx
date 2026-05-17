@@ -2,113 +2,273 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { I } from './icons';
-import { Avatar } from './primitives';
 import { useState } from 'react';
 
-const NAV = [
-  { group: 'Core', items: [
-    { href: '/app/dashboard',  label: 'Dashboard',  icon: 'Dashboard' },
-    { href: '/app/onboarding', label: 'Onboarding', icon: 'Zap' },
-    { href: '/app/send',       label: 'Send Fax',   icon: 'Send' },
-    { href: '/app/inbox',     label: 'Inbox',     icon: 'Inbox', badge: 4 },
-    { href: '/app/sent',      label: 'Sent',      icon: 'Sent' },
-  ]},
-  { group: 'Directory', items: [
-    { href: '/app/numbers',   label: 'Numbers',   icon: 'Numbers' },
-    { href: '/app/team',      label: 'Team',      icon: 'Team' },
-    { href: '/app/contacts',  label: 'Contacts',  icon: 'Contacts' },
-    { href: '/app/templates', label: 'Templates', icon: 'Templates' },
-  ]},
-  { group: 'Reporting', items: [
-    { href: '/app/analytics', label: 'Analytics',  icon: 'Analytics' },
-    { href: '/app/audit',     label: 'Audit Log',  icon: 'Audit' },
-    { href: '/app/compliance',label: 'Compliance', icon: 'Shield' },
-  ]},
-  { group: 'System', items: [
-    { href: '/app/billing',   label: 'Billing & Usage', icon: 'Billing' },
-    { href: '/app/settings',  label: 'Settings',        icon: 'Settings' },
-  ]},
-] as const;
+type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number };
+
+const CORE: NavItem[] = [
+  { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
+  { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
+  { href: '/app/inbox',    label: 'Inbox',     icon: 'Inbox', badge: 4 },
+  { href: '/app/sent',     label: 'Sent',      icon: 'Sent' },
+];
+const DIRECTORY: NavItem[] = [
+  { href: '/app/numbers',   label: 'Numbers',   icon: 'Numbers' },
+  { href: '/app/team',      label: 'Team',      icon: 'Team' },
+  { href: '/app/contacts',  label: 'Contacts',  icon: 'Contacts' },
+  { href: '/app/templates', label: 'Templates', icon: 'Templates' },
+];
+const COMPLIANCE: NavItem[] = [
+  { href: '/app/analytics', label: 'Analytics',  icon: 'Analytics' },
+  { href: '/app/audit',     label: 'Audit Log',  icon: 'Audit' },
+  { href: '/app/compliance',label: 'Compliance', icon: 'Shield' },
+];
+const SYSTEM: NavItem[] = [
+  { href: '/app/billing',  label: 'Billing',  icon: 'Billing' },
+  { href: '/app/settings', label: 'Settings', icon: 'Settings' },
+];
+
+function NavGroup({ items, separator, pushDown, pathname }: {
+  items: NavItem[];
+  separator?: boolean;
+  pushDown?: boolean;
+  pathname: string;
+}) {
+  return (
+    <div style={{
+      ...(separator ? {
+        marginTop: 4,
+        paddingTop: 4,
+        borderTop: '1px solid var(--color-border)',
+      } : {}),
+      ...(pushDown ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--color-border)' } : {}),
+    }}>
+      {items.map(item => {
+        const Ico = I[item.icon];
+        const active = pathname === item.href ||
+          (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
+        return (
+          <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`}>
+            <span className="nav-icon" style={{ width: 16, height: 16, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+              <Ico size={16} />
+            </span>
+            <span style={{ flex: 1 }}>{item.label}</span>
+            {item.badge && item.badge > 0 && (
+              <span style={{
+                background: 'var(--color-primary)',
+                color: 'white',
+                fontSize: 10,
+                fontWeight: 700,
+                fontFamily: 'var(--font-body)',
+                height: 18,
+                minWidth: 18,
+                borderRadius: 9,
+                padding: '0 5px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 'auto',
+              }}>
+                {item.badge}
+              </span>
+            )}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
 
+  const initials = 'AP';
+  const name = 'Amelia Park';
+  const role = 'Workspace admin';
+
   return (
-    <aside className="w-[260px] shrink-0 sticky top-0 h-screen flex flex-col px-4 py-6 border-r border-slate-200/40" style={{ background: 'rgba(255,255,255,0.55)', backdropFilter: 'saturate(140%) blur(16px)', WebkitBackdropFilter: 'saturate(140%) blur(16px)' }}>
-      {/* Logo */}
-      <Link href="/app/dashboard" className="flex items-center gap-2.5 px-2 mb-6">
-        <span className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
-          style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))' }}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="4" y="3" width="16" height="18" rx="2"/>
-            <path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/>
-          </svg>
-        </span>
-        <div className="leading-tight">
-          <div className="text-[15px] font-semibold tracking-tight text-slate-900">FaxGrid</div>
-          <div className="text-[11px] text-slate-500">Northwind Health · Pro</div>
-        </div>
-      </Link>
+    <aside style={{
+      width: 220,
+      background: '#ffffff',
+      borderRight: '1px solid var(--color-border)',
+      height: '100vh',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      zIndex: 40,
+    }}>
+      {/* Logo area */}
+      <div style={{
+        height: 56,
+        padding: '0 20px',
+        borderBottom: '1px solid var(--color-border)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}>
+        <Link href="/app/dashboard" style={{ textDecoration: 'none' }}>
+          <div style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 15,
+            fontWeight: 700,
+            color: 'var(--color-primary)',
+            lineHeight: 1.2,
+          }}>
+            Blue Lark
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.3,
+          }}>
+            Northwind Health
+          </div>
+        </Link>
+      </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto scrollbar-thin -mx-2 px-2 space-y-0.5">
-        {NAV.map(section => (
-          <div key={section.group}>
-            <div className="nav-section-label">{section.group}</div>
-            {section.items.map(item => {
-              const Ico = I[item.icon as keyof typeof I];
-              const active = pathname === item.href || (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
-              return (
-                <Link key={item.href} href={item.href} className={`nav-item ${active ? 'active' : ''}`}>
-                  <span style={{ color: active ? 'white' : '#64748b' }}><Ico size={17} /></span>
-                  <span className="flex-1">{item.label}</span>
-                  {'badge' in item && item.badge && (
-                    <span className={`text-[10.5px] font-semibold px-1.5 py-0.5 rounded-full ${active ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-700'}`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+      <nav className="scrollbar-thin" style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '12px 10px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+        <NavGroup items={CORE} pathname={pathname} />
+        <NavGroup items={DIRECTORY} separator pathname={pathname} />
+        <NavGroup items={COMPLIANCE} separator pathname={pathname} />
+        <NavGroup items={SYSTEM} pushDown pathname={pathname} />
       </nav>
 
-      {/* User menu */}
-      <div className="mt-3 p-3 rounded-2xl bg-white/70 border border-slate-200/80 flex items-center gap-2.5 relative">
-        <Avatar name="Amelia Park" size={32} tone="teal" />
-        <div className="flex-1 leading-tight min-w-0">
-          <div className="text-[13px] font-semibold text-slate-900 truncate">Amelia Park</div>
-          <div className="text-[11.5px] text-slate-500 truncate">Workspace admin</div>
+      {/* User area */}
+      <div style={{
+        height: 56,
+        borderTop: '1px solid var(--color-border)',
+        padding: '0 16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        position: 'relative',
+      }}>
+        {/* Avatar */}
+        <span style={{
+          width: 28,
+          height: 28,
+          borderRadius: '50%',
+          background: 'var(--color-primary-subtle)',
+          color: 'var(--color-primary)',
+          fontSize: 11,
+          fontWeight: 700,
+          fontFamily: 'var(--font-body)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          {initials}
+        </span>
+
+        {/* Name / role */}
+        <div style={{ flex: 1, minWidth: 0, lineHeight: 1.25 }}>
+          <div style={{
+            fontSize: 13,
+            fontWeight: 600,
+            fontFamily: 'var(--font-body)',
+            color: 'var(--color-text-primary)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {name}
+          </div>
+          <div style={{
+            fontSize: 11,
+            fontFamily: 'var(--font-body)',
+            color: 'var(--color-text-tertiary)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {role}
+          </div>
         </div>
-        <button className="text-slate-400 hover:text-slate-700 p-1" onClick={() => setMenu(m => !m)}>
+
+        {/* Three-dot menu */}
+        <button
+          onClick={() => setMenu(m => !m)}
+          style={{
+            marginLeft: 'auto',
+            color: 'var(--color-text-tertiary)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 4,
+            borderRadius: 4,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <I.More size={16} />
         </button>
 
+        {/* Dropdown */}
         {menu && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setMenu(false)} />
-            <div className="absolute left-3 right-3 bottom-[72px] z-30 bg-white rounded-2xl border border-slate-200 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.25)] p-1.5">
-              <div className="px-3 py-2.5 border-b border-slate-100 mb-1">
-                <div className="text-[13px] font-semibold text-slate-900">Amelia Park</div>
-                <div className="text-[11.5px] text-slate-500 truncate">amelia@northwindhealth.example</div>
+            <div style={{
+              position: 'absolute',
+              left: 12,
+              right: 12,
+              bottom: 64,
+              zIndex: 30,
+              background: 'white',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-border)',
+              boxShadow: 'var(--shadow-modal)',
+              padding: 6,
+            }}>
+              <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid var(--color-border)', marginBottom: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)' }}>{name}</div>
+                <div style={{ fontSize: 11, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>amelia@northwindhealth.example</div>
               </div>
-              {[
-                { href: '/app/settings', label: 'Workspace settings', icon: 'Cog' },
-                { href: '/app/billing',  label: 'Billing & usage',    icon: 'Billing' },
-              ].map(m => {
-                const Ico = I[m.icon as keyof typeof I];
+              {([
+                { href: '/app/settings', label: 'Workspace settings', icon: 'Settings' as const },
+                { href: '/app/billing',  label: 'Billing & usage',    icon: 'Billing' as const },
+              ] as const).map(m => {
+                const Ico = I[m.icon];
                 return (
-                  <Link key={m.href} href={m.href} onClick={() => setMenu(false)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-slate-700 hover:bg-slate-50">
-                    <Ico size={14} />
+                  <Link key={m.href} href={m.href} onClick={() => setMenu(false)} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '7px 12px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: 13,
+                    color: 'var(--color-text-primary)',
+                    fontFamily: 'var(--font-body)',
+                    textDecoration: 'none',
+                  }}>
+                    <span style={{ color: 'var(--color-text-tertiary)' }}><Ico size={14} /></span>
                     {m.label}
                   </Link>
                 );
               })}
-              <div className="my-1 h-px bg-slate-100" />
-              <Link href="/login" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-red-600 hover:bg-red-50">
+              <div style={{ margin: '4px 0', height: 1, background: 'var(--color-border)' }} />
+              <Link href="/login" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '7px 12px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 13,
+                color: 'var(--color-failed)',
+                fontFamily: 'var(--font-body)',
+                textDecoration: 'none',
+              }}>
                 <I.Lock size={14} /> Sign out
               </Link>
             </div>
