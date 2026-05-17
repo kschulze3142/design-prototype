@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { I } from '@/components/app/icons';
 import { Avatar } from '@/components/app/primitives';
@@ -59,22 +59,80 @@ function SparkleIcon() {
   );
 }
 
+// ─── PAGE DATA ────────────────────────────────────────────────────────────────
+
+const pages = [
+  {
+    pageNum: 1,
+    label: 'LAB RESULTS · PATIENT A24189',
+    fields: [
+      { label: 'FROM', value: '+1 (206) 555-2840' },
+      { label: 'TO', value: 'Northwind Health · Seattle Office' },
+    ],
+    lines: [100, 95, 88, 100, 75, 92, 68, 45, 80, 60],
+  },
+  {
+    pageNum: 2,
+    label: 'METABOLIC PANEL RESULTS',
+    fields: [],
+    lines: [100, 88, 76, 100, 92, 84, 70, 95, 60, 78],
+  },
+  {
+    pageNum: 3,
+    label: 'LIPID PROFILE',
+    fields: [],
+    lines: [90, 100, 82, 68, 95, 78, 88, 72, 60, 84],
+  },
+  {
+    pageNum: 4,
+    label: 'PHYSICIAN NOTES',
+    fields: [],
+    lines: [100, 72, 90, 85, 60, 95, 78, 88, 65, 50],
+  },
+  {
+    pageNum: 5,
+    label: 'REFERENCE RANGES',
+    fields: [],
+    lines: [88, 100, 75, 92, 68, 84, 95, 70, 80, 60],
+  },
+  {
+    pageNum: 6,
+    label: 'ORDERING PHYSICIAN',
+    fields: [
+      { label: 'PHYSICIAN', value: 'Dr. M. Greaves' },
+      { label: 'NPI', value: '1234567890' },
+      { label: 'DATE ORDERED', value: 'Mar 22, 2025' },
+    ],
+    lines: [100, 85, 70, 90, 60, 78, 88, 65, 72, 55],
+  },
+  {
+    pageNum: 7,
+    label: 'AUTHORIZATION',
+    fields: [
+      { label: 'AUTH CODE', value: 'A24189-LAB' },
+      { label: 'VALID THROUGH', value: 'Jun 22, 2025' },
+    ],
+    lines: [80, 95, 70, 88, 60, 75, 90, 65, 78, 50],
+  },
+];
+
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default function InboxDetailPage() {
+  const [activePage, setActivePage] = useState(0);
+
   const TAGS: Tag[] = ['PHI', 'LABS'];
 
   const FAX_DETAILS = [
     { label: 'From',     value: '+1 (206) 555-2840', mono: true  },
     { label: 'To',       value: '+1 (206) 555-0142', mono: true  },
     { label: 'Received', value: 'Today · 11:14 AM',  mono: false },
-    { label: 'Pages',    value: '4',                 mono: false },
+    { label: 'Pages',    value: '7',                 mono: false },
     { label: 'Fax ID',   value: 'FX-IN-3382',        mono: true  },
     { label: 'Number',   value: 'Cardiology · 0142', mono: false },
   ];
 
-  const THUMB_BARS = [70, 50, 80];
-  const DOC_BARS   = [100, 97, 88, 100, 75, 92, 68, 45];
+  const currentPage = pages[activePage];
 
   return (
     <div style={{
@@ -188,6 +246,56 @@ export default function InboxDetailPage() {
         {/* ── Left column ─────────────────────────────────────────────────── */}
         <div>
 
+          {/* Thumbnail strip — sits above the document card */}
+          <div style={{
+            display: 'flex',
+            gap: 8,
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            marginBottom: 12,
+          }}>
+            {pages.map((page, i) => (
+              <div key={page.pageNum} style={{ flexShrink: 0 }}>
+                <div
+                  onClick={() => setActivePage(i)}
+                  style={{
+                    width: 72,
+                    height: 90,
+                    borderRadius: 'var(--radius-sm)',
+                    border: activePage === i
+                      ? '1.5px solid var(--color-primary)'
+                      : '1px solid var(--color-border)',
+                    background: 'var(--color-bg)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: '6px',
+                    gap: '3px',
+                  }}
+                >
+                  {page.lines.slice(0, 4).map((w, j) => (
+                    <div key={j} style={{
+                      height: 4,
+                      width: `${w}%`,
+                      background: 'var(--color-border)',
+                      borderRadius: 2,
+                    }} />
+                  ))}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 10,
+                  color: 'var(--color-text-tertiary)',
+                  textAlign: 'center',
+                  marginTop: 4,
+                }}>
+                  {page.pageNum}
+                </div>
+              </div>
+            ))}
+          </div>
+
           {/* Document preview card */}
           <Card noPadding style={{ overflow: 'hidden' }}>
             {/* Header bar */}
@@ -208,88 +316,71 @@ export default function InboxDetailPage() {
                 letterSpacing: '0.06em', textTransform: 'uppercase' as const,
                 color: 'var(--color-primary)',
               }}>
-                LAB RESULTS · PATIENT A24189
+                {currentPage.label}
               </span>
               <span style={{
                 marginLeft: 'auto',
                 fontFamily: 'var(--font-mono)', fontSize: 11,
                 color: 'var(--color-text-tertiary)',
               }}>
-                PG 1/4
+                PG {activePage + 1}/7
               </span>
             </div>
 
             {/* Content */}
             <div style={{ padding: 24 }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-                  color: 'var(--color-text-tertiary)', marginBottom: 4,
-                }}>
-                  FROM
+              {currentPage.fields.map((field, i) => (
+                <div key={field.label} style={{ marginTop: i > 0 ? 14 : 0 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700,
+                    letterSpacing: '0.08em', textTransform: 'uppercase' as const,
+                    color: 'var(--color-text-tertiary)', marginBottom: 4,
+                  }}>
+                    {field.label}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--color-text-primary)' }}>
+                    {field.value}
+                  </div>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--color-text-primary)' }}>
-                  +1 (206) 555-2840
-                </div>
-              </div>
-
-              <div style={{ marginTop: 14 }}>
-                <div style={{
-                  fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-                  color: 'var(--color-text-tertiary)', marginBottom: 4,
-                }}>
-                  TO
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--color-text-primary)' }}>
-                  Northwind Health · Seattle Office
-                </div>
-              </div>
+              ))}
 
               {/* Placeholder content bars */}
-              <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {DOC_BARS.map((w, i) => (
+              <div style={{ marginTop: currentPage.fields.length > 0 ? 24 : 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {currentPage.lines.map((w, i) => (
                   <div key={i} style={{
                     height: 10, borderRadius: 'var(--radius-sm)',
                     background: 'var(--color-border)', width: `${w}%`,
                   }} />
                 ))}
               </div>
+
+              {/* Prev / Next navigation */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: 16,
+                paddingTop: 12,
+                borderTop: '1px solid var(--color-border)',
+              }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActivePage(p => p - 1)}
+                  disabled={activePage === 0}
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActivePage(p => p + 1)}
+                  disabled={activePage === 6}
+                >
+                  Next →
+                </Button>
+              </div>
             </div>
           </Card>
-
-          {/* Thumbnail strip */}
-          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            {[1, 2, 3, 4].map((page, i) => (
-              <div key={page}>
-                <div style={{
-                  width: 90, height: 114,
-                  border: i === 0
-                    ? '2px solid var(--color-primary)'
-                    : '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--color-bg)',
-                  display: 'flex', flexDirection: 'column',
-                  justifyContent: 'center', gap: 6, padding: 10,
-                }}>
-                  {THUMB_BARS.map((w, j) => (
-                    <div key={j} style={{
-                      height: 6, borderRadius: 2,
-                      background: 'var(--color-border)', width: `${w}%`,
-                    }} />
-                  ))}
-                </div>
-                <div style={{
-                  textAlign: 'center',
-                  fontFamily: 'var(--font-body)', fontSize: 11,
-                  color: 'var(--color-text-tertiary)', marginTop: 4,
-                }}>
-                  {page}
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* Auto-extracted card */}
           <Card padding={16} style={{

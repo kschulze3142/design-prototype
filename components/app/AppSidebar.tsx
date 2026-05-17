@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { I } from './icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type SubNavItem = { href: string; label: string; badge?: number };
 type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
@@ -50,7 +50,8 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
     }}>
       {items.map(item => {
         const Ico = I[item.icon];
-        const active = pathname === item.href ||
+        const inInbox = item.href === '/app/inbox' && pathname.startsWith('/app/inbox');
+        const active = inInbox || pathname === item.href ||
           (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
         const showSubs = active && item.subItems;
 
@@ -142,9 +143,14 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
 }
 
 export function AppSidebar() {
-  const pathname     = usePathname();
-  const activeNumber = null;
+  const pathname = usePathname();
+  const [activeNumber, setActiveNumber] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setActiveNumber(params.get('number'));
+  }, [pathname]);
 
   const initials = 'AP';
   const name     = 'Amelia Park';
