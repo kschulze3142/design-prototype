@@ -382,61 +382,6 @@ export default function InboxDetailPage() {
             </div>
           </Card>
 
-          {/* Auto-extracted card */}
-          <Card padding={16} style={{
-            background: 'var(--color-primary-subtle)',
-            boxShadow: 'none',
-            marginTop: 16,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <SparkleIcon />
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
-                color: 'var(--color-primary)',
-              }}>
-                Auto-extracted
-              </span>
-            </div>
-
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              color: 'var(--color-text-secondary)', lineHeight: 1.6,
-              margin: '6px 0 0',
-            }}>
-              Comprehensive metabolic panel and lipid profile, ordered Mar 22.
-              Results within reference range except for HDL...
-            </p>
-
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const, marginTop: 14 }}>
-              {[
-                { label: 'PATIENT ID',      value: 'A24189' },
-                { label: 'DATE OF SERVICE', value: 'Mar 22, 2025' },
-                { label: 'DOCUMENT TYPE',   value: 'PHI' },
-              ].map(({ label, value }) => (
-                <div key={label} style={{
-                  background: 'white',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '10px 14px',
-                }}>
-                  <div style={{
-                    fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700,
-                    letterSpacing: '0.06em', textTransform: 'uppercase' as const,
-                    color: 'var(--color-text-tertiary)', marginBottom: 3,
-                  }}>
-                    {label}
-                  </div>
-                  <div style={{
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
-                    color: 'var(--color-text-primary)',
-                  }}>
-                    {value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
         </div>
 
         {/* ── Right column ────────────────────────────────────────────────── */}
@@ -527,6 +472,61 @@ export default function InboxDetailPage() {
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <Button variant="ghost" size="sm">↓ Download receipt</Button>
               <Button variant="ghost" size="sm">→ Forward</Button>
+            </div>
+          </Card>
+
+          {/* Auto-extracted card */}
+          <Card padding={16} style={{
+            background: 'var(--color-primary-subtle)',
+            boxShadow: 'none',
+            marginTop: 16,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <SparkleIcon />
+              <span style={{
+                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
+                color: 'var(--color-primary)',
+              }}>
+                Auto-extracted
+              </span>
+            </div>
+
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 13,
+              color: 'var(--color-text-secondary)', lineHeight: 1.6,
+              margin: '6px 0 0',
+            }}>
+              Comprehensive metabolic panel and lipid profile, ordered Mar 22.
+              Results within reference range except for HDL...
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const, marginTop: 14 }}>
+              {[
+                { label: 'PATIENT ID',      value: 'A24189' },
+                { label: 'DATE OF SERVICE', value: 'Mar 22, 2025' },
+                { label: 'DOCUMENT TYPE',   value: 'PHI' },
+              ].map(({ label, value }) => (
+                <div key={label} style={{
+                  background: 'white',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px 14px',
+                }}>
+                  <div style={{
+                    fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700,
+                    letterSpacing: '0.06em', textTransform: 'uppercase' as const,
+                    color: 'var(--color-text-tertiary)', marginBottom: 3,
+                  }}>
+                    {label}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
+                    color: 'var(--color-text-primary)',
+                  }}>
+                    {value}
+                  </div>
+                </div>
+              ))}
             </div>
           </Card>
 
