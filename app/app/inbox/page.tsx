@@ -464,8 +464,11 @@ export default function InboxPage() {
   // ── stat tile base style ─────────────────────────────────────────────────
   const statTileBase: React.CSSProperties = {
     padding: 20,
-    boxShadow: 'none',
-    cursor: 'default',
+    borderRight: '1px solid var(--color-border)',
+  };
+
+  const statTileLast: React.CSSProperties = {
+    padding: 20,
   };
 
   return (
@@ -549,14 +552,14 @@ export default function InboxPage() {
       }}>
 
         {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, flexShrink: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, flexShrink: 0 }}>
 
           {/* Tile 1: Unread — clickable */}
           <button
             onClick={() => setActiveTab('unread')}
             style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
-            <Card style={statTileBase}>
+            <div style={statTileBase}>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
                 UNREAD
               </div>
@@ -567,11 +570,11 @@ export default function InboxPage() {
                 <I.ArrowUp size={11} strokeWidth={2.4} />
                 4 in last hour
               </div>
-            </Card>
+            </div>
           </button>
 
           {/* Tile 2: Awaiting routing */}
-          <Card style={statTileBase}>
+          <div style={statTileBase}>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
               AWAITING ROUTING
             </div>
@@ -581,18 +584,14 @@ export default function InboxPage() {
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
               auto-routes when matched
             </div>
-          </Card>
+          </div>
 
           {/* Tile 3: PHI Unread — highlighted, clickable */}
           <button
             onClick={() => setActiveTab('phi')}
             style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
-            <Card style={{
-              ...statTileBase,
-              background: 'var(--color-phi-bg)',
-              border: '1px solid rgba(124,58,237,0.15)',
-            }}>
+            <div style={statTileBase}>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
                 PHI UNREAD
               </div>
@@ -602,11 +601,11 @@ export default function InboxPage() {
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
                 review within 24h
               </div>
-            </Card>
+            </div>
           </button>
 
           {/* Tile 4: Avg time — informational */}
-          <Card style={statTileBase}>
+          <div style={statTileLast}>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
               AVG TIME IN INBOX
             </div>
@@ -617,7 +616,7 @@ export default function InboxPage() {
               <I.ArrowDown size={11} strokeWidth={2.4} />
               12% this week
             </div>
-          </Card>
+          </div>
         </div>
 
         {/* Filter bar */}
