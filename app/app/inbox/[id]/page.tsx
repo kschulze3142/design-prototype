@@ -202,6 +202,7 @@ const pages = [
 
 export default function InboxDetailPage() {
   const [activePage, setActivePage] = useState(0);
+  const [hoverPage, setHoverPage] = useState<number | null>(null);
 
   // Modal / dropdown state
   const [forwardOpen, setForwardOpen] = useState(false);
@@ -545,8 +546,6 @@ export default function InboxDetailPage() {
 
       {/* ── Detail header ──────────────────────────────────────────────────── */}
       <div style={{
-        background: 'var(--color-surface)',
-        borderBottom: '1px solid var(--color-border)',
         padding: '16px 32px',
         flexShrink: 0,
       }}>
@@ -669,9 +668,7 @@ export default function InboxDetailPage() {
 
       {/* ── Action bar ─────────────────────────────────────────────────────── */}
       <div style={{
-        background: 'var(--color-surface)',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '10px 32px',
+        padding: '10px 32px 20px',
         display: 'flex',
         gap: 8,
         flexShrink: 0,
@@ -702,18 +699,25 @@ export default function InboxDetailPage() {
             overflowX: 'auto',
             scrollbarWidth: 'none',
             marginBottom: 12,
+            background: 'var(--color-bg)',
+            borderRadius: 'var(--radius-md) var(--radius-md) 0 0',
           }}>
             {pages.map((page, i) => (
               <div key={page.pageNum} style={{ flexShrink: 0 }}>
                 <div
                   onClick={() => setActivePage(i)}
+                  onMouseEnter={() => setHoverPage(i)}
+                  onMouseLeave={() => setHoverPage(null)}
                   style={{
                     width: 72,
                     height: 90,
                     borderRadius: 'var(--radius-sm)',
                     border: activePage === i
                       ? '2px solid var(--color-primary)'
-                      : '1px solid var(--color-border)',
+                      : hoverPage === i
+                        ? '2px solid var(--color-border-strong)'
+                        : '2px solid transparent',
+                    boxShadow: activePage === i ? '0 0 0 3px var(--color-primary-subtle)' : 'none',
                     background: 'var(--color-bg)',
                     cursor: 'pointer',
                     display: 'flex',
@@ -798,7 +802,7 @@ export default function InboxDetailPage() {
                 {currentPage.lines.map((w, i) => (
                   <div key={i} style={{
                     height: 10, borderRadius: 'var(--radius-sm)',
-                    background: 'var(--color-bg)', width: `${w}%`,
+                    background: 'var(--color-border)', opacity: 0.5, width: `${w}%`,
                   }} />
                 ))}
               </div>
