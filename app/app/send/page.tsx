@@ -931,7 +931,7 @@ export default function SendPage() {
         ) : undefined}
       />
 
-      <div>
+      <div style={{ paddingBottom: 48 }}>
         <StepIndicator current={step} onBack={step === 1 ? () => setStep(0) : undefined} />
 
         {step === 0 && <StepCompose form={form} setForm={setForm} onNext={() => setStep(1)} />}

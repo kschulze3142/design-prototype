@@ -183,8 +183,8 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 10,
-        padding: '8px 10px',
+        gap: 6,
+        padding: '8px 4px',
         borderRadius: 'var(--radius-md)',
         cursor: 'pointer',
         background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
@@ -192,7 +192,7 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
       }}
     >
       <Avatar initials={recipient.initials} size={28} />
-      <span className="text-body-strong" style={{ fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{recipient.name}</span>
+      <span className="text-body-strong" style={{ fontSize: 13, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{recipient.name}</span>
       <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', flexShrink: 0, whiteSpace: 'nowrap' }}>
         {recipient.number}
       </span>
@@ -414,14 +414,16 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <Card noPadding style={{ marginTop: 12 }}>
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
               {QUEUE_ITEMS.map((item, i) => (
                 <div key={item.id} style={{
                   padding: '16px 20px',
-                  borderBottom: i < QUEUE_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
+                  background: 'var(--color-surface)',
+                  borderRadius: 'var(--radius-lg)',
+                  boxShadow: 'var(--shadow-card)',
                 }}>
                   <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', flexShrink: 0 }}>
                     <I.Send size={16} />
@@ -454,7 +456,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ))}
-            </Card>
+            </div>
           </div>
         </div>
 
