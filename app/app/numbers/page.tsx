@@ -342,15 +342,15 @@ export default function NumbersPage() {
       }}>
         <div>
           <div style={{
-            fontFamily: 'var(--font-body)',
+            fontFamily: 'var(--font-mono)',
             fontSize: 11,
             fontWeight: 600,
-            letterSpacing: '0.07em',
+            letterSpacing: '0.08em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
             marginBottom: 4,
           }}>
-            NUMBERS · {NUMBERS.length} LINES
+            NUMBERS · {activeCount} ACTIVE · {portingCount} PORTING · {inactiveCount} INACTIVE
           </div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
@@ -362,49 +362,31 @@ export default function NumbersPage() {
           }}>
             Your fax numbers.
           </h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--color-text-secondary)',
+            margin: 0,
+            marginTop: 4,
+          }}>
+            Manage your lines, routing, and caller ID settings.
+          </p>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', alignSelf: 'center' }}>
-          <Button variant="secondary">→ Port number</Button>
-          <Button variant="primary">+ Get number</Button>
+          <Button variant="secondary" size="md">→ Port number</Button>
+          <Button variant="primary" size="md">+ Get number</Button>
         </div>
-      </div>
-
-      {/* Stats row */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '20px 32px',
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-heading)',
-          fontSize: 28,
-          fontWeight: 700,
-          color: 'var(--color-text-primary)',
-          lineHeight: 1,
-        }}>
-          {activeCount}
-        </span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-secondary)', marginLeft: 8 }}>
-          active numbers
-        </span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-tertiary)', margin: '0 12px' }}>·</span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-review)' }}>
-          {portingCount} porting
-        </span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-tertiary)', margin: '0 12px' }}>·</span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-tertiary)' }}>
-          {inactiveCount} inactive
-        </span>
       </div>
 
       {/* Port-in-progress banner */}
       {portingNumbers.length > 0 && (
         <div style={{
           background: 'var(--color-review-bg)',
-          border: '1px solid color-mix(in srgb, var(--color-review) 20%, transparent)',
-          borderRadius: 'var(--radius-md)',
-          padding: '12px 20px',
+          borderLeft: '3px solid var(--color-review)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-card)',
+          padding: '16px 20px',
           margin: '16px 32px 0',
           display: 'flex',
           alignItems: 'center',
