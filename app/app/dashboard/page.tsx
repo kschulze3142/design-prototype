@@ -312,12 +312,23 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* ── Main Content ── */}
+      <div style={{
+        padding: '24px 32px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+
       {/* ── Onboarding Banner ── */}
       {!bannerDismissed && (
         <div style={{
           background: 'var(--color-delivered-bg)',
-          borderBottom: '1px solid rgba(22,163,74,0.2)',
-          padding: '10px 32px',
+          border: 'none',
+          borderLeft: '3px solid var(--color-delivered)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-card)',
+          padding: '16px 20px',
+          marginBottom: 24,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -377,9 +388,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── Main Content ── */}
       <div style={{
-        padding: '24px 32px',
         display: 'grid',
         gridTemplateColumns: '1fr 320px',
         gap: 24,
@@ -620,6 +629,7 @@ export default function DashboardPage() {
           </div>
 
         </div>
+      </div>
       </div>
     </div>
   );
