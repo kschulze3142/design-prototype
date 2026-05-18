@@ -155,7 +155,7 @@ const TABS = [
 
 // ─── FAX ROW ──────────────────────────────────────────────────────────────────
 
-function FaxRow({ fax }: { fax: SentFaxItem }) {
+function FaxRow({ fax, isLast }: { fax: SentFaxItem; isLast?: boolean }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -167,16 +167,13 @@ function FaxRow({ fax }: { fax: SentFaxItem }) {
         display: 'flex',
         alignItems: 'center',
         gap: 14,
-        paddingTop: 16,
-        paddingBottom: 16,
-        paddingRight: 32,
-        paddingLeft: 29,
-        borderBottom: '1px solid var(--color-border)',
+        padding: '16px 20px',
+        borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
         borderLeft: fax.status === 'failed' ? '3px solid var(--color-failed)' : '3px solid transparent',
         cursor: 'pointer',
         transition: 'background var(--duration-fast)',
         textDecoration: 'none',
-        background: hovered ? 'var(--color-primary-subtle)' : 'white',
+        background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
       }}
     >
       {/* Checkbox */}
@@ -347,16 +344,13 @@ export default function SentPage() {
 
   return (
     <div style={{
-      height: '100vh',
-      overflow: 'hidden',
-      margin: '0 -32px',
       display: 'flex',
       flexDirection: 'column',
     }}>
 
       {/* Page header */}
       <div style={{
-        padding: '32px 32px 24px',
+        padding: '32px 0 24px',
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
@@ -390,137 +384,87 @@ export default function SentPage() {
         </Button>
       </div>
 
-      {/* Search row */}
-      <div style={{ padding: '12px 32px', background: 'white', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}>
-        <div style={{ position: 'relative', width: '480px' }}>
-          <svg
-            style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--color-text-tertiary)', pointerEvents: 'none', zIndex: 1 }}
-            fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
+      {/* Search bar — sits on page background */}
+      <div style={{ position: 'relative', width: 480, marginBottom: 16 }}>
+        <svg
+          style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--color-text-tertiary)', pointerEvents: 'none', zIndex: 1 }}
+          fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
 
-          <input
-            type="text"
-            placeholder="Search sent faxes..."
-            value={searchValue}
-            onChange={e => setSearchValue(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
-            style={{
-              width: '100%', height: '36px',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-pill)',
-              padding: '0 16px 0 38px',
-              fontSize: '13px', fontFamily: 'var(--font-body)',
-              color: 'var(--color-text-primary)',
-              background: 'var(--color-bg)',
-              outline: 'none', boxSizing: 'border-box',
-            }}
-          />
+        <input
+          type="text"
+          placeholder="Search sent faxes..."
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+          style={{
+            width: '100%', height: '36px',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-pill)',
+            padding: '0 16px 0 38px',
+            fontSize: '13px', fontFamily: 'var(--font-body)',
+            color: 'var(--color-text-primary)',
+            background: 'var(--color-bg)',
+            outline: 'none', boxSizing: 'border-box',
+          }}
+        />
 
-          {/* Autosuggest dropdown */}
-          {searchFocused && (
-            <div style={{
-              position: 'absolute', top: 'calc(100% + 4px)', left: 0,
-              width: '480px', background: 'white',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: 'var(--shadow-panel)',
-              zIndex: 100, overflow: 'hidden',
-            }}>
-              {searchValue === '' ? (
-                <>
-                  {recentSearches.map(search => (
-                    <div
-                      key={search}
-                      onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '10px 16px', cursor: 'pointer',
-                        fontFamily: 'var(--font-body)', fontSize: '13px',
-                        color: 'var(--color-text-secondary)',
-                      }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
-                    >
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
-                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                      </svg>
-                      {search}
-                    </div>
-                  ))}
-
-                  <div style={{ height: '1px', background: 'var(--color-border)', margin: '4px 0' }} />
-                  <div style={{ padding: '6px 16px', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>
-                    Frequent recipients
+        {searchFocused && (
+          <div style={{
+            position: 'absolute', top: 'calc(100% + 4px)', left: 0,
+            width: '480px', background: 'white',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-panel)',
+            zIndex: 100, overflow: 'hidden',
+          }}>
+            {searchValue === '' ? (
+              <>
+                {recentSearches.map(search => (
+                  <div
+                    key={search}
+                    onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '10px 16px', cursor: 'pointer',
+                      fontFamily: 'var(--font-body)', fontSize: '13px',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                  >
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    {search}
                   </div>
-                  <div style={{ padding: '6px 16px 10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {frequentRecipients.map(contact => (
-                      <div
-                        key={contact.name}
-                        onMouseDown={() => { setSearchValue(contact.name); setSearchFocused(false); }}
-                        style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '6px',
-                          height: '30px', padding: '0 10px 0 6px',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: 'var(--radius-xl)',
-                          background: 'white', cursor: 'pointer',
-                          fontFamily: 'var(--font-body)', fontSize: '12px',
-                          fontWeight: 500, color: 'var(--color-text-primary)',
-                          transition: 'all var(--duration-fast)',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.background = 'white'; }}
-                      >
-                        <div style={{
-                          width: '22px', height: '22px', borderRadius: '50%',
-                          background: 'var(--color-primary-subtle)',
-                          color: 'var(--color-primary)',
-                          fontSize: '9px', fontWeight: 700,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          {contact.initials}
-                        </div>
-                        {contact.name}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <>
-                  {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).map(search => (
-                    <div
-                      key={search}
-                      onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '10px 16px', cursor: 'pointer',
-                        fontFamily: 'var(--font-body)', fontSize: '13px',
-                        color: 'var(--color-text-secondary)',
-                      }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
-                    >
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                      </svg>
-                      {search}
-                    </div>
-                  ))}
-                  {frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).map(contact => (
+                ))}
+
+                <div style={{ height: '1px', background: 'var(--color-border)', margin: '4px 0' }} />
+                <div style={{ padding: '6px 16px', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>
+                  Frequent recipients
+                </div>
+                <div style={{ padding: '6px 16px 10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {frequentRecipients.map(contact => (
                     <div
                       key={contact.name}
                       onMouseDown={() => { setSearchValue(contact.name); setSearchFocused(false); }}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '10px 16px', cursor: 'pointer',
-                        fontFamily: 'var(--font-body)', fontSize: '13px',
-                        color: 'var(--color-text-secondary)',
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        height: '30px', padding: '0 10px 0 6px',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-xl)',
+                        background: 'white', cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: '12px',
+                        fontWeight: 500, color: 'var(--color-text-primary)',
+                        transition: 'all var(--duration-fast)',
                       }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.background = 'white'; }}
                     >
                       <div style={{
                         width: '22px', height: '22px', borderRadius: '50%',
@@ -528,117 +472,159 @@ export default function SentPage() {
                         color: 'var(--color-primary)',
                         fontSize: '9px', fontWeight: 700,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
                       }}>
                         {contact.initials}
                       </div>
                       {contact.name}
                     </div>
                   ))}
-                  {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).length === 0 &&
-                   frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).length === 0 && (
-                    <div style={{ padding: '12px 16px', fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--color-text-tertiary)' }}>
-                      No suggestions
+                </div>
+              </>
+            ) : (
+              <>
+                {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).map(search => (
+                  <div
+                    key={search}
+                    onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '10px 16px', cursor: 'pointer',
+                      fontFamily: 'var(--font-body)', fontSize: '13px',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                  >
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    {search}
+                  </div>
+                ))}
+                {frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).map(contact => (
+                  <div
+                    key={contact.name}
+                    onMouseDown={() => { setSearchValue(contact.name); setSearchFocused(false); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '10px 16px', cursor: 'pointer',
+                      fontFamily: 'var(--font-body)', fontSize: '13px',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                  >
+                    <div style={{
+                      width: '22px', height: '22px', borderRadius: '50%',
+                      background: 'var(--color-primary-subtle)',
+                      color: 'var(--color-primary)',
+                      fontSize: '9px', fontWeight: 700,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      {contact.initials}
                     </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
+                    {contact.name}
+                  </div>
+                ))}
+                {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).length === 0 &&
+                 frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).length === 0 && (
+                  <div style={{ padding: '12px 16px', fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--color-text-tertiary)' }}>
+                    No suggestions
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Filter bar */}
+      {/* Main list card */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 44,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        flexShrink: 0,
+        background: 'var(--color-surface)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-card)',
+        overflow: 'hidden',
       }}>
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            onMouseEnter={() => setHoveredTab(tab.id)}
-            onMouseLeave={() => setHoveredTab(null)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 5,
-              padding: '4px 12px',
-              borderRadius: 'var(--radius-pill)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              fontWeight: activeTab === tab.id ? 600 : 500,
-              cursor: 'pointer',
-              border: 'none',
-              background: activeTab === tab.id ? 'var(--color-primary)' : (hoveredTab === tab.id ? 'var(--color-primary-subtle)' : 'transparent'),
-              color: activeTab === tab.id ? 'white' : 'var(--color-text-secondary)',
-              whiteSpace: 'nowrap',
-              transition: `background var(--duration-fast)`,
-            }}
-          >
-            {tab.label}
-            <span style={{
-              fontSize: 13,
-              color: activeTab === tab.id ? 'rgba(255,255,255,0.7)' : 'var(--color-text-tertiary)',
-            }}>
-              {tab.count}
-            </span>
-          </button>
-        ))}
 
+        {/* Filter tabs row */}
         <div style={{
-          borderLeft: '1px solid var(--color-border)',
-          paddingLeft: 16,
-          marginLeft: 8,
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--color-border)',
+          background: 'var(--color-surface)',
           display: 'flex',
+          alignItems: 'center',
           gap: 8,
         }}>
-          {['Number', 'Recipient'].map(label => (
-            <button key={label} style={{
-              height: 30,
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-md)',
-              padding: '0 10px',
-              fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              color: 'var(--color-text-secondary)',
-              background: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
-              cursor: 'pointer',
-            }}>
-              {label}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              onMouseEnter={() => setHoveredTab(tab.id)}
+              onMouseLeave={() => setHoveredTab(null)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                fontWeight: activeTab === tab.id ? 600 : 500,
+                cursor: 'pointer',
+                border: 'none',
+                background: activeTab === tab.id ? 'var(--color-primary)' : (hoveredTab === tab.id ? 'var(--color-primary-subtle)' : 'transparent'),
+                color: activeTab === tab.id ? 'white' : 'var(--color-text-secondary)',
+                whiteSpace: 'nowrap',
+                transition: `background var(--duration-fast)`,
+              }}
+            >
+              {tab.label}
+              <span style={{
+                fontSize: 13,
+                color: activeTab === tab.id ? 'rgba(255,255,255,0.7)' : 'var(--color-text-tertiary)',
+              }}>
+                {tab.count}
+              </span>
             </button>
           ))}
-        </div>
-      </div>
 
-      {/* List container */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        scrollbarWidth: 'thin',
-        scrollbarColor: 'var(--color-border) transparent',
-        background: 'white',
-      }}>
-        {/* List header row */}
+          <div style={{
+            borderLeft: '1px solid var(--color-border)',
+            paddingLeft: 16,
+            marginLeft: 8,
+            display: 'flex',
+            gap: 8,
+          }}>
+            {['Number', 'Recipient'].map(label => (
+              <button key={label} style={{
+                height: 30,
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0 10px',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--color-text-secondary)',
+                background: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                cursor: 'pointer',
+              }}>
+                {label}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Column header row */}
         <div style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
           background: 'var(--color-bg)',
           borderBottom: '1px solid var(--color-border)',
-          padding: '8px 32px',
+          padding: '10px 20px',
           display: 'flex',
           alignItems: 'center',
           gap: 12,
@@ -649,10 +635,7 @@ export default function SentPage() {
           />
           <span style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
+            fontSize: 12,
             color: 'var(--color-text-tertiary)',
           }}>
             {filtered.length} faxes
@@ -687,9 +670,10 @@ export default function SentPage() {
           </div>
         </div>
 
+        {/* Rows */}
         {filtered.length === 0 ? (
           <div style={{
-            padding: '64px 32px',
+            padding: '64px 20px',
             textAlign: 'center',
             fontFamily: 'var(--font-body)',
             fontSize: 14,
@@ -698,7 +682,7 @@ export default function SentPage() {
             Nothing here. Try another filter.
           </div>
         ) : (
-          filtered.map(fax => <FaxRow key={fax.id} fax={fax} />)
+          filtered.map((fax, i) => <FaxRow key={fax.id} fax={fax} isLast={i === filtered.length - 1} />)
         )}
       </div>
     </div>
