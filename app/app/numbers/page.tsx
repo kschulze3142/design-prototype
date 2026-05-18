@@ -335,9 +335,7 @@ export default function NumbersPage() {
 
       {/* Page header */}
       <div style={{
-        background: 'var(--color-surface)',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '20px 32px',
+        padding: '32px 32px 24px',
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'space-between',

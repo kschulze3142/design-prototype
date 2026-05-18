@@ -413,9 +413,7 @@ function InboxContent() {
 
       {/* Page header */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '24px 32px',
+        padding: '32px 32px 24px',
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'space-between',

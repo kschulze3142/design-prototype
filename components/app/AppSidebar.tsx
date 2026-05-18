@@ -302,12 +302,12 @@ export function AppSidebar() {
     }}>
       {/* Logo area */}
       <div style={{
-        height: 56,
-        padding: '0 20px',
-        borderBottom: '1px solid var(--sidebar-separator)',
+        paddingTop: 28,
+        paddingBottom: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
       }}>
         <Link href="/app/dashboard" style={{ textDecoration: 'none' }}>
           <div style={{

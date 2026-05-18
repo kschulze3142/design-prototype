@@ -154,9 +154,8 @@ export default function TeamPage() {
 
       {/* Page Header */}
       <div style={{
-        background: 'white', borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px', height: 72,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '32px 32px 24px',
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
       }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 4 }}>
@@ -166,7 +165,9 @@ export default function TeamPage() {
             Who's on the line.
           </h1>
         </div>
-        <Button variant="primary">+ Invite people</Button>
+        <div style={{ alignSelf: 'center' }}>
+          <Button variant="primary">+ Invite people</Button>
+        </div>
       </div>
 
       {/* MFA Alert Banner */}

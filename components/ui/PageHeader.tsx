@@ -10,9 +10,8 @@ interface PageHeaderProps {
 export function PageHeader({ overline, headline, subline, actions }: PageHeaderProps) {
   return (
     <div style={{
-      background: 'white',
-      borderBottom: '1px solid var(--color-header-border)',
-      padding: '24px 32px',
+      paddingTop: 32,
+      paddingBottom: 24,
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'space-between',

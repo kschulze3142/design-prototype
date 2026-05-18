@@ -917,24 +917,21 @@ export default function SendPage() {
 
   return (
     <div>
-      {/* Bleed PageHeader to main edges by negating the main's horizontal padding */}
-      <div style={{ margin: '0 -32px' }}>
-        <PageHeader
-          overline={h.overline}
-          headline={h.headline}
-          subline={h.subline}
-          actions={step < 2 ? (
-            <>
-              <Button variant="ghost">Save draft</Button>
-              <Button variant="secondary">
-                <I.Templates size={14} /> From template
-              </Button>
-            </>
-          ) : undefined}
-        />
-      </div>
+      <PageHeader
+        overline={h.overline}
+        headline={h.headline}
+        subline={h.subline}
+        actions={step < 2 ? (
+          <>
+            <Button variant="ghost">Save draft</Button>
+            <Button variant="secondary">
+              <I.Templates size={14} /> From template
+            </Button>
+          </>
+        ) : undefined}
+      />
 
-      <div style={{ paddingTop: 24 }}>
+      <div>
         <StepIndicator current={step} onBack={step === 1 ? () => setStep(0) : undefined} />
 
         {step === 0 && <StepCompose form={form} setForm={setForm} onNext={() => setStep(1)} />}

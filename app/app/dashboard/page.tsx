@@ -267,17 +267,22 @@ export default function DashboardPage() {
 
       {/* ── Page Header ── */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 80,
+        padding: '32px 32px 24px',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         flexShrink: 0,
       }}>
         <div>
-          <div className="text-label" style={{ marginBottom: 2 }}>TUESDAY · MAY 13</div>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-tertiary)',
+            marginBottom: 4,
+          }}>TUESDAY · MAY 13</div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
             fontSize: 28,
@@ -292,7 +297,7 @@ export default function DashboardPage() {
             Northwind Health · Cardiology is set up and humming — 47 faxes today, no retries needed.
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, alignSelf: 'center' }}>
           <Button variant="ghost">📅 Today</Button>
           <Button variant="primary">
             <I.Plus size={14} strokeWidth={2.4} /> New fax
