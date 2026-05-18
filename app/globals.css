@@ -8,7 +8,7 @@
   --color-accent: #7a9fc0;
 
   /* Surfaces */
-  --color-bg: #f4f7fb;
+  --color-bg: #f0ece4;
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
   --color-surface-dark: #1e2d45;
@@ -16,6 +16,21 @@
   /* Borders */
   --color-border: #e2eaf5;
   --color-border-strong: #c8d5e8;
+  --color-header-border: rgba(0, 0, 0, 0.08);
+
+  /* Sidebar tokens */
+  --sidebar-bg: var(--color-surface-dark);
+  --sidebar-text: rgba(255, 255, 255, 0.75);
+  --sidebar-text-hover: rgba(255, 255, 255, 0.9);
+  --sidebar-text-active: rgba(255, 255, 255, 1);
+  --sidebar-text-sub: rgba(255, 255, 255, 0.6);
+  --sidebar-text-faint: rgba(255, 255, 255, 0.55);
+  --sidebar-icon: rgba(255, 255, 255, 0.5);
+  --sidebar-item-active: rgba(255, 255, 255, 0.1);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-badge-bg: rgba(255, 255, 255, 0.15);
+  --sidebar-separator: rgba(255, 255, 255, 0.08);
+  --sidebar-avatar-bg: rgba(255, 255, 255, 0.12);
 
   /* Text */
   --color-text-primary: #1a2236;
@@ -100,19 +115,18 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: 13px; font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--sidebar-text);
   cursor: pointer; text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
   margin-bottom: 1px;
 }
-.nav-item:hover { background: rgba(61, 80, 128, 0.06); color: var(--color-text-primary); }
+.nav-item:hover { background: var(--sidebar-item-hover); color: var(--sidebar-text-hover); }
 .nav-item.active {
-  background: var(--color-primary-subtle);
-  color: var(--color-primary);
-  box-shadow: inset 2px 0 0 var(--color-primary);
+  background: var(--sidebar-item-active);
+  color: var(--sidebar-text-active);
 }
-.nav-item .nav-icon { color: var(--color-text-tertiary); }
-.nav-item.active .nav-icon { color: var(--color-primary); }
+.nav-item .nav-icon { color: var(--sidebar-text); }
+.nav-item.active .nav-icon { color: var(--sidebar-text-active); }
 
 .nav-section-label {
   font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
@@ -121,7 +135,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 4px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--sidebar-separator); border-radius: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 
 /* ── Animations ── */

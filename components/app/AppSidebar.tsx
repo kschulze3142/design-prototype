@@ -64,8 +64,8 @@ function InboxSubItems() {
     fontSize: 10,
     fontWeight: 700,
     fontFamily: 'var(--font-body)',
-    background: 'var(--color-primary)',
-    color: 'white',
+    background: 'var(--sidebar-badge-bg)',
+    color: 'var(--sidebar-text-active)',
     borderRadius: 8,
     padding: '0 4px',
     display: 'inline-flex',
@@ -90,10 +90,10 @@ function InboxSubItems() {
           fontFamily: 'var(--font-body)',
           fontSize: 12,
           fontWeight: allActive ? 600 : 500,
-          color: allActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+          color: allActive ? 'var(--sidebar-text-active)' : 'var(--sidebar-text-sub)',
           textDecoration: 'none',
           borderRadius: 'var(--radius-sm)',
-          background: allActive ? 'var(--color-primary-subtle)' : 'transparent',
+          background: allActive ? 'var(--sidebar-item-active)' : 'transparent',
           marginBottom: 1,
           cursor: 'pointer',
           transition: 'color var(--duration-fast)',
@@ -128,7 +128,7 @@ function InboxSubItems() {
                 left: 28,
                 right: 10,
                 height: 2,
-                background: 'var(--color-primary)',
+                background: 'var(--sidebar-text-active)',
                 borderRadius: 1,
                 zIndex: 10,
               }} />
@@ -147,13 +147,13 @@ function InboxSubItems() {
                 fontSize: 12,
                 fontFamily: 'var(--font-body)',
                 fontWeight: subActive ? 600 : 500,
-                color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                color: subActive ? 'var(--sidebar-text-active)' : 'var(--sidebar-text-sub)',
                 textDecoration: 'none',
                 borderRadius: 'var(--radius-sm)',
                 background: subActive
-                  ? 'var(--color-primary-subtle)'
+                  ? 'var(--sidebar-item-active)'
                   : isBeingDragged
-                    ? 'var(--color-bg)'
+                    ? 'var(--sidebar-item-hover)'
                     : 'transparent',
                 opacity: isBeingDragged ? 0.4 : 1,
                 cursor: 'grab',
@@ -231,8 +231,8 @@ function NavGroup({ items, separator, pushDown, pathname }: {
 }) {
   return (
     <div style={{
-      ...(separator ? { marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--color-border)' } : {}),
-      ...(pushDown   ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--color-border)' } : {}),
+      ...(separator ? { marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--sidebar-separator)' } : {}),
+      ...(pushDown   ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--sidebar-separator)' } : {}),
     }}>
       {items.map(item => {
         const Ico = I[item.icon];
@@ -249,8 +249,8 @@ function NavGroup({ items, separator, pushDown, pathname }: {
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge && item.badge > 0 && (
                 <span style={{
-                  background: 'var(--color-primary)',
-                  color: 'white',
+                  background: 'var(--sidebar-badge-bg)',
+                  color: 'var(--sidebar-text-active)',
                   fontSize: 10,
                   fontWeight: 700,
                   fontFamily: 'var(--font-body)',
@@ -291,8 +291,7 @@ export function AppSidebar() {
   return (
     <aside style={{
       width: 220,
-      background: '#ffffff',
-      borderRight: '1px solid var(--color-border)',
+      background: 'var(--sidebar-bg)',
       height: '100vh',
       position: 'fixed',
       top: 0,
@@ -305,7 +304,7 @@ export function AppSidebar() {
       <div style={{
         height: 56,
         padding: '0 20px',
-        borderBottom: '1px solid var(--color-border)',
+        borderBottom: '1px solid var(--sidebar-separator)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -315,7 +314,7 @@ export function AppSidebar() {
             fontFamily: 'var(--font-heading)',
             fontSize: 15,
             fontWeight: 700,
-            color: 'var(--color-primary)',
+            color: 'var(--sidebar-text-active)',
             lineHeight: 1.2,
           }}>
             Blue Lark
@@ -323,7 +322,7 @@ export function AppSidebar() {
           <div style={{
             fontFamily: 'var(--font-body)',
             fontSize: 12,
-            color: 'var(--color-text-secondary)',
+            color: 'var(--sidebar-text-active)',
             lineHeight: 1.3,
           }}>
             Northwind Health
@@ -348,7 +347,7 @@ export function AppSidebar() {
       {/* User area */}
       <div style={{
         height: 56,
-        borderTop: '1px solid var(--color-border)',
+        borderTop: '1px solid var(--sidebar-separator)',
         padding: '0 16px',
         display: 'flex',
         alignItems: 'center',
@@ -359,8 +358,8 @@ export function AppSidebar() {
           width: 28,
           height: 28,
           borderRadius: '50%',
-          background: 'var(--color-primary-subtle)',
-          color: 'var(--color-primary)',
+          background: 'var(--sidebar-avatar-bg)',
+          color: 'var(--sidebar-text-active)',
           fontSize: 11,
           fontWeight: 700,
           fontFamily: 'var(--font-body)',
@@ -377,7 +376,7 @@ export function AppSidebar() {
             fontSize: 13,
             fontWeight: 600,
             fontFamily: 'var(--font-body)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--sidebar-text-active)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -387,7 +386,7 @@ export function AppSidebar() {
           <div style={{
             fontSize: 11,
             fontFamily: 'var(--font-body)',
-            color: 'var(--color-text-tertiary)',
+            color: 'var(--sidebar-text-faint)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -400,7 +399,7 @@ export function AppSidebar() {
           onClick={() => setMenu(m => !m)}
           style={{
             marginLeft: 'auto',
-            color: 'var(--color-text-tertiary)',
+            color: 'var(--sidebar-icon)',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
