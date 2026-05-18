@@ -414,10 +414,9 @@ function InboxContent() {
       <div style={{
         background: 'white',
         borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 72,
+        padding: '20px 32px',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         flexShrink: 0,
       }}>
@@ -429,23 +428,23 @@ function InboxContent() {
             letterSpacing: '0.07em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
-            marginBottom: 2,
+            marginBottom: 4,
           }}>
             {overline}
           </div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 22,
+            fontSize: 26,
             fontWeight: 700,
             color: 'var(--color-text-primary)',
             margin: 0,
-            lineHeight: 1.2,
+            lineHeight: 1.15,
           }}>
             {headline}
           </h1>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', alignSelf: 'center' }}>
           <button style={{
             position: 'relative',
             width: 36,

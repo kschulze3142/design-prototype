@@ -322,10 +322,9 @@ export default function NumbersPage() {
       <div style={{
         background: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 72,
+        padding: '20px 32px',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         flexShrink: 0,
       }}>
@@ -337,22 +336,22 @@ export default function NumbersPage() {
             letterSpacing: '0.07em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
-            marginBottom: 2,
+            marginBottom: 4,
           }}>
             NUMBERS · {NUMBERS.length} LINES
           </div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 22,
+            fontSize: 26,
             fontWeight: 700,
             color: 'var(--color-text-primary)',
             margin: 0,
-            lineHeight: 1.2,
+            lineHeight: 1.15,
           }}>
             Your fax numbers.
           </h1>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', alignSelf: 'center' }}>
           <Button variant="secondary">→ Port number</Button>
           <Button variant="primary">+ Get number</Button>
         </div>
@@ -444,8 +443,8 @@ export default function NumbersPage() {
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 16,
       }}>
-        {filtered.map(n => <NumberCard key={n.id} n={n} />)}
         <AddLineCard />
+        {filtered.map(n => <NumberCard key={n.id} n={n} />)}
       </div>
     </div>
   );

@@ -357,10 +357,9 @@ export default function SentPage() {
       <div style={{
         background: 'white',
         borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 72,
+        padding: '20px 32px',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         flexShrink: 0,
       }}>
@@ -372,22 +371,22 @@ export default function SentPage() {
             letterSpacing: '0.07em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
-            marginBottom: 2,
+            marginBottom: 4,
           }}>
             SENT · 8 FAXES
           </div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 22,
+            fontSize: 26,
             fontWeight: 700,
             color: 'var(--color-text-primary)',
             margin: 0,
-            lineHeight: 1.2,
+            lineHeight: 1.15,
           }}>
             Your sent faxes · All numbers
           </h1>
         </div>
-        <Button variant="primary">
+        <Button variant="primary" style={{ alignSelf: 'center' }}>
           <I.Plus size={14} strokeWidth={2.4} /> New fax
         </Button>
       </div>
