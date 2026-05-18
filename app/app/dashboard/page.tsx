@@ -119,8 +119,10 @@ function AttentionCard({ item }: { item: AttentionItem }) {
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onMouseDown={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}
+        onMouseUp={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'; }}
         style={{
-          background: 'var(--color-surface)',
+          background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
           border: '1px solid var(--color-border)',
           borderLeft: item.borderColor ? `3px solid ${item.borderColor}` : '1px solid var(--color-border)',
           borderRadius: 'var(--radius-lg)',
@@ -191,8 +193,8 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
       }}
     >
       <Avatar initials={recipient.initials} size={28} />
-      <span className="text-body-strong" style={{ fontSize: 13 }}>{recipient.name}</span>
-      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', marginLeft: 'auto' }}>
+      <span className="text-body-strong" style={{ fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{recipient.name}</span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', flexShrink: 0, whiteSpace: 'nowrap' }}>
         {recipient.number}
       </span>
       <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center' }}>
@@ -206,6 +208,7 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
 
 export default function DashboardPage() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [hoveredInboxRow, setHoveredInboxRow] = useState<number | null>(null);
 
   const attentionItems: AttentionItem[] = [
     {
@@ -503,14 +506,23 @@ export default function DashboardPage() {
             </div>
             <div style={{ marginTop: 8 }}>
               {INBOX_ITEMS.map((item, i) => (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: '12px 0',
-                  borderBottom: i < INBOX_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
-                  cursor: 'pointer',
-                }}>
+                <div key={i}
+                  onMouseEnter={() => setHoveredInboxRow(i)}
+                  onMouseLeave={() => setHoveredInboxRow(null)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '12px 0',
+                    borderBottom: i < INBOX_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
+                    cursor: 'pointer',
+                    background: hoveredInboxRow === i ? 'var(--color-primary-subtle)' : 'transparent',
+                    transition: `background var(--duration-fast)`,
+                    borderRadius: 'var(--radius-sm)',
+                    margin: '0 -4px',
+                    paddingLeft: 4,
+                    paddingRight: 4,
+                  }}>
                   <Avatar initials={item.initials} size={28} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{

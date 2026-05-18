@@ -176,7 +176,7 @@ function FaxRow({ fax }: { fax: SentFaxItem }) {
         cursor: 'pointer',
         transition: 'background var(--duration-fast)',
         textDecoration: 'none',
-        background: hovered ? 'var(--color-bg)' : 'white',
+        background: hovered ? 'var(--color-primary-subtle)' : 'white',
       }}
     >
       {/* Checkbox */}
@@ -316,6 +316,7 @@ function FaxRow({ fax }: { fax: SentFaxItem }) {
 
 export default function SentPage() {
   const [activeTab, setActiveTab] = useState('all');
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
 
@@ -564,6 +565,8 @@ export default function SentPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
+            onMouseEnter={() => setHoveredTab(tab.id)}
+            onMouseLeave={() => setHoveredTab(null)}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -575,9 +578,10 @@ export default function SentPage() {
               fontWeight: activeTab === tab.id ? 600 : 500,
               cursor: 'pointer',
               border: 'none',
-              background: activeTab === tab.id ? 'var(--color-primary)' : 'transparent',
+              background: activeTab === tab.id ? 'var(--color-primary)' : (hoveredTab === tab.id ? 'var(--color-primary-subtle)' : 'transparent'),
               color: activeTab === tab.id ? 'white' : 'var(--color-text-secondary)',
               whiteSpace: 'nowrap',
+              transition: `background var(--duration-fast)`,
             }}
           >
             {tab.label}

@@ -60,17 +60,40 @@ export function Button({ variant = 'md' as any, size = 'md', children, style, ..
       }}
       onMouseEnter={e => {
         const el = e.currentTarget;
-        if (variant === 'primary') el.style.background = 'var(--color-primary-hover)';
-        if (variant === 'secondary') { el.style.background = 'var(--color-primary-subtle)'; el.style.borderColor = 'var(--color-primary)'; }
-        if (variant === 'ghost') { el.style.background = 'var(--color-primary-subtle)'; el.style.color = 'var(--color-text-primary)'; }
-        if (variant === 'destructive') el.style.background = '#b91c1c';
+        if (variant === 'primary') {
+          el.style.background = 'var(--color-primary-hover)';
+          el.style.transform = 'translateY(-1px)';
+          el.style.boxShadow = '0 4px 12px rgba(61, 80, 128, 0.25)';
+        }
+        if (variant === 'secondary') {
+          el.style.background = 'var(--color-primary-subtle)';
+          el.style.borderColor = 'var(--color-primary)';
+          el.style.transform = 'translateY(-1px)';
+        }
+        if (variant === 'ghost') {
+          el.style.background = 'var(--color-primary-subtle)';
+          el.style.color = 'var(--color-text-primary)';
+          el.style.transform = 'translateY(-1px)';
+        }
+        if (variant === 'destructive') {
+          el.style.background = '#b91c1c';
+          el.style.transform = 'translateY(-1px)';
+        }
       }}
       onMouseLeave={e => {
         const el = e.currentTarget;
         Object.assign(el.style, variantStyle);
+        el.style.transform = '';
+        el.style.boxShadow = '';
       }}
-      onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.98)'; }}
-      onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+      onMouseDown={e => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = variant === 'primary' ? '0 2px 6px rgba(61, 80, 128, 0.15)' : '';
+      }}
+      onMouseUp={e => {
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        if (variant === 'primary') e.currentTarget.style.boxShadow = '0 4px 12px rgba(61, 80, 128, 0.25)';
+      }}
       {...rest}
     >
       {children}

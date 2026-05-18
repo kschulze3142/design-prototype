@@ -137,6 +137,7 @@ function MfaStatus({ on }: { on: boolean }) {
 
 export default function TeamPage() {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   const filtered = MEMBERS.filter(m => {
@@ -238,12 +239,14 @@ export default function TeamPage() {
                   <button
                     key={tab.key}
                     onClick={() => setActiveFilter(tab.key)}
+                    onMouseEnter={() => setHoveredFilter(tab.key)}
+                    onMouseLeave={() => setHoveredFilter(null)}
                     style={{
-                      background: active ? 'var(--color-primary)' : 'transparent',
+                      background: active ? 'var(--color-primary)' : (hoveredFilter === tab.key ? 'var(--color-primary-subtle)' : 'transparent'),
                       color: active ? 'white' : 'var(--color-text-secondary)',
-                      borderRadius: 'var(--radius-xl)', padding: '4px 12px',
+                      borderRadius: 'var(--radius-pill)', padding: '4px 12px',
                       fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer',
-                      fontFamily: 'var(--font-body)', transition: 'all 120ms',
+                      fontFamily: 'var(--font-body)', transition: `background var(--duration-fast)`,
                     }}
                   >
                     {tab.label} {tab.count}
@@ -261,7 +264,7 @@ export default function TeamPage() {
                 placeholder="Search members..."
                 style={{
                   width: 200, height: 32,
-                  border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)',
+                  border: '1px solid var(--color-border)', borderRadius: 'var(--radius-pill)',
                   padding: '0 12px 0 32px', fontSize: 13, fontFamily: 'var(--font-body)',
                   color: 'var(--color-text-primary)', background: 'white', outline: 'none',
                 }}
@@ -292,7 +295,7 @@ export default function TeamPage() {
                   borderBottom: idx < filtered.length - 1 ? '1px solid var(--color-border)' : 'none',
                   cursor: 'pointer', transition: 'background 120ms',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'var(--color-bg)'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'var(--color-primary-subtle)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
               >
                 {/* MEMBER */}

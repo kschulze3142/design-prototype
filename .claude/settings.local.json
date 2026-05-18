@@ -12,7 +12,8 @@
       "Bash(pnpm exec *)",
       "Bash(git -C \"C:\\\\Users\\\\kai\\\\wirefax\\\\design-prototype\" add app/layout.tsx app/globals.css app/app/audit/page.tsx app/app/billing/page.tsx app/app/analytics/page.tsx app/app/compliance/page.tsx app/app/contacts/page.tsx app/app/onboarding/page.tsx app/app/settings/page.tsx app/app/templates/page.tsx components/app/primitives.tsx components/home/HFAQ.tsx components/home/HHero.tsx components/home/HOperationsShowcase.tsx components/home/HPlatformOverview.tsx components/home/HPricing.tsx components/home/HResourcesFooter.tsx components/home/HSecurity.tsx components/home/HTrustBand.tsx components/home/HWorkflow.tsx)",
       "Bash(git -C \"C:\\\\Users\\\\kai\\\\wirefax\\\\design-prototype\" status)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(pnpm run *)"
     ]
   }
 }

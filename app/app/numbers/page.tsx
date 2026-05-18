@@ -67,6 +67,7 @@ const bodyStyle: React.CSSProperties = {
 // ── NumberCard ─────────────────────────────────────────────────────────────────
 
 function NumberCard({ n }: { n: FaxNumber }) {
+  const [hovered, setHovered] = useState(false);
   const isPort     = n.status === 'porting';
   const isInactive = n.status === 'inactive';
 
@@ -81,9 +82,21 @@ function NumberCard({ n }: { n: FaxNumber }) {
                               'Inactive';
 
   return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseDown={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}
+      onMouseUp={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; }}
+      style={{
+        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+        transition: `all var(--duration-base) var(--ease-out)`,
+        cursor: 'pointer',
+      }}
+    >
     <Card
       noPadding
       style={{
+        boxShadow: hovered ? 'var(--shadow-panel)' : undefined,
         opacity: isInactive ? 0.7 : 1,
         ...(isPort && {
           border: '1px solid color-mix(in srgb, var(--color-review) 25%, transparent)',
@@ -221,6 +234,7 @@ function NumberCard({ n }: { n: FaxNumber }) {
         )}
       </div>
     </Card>
+    </div>
   );
 }
 
@@ -294,6 +308,7 @@ const FILTER_TABS: FilterTab[] = ['All', 'Active', 'Local', 'Toll-free'];
 
 export default function NumbersPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All');
+  const [hoveredFilter, setHoveredFilter] = useState<FilterTab | null>(null);
 
   const activeCount   = NUMBERS.filter(n => n.status === 'active').length;
   const portingCount  = NUMBERS.filter(n => n.status === 'porting').length;
@@ -417,17 +432,19 @@ export default function NumbersPage() {
           <button
             key={tab}
             onClick={() => setActiveFilter(tab)}
+            onMouseEnter={() => setHoveredFilter(tab)}
+            onMouseLeave={() => setHoveredFilter(null)}
             style={{
-              background: activeFilter === tab ? 'var(--color-primary)' : 'transparent',
+              background: activeFilter === tab ? 'var(--color-primary)' : (hoveredFilter === tab ? 'var(--color-primary-subtle)' : 'transparent'),
               color: activeFilter === tab ? 'white' : 'var(--color-text-secondary)',
-              borderRadius: 'var(--radius-xl)',
+              borderRadius: 'var(--radius-pill)',
               padding: '4px 12px',
               fontSize: 13,
               fontWeight: 600,
               fontFamily: 'var(--font-body)',
               border: 'none',
               cursor: 'pointer',
-              transition: 'all var(--duration-fast)',
+              transition: `background var(--duration-fast)`,
               marginBottom: 12,
             }}
           >

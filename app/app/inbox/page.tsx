@@ -225,7 +225,7 @@ function FaxRow({ fax }: { fax: FaxItem }) {
         transition: 'background var(--duration-fast) var(--ease-out)',
         position: 'relative',
         textDecoration: 'none',
-        background: hovered ? 'var(--color-bg)' : 'white',
+        background: hovered ? 'var(--color-primary-subtle)' : 'white',
       }}
     >
       {/* Checkbox */}
@@ -382,6 +382,7 @@ function InboxContent() {
   const overline = `INBOX · ${unreadCount} UNREAD`;
 
   const [activeTab, setActiveTab]       = useState('all');
+  const [hoveredTab, setHoveredTab]     = useState<string | null>(null);
   const [searchValue, setSearchValue]   = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
 
@@ -682,6 +683,8 @@ function InboxContent() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
+            onMouseEnter={() => setHoveredTab(tab.id)}
+            onMouseLeave={() => setHoveredTab(null)}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -693,9 +696,10 @@ function InboxContent() {
               fontWeight: activeTab === tab.id ? 600 : 500,
               cursor: 'pointer',
               border: 'none',
-              background: activeTab === tab.id ? 'var(--color-primary)' : 'transparent',
+              background: activeTab === tab.id ? 'var(--color-primary)' : (hoveredTab === tab.id ? 'var(--color-primary-subtle)' : 'transparent'),
               color: activeTab === tab.id ? 'white' : 'var(--color-text-secondary)',
               whiteSpace: 'nowrap',
+              transition: `background var(--duration-fast)`,
             }}
           >
             {tab.label}
