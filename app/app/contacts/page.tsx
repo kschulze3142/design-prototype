@@ -230,7 +230,7 @@ function ContactDrawer({ c, onClose }: { c: Contact | null; onClose: () => void 
                   ].map(s => (
                     <SoftCard key={s.label} className="p-3 text-center">
                       <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">{s.label}</div>
-                      <div className="text-[18px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'var(--font-inter-tight), system-ui' }}>{s.value}</div>
+                      <div className="text-[18px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'var(--font-heading), system-ui' }}>{s.value}</div>
                     </SoftCard>
                   ))}
                 </div>
@@ -288,7 +288,7 @@ export default function ContactsPage() {
         <div className="flex items-start gap-6">
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Address book · {CONTACTS.length} contacts</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>Your fax directory.</h1>
+            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Your fax directory.</h1>
             <p className="text-[14px] text-slate-500 mt-2">Recipients you fax regularly — organizations and people. Saved contacts auto-fill the compose form.</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">

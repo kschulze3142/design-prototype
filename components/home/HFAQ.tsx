@@ -70,7 +70,7 @@ export function HFAQ() {
     <section id="faq" className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mb-10 max-w-3xl">
         <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Questions</p>
-        <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+        <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
           Built for the messy middle between legacy fax and modern workflows.
         </h2>
       </div>

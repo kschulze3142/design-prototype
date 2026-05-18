@@ -58,7 +58,7 @@ export default function CompliancePage() {
         <div className="flex items-start gap-6">
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Compliance</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>HIPAA-ready, by default.</h1>
+            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>HIPAA-ready, by default.</h1>
             <p className="text-[14px] text-slate-500 mt-2">Posture, attestations, and the agreements that keep you audit-ready.</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">

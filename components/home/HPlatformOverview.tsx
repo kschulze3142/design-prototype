@@ -216,7 +216,7 @@ export function HPlatformOverview() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="mb-12">
           <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Platform overview</p>
-          <h2 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+          <h2 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
             All your fax workflows in one platform
           </h2>
         </div>

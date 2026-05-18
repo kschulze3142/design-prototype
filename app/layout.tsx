@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Manrope, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Outfit, Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
-  weight: ["400", "500", "600", "700"],
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-heading",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
-const interTight = Inter_Tight({
-  weight: ["400", "500", "600", "700"],
+const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-inter-tight",
+  variable: "--font-body",
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -32,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className={`${manrope.variable} ${interTight.variable} ${jetbrainsMono.variable} min-h-full flex flex-col`}>
+      <body className={`${outfit.variable} ${sora.variable} ${jetbrainsMono.variable} min-h-full flex flex-col`}>
         {children}
       </body>
     </html>

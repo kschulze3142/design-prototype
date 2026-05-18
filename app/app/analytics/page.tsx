@@ -209,7 +209,7 @@ export default function AnalyticsPage() {
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Reporting · Apr 14 → May 13</div>
             <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>
+              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
               How your fax program is performing.
             </h1>
             <p className="text-[14px] text-slate-500 mt-2">8,412 faxes across 6 destinations and 9 senders. Delivery is trending up, costs are trending down.</p>

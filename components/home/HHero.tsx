@@ -111,7 +111,7 @@ export function HHero() {
             </div>
           </Reveal>
           <Reveal delay={100}>
-            <h1 className="max-w-5xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+            <h1 className="max-w-5xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
               Modern fax software for teams that still need fax to work.
             </h1>
           </Reveal>

@@ -26,7 +26,7 @@ export function HWorkflow() {
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <HCard className="p-8 md:p-10">
           <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Modern fax workflow</p>
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
             One calm workspace from inbound document to final receipt.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-500">

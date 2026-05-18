@@ -107,7 +107,7 @@ export function HOperationsShowcase() {
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto mb-10 max-w-4xl text-center">
         <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Interactive overview</p>
-        <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+        <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-6xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
           Everything you need to run modern fax operations
         </h2>
       </div>

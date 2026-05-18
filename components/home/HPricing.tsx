@@ -83,7 +83,7 @@ export function HPricing() {
     <section id="pricing" className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
       <div className="mb-10 text-center">
         <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Simple pricing</p>
-        <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+        <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
           Start Free.<br />Scale when you&apos;re ready.
         </h2>
         <p className="mt-4 text-base text-slate-500">Simple plans, honest pricing, no surprises.</p>

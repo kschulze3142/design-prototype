@@ -102,7 +102,7 @@ export function HTrustBand() {
               <span className="h-2 w-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
               <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Healthcare-grade trust</p>
             </div>
-            <h2 className="text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+            <h2 className="text-4xl font-semibold tracking-[-0.04em] text-slate-950 md:text-5xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
               Quietly serious about security.
             </h2>
             <p className="mt-4 max-w-lg text-base leading-7 text-slate-500">

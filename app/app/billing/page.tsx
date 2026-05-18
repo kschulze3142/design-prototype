@@ -138,7 +138,7 @@ export default function BillingPage() {
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Billing & usage</div>
             <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>
+              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
               You're in good standing.
             </h1>
             <p className="text-[14px] text-slate-500 mt-2">Track plan limits, page volume, invoices, and your billing settings — all in one place.</p>

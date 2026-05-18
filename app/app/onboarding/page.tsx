@@ -122,7 +122,7 @@ export default function OnboardingPage() {
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Welcome to FaxGrid</div>
             <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>
+              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
               Let's get your workspace ready.
             </h1>
             <p className="text-[14px] text-slate-500 mt-2">A handful of quick steps and you'll be sending HIPAA-grade faxes in under 10 minutes.</p>
@@ -145,7 +145,7 @@ export default function OnboardingPage() {
               {completedCount === ONBOARDING_STEPS.length ? 'All done!' : `Estimated ${(ONBOARDING_STEPS.length - completedCount) * 2} minutes remaining`}
             </div>
           </div>
-          <span className="text-[28px] font-semibold text-slate-900" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>{pct}%</span>
+          <span className="text-[28px] font-semibold text-slate-900" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>{pct}%</span>
         </div>
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
           <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: 'var(--color-primary)' }} />

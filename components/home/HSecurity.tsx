@@ -30,7 +30,7 @@ export function HSecurity() {
       >
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Security without the heavy feel</p>
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
             Built for teams that need trust, visibility, and control.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-500">

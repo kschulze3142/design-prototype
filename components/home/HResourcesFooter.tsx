@@ -150,7 +150,7 @@ export function HResourcesFooter() {
           <div className="mb-10 flex items-end justify-between gap-6">
             <div>
               <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>From the FaxGrid desk</p>
-              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
                 From the FaxGrid desk.
               </h2>
               <p className="mt-3 text-base text-slate-500">Articles, guides, and updates for fax-forward teams.</p>
@@ -182,7 +182,7 @@ export function HResourcesFooter() {
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="grid gap-12 xl:grid-cols-[1fr_auto]">
             <div>
-              <h2 className="max-w-lg text-3xl font-semibold tracking-tight text-white md:text-4xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+              <h2 className="max-w-lg text-3xl font-semibold tracking-tight text-white md:text-4xl" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
                 Get started with FaxGrid today.
               </h2>
               <p className="mt-4 max-w-md text-base text-slate-400">

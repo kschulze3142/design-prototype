@@ -76,7 +76,7 @@ export const StatCard = ({ label, value, helper, trend, icon, className = '' }: 
       <span className="text-[12.5px] uppercase tracking-wider text-slate-500 font-semibold">{label}</span>
       {icon && <span className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>{icon}</span>}
     </div>
-    <span className="text-[44px] leading-none font-semibold tracking-tight text-slate-900" style={{ fontFamily: 'var(--font-inter-tight), system-ui' }}>{value}</span>
+    <span className="text-[44px] leading-none font-semibold tracking-tight text-slate-900" style={{ fontFamily: 'var(--font-heading), system-ui' }}>{value}</span>
     {helper && (
       <div className={`text-[12.5px] flex items-center gap-1.5 ${trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-500' : 'text-slate-500'}`}>
         {trend === 'up' && <I.ArrowUp size={12} strokeWidth={2.4} />}

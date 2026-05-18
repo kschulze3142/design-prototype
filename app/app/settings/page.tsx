@@ -485,7 +485,7 @@ export default function SettingsPage() {
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Settings</div>
             <h1
               className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}
+              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}
             >
               {current.id === 'profile' ? 'Make it yours.' : 'Workspace controls.'}
             </h1>

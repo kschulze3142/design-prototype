@@ -106,7 +106,7 @@ export default function TemplatesPage() {
         <div className="flex items-start gap-6">
           <div className="flex-1 min-w-0">
             <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Templates · {TEMPLATES.length} saved</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>Reusable cover pages and forms.</h1>
+            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Reusable cover pages and forms.</h1>
             <p className="text-[14px] text-slate-500 mt-2">Save time on repetitive faxes. Create once, reuse with merge fields like {`{{patient.id}}`} and {`{{provider.npi}}`}.</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">
