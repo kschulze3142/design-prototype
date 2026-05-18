@@ -59,14 +59,15 @@ const STEP_LABELS = ['Compose', 'Preview', 'Confirmation'];
 function StepIndicator({ current, onBack }: { current: number; onBack?: () => void }) {
   return (
     <Card noPadding style={{ marginBottom: 20 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '14px 24px' }}>
+        <div style={{ flexShrink: 0, marginRight: 16 }}>
           {onBack && (
             <Button variant="ghost" onClick={onBack} style={{ gap: 4 }}>
               <I.Chevron size={14} className="rotate-180" /> Back
             </Button>
           )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        </div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {STEP_LABELS.map((label, i) => {
             const done = i < current;
             const active = i === current;
@@ -78,9 +79,10 @@ function StepIndicator({ current, onBack }: { current: number; onBack?: () => vo
                     height: 1,
                     background: done ? 'var(--color-primary)' : 'var(--color-border)',
                     transition: `background var(--duration-base) var(--ease-out)`,
+                    flexShrink: 0,
                   }} />
                 )}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 6, paddingRight: 6 }}>
                   <div style={{
                     width: 24,
                     height: 24,
@@ -117,9 +119,8 @@ function StepIndicator({ current, onBack }: { current: number; onBack?: () => vo
               </React.Fragment>
             );
           })}
-          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ flexShrink: 0, marginLeft: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
           <I.Lock size={12} strokeWidth={2.2} style={{ color: 'var(--color-text-tertiary)' }} />
           <span className="text-label" style={{ color: 'var(--color-text-tertiary)' }}>
             Encrypted end-to-end · HIPAA
