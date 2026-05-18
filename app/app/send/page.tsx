@@ -395,7 +395,7 @@ function StepCompose({ form, setForm, onNext }: {
       </Card>
 
       {/* ── Right column ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 32 }}>
 
         {/* Card: Send from */}
         <Card>
@@ -494,7 +494,7 @@ function StepCompose({ form, setForm, onNext }: {
           variant="primary"
           disabled={!canContinue}
           onClick={onNext}
-          style={{ width: '100%', height: 44, justifyContent: 'center' }}
+          style={{ width: '100%', height: 44, justifyContent: 'center', marginTop: 24 }}
         >
           Continue to preview →
         </Button>
