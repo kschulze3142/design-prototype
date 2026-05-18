@@ -129,6 +129,70 @@ const TABS = [
   { id: 'archived', label: 'Archived', count: 0 },
 ];
 
+// ─── AUTOSUGGEST DATA ─────────────────────────────────────────────────────────
+
+const recentSearches = [
+  'Pacific Lab Diagnostics',
+  'Prior auth A24189',
+  'PHI unread',
+  'BlueShield',
+  'Lab results',
+];
+
+const frequentContacts = [
+  { initials: 'PL', name: 'Pacific Lab',     count: 24 },
+  { initials: 'BP', name: 'BlueShield',      count: 18 },
+  { initials: 'AC', name: 'Aetna Claims',    count: 12 },
+  { initials: 'SM', name: 'Swedish Medical', count: 9  },
+  { initials: 'GH', name: 'Group Health',    count: 7  },
+];
+
+// ─── CONTACT CHIP ─────────────────────────────────────────────────────────────
+
+function ContactChip({ contact, onSelect }: { contact: typeof frequentContacts[0]; onSelect: (name: string) => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseDown={() => onSelect(contact.name)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        height: 30,
+        padding: '0 10px 0 6px',
+        border: `1px solid ${hovered ? 'var(--color-primary)' : 'var(--color-border)'}`,
+        borderRadius: 'var(--radius-xl)',
+        background: hovered ? 'var(--color-primary-subtle)' : 'white',
+        cursor: 'pointer',
+        fontFamily: 'var(--font-body)',
+        fontSize: 12,
+        fontWeight: 500,
+        color: 'var(--color-text-primary)',
+        transition: 'all var(--duration-fast)',
+      }}
+    >
+      <div style={{
+        width: 22,
+        height: 22,
+        borderRadius: '50%',
+        background: 'var(--color-primary-subtle)',
+        color: 'var(--color-primary)',
+        fontSize: 9,
+        fontWeight: 700,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'var(--font-body)',
+      }}>
+        {contact.initials}
+      </div>
+      {contact.name}
+    </div>
+  );
+}
+
 // ─── FAX ROW ──────────────────────────────────────────────────────────────────
 
 function FaxRow({ fax }: { fax: FaxItem }) {
@@ -292,10 +356,11 @@ function FaxRow({ fax }: { fax: FaxItem }) {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default function InboxPage() {
-  const [activeTab, setActiveTab] = useState('all');
-  const [search, setSearch]       = useState('');
+  const [activeTab, setActiveTab]       = useState('all');
+  const [searchValue, setSearchValue]   = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
 
-  const q = search.toLowerCase();
+  const q = searchValue.toLowerCase();
 
   const filtered = faxes.filter(f => {
     if (activeTab === 'unread'   && !f.unread)                              return false;
@@ -305,6 +370,11 @@ export default function InboxPage() {
     if (q && !`${f.sender} ${f.subject}`.toLowerCase().includes(q))         return false;
     return true;
   });
+
+  const filteredRecent   = recentSearches.filter(s => s.toLowerCase().includes(q));
+  const filteredContacts = frequentContacts.filter(c => c.name.toLowerCase().includes(q));
+
+  const showDropdown = searchFocused;
 
   return (
     <div style={{
@@ -384,7 +454,188 @@ export default function InboxPage() {
         </div>
       </div>
 
-      {/* Filter bar */}
+      {/* Row 1 — Search bar */}
+      <div style={{
+        background: 'white',
+        borderBottom: '1px solid var(--color-border)',
+        padding: '0 32px',
+        height: 52,
+        display: 'flex',
+        alignItems: 'center',
+        flexShrink: 0,
+      }}>
+        <div style={{ position: 'relative', width: 480 }}>
+          {/* Search icon */}
+          <I.Search size={14} style={{
+            position: 'absolute',
+            left: 12,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: 'var(--color-text-tertiary)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Input */}
+          <input
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+            placeholder="Search inbox..."
+            style={{
+              width: '100%',
+              height: 36,
+              border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border)'}`,
+              borderRadius: 'var(--radius-xl)',
+              padding: '0 16px 0 38px',
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              background: searchFocused ? 'white' : 'var(--color-bg)',
+              outline: 'none',
+              color: 'var(--color-text-primary)',
+              boxSizing: 'border-box',
+              boxShadow: searchFocused ? '0 0 0 3px rgba(61,80,128,0.08)' : 'none',
+              transition: 'border-color var(--duration-fast), box-shadow var(--duration-fast), background var(--duration-fast)',
+            }}
+          />
+
+          {/* Autosuggest dropdown */}
+          {showDropdown && (
+            <div style={{
+              position: 'absolute',
+              top: 'calc(100% + 4px)',
+              left: 0,
+              width: 480,
+              background: 'white',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-panel)',
+              zIndex: 100,
+              overflow: 'hidden',
+            }}>
+              {q === '' ? (
+                <>
+                  {/* Recent searches */}
+                  {recentSearches.map(item => (
+                    <div
+                      key={item}
+                      onMouseDown={() => { setSearchValue(item); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '10px 16px',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 13,
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      {/* Clock icon */}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      {item}
+                    </div>
+                  ))}
+
+                  {/* Divider */}
+                  <div style={{ height: 1, background: 'var(--color-border)', margin: 0 }} />
+
+                  {/* Frequent contacts label */}
+                  <div style={{ padding: '6px 16px', fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', color: 'var(--color-text-tertiary)', textTransform: 'uppercase' }}>
+                    Frequent Contacts
+                  </div>
+
+                  {/* Contact chips row */}
+                  <div style={{ padding: '8px 16px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {frequentContacts.map(c => (
+                      <ContactChip key={c.initials} contact={c} onSelect={name => { setSearchValue(name); setSearchFocused(false); }} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Filtered recent searches */}
+                  {filteredRecent.map(item => (
+                    <div
+                      key={item}
+                      onMouseDown={() => { setSearchValue(item); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '10px 16px',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 13,
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      {item}
+                    </div>
+                  ))}
+
+                  {/* Filtered contacts */}
+                  {filteredContacts.map(c => (
+                    <div
+                      key={c.initials}
+                      onMouseDown={() => { setSearchValue(c.name); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '10px 16px',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 13,
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                        background: 'var(--color-primary-subtle)',
+                        color: 'var(--color-primary)',
+                        fontSize: 9,
+                        fontWeight: 700,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        fontFamily: 'var(--font-body)',
+                      }}>
+                        {c.initials}
+                      </div>
+                      {c.name}
+                    </div>
+                  ))}
+
+                  {filteredRecent.length === 0 && filteredContacts.length === 0 && (
+                    <div style={{ padding: '12px 16px', fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)' }}>
+                      No suggestions
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Row 2 — Filter pills + dropdowns */}
       <div style={{
         background: 'white',
         borderBottom: '1px solid var(--color-border)',
@@ -457,35 +708,6 @@ export default function InboxPage() {
               </svg>
             </button>
           ))}
-        </div>
-
-        {/* Search */}
-        <div style={{ marginLeft: 'auto', position: 'relative' }}>
-          <I.Search size={13} style={{
-            position: 'absolute',
-            left: 10,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'var(--color-text-tertiary)',
-            pointerEvents: 'none',
-          }} />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search inbox..."
-            style={{
-              width: 200,
-              height: 32,
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-xl)',
-              padding: '0 12px 0 32px',
-              fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              background: 'white',
-              outline: 'none',
-              color: 'var(--color-text-primary)',
-            }}
-          />
         </div>
       </div>
 
