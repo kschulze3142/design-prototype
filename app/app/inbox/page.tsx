@@ -376,7 +376,7 @@ function InboxContent() {
 
   const activeInbox = inboxNumbers.find(n => n.number === activeNumber);
   const headline = activeNumber === 'all' || !activeNumber
-    ? 'Your inbound faxes'
+    ? 'Your inbound faxes · All inboxes'
     : `Your inbound faxes · ${activeInbox?.label}`;
   const unreadCount = activeNumber === 'all' || !activeNumber ? 4 : (activeInbox?.badge ?? 0);
   const overline = `INBOX · ${unreadCount} UNREAD`;
