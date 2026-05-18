@@ -85,6 +85,8 @@ const labelStyle: React.CSSProperties = {
 export default function SentDetailPage() {
   const [activeTab, setActiveTab] = useState<TabId>('document');
   const [activePage, setActivePage] = useState(0);
+  const [hoverPage, setHoverPage] = useState<number | null>(null);
+  const [hoveredTab, setHoveredTab] = useState<TabId | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -98,8 +100,6 @@ export default function SentDetailPage() {
 
       {/* ── Detail header ─────────────────────────────────────────────────── */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
         padding: '16px 32px',
         flexShrink: 0,
       }}>
@@ -239,9 +239,7 @@ export default function SentDetailPage() {
 
       {/* ── Action bar ────────────────────────────────────────────────────── */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '10px 32px',
+        padding: '10px 32px 20px',
         display: 'flex',
         gap: 8,
         flexShrink: 0,
@@ -281,17 +279,24 @@ export default function SentDetailPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
+                  onMouseEnter={() => setHoveredTab(tab)}
+                  onMouseLeave={() => setHoveredTab(null)}
                   style={{
                     fontFamily: 'var(--font-body)',
                     fontSize: 13,
                     fontWeight: isActive ? 600 : 400,
-                    color: isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                    color: isActive
+                      ? 'var(--color-primary)'
+                      : hoveredTab === tab
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)',
                     background: 'none',
                     border: 'none',
                     borderBottom: isActive ? '2px solid var(--color-primary)' : '2px solid transparent',
                     padding: '10px 0',
                     cursor: 'pointer',
                     marginBottom: -1,
+                    transition: 'color var(--duration-fast)',
                   }}
                 >
                   {labels[tab]}
@@ -310,18 +315,25 @@ export default function SentDetailPage() {
                 overflowX: 'auto',
                 scrollbarWidth: 'none',
                 marginBottom: 12,
+                background: 'var(--color-bg)',
+                borderRadius: 'var(--radius-md) var(--radius-md) 0 0',
               }}>
                 {THUMBNAILS.map((_, i) => (
                   <div key={i} style={{ flexShrink: 0 }}>
                     <div
                       onClick={() => setActivePage(i)}
+                      onMouseEnter={() => setHoverPage(i)}
+                      onMouseLeave={() => setHoverPage(null)}
                       style={{
                         width: 72,
                         height: 90,
                         borderRadius: 'var(--radius-sm)',
                         border: activePage === i
-                          ? '1.5px solid var(--color-primary)'
-                          : '1px solid var(--color-border)',
+                          ? '2px solid var(--color-primary)'
+                          : hoverPage === i
+                            ? '2px solid var(--color-border-strong)'
+                            : '2px solid transparent',
+                        boxShadow: activePage === i ? '0 0 0 3px var(--color-primary-subtle)' : 'none',
                         background: 'var(--color-bg)',
                         cursor: 'pointer',
                         display: 'flex',
@@ -354,7 +366,7 @@ export default function SentDetailPage() {
               </div>
 
               {/* Document preview card */}
-              <Card noPadding style={{ overflow: 'hidden' }}>
+              <Card noPadding style={{ overflow: 'hidden', border: 'none' }}>
                 {/* Header bar */}
                 <div style={{
                   background: 'var(--color-primary-subtle)',
@@ -406,6 +418,7 @@ export default function SentDetailPage() {
                         height: 10,
                         borderRadius: 'var(--radius-sm)',
                         background: 'var(--color-border)',
+                        opacity: 0.5,
                         width: `${w}%`,
                       }} />
                     ))}
