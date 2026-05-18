@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { I } from './icons';
-import { useState, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 
 type SubNavItem = { href: string; label: string; badge?: number };
 type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
@@ -12,6 +12,68 @@ const inboxNumbers = [
   { label: 'Front desk · 0319', number: '0319', badge: 1 },
   { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
 ];
+
+function InboxSubItems() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeNumber = searchParams.get('number');
+
+  if (!pathname.startsWith('/app/inbox')) return null;
+
+  return (
+    <div>
+      {inboxNumbers.map(item => {
+        const subActive = activeNumber === item.number;
+        return (
+          <Link
+            key={item.number}
+            href={`/app/inbox?number=${item.number}`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingLeft: 28,
+              paddingRight: 10,
+              height: 30,
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              fontWeight: subActive ? 600 : 500,
+              color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+              textDecoration: 'none',
+              borderRadius: 'var(--radius-sm)',
+              background: subActive ? 'var(--color-primary-subtle)' : 'transparent',
+              marginBottom: 1,
+              transition: 'color var(--duration-fast)',
+            }}
+          >
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {item.label}
+            </span>
+            {item.badge > 0 && (
+              <span style={{
+                height: 16,
+                minWidth: 16,
+                fontSize: 10,
+                fontWeight: 700,
+                fontFamily: 'var(--font-body)',
+                background: 'var(--color-primary)',
+                color: 'white',
+                borderRadius: 8,
+                padding: '0 4px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                {item.badge}
+              </span>
+            )}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
 
 const CORE: NavItem[] = [
   { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
@@ -42,12 +104,11 @@ const SYSTEM: NavItem[] = [
   { href: '/app/settings', label: 'Settings', icon: 'Settings' },
 ];
 
-function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
+function NavGroup({ items, separator, pushDown, pathname }: {
   items: NavItem[];
   separator?: boolean;
   pushDown?: boolean;
   pathname: string;
-  activeNumber: string | null;
 }) {
   return (
     <div style={{
@@ -59,7 +120,6 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
         const inInbox = item.href === '/app/inbox' && pathname.startsWith('/app/inbox');
         const active = inInbox || pathname === item.href ||
           (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
-        const showSubs = active && item.subItems;
 
         return (
           <div key={item.href}>
@@ -89,58 +149,11 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
               )}
             </Link>
 
-            {showSubs && item.subItems!.map(sub => {
-              const subNumber = sub.href.split('number=')[1] ?? '';
-              const subActive = activeNumber === subNumber;
-              return (
-                <Link
-                  key={sub.href}
-                  href={sub.href}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingLeft: 28,
-                    paddingRight: 8,
-                    height: 30,
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12,
-                    fontWeight: subActive ? 600 : 500,
-                    color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-                    textDecoration: 'none',
-                    borderRadius: 'var(--radius-sm)',
-                    transition: 'color var(--duration-fast)',
-                  }}
-                >
-                  <span style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {sub.label}
-                  </span>
-                  {sub.badge && sub.badge > 0 && (
-                    <span style={{
-                      height: 16,
-                      minWidth: 16,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      fontFamily: 'var(--font-body)',
-                      background: 'var(--color-primary)',
-                      color: 'white',
-                      borderRadius: 8,
-                      padding: '0 4px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}>
-                      {sub.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+            {item.subItems && (
+              <Suspense fallback={null}>
+                <InboxSubItems />
+              </Suspense>
+            )}
           </div>
         );
       })}
@@ -150,13 +163,7 @@ function NavGroup({ items, separator, pushDown, pathname, activeNumber }: {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [activeNumber, setActiveNumber] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setActiveNumber(params.get('number'));
-  }, [pathname]);
 
   const initials = 'AP';
   const name     = 'Amelia Park';
@@ -213,10 +220,10 @@ export function AppSidebar() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        <NavGroup items={CORE}       pathname={pathname} activeNumber={activeNumber} />
-        <NavGroup items={DIRECTORY}  pathname={pathname} activeNumber={activeNumber} separator />
-        <NavGroup items={COMPLIANCE} pathname={pathname} activeNumber={activeNumber} separator />
-        <NavGroup items={SYSTEM}     pathname={pathname} activeNumber={activeNumber} pushDown />
+        <NavGroup items={CORE}       pathname={pathname} />
+        <NavGroup items={DIRECTORY}  pathname={pathname} separator />
+        <NavGroup items={COMPLIANCE} pathname={pathname} separator />
+        <NavGroup items={SYSTEM}     pathname={pathname} pushDown />
       </nav>
 
       {/* User area */}
