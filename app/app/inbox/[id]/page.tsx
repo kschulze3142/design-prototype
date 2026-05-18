@@ -226,11 +226,25 @@ export default function InboxDetailPage() {
   const currentPage = pages[activePage];
 
   return (
-    <div style={{
+    <>
+    <style>{`
+      .inbox-back-link {
+        display: inline-block;
+        padding-top: 24px;
+        font-size: 13px;
+        color: var(--color-text-tertiary);
+        text-decoration: none;
+        transition: color var(--duration-fast);
+      }
+      .inbox-back-link:hover { color: var(--color-text-primary); }
+      .inbox-detail-scroll::-webkit-scrollbar { display: none; }
+    `}</style>
+    <div className="inbox-detail-scroll" style={{
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
       overflowY: 'auto',
+      scrollbarWidth: 'none',
       margin: '0 -32px',
     }}>
 
@@ -538,9 +552,7 @@ export default function InboxDetailPage() {
       }}>
 
         {/* Back button — own row */}
-        <Link href="/app/inbox" style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="sm">← Inbox</Button>
-        </Link>
+        <Link href="/app/inbox" className="inbox-back-link">← Inbox</Link>
 
         {/* Sender info + actions */}
         <div style={{ marginTop: 8 }}>
@@ -700,7 +712,7 @@ export default function InboxDetailPage() {
                     height: 90,
                     borderRadius: 'var(--radius-sm)',
                     border: activePage === i
-                      ? '1.5px solid var(--color-primary)'
+                      ? '2px solid var(--color-primary)'
                       : '1px solid var(--color-border)',
                     background: 'var(--color-bg)',
                     cursor: 'pointer',
@@ -734,7 +746,7 @@ export default function InboxDetailPage() {
           </div>
 
           {/* Document preview card */}
-          <Card noPadding style={{ overflow: 'hidden' }}>
+          <Card noPadding style={{ overflow: 'hidden', border: 'none' }}>
             {/* Header bar */}
             <div style={{
               background: 'var(--color-primary-subtle)',
@@ -786,7 +798,7 @@ export default function InboxDetailPage() {
                 {currentPage.lines.map((w, i) => (
                   <div key={i} style={{
                     height: 10, borderRadius: 'var(--radius-sm)',
-                    background: 'var(--color-border)', width: `${w}%`,
+                    background: 'var(--color-bg)', width: `${w}%`,
                   }} />
                 ))}
               </div>
@@ -913,11 +925,7 @@ export default function InboxDetailPage() {
           </Card>
 
           {/* Auto-extracted card */}
-          <Card padding={16} style={{
-            background: 'var(--color-primary-subtle)',
-            boxShadow: 'none',
-            marginTop: 16,
-          }}>
+          <Card padding={16} style={{ marginTop: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <SparkleIcon />
               <span style={{
@@ -1007,5 +1015,6 @@ export default function InboxDetailPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
