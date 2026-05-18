@@ -1,297 +1,598 @@
 'use client';
+
 import { useState } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { I } from '@/components/app/icons';
-import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
 
-const TODAY_STATS = [
-  { label: 'Sent today',      value: '47',    helper: '12 since last hour',   trend: 'up' as const,   icon: 'Sent' },
-  { label: 'In flight',       value: '3',     helper: 'Avg confirm 1m 12s',   trend: undefined,        icon: 'Send' },
-  { label: 'Inbound today',   value: '18',    helper: '4 awaiting review',    trend: 'up' as const,   icon: 'Inbox' },
-  { label: 'Delivery rate',   value: '99.4%', helper: '+0.3 vs. 30-day avg',  trend: 'up' as const,   icon: 'Shield' },
-];
+// ─── TYPES ────────────────────────────────────────────────────────────────────
 
-const HOURLY = [
-  { label: '8a',  value: 2,  highlight: false },
-  { label: '9a',  value: 6,  highlight: false },
-  { label: '10a', value: 9,  highlight: false },
-  { label: '11a', value: 11, highlight: true },
-  { label: '12p', value: 7,  highlight: false },
-  { label: '1p',  value: 4,  highlight: false },
-  { label: '2p',  value: 8,  highlight: false },
-  { label: '3p',  value: 10, highlight: false },
-  { label: '4p',  value: 5,  highlight: false },
-  { label: '5p',  value: 2,  highlight: false },
-];
-
-const QUEUE = [
-  { id: 'FX-9824-1A', to: 'BlueShield Prior Auth',    number: '+1 (888) 555-0903', pages: 7,  status: 'Transmitting', progress: 0.60, who: 'Dr. M. Greaves', tone: 'amber' },
-  { id: 'FX-9824-1B', to: 'Swedish Medical Records',  number: '+1 (206) 555-7711', pages: 3,  status: 'Connecting',   progress: 0.20, who: 'A. Park',         tone: 'amber' },
-  { id: 'FX-9824-1C', to: 'Aetna Claims',             number: '+1 (800) 555-2840', pages: 12, status: 'Queued',       progress: 0.05, who: 'K. Liu',          tone: 'slate' },
-];
-
-const INBOX_PREVIEW = [
-  { from: 'Pacific Lab Diagnostics',   subject: 'Lab results · A24189',     time: '11:14 AM',  tone: 'violet', unread: true,  pages: 4 },
-  { from: 'Group Health · Referrals',  subject: 'Referral acknowledgement',  time: '10:47 AM',  tone: 'teal',   unread: true,  pages: 2 },
-  { from: 'Aetna Claims',              subject: 'EOB · claim 882-31',        time: '9:32 AM',   tone: 'amber',  unread: false, pages: 6 },
-  { from: "Dr. Rivera's Office",       subject: 'Patient transfer summary',   time: 'Yesterday', tone: 'slate',  unread: false, pages: 9 },
-];
-
-const TEAM_ACTIVITY = [
-  { who: 'Dr. M. Greaves', tone: 'teal',   action: 'sent fax to',          target: 'BlueShield Prior Auth',  time: '2m ago' },
-  { who: 'Amelia Park',    tone: 'amber',  action: 'approved a fax flagged', target: 'PHI · A24189',          time: '14m ago' },
-  { who: 'Kelly Liu',      tone: 'violet', action: 'added template',        target: 'Discharge summary v3',   time: '1h ago' },
-  { who: 'Reception',      tone: 'slate',  action: 'routed inbound to',     target: 'Dr. Rivera',             time: '2h ago' },
-];
-
-const SHORTCUTS = [
-  { icon: 'Send' as const,      label: 'New fax',       desc: 'Compose and send',   accent: true,  href: '/app/send' },
-  { icon: 'Templates' as const, label: 'From template', desc: '12 saved templates', accent: false, href: '/app/templates' },
-  { icon: 'Contacts' as const,  label: 'Address book',  desc: '284 contacts',       accent: false, href: '/app/contacts' },
-  { icon: 'Audit' as const,     label: 'Audit log',     desc: "Today's activity",   accent: false, href: '/app/audit' },
-];
-
-const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
-  emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
-  amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
-  slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
-  violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
-};
-
-function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button onClick={onClick} className={`px-3 py-1.5 text-[13px] rounded-full font-medium transition ${active ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>{children}</button>;
+interface AttentionItem {
+  icon: React.ReactNode;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  titleColor: string;
+  sub: string;
+  arrowColor: string;
+  href: string;
+  borderColor?: string;
 }
 
-function BarChart({ data, height = 200 }: { data: { label: string; value: number; highlight?: boolean }[]; height?: number }) {
-  const max = Math.max(...data.map(d => d.value)) || 1;
+interface QueueItem {
+  id: string;
+  recipient: string;
+  number: string;
+  pages: number;
+  sentBy: string;
+  status: 'Transmitting' | 'Connecting' | 'Queued';
+  progress: number;
+}
+
+interface InboxItem {
+  initials: string;
+  sender: string;
+  subject: string;
+  time: string;
+  unread: boolean;
+}
+
+interface RecentRecipient {
+  initials: string;
+  name: string;
+  number: string;
+}
+
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+
+const QUEUE_ITEMS: QueueItem[] = [
+  { id: 'FX-9824-1A', recipient: 'BlueShield Prior Auth',   number: '+1 (888) 555-0903', pages: 7,  sentBy: 'Dr. M. Greaves', status: 'Transmitting', progress: 0.65 },
+  { id: 'FX-9824-1B', recipient: 'Swedish Medical Records', number: '+1 (206) 555-7711', pages: 3,  sentBy: 'A. Park',        status: 'Connecting',   progress: 0 },
+  { id: 'FX-9824-1C', recipient: 'Aetna Claims',            number: '+1 (800) 555-2840', pages: 12, sentBy: 'K. Liu',         status: 'Queued',       progress: 0 },
+];
+
+const INBOX_ITEMS: InboxItem[] = [
+  { initials: 'PL', sender: 'Pacific Lab Diagnostics',  subject: 'Lab results · Patient A24189',          time: '11:14 AM', unread: true },
+  { initials: 'GH', sender: 'Group Health · Referrals', subject: 'Referral acknowledgement — Cardiology', time: '10:47 AM', unread: true },
+  { initials: 'AC', sender: 'Aetna Claims',             subject: 'EOB · claim 882-31',                    time: '9:32 AM',  unread: true },
+  { initials: 'DR', sender: "Dr. Rivera's Office",      subject: 'Patient transfer summary',              time: '8:14 AM',  unread: true },
+];
+
+const RECENT_RECIPIENTS: RecentRecipient[] = [
+  { initials: 'BP', name: 'BlueShield Prior Auth',   number: '+1 (888) 555-0903' },
+  { initials: 'AC', name: 'Aetna Claims',            number: '+1 (800) 555-2840' },
+  { initials: 'PL', name: 'Pacific Lab Diagnostics', number: '+1 (206) 555-2840' },
+];
+
+const COMPLIANCE_ITEMS = [
+  'BAA signed · expires Mar 2026',
+  'Audit log healthy · last verified 4h ago',
+  'Encryption at rest verified',
+];
+
+// ─── SUB-COMPONENTS ───────────────────────────────────────────────────────────
+
+function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
-    <div className="flex items-end gap-2 w-full" style={{ height }}>
-      {data.map((d, i) => (
-        <div key={i} className="flex-1 flex flex-col items-center gap-2">
-          <div className="relative w-full flex items-end" style={{ height: height - 24 }}>
-            <div className="w-full rounded-t-lg transition-all"
-              style={{ height: `${(d.value / max) * 100}%`, background: d.highlight ? 'var(--color-primary)' : 'var(--color-primary-subtle)' }} />
-          </div>
-          <span className="text-[11px] text-slate-400">{d.label}</span>
-        </div>
-      ))}
+    <div style={{
+      width: size,
+      height: size,
+      borderRadius: '50%',
+      background: 'var(--color-primary-subtle)',
+      color: 'var(--color-primary)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 10,
+      fontWeight: 700,
+      fontFamily: 'var(--font-body)',
+      flexShrink: 0,
+    }}>
+      {initials}
     </div>
   );
 }
 
+function IconCircle({ bg, color, children }: { bg: string; color: string; children: React.ReactNode }) {
+  return (
+    <div style={{
+      width: 40,
+      height: 40,
+      borderRadius: '50%',
+      background: bg,
+      color,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function AttentionCard({ item }: { item: AttentionItem }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Link href={item.href} style={{ textDecoration: 'none', display: 'block', marginBottom: 8 }}>
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderLeft: item.borderColor ? `3px solid ${item.borderColor}` : '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+          transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
+          transition: `all var(--duration-base) var(--ease-out)`,
+          padding: 16,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          cursor: 'pointer',
+        }}
+      >
+        <IconCircle bg={item.iconBg} color={item.iconColor}>
+          {item.icon}
+        </IconCircle>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="text-body-strong" style={{ color: item.titleColor }}>{item.title}</div>
+          <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>{item.sub}</div>
+        </div>
+        <span style={{ color: item.arrowColor, fontSize: 16, lineHeight: 1, flexShrink: 0 }}>→</span>
+      </div>
+    </Link>
+  );
+}
+
+function StatusBadge({ status }: { status: QueueItem['status'] }) {
+  const map: Record<QueueItem['status'], { bg: string; color: string }> = {
+    Transmitting: { bg: 'var(--color-processing-bg)', color: 'var(--color-processing)' },
+    Connecting:   { bg: 'var(--color-review-bg)',     color: 'var(--color-review)' },
+    Queued:       { bg: 'var(--color-bg)',             color: 'var(--color-text-tertiary)' },
+  };
+  const s = map[status];
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '3px 9px',
+      borderRadius: 'var(--radius-xl)',
+      background: s.bg,
+      color: s.color,
+      fontFamily: 'var(--font-body)',
+      fontSize: 11,
+      fontWeight: 600,
+      letterSpacing: '0.03em',
+      whiteSpace: 'nowrap',
+    }}>
+      {status}
+    </span>
+  );
+}
+
+function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '8px 10px',
+        borderRadius: 'var(--radius-md)',
+        cursor: 'pointer',
+        background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
+        transition: `background var(--duration-fast)`,
+      }}
+    >
+      <Avatar initials={recipient.initials} size={28} />
+      <span className="text-body-strong" style={{ fontSize: 13 }}>{recipient.name}</span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', marginLeft: 'auto' }}>
+        {recipient.number}
+      </span>
+      <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center' }}>
+        <I.Send size={14} />
+      </span>
+    </div>
+  );
+}
+
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
+
 export default function DashboardPage() {
-  const [range, setRange] = useState('Today');
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
+  const attentionItems: AttentionItem[] = [
+    {
+      icon: <I.Inbox size={20} />,
+      iconBg: 'var(--color-primary-subtle)',
+      iconColor: 'var(--color-primary)',
+      title: '4 unread faxes',
+      titleColor: 'var(--color-text-primary)',
+      sub: 'Routed to your queue · oldest from 11:14 AM',
+      arrowColor: 'var(--color-text-tertiary)',
+      href: '/app/inbox?number=all&filter=unread',
+    },
+    {
+      icon: <I.Forward size={20} />,
+      iconBg: 'var(--color-review-bg)',
+      iconColor: 'var(--color-review)',
+      title: '1 fax needs routing',
+      titleColor: 'var(--color-review)',
+      sub: "Dr. Rivera's Office · Patient transfer summary",
+      arrowColor: 'var(--color-review)',
+      href: '/app/inbox?number=all&filter=needs-routing',
+      borderColor: 'var(--color-review)',
+    },
+    {
+      icon: <I.Zap size={20} />,
+      iconBg: 'var(--color-failed-bg)',
+      iconColor: 'var(--color-failed)',
+      title: '1 fax failed to send',
+      titleColor: 'var(--color-failed)',
+      sub: 'Group Health · Referrals · 5 attempts · Resend now',
+      arrowColor: 'var(--color-failed)',
+      href: '/app/sent?filter=failed',
+      borderColor: 'var(--color-failed)',
+    },
+    {
+      icon: <I.Shield size={20} />,
+      iconBg: 'var(--color-phi-bg)',
+      iconColor: 'var(--color-phi)',
+      title: '3 PHI faxes unreviewed',
+      titleColor: 'var(--color-phi)',
+      sub: 'Review within 24h per compliance policy',
+      arrowColor: 'var(--color-phi)',
+      href: '/app/inbox?number=all&filter=phi',
+      borderColor: 'var(--color-phi)',
+    },
+  ];
+
   return (
-    <div>
-      {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Tuesday · May 13</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>
-              Good morning, Amelia.
-            </h1>
-            <p className="text-[14px] text-slate-500 mt-2">Northwind Health · Cardiology is set up and humming — 47 faxes today, no retries needed.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Calendar size={14} />}>{range}</AppButton>
-            <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New fax</AppButton>
-          </div>
+    <div style={{ margin: '0 -32px', display: 'flex', flexDirection: 'column', background: 'var(--color-bg)' }}>
+
+      {/* Inline keyframe for progress bar pulse */}
+      <style>{`
+        @keyframes tx-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+        .tx-bar { animation: tx-pulse 1.8s ease-in-out infinite; }
+      `}</style>
+
+      {/* ── Page Header ── */}
+      <div style={{
+        background: 'white',
+        borderBottom: '1px solid var(--color-border)',
+        padding: '0 32px',
+        height: 80,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexShrink: 0,
+      }}>
+        <div>
+          <div className="text-label" style={{ marginBottom: 2 }}>TUESDAY · MAY 13</div>
+          <h1 style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 28,
+            fontWeight: 700,
+            color: 'var(--color-text-primary)',
+            margin: 0,
+            lineHeight: 1.15,
+          }}>
+            Good morning, Amelia.
+          </h1>
+          <p className="text-body" style={{ margin: 0, marginTop: 2 }}>
+            Northwind Health · Cardiology is set up and humming — 47 faxes today, no retries needed.
+          </p>
         </div>
-      </Card>
-
-      {/* Onboarding-complete banner */}
-      {!bannerDismissed && (
-        <Card className="p-5 mb-6 flex items-center gap-4"
-          style={{ background: 'linear-gradient(90deg, var(--color-primary-subtle), rgba(255,255,255,0.85))' }}>
-          <span className="w-10 h-10 rounded-2xl text-white flex items-center justify-center shrink-0"
-            style={{ background: 'var(--color-primary)' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="draw-check">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-          </span>
-          <div className="flex-1 min-w-0">
-            <div className="text-[14.5px] font-semibold text-slate-900">Workspace ready · onboarding complete</div>
-            <div className="text-[12.5px] text-slate-500 mt-0.5">2 numbers claimed · 9 teammates invited · BAA signed Mar 22 · routing rules active.</div>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <AppButton variant="ghost" size="sm">Review setup</AppButton>
-            <button className="text-slate-400 hover:text-slate-700" onClick={() => setBannerDismissed(true)}><I.X size={14} /></button>
-          </div>
-        </Card>
-      )}
-
-      {/* Stat row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {TODAY_STATS.map((s, i) => {
-          const Ico = I[s.icon as keyof typeof I];
-          return (
-            <StatCard key={i} label={s.label} value={s.value} helper={s.helper}
-              trend={s.trend} icon={<Ico size={15} />} />
-          );
-        })}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Button variant="ghost">📅 Today</Button>
+          <Button variant="primary">
+            <I.Plus size={14} strokeWidth={2.4} /> New fax
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        {/* Left column */}
-        <div className="col-span-12 lg:col-span-8 space-y-6">
-
-          {/* Volume chart */}
-          <Card className="p-6">
-            <SectionTitle
-              title="Today's volume"
-              subtitle="Outbound by hour · all numbers."
-              action={
-                <div className="flex items-center gap-1">
-                  {['Today', '7 days', '30 days'].map(r => (
-                    <Tab key={r} active={range === r} onClick={() => setRange(r)}>{r}</Tab>
-                  ))}
-                </div>
-              }
-            />
-            <div className="mt-6"><BarChart data={HOURLY} height={200} /></div>
-            <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-6">
-              <div>
-                <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Peak hour</div>
-                <div className="text-[18px] font-semibold text-slate-900 mt-1">11:00 AM <span className="text-slate-400 font-normal text-[14px]">· 11 faxes</span></div>
-              </div>
-              <div>
-                <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Avg confirm</div>
-                <div className="text-[18px] font-semibold text-slate-900 mt-1">1m 12s <span className="text-emerald-600 text-[13px]">↓ 8s</span></div>
-              </div>
-              <div>
-                <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Pages out</div>
-                <div className="text-[18px] font-semibold text-slate-900 mt-1">312</div>
+      {/* ── Onboarding Banner ── */}
+      {!bannerDismissed && (
+        <div style={{
+          background: 'var(--color-delivered-bg)',
+          borderBottom: '1px solid rgba(22,163,74,0.2)',
+          padding: '10px 32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{
+              width: 16,
+              height: 16,
+              borderRadius: '50%',
+              background: 'var(--color-delivered)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              marginTop: 2,
+            }}>
+              <I.Check size={10} strokeWidth={2.8} />
+            </div>
+            <div style={{ marginLeft: 10 }}>
+              <span className="text-body-strong">Workspace ready · onboarding complete</span>
+              <div className="text-body" style={{ color: 'var(--color-text-secondary)', marginTop: 2 }}>
+                2 numbers claimed · 9 teammates invited · BAA signed Mar 22 · routing rules active.
               </div>
             </div>
-          </Card>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, marginLeft: 24 }}>
+            <button
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--color-primary)',
+              }}
+            >
+              Review setup
+            </button>
+            <button
+              onClick={() => setBannerDismissed(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                color: 'var(--color-text-tertiary)',
+                fontSize: 18,
+                lineHeight: 1,
+                marginLeft: 16,
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
-          {/* Live queue */}
-          <Card className="p-6">
-            <SectionTitle
-              title="Live queue"
-              subtitle="Outbound faxes in flight or about to send."
-              action={<AppButton variant="ghost" size="sm">View sent</AppButton>}
-            />
-            <div className="mt-5 divide-y divide-slate-100">
-              {QUEUE.map(q => (
-                <div key={q.id} className="py-4 flex items-center gap-4">
-                  <span className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 pulse-ring"
-                    style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
-                    <I.Send size={15} />
+      {/* ── Main Content ── */}
+      <div style={{
+        padding: '24px 32px',
+        display: 'grid',
+        gridTemplateColumns: '1fr 320px',
+        gap: 24,
+        alignItems: 'start',
+      }}>
+
+        {/* Left column */}
+        <div>
+
+          {/* Section 1 — Attention Queue */}
+          <div>
+            <div style={{ marginBottom: 12 }}>
+              <div className="text-title">Needs attention</div>
+              <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>
+                Items that need your action right now.
+              </div>
+            </div>
+            {attentionItems.map((item, i) => (
+              <AttentionCard key={i} item={item} />
+            ))}
+          </div>
+
+          {/* Section 2 — Live Queue */}
+          <div style={{ marginTop: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div>
+                <div className="text-title">Live queue</div>
+                <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>
+                  Outbound faxes in flight or about to send.
+                </div>
+              </div>
+              <Link href="/app/sent" style={{
+                textDecoration: 'none',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--color-primary)',
+                alignSelf: 'center',
+              }}>
+                View all sent →
+              </Link>
+            </div>
+
+            <Card noPadding style={{ marginTop: 12 }}>
+              {QUEUE_ITEMS.map((item, i) => (
+                <div key={item.id} style={{
+                  padding: '14px 16px',
+                  borderBottom: i < QUEUE_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                }}>
+                  <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', flexShrink: 0 }}>
+                    <I.Send size={16} />
                   </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[14px] font-semibold text-slate-900 truncate">{q.to}</span>
-                      <span className="text-[11.5px] text-slate-400 font-mono">{q.id}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span className="text-body-strong" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.recipient}
+                      </span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--color-text-tertiary)', marginLeft: 8, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                        {item.id}
+                      </span>
                     </div>
-                    <div className="text-[12.5px] text-slate-500 mt-0.5 flex items-center gap-2 flex-wrap">
-                      <span className="font-mono">{q.number}</span>
-                      <span className="text-slate-300">·</span>
-                      <span>{q.pages} pages</span>
-                      <span className="text-slate-300">·</span>
-                      <span>by {q.who}</span>
-                    </div>
-                    <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full rounded-full transition-all" style={{ width: `${q.progress * 100}%`, background: 'var(--color-primary)' }} />
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)', marginTop: 2 }}>
+                      {item.number} · {item.pages} pages · by {item.sentBy}
                     </div>
                   </div>
-                  <Pill tone={q.tone}>{q.status}</Pill>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                    {item.status === 'Transmitting' && (
+                      <div style={{ width: 120, height: 4, background: 'var(--color-border)', borderRadius: 2, overflow: 'hidden' }}>
+                        <div className="tx-bar" style={{
+                          height: '100%',
+                          width: `${item.progress * 100}%`,
+                          background: 'var(--color-primary)',
+                          borderRadius: 2,
+                        }} />
+                      </div>
+                    )}
+                    <StatusBadge status={item.status} />
+                  </div>
                 </div>
               ))}
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
 
-        {/* Right rail */}
-        <div className="col-span-12 lg:col-span-4 space-y-6">
+        {/* Right column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
 
-          {/* Quick shortcuts */}
-          <Card className="p-3">
-            <div className="grid grid-cols-2 gap-2">
-              {SHORTCUTS.map((s, i) => {
-                const Ico = I[s.icon];
-                return (
-                  <button key={i} className={`text-left p-3.5 rounded-2xl border transition ${s.accent ? 'border-transparent text-white' : 'border-slate-200/70 bg-white hover:border-slate-300 hover:shadow-sm'}`}
-                    style={s.accent ? { background: 'var(--color-primary)' } : undefined}>
-                    <span className={`w-9 h-9 rounded-xl flex items-center justify-center ${s.accent ? 'bg-white/15 text-white' : 'bg-slate-50 text-slate-500'}`}>
-                      <Ico size={16} />
-                    </span>
-                    <div className={`text-[13.5px] font-semibold mt-3 ${s.accent ? 'text-white' : 'text-slate-900'}`}>{s.label}</div>
-                    <div className={`text-[11.5px] mt-0.5 ${s.accent ? 'text-white/70' : 'text-slate-500'}`}>{s.desc}</div>
-                  </button>
-                );
-              })}
+          {/* Card 1 — Quick Send */}
+          <Card>
+            <div className="text-title">Quick send</div>
+            <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2, marginBottom: 12 }}>
+              Start a new fax or pick a recent recipient.
             </div>
+            <Button variant="primary" style={{ width: '100%', height: 44, justifyContent: 'center' }}>
+              + New fax
+            </Button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '12px 0' }}>
+              <div style={{ flex: 1, height: 1, background: 'var(--color-border)' }} />
+              <span className="text-label">recent</span>
+              <div style={{ flex: 1, height: 1, background: 'var(--color-border)' }} />
+            </div>
+            {RECENT_RECIPIENTS.map((r, i) => (
+              <RecentRecipientRow key={i} recipient={r} />
+            ))}
           </Card>
 
-          {/* Inbox preview */}
-          <Card className="p-6">
-            <SectionTitle
-              title="Inbox"
-              subtitle="4 unread · routed to your queue."
-              action={<AppButton variant="ghost" size="sm">Open</AppButton>}
-            />
-            <div className="mt-4 -mx-2">
-              {INBOX_PREVIEW.map((m, i) => (
-                <button key={i} className="w-full flex items-start gap-3 px-2 py-3 rounded-xl hover:bg-slate-50 text-left transition">
-                  <Avatar name={m.from} size={32} tone={m.tone} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[13.5px] truncate ${m.unread ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>{m.from}</span>
-                      {m.unread && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--color-primary)' }} />}
+          {/* Card 2 — Inbox Preview */}
+          <Card>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span className="text-title">Inbox</span>
+              <span style={{
+                marginLeft: 8,
+                background: 'var(--color-primary-subtle)',
+                color: 'var(--color-primary)',
+                borderRadius: 'var(--radius-xl)',
+                padding: '2px 8px',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.07em',
+                textTransform: 'uppercase' as const,
+              }}>
+                4 unread
+              </span>
+              <Link href="/app/inbox" style={{
+                marginLeft: 'auto',
+                fontSize: 13,
+                color: 'var(--color-primary)',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-body)',
+              }}>
+                Open →
+              </Link>
+            </div>
+            <div style={{ marginTop: 8 }}>
+              {INBOX_ITEMS.map((item, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '8px 0',
+                  borderBottom: i < INBOX_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
+                  cursor: 'pointer',
+                }}>
+                  <Avatar initials={item.initials} size={28} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 13,
+                      fontWeight: item.unread ? 700 : 400,
+                      color: 'var(--color-text-primary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {item.sender}
                     </div>
-                    <div className="text-[12.5px] text-slate-500 truncate">{m.subject}</div>
-                    <div className="text-[11.5px] text-slate-400 mt-0.5">{m.pages} pages</div>
+                    <div style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 12,
+                      color: 'var(--color-text-tertiary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {item.subject}
+                    </div>
                   </div>
-                  <span className="text-[11.5px] text-slate-400 font-mono whitespace-nowrap shrink-0 mt-0.5">{m.time}</span>
-                </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                    <span className="text-label" style={{ color: 'var(--color-text-tertiary)' }}>{item.time}</span>
+                    {item.unread && (
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-primary)', display: 'block' }} />
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
           </Card>
 
-          {/* Team activity */}
-          <Card className="p-6">
-            <SectionTitle title="Team activity" />
-            <ol className="mt-4 relative pl-5 border-l-2 border-slate-100 space-y-4">
-              {TEAM_ACTIVITY.map((a, i) => {
-                const tone = STATUS_TONES[a.tone] || STATUS_TONES.slate;
-                return (
-                  <li key={i} className="relative">
-                    <span className="absolute -left-[27px] top-1 w-3 h-3 rounded-full ring-4 ring-white" style={{ background: tone.dot }} />
-                    <div className="text-[13px] text-slate-700">
-                      <span className="font-semibold text-slate-900">{a.who}</span>{' '}
-                      <span className="text-slate-500">{a.action}</span>{' '}
-                      <span className="font-medium text-slate-900">{a.target}</span>
-                    </div>
-                    <div className="text-[11.5px] text-slate-400 mt-0.5 font-mono">{a.time}</div>
-                  </li>
-                );
-              })}
-            </ol>
-          </Card>
-
-          {/* Compliance pulse */}
-          <Card className="p-5">
-            <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
-                <I.Shield size={16} />
-              </span>
-              <div className="flex-1">
-                <div className="text-[13.5px] font-semibold text-slate-900">Compliance pulse</div>
-                <div className="text-[12.5px] text-slate-500 mt-1 leading-relaxed">All systems green. BAA signed, audit log healthy, encryption at rest verified 4h ago.</div>
-                <div className="mt-3 flex items-center gap-2">
-                  <Pill tone="emerald">HIPAA</Pill>
-                  <Pill tone="emerald">SOC 2</Pill>
-                  <Pill tone="teal">BAA</Pill>
-                </div>
+          {/* Card 3 — Compliance Pulse */}
+          <div style={{
+            background: 'var(--color-surface-dark)',
+            borderRadius: 'var(--radius-md)',
+            padding: 16,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center' }}>
+                  <I.Shield size={16} />
+                </span>
+                <span className="text-body-strong" style={{ color: 'white' }}>Compliance pulse</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-delivered)', display: 'block', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: '#86efac' }}>All systems green</span>
               </div>
             </div>
-          </Card>
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {COMPLIANCE_ITEMS.map((text, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: 'var(--color-delivered)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                    <I.Check size={12} />
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{text}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, display: 'flex', gap: 6 }}>
+              {['HIPAA', 'BAA'].map(tag => (
+                <span key={tag} style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.7)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '2px 8px',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.07em',
+                  textTransform: 'uppercase' as const,
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
