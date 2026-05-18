@@ -19,57 +19,173 @@ function InboxSubItems() {
   const searchParams = useSearchParams();
   const activeNumber = searchParams.get('number');
 
+  const [orderedNumbers, setOrderedNumbers] = useState(
+    inboxNumbers.filter(n => n.number !== 'all')
+  );
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
+
   if (!pathname.startsWith('/app/inbox')) return null;
+
+  const allItem = inboxNumbers.find(n => n.number === 'all')!;
+  const allActive = activeNumber === 'all';
+
+  const handleDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDropIndex(index);
+  };
+
+  const handleDrop = (index: number) => {
+    if (dragIndex === null || dragIndex === index) {
+      setDragIndex(null);
+      setDropIndex(null);
+      return;
+    }
+    const updated = [...orderedNumbers];
+    const [moved] = updated.splice(dragIndex, 1);
+    updated.splice(index, 0, moved);
+    setOrderedNumbers(updated);
+    setDragIndex(null);
+    setDropIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDragIndex(null);
+    setDropIndex(null);
+  };
+
+  const badgeStyle: React.CSSProperties = {
+    height: 16,
+    minWidth: 16,
+    fontSize: 10,
+    fontWeight: 700,
+    fontFamily: 'var(--font-body)',
+    background: 'var(--color-primary)',
+    color: 'white',
+    borderRadius: 8,
+    padding: '0 4px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  };
 
   return (
     <div>
-      {inboxNumbers.map(item => {
+      {/* All inboxes — fixed, not draggable */}
+      <Link
+        href="/app/inbox?number=all"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingLeft: 28,
+          paddingRight: 10,
+          height: 30,
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          fontWeight: allActive ? 600 : 500,
+          color: allActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+          textDecoration: 'none',
+          borderRadius: 'var(--radius-sm)',
+          background: allActive ? 'var(--color-primary-subtle)' : 'transparent',
+          marginBottom: 1,
+          cursor: 'pointer',
+          transition: 'color var(--duration-fast)',
+        }}
+      >
+        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {allItem.label}
+        </span>
+        {allItem.badge > 0 && <span style={badgeStyle}>{allItem.badge}</span>}
+      </Link>
+
+      {/* Draggable number items */}
+      {orderedNumbers.map((item, index) => {
         const subActive = activeNumber === item.number;
+        const isBeingDragged = dragIndex === index;
+        const showDropLine = dropIndex === index && dragIndex !== index && dragIndex !== index - 1;
+
         return (
-          <Link
+          <div
             key={item.number}
-            href={`/app/inbox?number=${item.number}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingLeft: 28,
-              paddingRight: 10,
-              height: 30,
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              fontWeight: subActive ? 600 : 500,
-              color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-              textDecoration: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: subActive ? 'var(--color-primary-subtle)' : 'transparent',
-              marginBottom: 1,
-              transition: 'color var(--duration-fast)',
-            }}
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={() => handleDrop(index)}
+            onDragEnd={handleDragEnd}
+            style={{ position: 'relative', marginBottom: 1 }}
           >
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {item.label}
-            </span>
-            {item.badge > 0 && (
-              <span style={{
-                height: 16,
-                minWidth: 16,
-                fontSize: 10,
-                fontWeight: 700,
-                fontFamily: 'var(--font-body)',
+            {showDropLine && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 28,
+                right: 10,
+                height: 2,
                 background: 'var(--color-primary)',
-                color: 'white',
-                borderRadius: 8,
-                padding: '0 4px',
-                display: 'inline-flex',
+                borderRadius: 1,
+                zIndex: 10,
+              }} />
+            )}
+
+            <Link
+              href={`/app/inbox?number=${item.number}`}
+              style={{
+                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
+                paddingLeft: 28,
+                paddingRight: 10,
+                height: 30,
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+                fontWeight: subActive ? 600 : 500,
+                color: subActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                textDecoration: 'none',
+                borderRadius: 'var(--radius-sm)',
+                background: subActive
+                  ? 'var(--color-primary-subtle)'
+                  : isBeingDragged
+                    ? 'var(--color-bg)'
+                    : 'transparent',
+                opacity: isBeingDragged ? 0.4 : 1,
+                cursor: 'grab',
+                transition: 'opacity var(--duration-fast), background var(--duration-fast)',
+                userSelect: 'none',
+              }}
+            >
+              {/* Drag handle — 3 dots */}
+              <span style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                marginRight: 6,
+                opacity: 0.3,
                 flexShrink: 0,
               }}>
-                {item.badge}
+                {[0, 1, 2].map(i => (
+                  <span key={i} style={{
+                    width: 3,
+                    height: 3,
+                    borderRadius: '50%',
+                    background: 'currentColor',
+                    display: 'block',
+                  }} />
+                ))}
               </span>
-            )}
-          </Link>
+
+              <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {item.label}
+              </span>
+
+              {item.badge > 0 && <span style={badgeStyle}>{item.badge}</span>}
+            </Link>
+          </div>
         );
       })}
     </div>
