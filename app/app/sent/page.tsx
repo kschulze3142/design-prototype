@@ -385,9 +385,9 @@ export default function SentPage() {
       </div>
 
       {/* Search bar — sits on page background */}
-      <div style={{ position: 'relative', width: 480, marginBottom: 16 }}>
+      <div style={{ position: 'relative', maxWidth: 480, marginBottom: 16 }}>
         <svg
-          style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--color-text-tertiary)', pointerEvents: 'none', zIndex: 1 }}
+          style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: searchFocused ? 'var(--color-primary)' : 'var(--color-text-tertiary)', pointerEvents: 'none', zIndex: 1, transition: 'color var(--duration-fast) var(--ease-out)' }}
           fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
         >
           <circle cx="11" cy="11" r="8" />
@@ -402,14 +402,16 @@ export default function SentPage() {
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
           style={{
-            width: '100%', height: '36px',
-            border: '1px solid var(--color-border)',
+            width: '100%', height: '42px',
+            border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
             borderRadius: 'var(--radius-pill)',
-            padding: '0 16px 0 38px',
-            fontSize: '13px', fontFamily: 'var(--font-body)',
+            padding: '0 16px 0 40px',
+            fontSize: '14px', fontFamily: 'var(--font-body)',
             color: 'var(--color-text-primary)',
-            background: 'var(--color-bg)',
+            background: 'var(--color-surface)',
             outline: 'none', boxSizing: 'border-box',
+            boxShadow: searchFocused ? '0 0 0 3px rgba(61, 80, 128, 0.12), var(--shadow-card)' : 'var(--shadow-card)',
+            transition: 'all var(--duration-fast) var(--ease-out)',
           }}
         />
 
