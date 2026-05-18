@@ -26,9 +26,10 @@ interface FaxItem {
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
 const inboxNumbers = [
-  { label: 'Cardiology · 0142', number: '0142', badge: 2 },
-  { label: 'Front desk · 0319', number: '0319', badge: 1 },
-  { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
+  { label: 'All inboxes', number: 'all', badge: 4 },
+  { label: 'Cardiology · 0142', number: '0142', badge: 2, full: '+1 (206) 555-0142' },
+  { label: 'Front desk · 0319', number: '0319', badge: 1, full: '+1 (206) 555-0319' },
+  { label: 'Toll-free · 0903',  number: '0903', badge: 1, full: '+1 (888) 555-0903' },
 ];
 
 const faxes: FaxItem[] = [
@@ -369,9 +370,16 @@ function InboxContent() {
 
   useEffect(() => {
     if (!activeNumber) {
-      router.replace(`/app/inbox?number=${inboxNumbers[0].number}`);
+      router.replace(`/app/inbox?number=all`);
     }
   }, [activeNumber, router]);
+
+  const activeInbox = inboxNumbers.find(n => n.number === activeNumber);
+  const headline = activeNumber === 'all' || !activeNumber
+    ? 'Your inbound faxes'
+    : `Your inbound faxes · ${activeInbox?.label}`;
+  const unreadCount = activeNumber === 'all' || !activeNumber ? 4 : (activeInbox?.badge ?? 0);
+  const overline = `INBOX · ${unreadCount} UNREAD`;
 
   const [activeTab, setActiveTab]       = useState('all');
   const [searchValue, setSearchValue]   = useState('');
@@ -423,7 +431,7 @@ function InboxContent() {
             color: 'var(--color-text-tertiary)',
             marginBottom: 2,
           }}>
-            INBOX · 4 UNREAD
+            {overline}
           </div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
@@ -433,7 +441,7 @@ function InboxContent() {
             margin: 0,
             lineHeight: 1.2,
           }}>
-            Anything urgent in here?
+            {headline}
           </h1>
         </div>
 

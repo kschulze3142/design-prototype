@@ -8,6 +8,7 @@ type SubNavItem = { href: string; label: string; badge?: number };
 type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
 
 const inboxNumbers = [
+  { label: 'All inboxes',       number: 'all',  badge: 4 },
   { label: 'Cardiology · 0142', number: '0142', badge: 2 },
   { label: 'Front desk · 0319', number: '0319', badge: 1 },
   { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
