@@ -58,14 +58,10 @@ const LOG_STEPS = [
 ];
 
 const FAX_DETAIL_ROWS = [
-  { label: 'To',        value: '+1 (888) 555-0903',   mono: true  },
-  { label: 'Recipient', value: 'BlueShield Prior Auth', mono: false },
-  { label: 'From',      value: '+1 (206) 555-0142',   mono: true  },
-  { label: 'Sent by',   value: 'Amelia Park',          mono: false },
-  { label: 'Sent',      value: 'Today · 10:42 AM',    mono: false },
-  { label: 'Pages',     value: '7',                   mono: false },
-  { label: 'Fax ID',    value: 'FX-9824-1A',          mono: true  },
-  { label: 'Number',    value: 'Cardiology · 0142',   mono: false },
+  { label: 'Sent by', value: 'Amelia Park',        mono: false },
+  { label: 'Number',  value: 'Cardiology · 0142',  mono: false },
+  { label: 'Fax ID',  value: 'FX-9824-1A',         mono: true  },
+  { label: 'Sent',    value: 'Today · 10:42 AM',   mono: false },
 ];
 
 const TAGS = [
@@ -180,11 +176,10 @@ export default function SentDetailPage() {
                   overflow: 'hidden',
                 }}>
                   {[
-                    { label: 'Mark as unread', icon: '○' },
-                    { label: 'Resend',         icon: '↺' },
-                    { label: 'Archive',        icon: '⊟' },
+                    { label: 'Resend',  icon: '↺' },
+                    { label: 'Archive', icon: '⊟' },
                     { divider: true },
-                    { label: 'Delete',         icon: '✕', danger: true },
+                    { label: 'Delete',  icon: '✕', danger: true },
                   ].map((item, i) => (
                     item.divider
                       ? <div key={i} style={{ height: 1, background: 'var(--color-border)', margin: '4px 0' }} />
@@ -251,9 +246,8 @@ export default function SentDetailPage() {
         gap: 8,
         flexShrink: 0,
       }}>
-        <Button variant="primary"   size="sm">Resend</Button>
-        <Button variant="secondary" size="sm"><I.Forward size={13} /> Forward</Button>
-        <Button variant="secondary" size="sm"><I.Download size={13} /> Download</Button>
+        <Button variant="primary"   size="sm"><I.Download size={13} /> Download</Button>
+        <Button variant="secondary" size="sm">Resend</Button>
         <Button variant="ghost"     size="sm">Print</Button>
       </div>
 
@@ -604,9 +598,8 @@ export default function SentDetailPage() {
               </div>
             ))}
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <div style={{ marginTop: 12 }}>
               <Button variant="ghost" size="sm"><I.Download size={13} /> Download receipt</Button>
-              <Button variant="ghost" size="sm"><I.Forward size={13} /> Forward</Button>
             </div>
           </Card>
 
