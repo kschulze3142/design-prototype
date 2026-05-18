@@ -16,21 +16,25 @@ const VARIANT_STYLES: Record<Variant, React.CSSProperties> = {
     background: 'var(--color-primary)',
     color: 'white',
     border: 'none',
+    borderRadius: 'var(--radius-pill)',
   },
   secondary: {
     background: 'white',
     border: '1px solid var(--color-border-strong)',
     color: 'var(--color-text-primary)',
+    borderRadius: 'var(--radius-pill)',
   },
   ghost: {
     background: 'transparent',
     border: 'none',
     color: 'var(--color-text-secondary)',
+    borderRadius: 'var(--radius-md)',
   },
   destructive: {
     background: 'var(--color-failed)',
     color: 'white',
     border: 'none',
+    borderRadius: 'var(--radius-md)',
   },
 };
 
@@ -43,7 +47,6 @@ export function Button({ variant = 'md' as any, size = 'md', children, style, ..
         display: 'inline-flex',
         alignItems: 'center',
         gap: 6,
-        borderRadius: 'var(--radius-md)',
         fontFamily: 'var(--font-body)',
         fontSize: 13,
         fontWeight: 600,

@@ -412,7 +412,7 @@ export default function SentPage() {
             style={{
               width: '100%', height: '36px',
               border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-xl)',
+              borderRadius: 'var(--radius-pill)',
               padding: '0 16px 0 38px',
               fontSize: '13px', fontFamily: 'var(--font-body)',
               color: 'var(--color-text-primary)',
@@ -569,7 +569,7 @@ export default function SentPage() {
               alignItems: 'center',
               gap: 5,
               padding: '4px 12px',
-              borderRadius: 'var(--radius-xl)',
+              borderRadius: 'var(--radius-pill)',
               fontFamily: 'var(--font-body)',
               fontSize: 13,
               fontWeight: activeTab === tab.id ? 600 : 500,

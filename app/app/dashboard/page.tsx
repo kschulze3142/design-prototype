@@ -123,7 +123,7 @@ function AttentionCard({ item }: { item: AttentionItem }) {
           background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
           borderLeft: item.borderColor ? `3px solid ${item.borderColor}` : '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-md)',
+          borderRadius: 'var(--radius-lg)',
           boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
           transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
           transition: `all var(--duration-base) var(--ease-out)`,
@@ -549,7 +549,7 @@ export default function DashboardPage() {
           {/* Card 3 — Compliance Pulse */}
           <div style={{
             background: 'var(--color-surface-dark)',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 'var(--radius-lg)',
             padding: 16,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

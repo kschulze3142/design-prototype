@@ -359,7 +359,7 @@ export default function ContactsPage() {
               <div className="relative flex-1 max-w-md">
                 <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts, numbers, ATTN…"
-                  className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-[13px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
+                  className="w-full pl-9 pr-3 py-1.5 rounded-full border border-slate-200 bg-white text-[13px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
               </div>
               <span className="text-[12px] text-slate-500 ml-2">{filtered.length} of {CONTACTS.length}</span>
               <div className="flex-1" />
