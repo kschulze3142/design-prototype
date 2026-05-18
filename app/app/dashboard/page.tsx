@@ -174,7 +174,7 @@ function StatusBadge({ status }: { status: QueueItem['status'] }) {
   );
 }
 
-function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
+function RecentRecipientRow({ recipient, isLast }: { recipient: RecentRecipient; isLast: boolean }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -183,22 +183,31 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 6,
-        padding: '8px 4px',
-        borderRadius: 'var(--radius-md)',
+        padding: '10px 0',
         cursor: 'pointer',
-        background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
-        transition: `background var(--duration-fast)`,
+        borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
       }}
     >
-      <Avatar initials={recipient.initials} size={28} />
-      <span className="text-body-strong" style={{ fontSize: 13, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{recipient.name}</span>
-      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', flexShrink: 0, whiteSpace: 'nowrap' }}>
-        {recipient.number}
-      </span>
-      <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-        <I.Send size={14} />
-      </span>
+      <div style={{ flexShrink: 0, marginRight: 10 }}>
+        <Avatar initials={recipient.initials} size={36} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+        <div style={{ fontWeight: 500, fontSize: 13, color: 'var(--color-text-primary)' }}>
+          {recipient.name}
+        </div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>
+          {recipient.number}
+        </div>
+      </div>
+      <div style={{
+        flexShrink: 0,
+        display: 'flex',
+        alignItems: 'center',
+        color: hovered ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+        transition: `color var(--duration-fast)`,
+      }}>
+        <I.Send size={16} />
+      </div>
     </div>
   );
 }
@@ -478,7 +487,7 @@ export default function DashboardPage() {
               <div style={{ flex: 1, height: 1, background: 'var(--color-border)' }} />
             </div>
             {RECENT_RECIPIENTS.map((r, i) => (
-              <RecentRecipientRow key={i} recipient={r} />
+              <RecentRecipientRow key={i} recipient={r} isLast={i === RECENT_RECIPIENTS.length - 1} />
             ))}
           </Card>
 
