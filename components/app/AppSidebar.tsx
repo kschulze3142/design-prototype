@@ -7,16 +7,22 @@ import { useState, useEffect } from 'react';
 type SubNavItem = { href: string; label: string; badge?: number };
 type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
 
+const inboxNumbers = [
+  { label: 'Cardiology · 0142', number: '0142', badge: 2 },
+  { label: 'Front desk · 0319', number: '0319', badge: 1 },
+  { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
+];
+
 const CORE: NavItem[] = [
   { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
   { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
   {
     href: '/app/inbox', label: 'Inbox', icon: 'Inbox', badge: 4,
-    subItems: [
-      { href: '/app/inbox?number=0142', label: 'Cardiology · 0142', badge: 2 },
-      { href: '/app/inbox?number=0319', label: 'Front desk · 0319', badge: 1 },
-      { href: '/app/inbox?number=0903', label: 'Toll-free · 0903',  badge: 1 },
-    ],
+    subItems: inboxNumbers.map(n => ({
+      href: `/app/inbox?number=${n.number}`,
+      label: n.label,
+      badge: n.badge,
+    })),
   },
   { href: '/app/sent', label: 'Sent', icon: 'Sent' },
 ];

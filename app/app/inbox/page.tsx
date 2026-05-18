@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { I } from '@/components/app/icons';
 import { Button } from '@/components/ui/Button';
 
@@ -23,6 +24,12 @@ interface FaxItem {
 }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
+
+const inboxNumbers = [
+  { label: 'Cardiology · 0142', number: '0142', badge: 2 },
+  { label: 'Front desk · 0319', number: '0319', badge: 1 },
+  { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
+];
 
 const faxes: FaxItem[] = [
   {
@@ -355,7 +362,17 @@ function FaxRow({ fax }: { fax: FaxItem }) {
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
-export default function InboxPage() {
+function InboxContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeNumber = searchParams.get('number');
+
+  useEffect(() => {
+    if (!activeNumber) {
+      router.replace(`/app/inbox?number=${inboxNumbers[0].number}`);
+    }
+  }, [activeNumber, router]);
+
   const [activeTab, setActiveTab]       = useState('all');
   const [searchValue, setSearchValue]   = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -776,5 +793,13 @@ export default function InboxPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function InboxPage() {
+  return (
+    <Suspense fallback={null}>
+      <InboxContent />
+    </Suspense>
   );
 }
