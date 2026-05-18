@@ -60,9 +60,9 @@ const INBOX_ITEMS: InboxItem[] = [
 ];
 
 const RECENT_RECIPIENTS: RecentRecipient[] = [
-  { initials: 'BP', name: 'BlueShield Prior Auth',   number: '+1 (888) 555-0903' },
-  { initials: 'AC', name: 'Aetna Claims',            number: '+1 (800) 555-2840' },
-  { initials: 'PL', name: 'Pacific Lab Diagnostics', number: '+1 (206) 555-2840' },
+  { initials: 'BP', name: 'BlueShield Prior Auth',   number: '(888) 555-0903' },
+  { initials: 'AC', name: 'Aetna Claims',            number: '(800) 555-2840' },
+  { initials: 'PL', name: 'Pacific Lab Diagnostics', number: '(206) 555-2840' },
 ];
 
 const COMPLIANCE_ITEMS = [
@@ -123,8 +123,7 @@ function AttentionCard({ item }: { item: AttentionItem }) {
         onMouseUp={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'; }}
         style={{
           background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderLeft: item.borderColor ? `3px solid ${item.borderColor}` : '1px solid var(--color-border)',
+          ...(item.borderColor ? { borderLeft: `3px solid ${item.borderColor}` } : {}),
           borderRadius: 'var(--radius-lg)',
           boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
           transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
@@ -197,7 +196,7 @@ function RecentRecipientRow({ recipient }: { recipient: RecentRecipient }) {
       <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-tertiary)', flexShrink: 0, whiteSpace: 'nowrap' }}>
         {recipient.number}
       </span>
-      <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center' }}>
+      <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
         <I.Send size={14} />
       </span>
     </div>

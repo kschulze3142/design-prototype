@@ -299,6 +299,8 @@ export function AppSidebar() {
       display: 'flex',
       flexDirection: 'column',
       zIndex: 40,
+      borderTopRightRadius: 16,
+      borderBottomRightRadius: 16,
     }}>
       {/* Logo area */}
       <div style={{

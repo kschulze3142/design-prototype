@@ -58,7 +58,7 @@ const STEP_LABELS = ['Compose', 'Preview', 'Confirmation'];
 
 function StepIndicator({ current, onBack }: { current: number; onBack?: () => void }) {
   return (
-    <Card noPadding style={{ marginBottom: 20 }}>
+    <Card noPadding style={{ marginBottom: 20, border: '1px solid var(--color-border)' }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: '14px 24px' }}>
         <div style={{ flexShrink: 0, marginRight: 16 }}>
           {onBack && (

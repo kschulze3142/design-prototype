@@ -99,7 +99,6 @@ function NumberCard({ n }: { n: FaxNumber }) {
         boxShadow: hovered ? 'var(--shadow-panel)' : undefined,
         opacity: isInactive ? 0.7 : 1,
         ...(isPort && {
-          border: '1px solid color-mix(in srgb, var(--color-review) 25%, transparent)',
           background: 'color-mix(in srgb, var(--color-review-bg) 50%, white)',
         }),
       }}

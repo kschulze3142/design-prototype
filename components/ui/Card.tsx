@@ -15,7 +15,6 @@ export function Card({ children, className = '', style, noPadding, padding }: Ca
       className={className}
       style={{
         background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-lg)',
         boxShadow: 'var(--shadow-card)',
         padding: resolvedPadding,
