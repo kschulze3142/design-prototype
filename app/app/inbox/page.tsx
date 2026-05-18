@@ -458,21 +458,22 @@ export default function InboxPage() {
       <div style={{
         background: 'white',
         borderBottom: '1px solid var(--color-border)',
-        padding: '0 32px',
-        height: 52,
+        padding: '12px 32px',
         display: 'flex',
         alignItems: 'center',
         flexShrink: 0,
       }}>
         <div style={{ position: 'relative', width: 480 }}>
           {/* Search icon */}
-          <I.Search size={14} style={{
+          <I.Search size={16} style={{
             position: 'absolute',
             left: 12,
             top: '50%',
             transform: 'translateY(-50%)',
             color: 'var(--color-text-tertiary)',
             pointerEvents: 'none',
+            width: 16,
+            height: 16,
           }} />
 
           {/* Input */}
