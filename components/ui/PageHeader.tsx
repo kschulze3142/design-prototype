@@ -12,7 +12,7 @@ export function PageHeader({ overline, headline, subline, actions }: PageHeaderP
     <div style={{
       background: 'white',
       borderBottom: '1px solid var(--color-border)',
-      padding: '20px 32px',
+      padding: '24px 32px',
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'space-between',

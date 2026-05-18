@@ -202,7 +202,7 @@ function StepCompose({ form, setForm, onNext }: {
   const selectRecipient = (r: typeof RECENT_RECIPIENTS[0]) =>
     setForm(f => ({ ...f, recipientName: r.name, recipientNumber: r.number, recipientAttn: r.attn }));
 
-  const divider = <div style={{ height: 1, background: 'var(--color-border)', margin: '0 -24px' }} />;
+  const divider = <div style={{ height: 1, background: 'var(--color-border)', margin: '8px -28px' }} />;
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
@@ -211,7 +211,7 @@ function StepCompose({ form, setForm, onNext }: {
       <Card noPadding style={{ borderRadius: 'var(--radius-lg)' }}>
 
         {/* Section: Recipient */}
-        <div style={{ padding: 24 }}>
+        <div style={{ padding: 28 }}>
           <div style={{ marginBottom: 16 }}>
             <div className="text-title">Recipient</div>
             <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>Where this fax is going.</div>
@@ -298,7 +298,7 @@ function StepCompose({ form, setForm, onNext }: {
         {divider}
 
         {/* Section: Cover page */}
-        <div style={{ padding: 24 }}>
+        <div style={{ padding: 28 }}>
           <div style={{ marginBottom: 16 }}>
             <div className="text-title">Cover page</div>
             <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>Subject is printed on the cover sheet; the note follows beneath.</div>
@@ -331,7 +331,7 @@ function StepCompose({ form, setForm, onNext }: {
         {divider}
 
         {/* Section: Documents */}
-        <div style={{ padding: 24 }}>
+        <div style={{ padding: 28 }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>
               <div className="text-title">Documents</div>

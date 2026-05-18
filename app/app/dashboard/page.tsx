@@ -127,7 +127,7 @@ function AttentionCard({ item }: { item: AttentionItem }) {
           boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
           transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
           transition: `all var(--duration-base) var(--ease-out)`,
-          padding: 16,
+          padding: 20,
           display: 'flex',
           alignItems: 'center',
           gap: 16,
@@ -410,7 +410,7 @@ export default function DashboardPage() {
             <Card noPadding style={{ marginTop: 12 }}>
               {QUEUE_ITEMS.map((item, i) => (
                 <div key={item.id} style={{
-                  padding: '14px 16px',
+                  padding: '16px 20px',
                   borderBottom: i < QUEUE_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
                   display: 'flex',
                   alignItems: 'center',
@@ -507,7 +507,7 @@ export default function DashboardPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '8px 0',
+                  padding: '12px 0',
                   borderBottom: i < INBOX_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
                   cursor: 'pointer',
                 }}>
@@ -550,7 +550,7 @@ export default function DashboardPage() {
           <div style={{
             background: 'var(--color-surface-dark)',
             borderRadius: 'var(--radius-lg)',
-            padding: 16,
+            padding: 24,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
