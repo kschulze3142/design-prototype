@@ -317,6 +317,23 @@ function FaxRow({ fax }: { fax: SentFaxItem }) {
 export default function SentPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchValue, setSearchValue] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const recentSearches = [
+    'BlueShield Prior Auth',
+    'Authorization request A24189',
+    'Aetna Claims',
+    'Failed faxes',
+    'Prior auth',
+  ];
+
+  const frequentRecipients = [
+    { initials: 'BP', name: 'BlueShield', count: 31 },
+    { initials: 'AC', name: 'Aetna Claims', count: 24 },
+    { initials: 'PL', name: 'Pacific Lab', count: 18 },
+    { initials: 'NI', name: 'NW Imaging', count: 12 },
+    { initials: 'GH', name: 'Group Health', count: 8 },
+  ];
 
   const q = searchValue.toLowerCase();
   const filtered = sentFaxes.filter(f => {
@@ -376,52 +393,160 @@ export default function SentPage() {
       </div>
 
       {/* Search row */}
-      <div style={{
-        padding: '12px 32px',
-        background: 'white',
-        borderBottom: '1px solid var(--color-border)',
-        flexShrink: 0,
-      }}>
-        <div style={{ position: 'relative', width: 480 }}>
+      <div style={{ padding: '12px 32px', background: 'white', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}>
+        <div style={{ position: 'relative', width: '480px' }}>
           <svg
-            style={{
-              position: 'absolute',
-              left: 12,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 16,
-              height: 16,
-              color: 'var(--color-text-tertiary)',
-              pointerEvents: 'none',
-              zIndex: 1,
-            }}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
+            style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--color-text-tertiary)', pointerEvents: 'none', zIndex: 1 }}
+            fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
+
           <input
             type="text"
             placeholder="Search sent faxes..."
             value={searchValue}
             onChange={e => setSearchValue(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
             style={{
-              width: '100%',
-              height: 36,
+              width: '100%', height: '36px',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-xl)',
               padding: '0 16px 0 38px',
-              fontSize: 13,
-              fontFamily: 'var(--font-body)',
+              fontSize: '13px', fontFamily: 'var(--font-body)',
               color: 'var(--color-text-primary)',
               background: 'var(--color-bg)',
-              outline: 'none',
-              boxSizing: 'border-box',
+              outline: 'none', boxSizing: 'border-box',
             }}
           />
+
+          {/* Autosuggest dropdown */}
+          {searchFocused && (
+            <div style={{
+              position: 'absolute', top: 'calc(100% + 4px)', left: 0,
+              width: '480px', background: 'white',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-panel)',
+              zIndex: 100, overflow: 'hidden',
+            }}>
+              {searchValue === '' ? (
+                <>
+                  {recentSearches.map(search => (
+                    <div
+                      key={search}
+                      onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '12px',
+                        padding: '10px 16px', cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: '13px',
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                      {search}
+                    </div>
+                  ))}
+
+                  <div style={{ height: '1px', background: 'var(--color-border)', margin: '4px 0' }} />
+                  <div style={{ padding: '6px 16px', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>
+                    Frequent recipients
+                  </div>
+                  <div style={{ padding: '6px 16px 10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {frequentRecipients.map(contact => (
+                      <div
+                        key={contact.name}
+                        onMouseDown={() => { setSearchValue(contact.name); setSearchFocused(false); }}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '6px',
+                          height: '30px', padding: '0 10px 0 6px',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: 'var(--radius-xl)',
+                          background: 'white', cursor: 'pointer',
+                          fontFamily: 'var(--font-body)', fontSize: '12px',
+                          fontWeight: 500, color: 'var(--color-text-primary)',
+                          transition: 'all var(--duration-fast)',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.background = 'white'; }}
+                      >
+                        <div style={{
+                          width: '22px', height: '22px', borderRadius: '50%',
+                          background: 'var(--color-primary-subtle)',
+                          color: 'var(--color-primary)',
+                          fontSize: '9px', fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {contact.initials}
+                        </div>
+                        {contact.name}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).map(search => (
+                    <div
+                      key={search}
+                      onMouseDown={() => { setSearchValue(search); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '12px',
+                        padding: '10px 16px', cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: '13px',
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                      </svg>
+                      {search}
+                    </div>
+                  ))}
+                  {frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).map(contact => (
+                    <div
+                      key={contact.name}
+                      onMouseDown={() => { setSearchValue(contact.name); setSearchFocused(false); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '12px',
+                        padding: '10px 16px', cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: '13px',
+                        color: 'var(--color-text-secondary)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                    >
+                      <div style={{
+                        width: '22px', height: '22px', borderRadius: '50%',
+                        background: 'var(--color-primary-subtle)',
+                        color: 'var(--color-primary)',
+                        fontSize: '9px', fontWeight: 700,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}>
+                        {contact.initials}
+                      </div>
+                      {contact.name}
+                    </div>
+                  ))}
+                  {recentSearches.filter(s => s.toLowerCase().includes(searchValue.toLowerCase())).length === 0 &&
+                   frequentRecipients.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase())).length === 0 && (
+                    <div style={{ padding: '12px 16px', fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--color-text-tertiary)' }}>
+                      No suggestions
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
