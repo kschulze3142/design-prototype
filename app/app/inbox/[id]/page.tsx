@@ -534,19 +534,16 @@ export default function InboxDetailPage() {
         background: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-border)',
         padding: '16px 32px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
         flexShrink: 0,
       }}>
 
-        {/* Back button */}
+        {/* Back button — own row */}
         <Link href="/app/inbox" style={{ textDecoration: 'none' }}>
           <Button variant="ghost" size="sm">← Inbox</Button>
         </Link>
 
-        {/* Right: sender info + actions */}
-        <div style={{ flex: 1 }}>
+        {/* Sender info + actions */}
+        <div style={{ marginTop: 8 }}>
 
           {/* Row 1: avatar · sender · phone/time · fax ID · star · menu */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
