@@ -358,10 +358,10 @@ export default function SentPage() {
       }}>
         <div>
           <div style={{
-            fontFamily: 'var(--font-body)',
+            fontFamily: 'var(--font-mono)',
             fontSize: 11,
             fontWeight: 600,
-            letterSpacing: '0.07em',
+            letterSpacing: '0.08em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
             marginBottom: 4,
@@ -378,6 +378,16 @@ export default function SentPage() {
           }}>
             Your sent faxes · All numbers
           </h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--color-text-secondary)',
+            margin: 0,
+            marginTop: 4,
+          }}>
+            Track delivery and manage every fax you've sent.
+          </p>
         </div>
         <Button variant="primary" style={{ alignSelf: 'center' }}>
           <I.Plus size={14} strokeWidth={2.4} /> New fax

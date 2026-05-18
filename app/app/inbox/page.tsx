@@ -415,10 +415,10 @@ function InboxContent() {
       }}>
         <div>
           <div style={{
-            fontFamily: 'var(--font-body)',
+            fontFamily: 'var(--font-mono)',
             fontSize: 11,
             fontWeight: 600,
-            letterSpacing: '0.07em',
+            letterSpacing: '0.08em',
             textTransform: 'uppercase',
             color: 'var(--color-text-tertiary)',
             marginBottom: 4,
@@ -435,6 +435,16 @@ function InboxContent() {
           }}>
             {headline}
           </h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--color-text-secondary)',
+            margin: 0,
+            marginTop: 4,
+          }}>
+            Review, route, and act on every incoming fax.
+          </p>
         </div>
 
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', alignSelf: 'center' }}>
