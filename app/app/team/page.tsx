@@ -1,452 +1,410 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { I } from '@/components/app/icons';
-import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
 
-const ROLES = [
-  { id: 'Admin',     desc: 'Full access incl. billing, security, and audit log.',      count: 2, tone: 'violet', perms: ['Manage workspace','Billing & invoices','Audit log export','All faxes','Compliance settings'] },
-  { id: 'Reviewer',  desc: 'Approve outbound faxes flagged as PHI before send.',        count: 3, tone: 'amber',  perms: ['Approve PHI sends','Assigned faxes','Templates'] },
-  { id: 'Member',    desc: 'Send and receive faxes assigned to them or their team.',    count: 6, tone: 'teal',   perms: ['Send fax','Read assigned faxes','Templates (use)'] },
-  { id: 'Read-only', desc: 'View-only access for auditors and observers.',              count: 1, tone: 'slate',  perms: ['Read assigned faxes','Export receipts'] },
+type Role = 'admin' | 'reviewer' | 'member' | 'readonly';
+
+interface Member {
+  initials: string;
+  name: string;
+  email: string;
+  role: Role;
+  team: string;
+  lastActive: string;
+  mfa: boolean;
+  you?: boolean;
+  shared?: boolean;
+}
+
+const MEMBERS: Member[] = [
+  { initials: 'AP', name: 'Amelia Park',      you: true,    email: 'amelia@northwindhealth.example',    role: 'admin',    team: 'Operations',     lastActive: 'Now',       mfa: true  },
+  { initials: 'MG', name: 'Dr. M. Greaves',               email: 'greaves@northwindhealth.example',   role: 'member',   team: 'Cardiology',     lastActive: '2m ago',    mfa: true  },
+  { initials: 'PK', name: 'Dr. Priya Khanna',             email: 'khanna@northwindhealth.example',    role: 'member',   team: 'Cardiology',     lastActive: '14m ago',   mfa: true  },
+  { initials: 'KL', name: 'Kelly Liu',                    email: 'kelly@northwindhealth.example',     role: 'reviewer', team: 'Compliance',     lastActive: '1h ago',    mfa: true  },
+  { initials: 'TI', name: 'Tom Iwasaki',                  email: 'tom@northwindhealth.example',       role: 'member',   team: 'Endocrinology',  lastActive: '3h ago',    mfa: true  },
+  { initials: 'NH', name: 'Noor Hassan',                  email: 'noor@northwindhealth.example',      role: 'reviewer', team: 'Compliance',     lastActive: 'Yesterday', mfa: true  },
+  { initials: 'R',  name: 'Reception',        shared: true, email: 'reception@northwindhealth.example', role: 'member', team: 'Front desk',     lastActive: 'Yesterday', mfa: false },
+  { initials: 'DS', name: 'Dr. Sarah Chen',               email: 'schen@northwindhealth.example',     role: 'reviewer', team: 'Cardiology',    lastActive: '2d ago',    mfa: true  },
+  { initials: 'MR', name: 'Marcus Riley',                 email: 'mriley@northwindhealth.example',    role: 'readonly', team: 'External Audit', lastActive: '1w ago',   mfa: true  },
+  { initials: 'DP', name: 'Dr. Devon Park',               email: 'devon@northwindhealth.example',     role: 'admin',    team: 'Leadership',     lastActive: '1w ago',    mfa: true  },
+  { initials: 'JC', name: 'Jamie Cortez',                 email: 'jcortez@northwindhealth.example',   role: 'member',   team: 'Cardiology',     lastActive: '32d ago',   mfa: false },
 ];
 
-const MEMBERS = [
-  { id: 'u-1',  name: 'Amelia Park',      email: 'amelia@northwindhealth.example',    role: 'Admin',     team: 'Operations',    tone: 'teal',    mfa: true,  status: 'Active',   lastActive: 'Now',       joined: 'Mar 1, 2024',  faxesSent: 184, you: true,  shared: false },
-  { id: 'u-2',  name: 'Dr. M. Greaves',   email: 'greaves@northwindhealth.example',   role: 'Member',    team: 'Cardiology',    tone: 'teal',    mfa: true,  status: 'Active',   lastActive: '2m ago',    joined: 'Apr 12, 2024', faxesSent: 412, you: false, shared: false },
-  { id: 'u-3',  name: 'Dr. Priya Khanna', email: 'khanna@northwindhealth.example',    role: 'Member',    team: 'Cardiology',    tone: 'emerald', mfa: true,  status: 'Active',   lastActive: '14m ago',   joined: 'Sep 4, 2024',  faxesSent: 117, you: false, shared: false },
-  { id: 'u-4',  name: 'Kelly Liu',        email: 'kelly@northwindhealth.example',     role: 'Reviewer',  team: 'Compliance',    tone: 'amber',   mfa: true,  status: 'Active',   lastActive: '1h ago',    joined: 'Jun 21, 2024', faxesSent: 38,  you: false, shared: false },
-  { id: 'u-5',  name: 'Tom Iwasaki',      email: 'tom@northwindhealth.example',       role: 'Member',    team: 'Endocrinology', tone: 'amber',   mfa: true,  status: 'Active',   lastActive: '3h ago',    joined: 'Aug 9, 2024',  faxesSent: 64,  you: false, shared: false },
-  { id: 'u-6',  name: 'Noor Hassan',      email: 'noor@northwindhealth.example',      role: 'Reviewer',  team: 'Compliance',    tone: 'violet',  mfa: true,  status: 'Active',   lastActive: 'Yesterday', joined: 'Feb 14, 2025', faxesSent: 22,  you: false, shared: false },
-  { id: 'u-7',  name: 'Reception',        email: 'reception@northwindhealth.example', role: 'Member',    team: 'Front desk',    tone: 'slate',   mfa: false, status: 'Active',   lastActive: 'Yesterday', joined: 'Mar 1, 2024',  faxesSent: 88,  you: false, shared: true },
-  { id: 'u-8',  name: 'Dr. Sarah Chen',   email: 'schen@northwindhealth.example',     role: 'Reviewer',  team: 'Cardiology',    tone: 'teal',    mfa: true,  status: 'Active',   lastActive: '2d ago',    joined: 'Nov 18, 2024', faxesSent: 41,  you: false, shared: false },
-  { id: 'u-9',  name: 'Marcus Riley',     email: 'marcus@northwindhealth.example',    role: 'Read-only', team: 'External Audit',tone: 'slate',   mfa: true,  status: 'Active',   lastActive: '1w ago',    joined: 'Jan 10, 2026', faxesSent: 0,   you: false, shared: false },
-  { id: 'u-10', name: 'Dr. Devon Park',   email: 'devon@northwindhealth.example',     role: 'Admin',     team: 'Leadership',    tone: 'emerald', mfa: true,  status: 'Active',   lastActive: '1w ago',    joined: 'Mar 1, 2024',  faxesSent: 12,  you: false, shared: false },
-  { id: 'u-11', name: 'Jamie Cortez',     email: 'jamie@northwindhealth.example',     role: 'Member',    team: 'Cardiology',    tone: 'violet',  mfa: false, status: 'Inactive', lastActive: '32d ago',   joined: 'May 4, 2024',  faxesSent: 6,   you: false, shared: false },
-];
-type Member = typeof MEMBERS[number];
-
-const PENDING = [
-  { email: 'rachel@northwindhealth.example', role: 'Member',    sentBy: 'Amelia Park', sentAt: '2 days ago' },
-  { email: 'auditor@deloitte.example',       role: 'Read-only', sentBy: 'Amelia Park', sentAt: '5 hours ago' },
+const PENDING_INVITES = [
+  { initials: 'R',  email: 'rachel@northwindhealth.example', role: 'member'   as Role, invitedBy: 'Amelia Park', when: '2 days ago'  },
+  { initials: 'AU', email: 'auditor@deloitte.example',       role: 'readonly' as Role, invitedBy: 'Amelia Park', when: '5 hours ago' },
 ];
 
-const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
-  emerald: { bg: '#ecfdf5',               fg: '#047857',             dot: '#10b981' },
-  teal:    { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)', dot: 'var(--color-primary)' },
-  amber:   { bg: '#fffbeb',               fg: '#b45309',             dot: '#f59e0b' },
-  violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
-  slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
+const ROLE_LABELS: Record<Role, string> = {
+  admin: 'Admin', reviewer: 'Reviewer', member: 'Member', readonly: 'Read-only',
 };
 
-function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button onClick={onClick} className={`px-3.5 py-1.5 text-[13px] rounded-full font-medium transition ${active ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
-      {children}
-    </button>
-  );
-}
+const FILTER_TABS: { key: string; label: string; count: number }[] = [
+  { key: 'all',      label: 'All',       count: 11 },
+  { key: 'admin',    label: 'Admin',     count: 2  },
+  { key: 'reviewer', label: 'Reviewer',  count: 3  },
+  { key: 'member',   label: 'Member',    count: 5  },
+  { key: 'readonly', label: 'Read-only', count: 1  },
+];
 
-function Toggle({ checked, onChange, label, helper }: { checked: boolean; onChange: (v: boolean) => void; label: string; helper?: string }) {
-  return (
-    <label className="flex items-start gap-3 cursor-pointer select-none">
-      <span onClick={() => onChange(!checked)} className="inline-flex shrink-0 mt-0.5 w-9 h-5 rounded-full transition relative" style={{ background: checked ? 'var(--color-primary)' : '#cbd5e1' }}>
-        <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all" style={{ left: checked ? '18px' : '2px' }} />
-      </span>
-      <span>
-        <span className="block text-[13.5px] font-medium text-slate-900">{label}</span>
-        {helper && <span className="block text-[12.5px] text-slate-500 mt-0.5">{helper}</span>}
-      </span>
-    </label>
-  );
-}
+const ROLE_CARD_DATA: { role: Role; count: number; desc: string }[] = [
+  { role: 'admin',    count: 2, desc: 'Full access incl. billing, security, and audit log.' },
+  { role: 'reviewer', count: 3, desc: 'Approve outbound faxes flagged as PHI before send.'  },
+  { role: 'member',   count: 5, desc: 'Send and receive faxes assigned to them or their team.' },
+  { role: 'readonly', count: 1, desc: 'View-only access for auditors and observers.'          },
+];
 
-function RoleBadge({ role }: { role: string }) {
-  const r = ROLES.find(x => x.id === role) || ROLES[2];
-  return <Pill tone={r.tone} dot={false}>{role}</Pill>;
-}
+const COL = '2fr 1fr 1fr 1fr 1fr 80px';
 
-function MemberRow({ m, onOpen }: { m: Member; onOpen: () => void }) {
-  const isOnline = m.lastActive === 'Now' || m.lastActive.endsWith('m ago');
-  return (
-    <tr className="hover:bg-slate-50/70 cursor-pointer transition" onClick={onOpen}>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          <div className="relative shrink-0">
-            <Avatar name={m.name} size={36} tone={m.tone} />
-            {isOnline && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white" />}
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-medium text-slate-900 text-[13.5px]">{m.name}</span>
-              {m.you && <Pill tone="teal" dot={false}>You</Pill>}
-              {m.shared && <Pill tone="slate" dot={false}>Shared</Pill>}
-            </div>
-            <div className="text-[12px] text-slate-400 truncate">{m.email}</div>
-          </div>
-        </div>
-      </td>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100"><RoleBadge role={m.role} /></td>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100">
-        <span className="text-[13px] text-slate-600">{m.team}</span>
-      </td>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100">
-        <span className="font-mono text-[12.5px] text-slate-500">{m.lastActive}</span>
-      </td>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100">
-        {m.mfa ? (
-          <span className="flex items-center gap-1.5 text-emerald-600 text-[12.5px] font-medium"><I.Shield size={13} /> On</span>
-        ) : (
-          <span className="flex items-center gap-1.5 text-amber-600 text-[12.5px] font-medium"><I.Info size={13} /> Off</span>
-        )}
-      </td>
-      <td className="px-4 py-4 text-[14px] text-slate-900 border-b border-slate-100 text-right">
-        <button className="w-8 h-8 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 ml-auto" onClick={e => { e.stopPropagation(); }}>
-          <I.More size={15} />
-        </button>
-      </td>
-    </tr>
-  );
-}
+// ── Sub-components ─────────────────────────────────────────────────────────────
 
-function SoftCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function Avatar({ initials, size = 32 }: { initials: string; size?: number }) {
   return (
-    <div className={`rounded-2xl p-4 border border-slate-100 ${className}`} style={{ background: 'rgba(248,250,252,0.7)' }}>
-      {children}
+    <div style={{
+      width: size, height: size, borderRadius: '50%', flexShrink: 0,
+      background: 'var(--color-primary-subtle)', color: 'var(--color-primary)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: size * 0.38, fontWeight: 600, fontFamily: 'var(--font-body)',
+    }}>
+      {initials}
     </div>
   );
 }
 
-function MemberDetailModal({ m, onClose, onRoleChange }: { m: Member | null; onClose: () => void; onRoleChange: (id: string, role: string) => void }) {
-  const [tab, setTab] = useState('Profile');
-  const [notifyEmail, setNotifyEmail] = useState(true);
+function RoleBadge({ role }: { role: Role }) {
+  const base: React.CSSProperties = {
+    display: 'inline-flex', alignItems: 'center',
+    borderRadius: 'var(--radius-sm)', padding: '2px 8px',
+    fontSize: 11, fontWeight: 600, fontFamily: 'var(--font-body)', whiteSpace: 'nowrap',
+  };
+  const variants: Record<Role, React.CSSProperties> = {
+    admin:    { background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' },
+    reviewer: { background: 'var(--color-phi-bg)',         color: 'var(--color-phi)'     },
+    member:   { background: 'var(--color-bg)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' },
+    readonly: { background: 'var(--color-bg)', color: 'var(--color-text-tertiary)',  border: '1px solid var(--color-border)' },
+  };
+  return <span style={{ ...base, ...variants[role] }}>{ROLE_LABELS[role]}</span>;
+}
 
-  if (!m) return null;
-
-  const firstName = m.name.split(' ')[0];
-  const tabs = ['Profile', 'Permissions', 'Activity', 'Sessions'];
-  const currentRole = ROLES.find(r => r.id === m.role) || ROLES[2];
-
-  const isOnline = m.lastActive === 'Now' || m.lastActive.endsWith('m ago');
-
+function SmallBadge({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)' }}
-      onClick={onClose}>
-      <div className="w-[820px] max-h-[88vh] flex flex-col rounded-[28px] bg-white/90 backdrop-blur-[20px] border border-white/70 shadow-[0_32px_80px_-16px_rgba(15,23,42,0.4)] overflow-hidden"
-        onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div className="relative p-7 pb-5" style={{ background: 'linear-gradient(135deg, rgba(204,251,241,0.6) 0%, rgba(240,253,250,0.4) 100%)' }}>
-          <button onClick={onClose} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/60 flex items-center justify-center text-slate-500 hover:bg-white/90 transition">
-            <I.X size={14} />
-          </button>
-          <div className="flex items-start gap-5">
-            <div className="relative shrink-0">
-              <Avatar name={m.name} size={64} tone={m.tone} />
-              {isOnline && <span className="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full bg-emerald-400 border-[3px] border-white" />}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[24px] font-semibold text-slate-900" style={{ fontFamily: 'Georgia, serif' }}>{m.name}</span>
-                {m.you && <Pill tone="teal" dot={false}>You</Pill>}
-              </div>
-              <div className="text-[13.5px] text-slate-500 mt-0.5">{m.email}</div>
-              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                <RoleBadge role={m.role} />
-                <Pill tone="slate" dot={false}>{m.team}</Pill>
-                <Pill tone={m.mfa ? 'emerald' : 'amber'} dot={false}>{m.mfa ? 'MFA on' : 'No MFA'}</Pill>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <AppButton variant="secondary" size="sm" icon={<I.Note size={13} />}>Edit</AppButton>
-              <AppButton variant="secondary" size="sm" icon={<I.Send size={13} />}>Message</AppButton>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 mt-5">
-            {tabs.map(t => <Tab key={t} active={tab === t} onClick={() => setTab(t)}>{t}</Tab>)}
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto p-7 space-y-5">
-          {tab === 'Profile' && (
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Full name', value: m.name },
-                { label: 'Email', value: m.email },
-                { label: 'Team', value: m.team },
-                { label: 'Joined', value: m.joined },
-                { label: 'Last sign-in', value: m.lastActive },
-                { label: 'Faxes sent · 90d', value: String(m.faxesSent) },
-              ].map(f => (
-                <div key={f.label} className="p-4 rounded-2xl bg-slate-50/60 border border-slate-100">
-                  <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{f.label}</div>
-                  <div className="text-[14px] text-slate-800 mt-1 font-medium truncate">{f.value}</div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {tab === 'Permissions' && (
-            <>
-              <div>
-                <div className="text-[13px] font-semibold text-slate-700 mb-3">Role</div>
-                <div className="grid grid-cols-2 gap-3">
-                  {ROLES.map(r => {
-                    const active = m.role === r.id;
-                    return (
-                      <button key={r.id} onClick={() => onRoleChange(m.id, r.id)}
-                        className="text-left p-4 rounded-2xl border-2 transition"
-                        style={{ borderColor: active ? 'var(--color-primary)' : '#e2e8f0', background: active ? 'var(--color-primary-subtle)' : 'white' }}>
-                        <div className="flex items-center justify-between">
-                          <Pill tone={r.tone} dot={false}>{r.id}</Pill>
-                          {active && <span className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--color-primary)', color: 'white' }}><I.Check size={11} strokeWidth={2.5} /></span>}
-                        </div>
-                        <div className="text-[12.5px] text-slate-500 mt-2 leading-relaxed">{r.desc}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <div>
-                <div className="text-[13px] font-semibold text-slate-700 mb-3">What {firstName} can do</div>
-                <SoftCard className="p-0 overflow-hidden">
-                  <div className="grid grid-cols-2">
-                    {currentRole.perms.map((perm, i) => (
-                      <div key={perm} className={`flex items-center gap-2.5 px-4 py-3 ${i < currentRole.perms.length - (currentRole.perms.length % 2 === 0 ? 2 : 1) ? 'border-b border-slate-100' : ''}`}>
-                        <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary)', color: 'white' }}>
-                          <I.Check size={10} strokeWidth={2.5} />
-                        </span>
-                        <span className="text-[13px] text-slate-700">{perm}</span>
-                      </div>
-                    ))}
-                  </div>
-                </SoftCard>
-              </div>
-            </>
-          )}
-
-          {tab === 'Activity' && (
-            <>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: 'Sent · 90d', value: String(m.faxesSent) },
-                  { label: m.role === 'Reviewer' || m.role === 'Admin' ? 'Approved' : 'Approved', value: m.role === 'Reviewer' || m.role === 'Admin' ? '14' : '—' },
-                  { label: 'Templates', value: '3' },
-                ].map(s => (
-                  <SoftCard key={s.label}>
-                    <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{s.label}</div>
-                    <div className="text-[28px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'var(--font-inter-tight), system-ui' }}>{s.value}</div>
-                  </SoftCard>
-                ))}
-              </div>
-              <div>
-                <div className="text-[13px] font-semibold text-slate-700 mb-3">Recent activity</div>
-                <div className="space-y-1">
-                  {[
-                    { color: '#10b981', label: 'Signed in', when: 'Today, 9:04 AM', detail: 'Chrome · Seattle, WA' },
-                    { color: 'var(--color-primary)', label: 'Sent fax', when: 'Today, 8:51 AM', detail: 'To +1 (206) 555-0199 · 3 pages' },
-                    { color: '#f59e0b', label: 'Approved PHI fax', when: 'Yesterday, 4:12 PM', detail: 'Authorization for Dr. Patel referral' },
-                    { color: '#8b5cf6', label: 'Updated template', when: 'Mar 24, 2026', detail: '"Prior Auth Request" template v2' },
-                  ].map((ev, i) => (
-                    <div key={i} className="flex gap-4 items-start py-2.5 border-b border-slate-100 last:border-0">
-                      <span className="w-2.5 h-2.5 rounded-full mt-1.5 shrink-0" style={{ background: ev.color }} />
-                      <div className="flex-1">
-                        <div className="text-[13.5px] font-medium text-slate-900">{ev.label}</div>
-                        <div className="text-[12px] text-slate-400">{ev.detail}</div>
-                      </div>
-                      <span className="text-[12px] text-slate-400 font-mono shrink-0">{ev.when}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {tab === 'Sessions' && (
-            <div className="space-y-3">
-              {[
-                { device: 'Chrome on macOS', location: 'Seattle, WA', ip: '98.102.44.11', when: 'Active now', current: true },
-                { device: 'Safari on iPhone 15', location: 'Seattle, WA', ip: '98.102.44.11', when: '3 hours ago', current: false },
-                { device: 'Chrome on Windows', location: 'Bellevue, WA', ip: '71.218.30.4', when: '2 days ago', current: false },
-              ].map((sess, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50/60 border border-slate-100">
-                  <span className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
-                    <I.Lock size={14} />
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[13.5px] font-medium text-slate-900">{sess.device}</span>
-                      {sess.current && <Pill tone="emerald" dot={false}>This device</Pill>}
-                    </div>
-                    <div className="text-[12px] text-slate-400 mt-0.5">{sess.location} · {sess.ip} · {sess.when}</div>
-                  </div>
-                  {!sess.current && (
-                    <button className="text-[12.5px] font-semibold text-red-600 hover:text-red-700 shrink-0">Revoke</button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-7 py-4 border-t border-slate-100 bg-slate-50/40 flex items-center justify-between">
-          <button className="text-[13px] font-semibold text-red-600 hover:text-red-700">Remove from workspace</button>
-          <AppButton variant="secondary" onClick={onClose}>Close</AppButton>
-        </div>
-      </div>
-    </div>
+    <span style={{
+      background: 'var(--color-bg)', color: 'var(--color-text-tertiary)',
+      border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)',
+      padding: '1px 6px', fontSize: 10, fontWeight: 600, marginLeft: 6,
+      display: 'inline-flex', alignItems: 'center', fontFamily: 'var(--font-body)',
+    }}>
+      {children}
+    </span>
   );
 }
+
+function Dot({ color }: { color: string }) {
+  return <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />;
+}
+
+function LastActive({ value }: { value: string }) {
+  if (value === 'Now') {
+    return (
+      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-delivered)', fontSize: 13, fontFamily: 'var(--font-body)' }}>
+        <Dot color="var(--color-delivered)" /> Now
+      </span>
+    );
+  }
+  const isRecent = value.endsWith('m ago') || value.endsWith('h ago');
+  return (
+    <span style={{ color: isRecent ? 'var(--color-text-secondary)' : 'var(--color-text-tertiary)', fontSize: 13, fontFamily: 'var(--font-body)' }}>
+      {value}
+    </span>
+  );
+}
+
+function MfaStatus({ on }: { on: boolean }) {
+  return on ? (
+    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-delivered)', fontSize: 13, fontFamily: 'var(--font-body)' }}>
+      <Dot color="var(--color-delivered)" /> On
+    </span>
+  ) : (
+    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-review)', fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)' }}>
+      <Dot color="var(--color-review)" /> Off
+    </span>
+  );
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────────
 
 export default function TeamPage() {
-  const [roleFilter, setRoleFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState('all');
   const [search, setSearch] = useState('');
-  const [open, setOpen] = useState<Member | null>(null);
-  const [members, setMembers] = useState(MEMBERS);
 
-  const filtered = members.filter(m => {
-    if (roleFilter !== 'All' && m.role !== roleFilter) return false;
-    if (search && !`${m.name} ${m.email} ${m.team}`.toLowerCase().includes(search.toLowerCase())) return false;
+  const filtered = MEMBERS.filter(m => {
+    if (activeFilter !== 'all' && m.role !== activeFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!m.name.toLowerCase().includes(q) && !m.email.toLowerCase().includes(q) && !m.team.toLowerCase().includes(q)) return false;
+    }
     return true;
   });
 
-  const onRoleChange = (id: string, role: string) => {
-    setMembers(arr => arr.map(m => m.id === id ? { ...m, role } : m));
-  };
-
-  useEffect(() => {
-    if (open) {
-      const fresh = members.find(m => m.id === open.id);
-      if (fresh && fresh !== open) setOpen(fresh);
-    }
-  }, [members]);
-
   return (
-    <div>
-      {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Team · {members.length} members</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-inter-tight), system-ui', letterSpacing: '-0.025em' }}>Who's on the line.</h1>
-            <p className="text-[14px] text-slate-500 mt-2">Manage workspace members, assign roles, and keep tabs on access — without leaving FaxGrid.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Shield size={14} />}>Security policy</AppButton>
-            <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>Invite people</AppButton>
-          </div>
-        </div>
-      </Card>
+    <div style={{ margin: '0 -32px', display: 'flex', flexDirection: 'column' }}>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Members" value={String(members.length)} helper={`${members.filter(m => m.status === 'Active').length} active`} icon={<I.Team size={15} />} />
-        <StatCard label="Admins" value={String(members.filter(m => m.role === 'Admin').length)} helper="2 of 5 seats" icon={<I.Shield size={15} />} />
-        <StatCard label="MFA coverage" value={`${Math.round(members.filter(m => m.mfa).length / members.length * 100)}%`} helper={`${members.filter(m => !m.mfa).length} without MFA`} trend="up" icon={<I.Lock size={15} />} />
-        <StatCard label="Pending invites" value={String(PENDING.length)} helper="oldest sent 2 days ago" icon={<I.Send size={15} />} />
+      {/* Page Header */}
+      <div style={{
+        background: 'white', borderBottom: '1px solid var(--color-border)',
+        padding: '0 32px', height: 72,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 4 }}>
+            TEAM · 11 MEMBERS
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1.15, margin: 0 }}>
+            Who's on the line.
+          </h1>
+        </div>
+        <Button variant="primary">+ Invite people</Button>
       </div>
 
-      {/* Pending invites */}
-      {PENDING.length > 0 && (
-        <Card className="p-5 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="text-[14.5px] font-semibold text-slate-900">{PENDING.length} pending invitation{PENDING.length !== 1 ? 's' : ''}</div>
-              <div className="text-[12.5px] text-slate-500 mt-0.5">Invitees haven't accepted yet. Resend or revoke below.</div>
-            </div>
-            <AppButton variant="ghost" size="sm">Cancel all</AppButton>
-          </div>
-          <div className="space-y-2">
-            {PENDING.map((p, i) => (
-              <div key={i} className="flex items-center gap-4 p-3 rounded-2xl bg-slate-50/60">
-                <span className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400"><I.Send size={14} /></span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13.5px] font-medium text-slate-900 truncate">{p.email}</div>
-                  <div className="text-[11.5px] text-slate-500 mt-0.5 flex items-center gap-1">
-                    Invited as <RoleBadge role={p.role} /> by {p.sentBy} · {p.sentAt}
-                  </div>
-                </div>
-                <AppButton variant="ghost" size="sm">Resend</AppButton>
-                <button className="text-[12.5px] text-slate-500 hover:text-red-600 font-semibold px-2">Revoke</button>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Main layout */}
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-8">
-          <Card className="overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2 bg-slate-50/40 flex-wrap">
-              <div className="flex items-center gap-1">
-                {['All', ...ROLES.map(r => r.id)].map(r => (
-                  <Tab key={r} active={roleFilter === r} onClick={() => setRoleFilter(r)}>
-                    {r}
-                    {r !== 'All' && <span className={`ml-1.5 text-[11px] ${roleFilter === r ? 'text-white/70' : 'text-slate-400'}`}>{members.filter(m => m.role === r).length}</span>}
-                  </Tab>
-                ))}
-              </div>
-              <div className="flex-1" />
-              <div className="relative">
-                <I.Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search members…"
-                  className="pl-8 py-1.5 rounded-xl border border-slate-200 bg-white text-[12.5px] w-[200px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
-              </div>
-            </div>
-            <div className="overflow-auto scrollbar-thin">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    {['Member','Role','Team','Last active','MFA','Actions'].map(h => (
-                      <th key={h} className={`text-[11.5px] uppercase tracking-[0.06em] text-slate-500 font-semibold px-4 py-3 text-left bg-slate-50/70 border-b border-slate-100 ${h === 'Actions' ? 'text-right' : ''}`}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map(m => <MemberRow key={m.id} m={m} onOpen={() => setOpen(m)} />)}
-                  {filtered.length === 0 && (
-                    <tr><td colSpan={6} className="text-center text-slate-500 py-12 text-[13.5px]">No members match. Try clearing the filter.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+      {/* MFA Alert Banner */}
+      <div style={{
+        background: 'var(--color-review-bg)',
+        borderBottom: '1px solid rgba(217,119,6,0.2)',
+        padding: '10px 32px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Dot color="var(--color-review)" />
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-primary)' }}>
+            2 members without MFA enabled.
+          </span>
         </div>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--color-review)', cursor: 'pointer' }}>
+          Remind them →
+        </span>
+      </div>
 
-        <div className="col-span-12 lg:col-span-4 space-y-4">
-          <Card className="p-6">
-            <SectionTitle title="Roles" subtitle="What each role can do." />
-            <div className="mt-5 space-y-3">
-              {ROLES.map(r => (
-                <div key={r.id} className="p-4 rounded-2xl bg-slate-50/60 border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <Pill tone={r.tone} dot={false}>{r.id}</Pill>
-                    <span className="text-[11.5px] text-slate-500 font-mono">{r.count} member{r.count !== 1 ? 's' : ''}</span>
-                  </div>
-                  <div className="text-[12.5px] text-slate-600 mt-2 leading-relaxed">{r.desc}</div>
+      {/* Pending Invitations */}
+      <div style={{ padding: '16px 32px', borderBottom: '1px solid var(--color-border)', background: 'white' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
+              2 pending invitations
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)', marginTop: 2 }}>
+              Invitees haven't accepted yet. Resend or revoke below.
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" style={{ color: 'var(--color-failed)' }}>Cancel all</Button>
+        </div>
+        {PENDING_INVITES.map((p, i) => (
+          <div key={p.email} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '10px 0',
+            borderBottom: i === 0 ? '1px solid var(--color-border)' : 'none',
+          }}>
+            <Avatar initials={p.initials} size={32} />
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--color-text-primary)' }}>
+                {p.email}
+              </span>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)' }}>Invited as</span>
+              <RoleBadge role={p.role} />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)' }}>
+                by {p.invitedBy} · {p.when}
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <Button variant="ghost" size="sm">Resend</Button>
+              <Button variant="ghost" size="sm" style={{ color: 'var(--color-failed)' }}>Revoke</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24, padding: '24px 32px', alignItems: 'start' }}>
+
+        {/* Left — Member Table */}
+        <div>
+          {/* Filter Tabs + Search */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              {FILTER_TABS.map(tab => {
+                const active = activeFilter === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveFilter(tab.key)}
+                    style={{
+                      background: active ? 'var(--color-primary)' : 'transparent',
+                      color: active ? 'white' : 'var(--color-text-secondary)',
+                      borderRadius: 'var(--radius-xl)', padding: '4px 12px',
+                      fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer',
+                      fontFamily: 'var(--font-body)', transition: 'all 120ms',
+                    }}
+                  >
+                    {tab.label} {tab.count}
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', display: 'flex', pointerEvents: 'none' }}>
+                <I.Search size={13} />
+              </span>
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search members..."
+                style={{
+                  width: 200, height: 32,
+                  border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)',
+                  padding: '0 12px 0 32px', fontSize: 13, fontFamily: 'var(--font-body)',
+                  color: 'var(--color-text-primary)', background: 'white', outline: 'none',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Table */}
+          <Card noPadding style={{ overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{
+              background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)',
+              padding: '10px 16px', display: 'grid', gridTemplateColumns: COL, gap: 0,
+            }}>
+              {['MEMBER', 'ROLE', 'TEAM', 'LAST ACTIVE', 'MFA', 'ACTIONS'].map(col => (
+                <div key={col} style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
+                  {col}
                 </div>
               ))}
             </div>
-            <button className="mt-4 text-[12.5px] font-semibold flex items-center gap-1 hover:underline" style={{ color: 'var(--color-primary)' }}>
-              <I.Cog size={12} /> Customize roles
-            </button>
-          </Card>
-
-          <Card className="p-5">
-            <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}><I.Shield size={15} /></span>
-              <div>
-                <div className="text-[13.5px] font-semibold text-slate-900">Security policy</div>
-                <div className="text-[12.5px] text-slate-500 mt-1 leading-relaxed">MFA required for all members. SSO via Okta. Session timeout: 12 hours.</div>
-                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Manage →</button>
+            {/* Rows */}
+            {filtered.map((m, idx) => (
+              <div
+                key={m.email}
+                style={{
+                  display: 'grid', gridTemplateColumns: COL, alignItems: 'center',
+                  padding: '12px 16px',
+                  borderBottom: idx < filtered.length - 1 ? '1px solid var(--color-border)' : 'none',
+                  cursor: 'pointer', transition: 'background 120ms',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'var(--color-bg)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+              >
+                {/* MEMBER */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Avatar initials={m.initials} size={32} />
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', lineHeight: 1.3 }}>
+                      <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: m.role === 'admin' ? 700 : 500, color: 'var(--color-text-primary)' }}>
+                        {m.name}
+                      </span>
+                      {m.you    && <SmallBadge>You</SmallBadge>}
+                      {m.shared && <SmallBadge>Shared</SmallBadge>}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
+                      {m.email}
+                    </div>
+                  </div>
+                </div>
+                {/* ROLE */}
+                <div><RoleBadge role={m.role} /></div>
+                {/* TEAM */}
+                <div style={{ fontSize: 13, color: 'var(--color-text-secondary)', fontFamily: 'var(--font-body)' }}>
+                  {m.team}
+                </div>
+                {/* LAST ACTIVE */}
+                <LastActive value={m.lastActive} />
+                {/* MFA */}
+                <MfaStatus on={m.mfa} />
+                {/* ACTIONS */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    onClick={e => e.stopPropagation()}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-tertiary)', padding: 4, borderRadius: 'var(--radius-sm)', display: 'flex' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-primary)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-tertiary)'; }}
+                  >
+                    <I.More size={15} />
+                  </button>
+                </div>
               </div>
-            </div>
+            ))}
+            {filtered.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--color-text-tertiary)', fontSize: 13, fontFamily: 'var(--font-body)' }}>
+                No members match. Try clearing the filter.
+              </div>
+            )}
           </Card>
         </div>
-      </div>
 
-      <MemberDetailModal m={open} onClose={() => setOpen(null)} onRoleChange={onRoleChange} />
+        {/* Right Panel */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
+
+          {/* Roles Card */}
+          <Card>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
+              Roles
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)', marginBottom: 12, marginTop: 2 }}>
+              What each role can do.
+            </div>
+            {ROLE_CARD_DATA.map((r, i) => (
+              <div key={r.role}>
+                {i > 0 && <div style={{ height: 1, background: 'var(--color-border)', margin: '12px 0' }} />}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <RoleBadge role={r.role} />
+                  <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
+                    {r.count} member{r.count !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div style={{ marginTop: 4, paddingLeft: 4, fontSize: 13, color: 'var(--color-text-secondary)', fontFamily: 'var(--font-body)' }}>
+                  {r.desc}
+                </div>
+              </div>
+            ))}
+            <div style={{ marginTop: 8 }}>
+              <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                Customize roles →
+              </span>
+            </div>
+          </Card>
+
+          {/* Security Policy Card */}
+          <Card style={{ background: 'var(--color-primary-subtle)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+              <span style={{ color: 'var(--color-primary)', display: 'flex', flexShrink: 0 }}>
+                <I.Shield size={16} />
+              </span>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--color-primary)' }}>
+                Security policy
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {['MFA required for all members', 'SSO via Okta', 'Session timeout: 12 hours'].map(line => (
+                <div key={line} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: 'var(--color-delivered)', display: 'flex', flexShrink: 0 }}>
+                    <I.Check size={12} />
+                  </span>
+                  <span style={{ fontSize: 13, fontFamily: 'var(--font-body)', color: 'var(--color-text-secondary)' }}>
+                    {line}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                Manage →
+              </span>
+            </div>
+          </Card>
+
+        </div>
+      </div>
     </div>
   );
 }
