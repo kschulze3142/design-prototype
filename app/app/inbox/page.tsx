@@ -456,47 +456,53 @@ export default function InboxPage() {
 
       {/* Row 1 — Search bar */}
       <div style={{
+        padding: '12px 32px',
         background: 'white',
         borderBottom: '1px solid var(--color-border)',
-        padding: '12px 32px',
-        display: 'flex',
-        alignItems: 'center',
-        flexShrink: 0,
       }}>
-        <div style={{ position: 'relative', width: 480 }}>
-          {/* Search icon */}
-          <I.Search size={16} style={{
-            position: 'absolute',
-            left: 12,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'var(--color-text-tertiary)',
-            pointerEvents: 'none',
-            width: 16,
-            height: 16,
-          }} />
+        <div style={{ position: 'relative', width: '480px' }}>
+          {/* Icon — absolutely positioned inside container */}
+          <svg
+            style={{
+              position: 'absolute',
+              left: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '16px',
+              height: '16px',
+              color: 'var(--color-text-tertiary)',
+              pointerEvents: 'none',
+              zIndex: 1,
+            }}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
 
           {/* Input */}
           <input
+            type="text"
+            placeholder="Search inbox..."
             value={searchValue}
             onChange={e => setSearchValue(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
-            placeholder="Search inbox..."
             style={{
               width: '100%',
-              height: 36,
-              border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border)'}`,
+              height: '36px',
+              border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-xl)',
               padding: '0 16px 0 38px',
+              fontSize: '13px',
               fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              background: searchFocused ? 'white' : 'var(--color-bg)',
-              outline: 'none',
               color: 'var(--color-text-primary)',
+              background: 'var(--color-bg)',
+              outline: 'none',
               boxSizing: 'border-box',
-              boxShadow: searchFocused ? '0 0 0 3px rgba(61,80,128,0.08)' : 'none',
-              transition: 'border-color var(--duration-fast), box-shadow var(--duration-fast), background var(--duration-fast)',
             }}
           />
 
