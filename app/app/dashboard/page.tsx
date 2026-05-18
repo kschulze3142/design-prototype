@@ -306,7 +306,6 @@ export default function DashboardPage() {
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, alignSelf: 'center' }}>
-          <Button variant="ghost">📅 Today</Button>
           <Button variant="primary">
             <I.Plus size={14} strokeWidth={2.4} /> New fax
           </Button>
