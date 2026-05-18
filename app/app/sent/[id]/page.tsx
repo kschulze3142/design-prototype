@@ -603,39 +603,6 @@ export default function SentDetailPage() {
             </div>
           </Card>
 
-          {/* Save as template card */}
-          <Card padding={16} style={{
-            background: 'var(--color-primary-subtle)',
-            boxShadow: 'none',
-            marginTop: 16,
-          }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
-              style={{ color: 'var(--color-primary)' }}>
-              <path d="M12 3l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L12 17l-5.6 3.2 1.4-6.3L3 9.5l6.4-.6Z" />
-            </svg>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
-              color: 'var(--color-text-primary)', marginTop: 8,
-            }}>
-              Save this as a template?
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              color: 'var(--color-text-secondary)', lineHeight: 1.55, marginTop: 4,
-            }}>
-              Reuse this recipient, subject, and settings for future prior auth requests.
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <a href="#" onClick={e => e.preventDefault()} style={{
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 700,
-                color: 'var(--color-primary)', textDecoration: 'none',
-              }}>
-                Create template →
-              </a>
-            </div>
-          </Card>
-
         </div>
       </div>
     </div>
