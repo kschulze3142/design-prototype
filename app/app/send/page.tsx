@@ -56,11 +56,17 @@ const inputStyle: React.CSSProperties = {
 
 const STEP_LABELS = ['Compose', 'Preview', 'Confirmation'];
 
-function StepIndicator({ current }: { current: number }) {
+function StepIndicator({ current, onBack }: { current: number; onBack?: () => void }) {
   return (
     <Card noPadding style={{ marginBottom: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {onBack && (
+            <Button variant="ghost" onClick={onBack} style={{ gap: 4 }}>
+              <I.Chevron size={14} className="rotate-180" /> Back
+            </Button>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {STEP_LABELS.map((label, i) => {
             const done = i < current;
             const active = i === current;
@@ -111,6 +117,7 @@ function StepIndicator({ current }: { current: number }) {
               </React.Fragment>
             );
           })}
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <I.Lock size={12} strokeWidth={2.2} style={{ color: 'var(--color-text-tertiary)' }} />
@@ -502,12 +509,11 @@ function StepCompose({ form, setForm, onNext }: {
 
 // ── STEP 2: PREVIEW ───────────────────────────────────────────────────────────
 
-function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sending }: {
+function StepPreview({ form, sender, totalPages, credits, onSend, sending }: {
   form: typeof defaultForm;
   sender: typeof SENDER_NUMBERS[0];
   totalPages: number;
   credits: number;
-  onBack: () => void;
   onSend: () => void;
   sending: boolean;
 }) {
@@ -674,18 +680,13 @@ function StepPreview({ form, sender, totalPages, credits, onBack, onSend, sendin
             </div>
           </div>
         ) : (
-          <div style={{ display: 'flex', gap: 10 }}>
-            <Button variant="ghost" onClick={onBack} style={{ gap: 4 }}>
-              <I.Chevron size={14} className="rotate-180" /> Back
-            </Button>
-            <Button
-              variant="primary"
-              onClick={onSend}
-              style={{ flex: 1, height: 44, justifyContent: 'center' }}
-            >
-              Send fax · {credits} {credits === 1 ? 'credit' : 'credits'}
-            </Button>
-          </div>
+          <Button
+            variant="primary"
+            onClick={onSend}
+            style={{ width: '100%', height: 44, justifyContent: 'center' }}
+          >
+            Send fax · {credits} {credits === 1 ? 'credit' : 'credits'}
+          </Button>
         )}
       </Card>
     </div>
@@ -933,7 +934,7 @@ export default function SendPage() {
       </div>
 
       <div style={{ paddingTop: 24 }}>
-        <StepIndicator current={step} />
+        <StepIndicator current={step} onBack={step === 1 ? () => setStep(0) : undefined} />
 
         {step === 0 && <StepCompose form={form} setForm={setForm} onNext={() => setStep(1)} />}
         {step === 1 && (
@@ -942,7 +943,6 @@ export default function SendPage() {
             sender={sender}
             totalPages={totalPages}
             credits={credits}
-            onBack={() => setStep(0)}
             onSend={goSend}
             sending={sending}
           />
