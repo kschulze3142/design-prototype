@@ -205,6 +205,7 @@ export default function TeamPage() {
         padding: '10px 16px',
         marginBottom: 24,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        maxWidth: '860px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Dot color="var(--color-review)" />
@@ -218,7 +219,7 @@ export default function TeamPage() {
       </div>
 
       {/* Pending Invitations */}
-      <Card noPadding style={{ padding: '10px 16px', marginBottom: 24 }}>
+      <Card noPadding style={{ padding: '10px 16px', marginBottom: 24, maxWidth: '860px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
@@ -260,58 +261,63 @@ export default function TeamPage() {
 
         {/* Left — Member Table */}
         <div>
-          {/* Filter Tabs + Search */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              {FILTER_TABS.map(tab => {
-                const active = activeFilter === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveFilter(tab.key)}
-                    onMouseEnter={() => setHoveredFilter(tab.key)}
-                    onMouseLeave={() => setHoveredFilter(null)}
-                    style={{
-                      background: active ? 'var(--color-primary)' : (hoveredFilter === tab.key ? 'var(--color-primary-subtle)' : 'transparent'),
-                      color: active ? 'white' : 'var(--color-text-secondary)',
-                      borderRadius: 'var(--radius-pill)', padding: '4px 12px',
-                      fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer',
-                      fontFamily: 'var(--font-body)', transition: `background var(--duration-fast)`,
-                    }}
-                  >
-                    {tab.label} {tab.count}
-                  </button>
-                );
-              })}
-            </div>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', display: 'flex', pointerEvents: 'none' }}>
-                <I.Search size={13} />
-              </span>
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search members..."
-                style={{
-                  width: 200,
-                  height: 36,
-                  border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
-                  borderRadius: 'var(--radius-pill)',
-                  padding: '0 14px 0 32px',
-                  fontSize: 13,
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--color-text-primary)',
-                  background: 'var(--color-surface)',
-                  outline: 'none',
-                  boxShadow: searchFocused
-                    ? '0 0 0 3px rgba(61, 80, 128, 0.12)'
-                    : 'var(--shadow-card)',
-                  transition: `border-color var(--duration-fast), box-shadow var(--duration-fast)`,
-                }}
-              />
-            </div>
+          {/* Search Bar */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '8px', height: '42px',
+            background: 'var(--color-surface)',
+            border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
+            borderRadius: 'var(--radius-pill)',
+            boxShadow: searchFocused ? '0 0 0 3px rgba(61,80,128,0.12)' : 'var(--shadow-card)',
+            padding: '0 16px',
+            maxWidth: '320px',
+            marginBottom: '12px',
+            transition: `border-color var(--duration-fast), box-shadow var(--duration-fast)`,
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Search members..."
+              style={{
+                border: 'none', outline: 'none', background: 'transparent',
+                fontFamily: 'var(--font-body)', fontSize: 14,
+                color: 'var(--color-text-primary)',
+                width: '100%',
+              }}
+            />
+          </div>
+
+          {/* Filter Tabs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '16px' }}>
+            {FILTER_TABS.map(tab => {
+              const active = activeFilter === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveFilter(tab.key)}
+                  onMouseEnter={() => setHoveredFilter(tab.key)}
+                  onMouseLeave={() => setHoveredFilter(null)}
+                  style={{
+                    background: active ? 'var(--color-primary)' : (hoveredFilter === tab.key ? 'var(--color-primary-subtle)' : 'transparent'),
+                    color: active ? 'white' : 'var(--color-text-secondary)',
+                    borderRadius: 'var(--radius-pill)',
+                    padding: '6px 14px',
+                    fontSize: 13,
+                    fontFamily: 'var(--font-body)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: `background var(--duration-fast)`,
+                  }}
+                >
+                  {tab.label} {tab.count}
+                </button>
+              );
+            })}
           </div>
 
           {/* Table */}
