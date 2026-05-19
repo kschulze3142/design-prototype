@@ -499,10 +499,10 @@ export default function ContactsPage() {
 
       {/* ── Stat cards ── */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: 24 }}>
-        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} /></div>
-        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} /></div>
-        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} tooltip="Fax numbers confirmed to receive transmissions successfully. Unverified numbers haven't had a successful delivery yet and may increase failed send risk." /></div>
-        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} tooltip="Average delivery success rate across all contacts over the last 30 days. Industry average is typically 94–96%." /></div>
+        <div style={{ width: '260px', minWidth: '260px' }}><StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} /></div>
+        <div style={{ width: '260px', minWidth: '260px' }}><StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} /></div>
+        <div style={{ width: '260px', minWidth: '260px' }}><StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} tooltip="Fax numbers confirmed to receive transmissions successfully. Unverified numbers haven't had a successful delivery yet and may increase failed send risk." /></div>
+        <div style={{ width: '260px', minWidth: '260px' }}><StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} tooltip="Average delivery success rate across all contacts over the last 30 days. Industry average is typically 94–96%." /></div>
       </div>
 
       {/* ── Pinned strip ── */}
@@ -518,7 +518,7 @@ export default function ContactsPage() {
       <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
 
         {/* ── Category rail ── */}
-        <aside style={{ width: '200px', minWidth: '200px', maxWidth: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <aside style={{ width: '280px', minWidth: '280px', maxWidth: '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
           {/* Category card */}
           <div style={{
@@ -582,7 +582,7 @@ export default function ContactsPage() {
             borderRadius: 'var(--radius-lg)',
             boxShadow: 'var(--shadow-card)',
             padding: '16px 20px',
-            maxWidth: '200px',
+            maxWidth: '280px',
             width: '100%',
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -635,15 +635,14 @@ export default function ContactsPage() {
               gap: 8,
               background: 'var(--color-surface)',
             }}>
-              <div style={{ position: 'relative', flex: 1, maxWidth: 400 }}>
+              <div style={{ position: 'relative', flex: 1, maxWidth: 400, display: 'flex', alignItems: 'center' }}>
                 <I.Search size={16} style={{
                   position: 'absolute',
                   left: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: searchFocused ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
                   pointerEvents: 'none',
-                  transition: 'color var(--duration-fast)',
+                  color: 'var(--color-text-tertiary)',
                 }} />
                 <input
                   className="contacts-search"
@@ -658,7 +657,8 @@ export default function ContactsPage() {
                     background: 'var(--color-surface)',
                     border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
                     borderRadius: 'var(--radius-pill)',
-                    padding: '0 16px 0 36px',
+                    padding: '0 16px',
+                    paddingLeft: '36px',
                     fontSize: 14,
                     fontFamily: 'var(--font-body)',
                     color: 'var(--color-text-primary)',
