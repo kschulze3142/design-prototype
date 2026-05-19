@@ -190,28 +190,26 @@ export default function TemplatesPage() {
               {/* PREVIEW AREA */}
               <div style={{
                 height: '108px',
+                width: '100%',
                 background: 'var(--color-bg)',
                 position: 'relative',
                 overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                gap: '7px',
+                display: 'block',
               }}>
                 {/* Category pill */}
                 <span style={{
                   position: 'absolute',
                   top: '8px',
                   left: '8px',
-                  zIndex: 2,
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '9px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  padding: '3px 8px',
-                  borderRadius: 'var(--radius-pill)',
-                  color: catStyle.color,
-                  background: catStyle.bg,
+                  zIndex: 10,
+                  fontFamily: 'monospace',
+                  fontSize: '10px',
+                  padding: '4px 10px',
+                  borderRadius: '999px',
+                  backgroundColor: 'red',
+                  color: 'white',
+                  display: 'block',
+                  pointerEvents: 'none',
                 }}>
                   {template.category}
                 </span>
