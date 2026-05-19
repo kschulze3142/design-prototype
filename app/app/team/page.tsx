@@ -139,6 +139,7 @@ export default function TeamPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const filtered = MEMBERS.filter(m => {
     if (activeFilter !== 'all' && m.role !== activeFilter) return false;
@@ -150,31 +151,59 @@ export default function TeamPage() {
   });
 
   return (
-    <div style={{ margin: '0 -32px', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 48 }}>
 
       {/* Page Header */}
       <div style={{
-        padding: '32px 32px 24px',
+        padding: '32px 0 24px',
         display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
       }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 4 }}>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-tertiary)',
+            marginBottom: 4,
+          }}>
             TEAM · 11 MEMBERS
           </div>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1.15, margin: 0 }}>
-            Who's on the line.
+          <h1 style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 26,
+            fontWeight: 700,
+            color: 'var(--color-text-primary)',
+            lineHeight: 1.15,
+            margin: 0,
+          }}>
+            Who&apos;s on the line.
           </h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--color-text-secondary)',
+            margin: 0,
+            marginTop: 4,
+          }}>
+            Manage access, roles, and security for your workspace.
+          </p>
         </div>
         <div style={{ alignSelf: 'center' }}>
-          <Button variant="primary">+ Invite people</Button>
+          <Button variant="primary" size="md">+ Invite people</Button>
         </div>
       </div>
 
       {/* MFA Alert Banner */}
       <div style={{
         background: 'var(--color-review-bg)',
-        borderBottom: '1px solid rgba(217,119,6,0.2)',
-        padding: '10px 32px',
+        border: 'none',
+        borderLeft: '3px solid var(--color-review)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-card)',
+        padding: '16px 20px',
+        marginBottom: 24,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -189,14 +218,14 @@ export default function TeamPage() {
       </div>
 
       {/* Pending Invitations */}
-      <div style={{ padding: '16px 32px', borderBottom: '1px solid var(--color-border)', background: 'white' }}>
+      <Card noPadding style={{ padding: '20px 24px', marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
               2 pending invitations
             </div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)', marginTop: 2 }}>
-              Invitees haven't accepted yet. Resend or revoke below.
+              Invitees haven&apos;t accepted yet. Resend or revoke below.
             </div>
           </div>
           <Button variant="ghost" size="sm" style={{ color: 'var(--color-failed)' }}>Cancel all</Button>
@@ -204,8 +233,8 @@ export default function TeamPage() {
         {PENDING_INVITES.map((p, i) => (
           <div key={p.email} style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '10px 0',
-            borderBottom: i === 0 ? '1px solid var(--color-border)' : 'none',
+            padding: '12px 0',
+            borderBottom: i < PENDING_INVITES.length - 1 ? '1px solid var(--color-border)' : 'none',
           }}>
             <Avatar initials={p.initials} size={32} />
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -219,20 +248,20 @@ export default function TeamPage() {
               </span>
             </div>
             <div style={{ display: 'flex', gap: 4 }}>
-              <Button variant="ghost" size="sm">Resend</Button>
+              <Button variant="ghost" size="sm" style={{ color: 'var(--color-text-secondary)' }}>Resend</Button>
               <Button variant="ghost" size="sm" style={{ color: 'var(--color-failed)' }}>Revoke</Button>
             </div>
           </div>
         ))}
-      </div>
+      </Card>
 
       {/* Main Content */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24, padding: '24px 32px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24, alignItems: 'start' }}>
 
         {/* Left — Member Table */}
         <div>
           {/* Filter Tabs + Search */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               {FILTER_TABS.map(tab => {
                 const active = activeFilter === tab.key;
@@ -256,18 +285,30 @@ export default function TeamPage() {
               })}
             </div>
             <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', display: 'flex', pointerEvents: 'none' }}>
+              <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', display: 'flex', pointerEvents: 'none' }}>
                 <I.Search size={13} />
               </span>
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
                 placeholder="Search members..."
                 style={{
-                  width: 200, height: 32,
-                  border: '1px solid var(--color-border)', borderRadius: 'var(--radius-pill)',
-                  padding: '0 12px 0 32px', fontSize: 13, fontFamily: 'var(--font-body)',
-                  color: 'var(--color-text-primary)', background: 'white', outline: 'none',
+                  width: 200,
+                  height: 36,
+                  border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
+                  borderRadius: 'var(--radius-pill)',
+                  padding: '0 14px 0 32px',
+                  fontSize: 13,
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--color-text-primary)',
+                  background: 'var(--color-surface)',
+                  outline: 'none',
+                  boxShadow: searchFocused
+                    ? '0 0 0 3px rgba(61, 80, 128, 0.12)'
+                    : 'var(--shadow-card)',
+                  transition: `border-color var(--duration-fast), box-shadow var(--duration-fast)`,
                 }}
               />
             </div>
@@ -278,10 +319,17 @@ export default function TeamPage() {
             {/* Header */}
             <div style={{
               background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)',
-              padding: '10px 16px', display: 'grid', gridTemplateColumns: COL, gap: 0,
+              padding: '10px 20px', display: 'grid', gridTemplateColumns: COL, gap: 0,
             }}>
               {['MEMBER', 'ROLE', 'TEAM', 'LAST ACTIVE', 'MFA', 'ACTIONS'].map(col => (
-                <div key={col} style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
+                <div key={col} style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-text-tertiary)',
+                  fontFamily: 'var(--font-body)',
+                }}>
                   {col}
                 </div>
               ))}
@@ -292,9 +340,10 @@ export default function TeamPage() {
                 key={m.email}
                 style={{
                   display: 'grid', gridTemplateColumns: COL, alignItems: 'center',
-                  padding: '12px 16px',
+                  padding: '14px 20px',
                   borderBottom: idx < filtered.length - 1 ? '1px solid var(--color-border)' : 'none',
-                  cursor: 'pointer', transition: 'background 120ms',
+                  cursor: 'pointer',
+                  transition: `background var(--duration-fast)`,
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'var(--color-primary-subtle)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
@@ -350,7 +399,7 @@ export default function TeamPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
 
           {/* Roles Card */}
-          <Card>
+          <Card noPadding style={{ padding: '20px 24px' }}>
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
               Roles
             </div>
@@ -379,7 +428,7 @@ export default function TeamPage() {
           </Card>
 
           {/* Security Policy Card */}
-          <Card style={{ background: 'var(--color-primary-subtle)' }}>
+          <Card noPadding style={{ padding: '20px 24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
               <span style={{ color: 'var(--color-primary)', display: 'flex', flexShrink: 0 }}>
                 <I.Shield size={16} />
