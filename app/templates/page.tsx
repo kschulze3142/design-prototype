@@ -95,7 +95,7 @@ export default function TemplatesPage() {
               <div style={{ height: '108px', background: 'var(--color-bg)', borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0', position: 'relative', overflow: 'hidden' }}>
 
                 {/* CATEGORY PILL — rendered first, z-index high */}
-                <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', color: catStyle.color, backgroundColor: catStyle.bg, lineHeight: 1.4 }}>
+                <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', color: catStyle.color, backgroundColor: catStyle.bg, border: '1px solid ' + catStyle.color, lineHeight: 1.4 }}>
                   {template.category}
                 </div>
 
