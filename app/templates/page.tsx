@@ -197,6 +197,17 @@ export default function TemplatesPage() {
                 overflow: 'hidden',
                 display: 'block',
               }}>
+                {/* Skeleton lines — pushed down to avoid overlap with pill */}
+                <div style={{ marginTop: '28px', display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '12px', paddingRight: '12px' }}>
+                  {SKELETON_WIDTHS.slice(0, 4).map((w, i) => (
+                    <div key={i} style={{
+                      height: i % 2 === 0 ? '7px' : '6px',
+                      width: w,
+                      background: 'var(--color-border)',
+                      borderRadius: '3px',
+                    }} />
+                  ))}
+                </div>
                 {/* Category pill */}
                 <span style={{
                   position: 'absolute',
@@ -230,17 +241,6 @@ export default function TemplatesPage() {
                     Default
                   </span>
                 )}
-                {/* Skeleton lines — pushed down to avoid overlap with pill */}
-                <div style={{ marginTop: '28px', display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '12px', paddingRight: '12px' }}>
-                  {SKELETON_WIDTHS.slice(0, 4).map((w, i) => (
-                    <div key={i} style={{
-                      height: i % 2 === 0 ? '7px' : '6px',
-                      width: w,
-                      background: 'var(--color-border)',
-                      borderRadius: '3px',
-                    }} />
-                  ))}
-                </div>
               </div>
 
               {/* CARD BODY */}
