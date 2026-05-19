@@ -151,7 +151,7 @@ export default function TeamPage() {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 48 }}>
 
       {/* Page Header */}
       <div style={{
