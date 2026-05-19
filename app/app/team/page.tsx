@@ -260,7 +260,7 @@ export default function TeamPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
 
         {/* Left — Member Table */}
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {/* Search Bar */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: '8px', height: '42px',
@@ -402,7 +402,7 @@ export default function TeamPage() {
         </div>
 
         {/* Right Panel */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start', marginTop: '106px' }}>
 
           {/* Roles Card */}
           <Card noPadding style={{ padding: '20px 24px' }}>
