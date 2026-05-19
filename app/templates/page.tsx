@@ -192,7 +192,7 @@ export default function TemplatesPage() {
                 height: '108px',
                 background: 'var(--color-bg)',
                 position: 'relative',
-                padding: '8px 12px',
+                overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -203,6 +203,7 @@ export default function TemplatesPage() {
                   position: 'absolute',
                   top: '8px',
                   left: '8px',
+                  zIndex: 2,
                   fontFamily: 'var(--font-mono)',
                   fontSize: '9px',
                   textTransform: 'uppercase',
@@ -231,8 +232,8 @@ export default function TemplatesPage() {
                   </span>
                 )}
                 {/* Skeleton lines — pushed down to avoid overlap with pill */}
-                <div style={{ marginTop: '22px', display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                  {SKELETON_WIDTHS.map((w, i) => (
+                <div style={{ marginTop: '28px', display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '12px', paddingRight: '12px' }}>
+                  {SKELETON_WIDTHS.slice(0, 4).map((w, i) => (
                     <div key={i} style={{
                       height: i % 2 === 0 ? '7px' : '6px',
                       width: w,
