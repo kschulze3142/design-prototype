@@ -1,299 +1,127 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
-type Category = 'Cover pages' | 'Prior auth' | 'Referrals' | 'Records request' | 'Legal';
+const TEMPLATES = [
+  { id: 1, name: 'Standard cover page', category: 'Cover pages', uses: '1,284', lastUsed: 'Used today', createdBy: 'A. Park', isDefault: true },
+  { id: 2, name: 'BlueShield prior auth', category: 'Prior auth', uses: '412', lastUsed: 'Used 1d ago', createdBy: 'A. Park', isDefault: false },
+  { id: 3, name: 'Aetna prior auth', category: 'Prior auth', uses: '287', lastUsed: 'Used 3d ago', createdBy: 'M. Torres', isDefault: false },
+  { id: 4, name: 'Cardiology referral', category: 'Referrals', uses: '198', lastUsed: 'Used 2d ago', createdBy: 'A. Park', isDefault: false },
+  { id: 5, name: 'Records request — standard', category: 'Records request', uses: '176', lastUsed: 'Used 5d ago', createdBy: 'J. Kim', isDefault: false },
+  { id: 6, name: 'Legal hold notice', category: 'Legal', uses: '44', lastUsed: 'Used 12d ago', createdBy: 'A. Park', isDefault: false },
+  { id: 7, name: 'Patient consent cover', category: 'Cover pages', uses: '391', lastUsed: 'Used 1d ago', createdBy: 'M. Torres', isDefault: false },
+  { id: 8, name: 'Lab order routing', category: 'Records request', uses: '89', lastUsed: 'Used 4d ago', createdBy: 'J. Kim', isDefault: false },
+];
 
-const CATEGORY_COLORS: Record<Category, { text: string; bg: string }> = {
-  'Cover pages':     { text: 'var(--color-primary)',   bg: 'var(--color-primary-subtle)' },
-  'Prior auth':      { text: 'var(--color-phi)',        bg: 'var(--color-phi-bg)' },
-  'Referrals':       { text: 'var(--color-processing)', bg: 'var(--color-processing-bg)' },
-  'Records request': { text: 'var(--color-review)',     bg: 'var(--color-review-bg)' },
-  'Legal':           { text: 'var(--color-archived)',   bg: 'var(--color-archived-bg)' },
+const CATEGORY_STYLES: Record<string, { color: string; bg: string }> = {
+  'Cover pages':      { color: 'var(--color-primary)',    bg: 'var(--color-primary-subtle)' },
+  'Prior auth':       { color: 'var(--color-phi)',        bg: 'var(--color-phi-bg)' },
+  'Referrals':        { color: 'var(--color-processing)', bg: 'var(--color-processing-bg)' },
+  'Records request':  { color: 'var(--color-review)',     bg: 'var(--color-review-bg)' },
+  'Legal':            { color: 'var(--color-archived)',   bg: 'var(--color-archived-bg)' },
 };
 
-interface Template {
-  id: string;
-  name: string;
-  category: Category;
-  usageCount: string;
-  lastUsed: string;
-  createdBy: string;
-  isDefault?: boolean;
-}
+const TABS = ['All', 'Cover pages', 'Prior auth', 'Referrals', 'Records request', 'Legal'];
 
-const TEMPLATES: Template[] = [
-  { id: '1', name: 'Standard cover page',        category: 'Cover pages',     usageCount: '1,284×', lastUsed: 'Used today',   createdBy: 'A. Park',   isDefault: true },
-  { id: '2', name: 'BlueShield prior auth',      category: 'Prior auth',      usageCount: '412×',   lastUsed: 'Used 1d ago',  createdBy: 'A. Park' },
-  { id: '3', name: 'Aetna prior auth',           category: 'Prior auth',      usageCount: '287×',   lastUsed: 'Used 3d ago',  createdBy: 'M. Torres' },
-  { id: '4', name: 'Cardiology referral',        category: 'Referrals',       usageCount: '198×',   lastUsed: 'Used 2d ago',  createdBy: 'A. Park' },
-  { id: '5', name: 'Records request — standard', category: 'Records request', usageCount: '176×',   lastUsed: 'Used 5d ago',  createdBy: 'J. Kim' },
-  { id: '6', name: 'Legal hold notice',          category: 'Legal',           usageCount: '44×',    lastUsed: 'Used 12d ago', createdBy: 'A. Park' },
-  { id: '7', name: 'Patient consent cover',      category: 'Cover pages',     usageCount: '391×',   lastUsed: 'Used 1d ago',  createdBy: 'M. Torres' },
-  { id: '8', name: 'Lab order routing',          category: 'Records request', usageCount: '89×',    lastUsed: 'Used 4d ago',  createdBy: 'J. Kim' },
-];
-
-const FILTERS = ['All', 'Cover pages', 'Prior auth', 'Referrals', 'Records request', 'Legal'] as const;
-type Filter = typeof FILTERS[number];
-
-const SKELETON_LINES: { width: string; height: number }[] = [
-  { width: '90%', height: 8 },
-  { width: '75%', height: 6 },
-  { width: '85%', height: 8 },
-  { width: '60%', height: 6 },
-  { width: '70%', height: 8 },
-];
-
-function TemplateCard({ template }: { template: Template }) {
-  const [hovered, setHovered] = useState(false);
-  const colors = CATEGORY_COLORS[template.category];
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: 'var(--color-surface)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
-        overflow: 'hidden',
-        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-        transition: `transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)`,
-        cursor: 'pointer',
-        position: 'relative',
-      }}
-    >
-      {/* Preview area */}
-      <div style={{ height: 108, background: 'var(--color-bg)', position: 'relative', overflow: 'hidden' }}>
-        {/* Category pill */}
-        <span style={{
-          position: 'absolute',
-          top: '8px',
-          left: '8px',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '9px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          padding: '3px 8px',
-          borderRadius: 'var(--radius-pill)',
-          color: colors.text,
-          background: colors.bg,
-        }}>
-          {template.category}
-        </span>
-
-        <div style={{ margin: '8px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {SKELETON_LINES.map((line, i) => (
-            <div
-              key={i}
-              style={{
-                height: line.height,
-                width: line.width,
-                background: 'var(--color-border)',
-                borderRadius: 3,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Default badge */}
-        {template.isDefault && (
-          <div style={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            background: 'var(--color-primary)',
-            color: 'white',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 9,
-            borderRadius: 'var(--radius-pill)',
-            padding: '2px 8px',
-          }}>
-            Default
-          </div>
-        )}
-
-        {/* Hover overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'rgba(61,80,128,0.07)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: hovered ? 1 : 0,
-          transition: `opacity var(--duration-fast) var(--ease-out)`,
-          pointerEvents: hovered ? 'auto' : 'none',
-        }}>
-          <Button variant="secondary" size="sm">
-            Use template →
-          </Button>
-        </div>
-      </div>
-
-      {/* Card body */}
-      <div style={{ padding: '12px 14px 14px' }}>
-        <div style={{
-          fontFamily: 'var(--font-heading)',
-          fontSize: 13,
-          fontWeight: 600,
-          color: 'var(--color-text-primary)',
-          marginBottom: 5,
-          lineHeight: 1.3,
-        }}>
-          {template.name}
-        </div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          fontFamily: 'var(--font-body)',
-          fontSize: 11,
-          color: 'var(--color-text-tertiary)',
-        }}>
-          <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>{template.usageCount}</span>
-          <span>·</span>
-          <span>{template.lastUsed}</span>
-          <span>·</span>
-          <span>{template.createdBy}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FilterTab({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        padding: '6px 14px',
-        borderRadius: 'var(--radius-pill)',
-        fontFamily: 'var(--font-body)',
-        fontSize: 13,
-        fontWeight: 500,
-        cursor: 'pointer',
-        border: 'none',
-        background: active
-          ? 'var(--color-primary)'
-          : hovered
-            ? 'var(--color-primary-subtle)'
-            : 'transparent',
-        color: active ? 'white' : 'var(--color-text-secondary)',
-        transition: `background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out)`,
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {label}
-    </button>
-  );
-}
+const SKELETON_WIDTHS = ['90%', '75%', '85%', '60%', '70%'];
 
 export default function TemplatesPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<Filter>('All');
-  const [searchFocused, setSearchFocused] = useState(false);
+  const [activeTab, setActiveTab] = useState('All');
+  const [search, setSearch] = useState('');
 
   const filtered = TEMPLATES.filter(t => {
-    const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = activeFilter === 'All' || t.category === activeFilter;
-    return matchesSearch && matchesFilter;
+    const matchesTab = activeTab === 'All' || t.category === activeTab;
+    const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
+    return matchesTab && matchesSearch;
   });
 
   return (
     <div style={{
-      maxWidth: 1280,
+      maxWidth: '1280px',
       margin: '0 auto',
       padding: '0 32px 48px',
       scrollbarWidth: 'none',
     }}>
-      <style>{`::-webkit-scrollbar { display: none; }`}</style>
-
-      {/* Page header */}
+      {/* PAGE HEADER */}
       <div style={{
-        paddingTop: 32,
-        paddingBottom: 24,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
-        gap: 24,
+        paddingTop: '32px',
+        paddingBottom: '24px',
       }}>
         <div>
           <div style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: 11,
+            fontSize: '11px',
             letterSpacing: '0.08em',
             color: 'var(--color-text-tertiary)',
             textTransform: 'uppercase',
-            marginBottom: 8,
+            marginBottom: '6px',
           }}>
             TEMPLATES · 24 SAVED
           </div>
           <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 30,
+            fontFamily: 'var(--font-outfit)',
             fontWeight: 700,
+            fontSize: '30px',
             color: 'var(--color-text-primary)',
             margin: 0,
-            lineHeight: 1.15,
           }}>
             Your fax templates.
           </h1>
           <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: 400,
+            fontFamily: 'var(--font-sora)',
+            fontSize: '14px',
             color: 'var(--color-text-secondary)',
-            marginTop: 4,
+            marginTop: '4px',
             marginBottom: 0,
-            lineHeight: 1.5,
           }}>
             Pre-built fax layouts for recurring sends. Select a template to pre-fill the compose form.
           </p>
         </div>
-        <div style={{ flexShrink: 0 }}>
+        <div style={{ flexShrink: 0, marginTop: '4px' }}>
           <Button variant="primary" size="md">+ New template</Button>
         </div>
       </div>
 
-      {/* Search bar */}
+      {/* SEARCH BAR — standalone, no card */}
       <div style={{ marginBottom: '12px' }}>
-        <input
-          type="text"
-          placeholder="Search templates…"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
-          style={{
-            display: 'block',
-            width: '100%',
-            maxWidth: 380,
-            height: 42,
-            background: 'var(--color-surface)',
-            border: searchFocused
-              ? '1px solid var(--color-primary)'
-              : '1px solid var(--color-border-strong)',
-            borderRadius: 'var(--radius-pill)',
-            boxShadow: searchFocused
-              ? '0 0 0 3px rgba(61,80,128,0.12)'
-              : 'var(--shadow-card)',
-            padding: '0 16px',
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            color: 'var(--color-text-primary)',
-            outline: 'none',
-            transition: `border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)`,
-          }}
-        />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          height: '42px',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border-strong)',
+          borderRadius: 'var(--radius-pill)',
+          boxShadow: 'var(--shadow-card)',
+          padding: '0 16px',
+          maxWidth: '380px',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search templates…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontFamily: 'var(--font-sora)',
+              fontSize: '14px',
+              color: 'var(--color-text-primary)',
+              width: '100%',
+            }}
+          />
+        </div>
       </div>
 
-      {/* Filter + sort row */}
+      {/* FILTER TABS ROW — standalone, no card */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -301,13 +129,24 @@ export default function TemplatesPage() {
         marginBottom: '20px',
       }}>
         <div style={{ display: 'flex', gap: '4px' }}>
-          {FILTERS.map(filter => (
-            <FilterTab
-              key={filter}
-              label={filter}
-              active={activeFilter === filter}
-              onClick={() => setActiveFilter(filter)}
-            />
+          {TABS.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                fontFamily: 'var(--font-sora)',
+                fontSize: '13px',
+                padding: '6px 14px',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                cursor: 'pointer',
+                background: activeTab === tab ? 'var(--color-primary)' : 'transparent',
+                color: activeTab === tab ? 'white' : 'var(--color-text-secondary)',
+                transition: 'background var(--duration-fast)',
+              }}
+            >
+              {tab}
+            </button>
           ))}
         </div>
         <span style={{
@@ -320,15 +159,119 @@ export default function TemplatesPage() {
         </span>
       </div>
 
-      {/* Template grid */}
+      {/* CARD GRID */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 20,
+        gap: '20px',
       }}>
-        {filtered.map(template => (
-          <TemplateCard key={template.id} template={template} />
-        ))}
+        {filtered.map(template => {
+          const catStyle = CATEGORY_STYLES[template.category] || CATEGORY_STYLES['Cover pages'];
+          return (
+            <div
+              key={template.id}
+              style={{
+                background: 'var(--color-surface)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-card)',
+                overflow: 'hidden',
+                cursor: 'pointer',
+                transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)';
+                (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-panel)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+                (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-card)';
+              }}
+            >
+              {/* PREVIEW AREA */}
+              <div style={{
+                height: '108px',
+                background: 'var(--color-bg)',
+                position: 'relative',
+                padding: '8px 12px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: '7px',
+              }}>
+                {/* Category pill */}
+                <span style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '9px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  padding: '3px 8px',
+                  borderRadius: 'var(--radius-pill)',
+                  color: catStyle.color,
+                  background: catStyle.bg,
+                }}>
+                  {template.category}
+                </span>
+                {/* Default badge */}
+                {template.isDefault && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '9px',
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-pill)',
+                    background: 'var(--color-primary)',
+                    color: 'white',
+                  }}>
+                    Default
+                  </span>
+                )}
+                {/* Skeleton lines — pushed down to avoid overlap with pill */}
+                <div style={{ marginTop: '22px', display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                  {SKELETON_WIDTHS.map((w, i) => (
+                    <div key={i} style={{
+                      height: i % 2 === 0 ? '7px' : '6px',
+                      width: w,
+                      background: 'var(--color-border)',
+                      borderRadius: '3px',
+                    }} />
+                  ))}
+                </div>
+              </div>
+
+              {/* CARD BODY */}
+              <div style={{ padding: '12px 14px 14px' }}>
+                <div style={{
+                  fontFamily: 'var(--font-outfit)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  color: 'var(--color-text-primary)',
+                  marginBottom: '5px',
+                }}>
+                  {template.name}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-sora)',
+                  fontSize: '11px',
+                  color: 'var(--color-text-tertiary)',
+                  display: 'flex',
+                  gap: '5px',
+                  alignItems: 'center',
+                }}>
+                  <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>{template.uses}×</span>
+                  <span>·</span>
+                  <span>{template.lastUsed}</span>
+                  <span>·</span>
+                  <span>{template.createdBy}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
