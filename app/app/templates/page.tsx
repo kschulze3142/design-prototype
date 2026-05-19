@@ -6,14 +6,14 @@ import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/compone
 const TEMPLATE_CATEGORIES = ['All', 'Cover pages', 'Prior auth', 'Referrals', 'Records request', 'Legal'];
 
 const TEMPLATES = [
-  { id: 't1', name: 'Standard cover page',         cat: 'Cover pages',      uses: 1284, by: 'Workspace default',  updated: '2 weeks ago', featured: true,  accent: true,  lines: ['long','med','long','short','med','long','long'] },
-  { id: 't2', name: 'BlueShield prior auth',        cat: 'Prior auth',       uses: 412,  by: 'Amelia Park',        updated: 'Mar 18',      featured: false, accent: false, lines: ['short','long','med','long','short'] },
-  { id: 't3', name: 'Aetna prior auth',             cat: 'Prior auth',       uses: 287,  by: 'Amelia Park',        updated: 'Mar 12',      featured: false, accent: false, lines: ['med','long','short','long','med'] },
-  { id: 't4', name: 'Cardiology referral',          cat: 'Referrals',        uses: 198,  by: 'Dr. M. Greaves',     updated: 'Feb 28',      featured: false, accent: false, lines: ['long','short','long','med','long'] },
-  { id: 't5', name: 'Records request — patient',   cat: 'Records request',  uses: 167,  by: 'Priya Khanna',       updated: 'Feb 20',      featured: false, accent: false, lines: ['med','long','med','short','long'] },
-  { id: 't6', name: 'HIPAA disclosure cover',       cat: 'Legal',            uses: 92,   by: 'Outside counsel',    updated: 'Jan 14',      featured: false, accent: false, lines: ['short','med','long','long','short'] },
-  { id: 't7', name: 'Branded letterhead',           cat: 'Cover pages',      uses: 88,   by: 'Brand · Maria K.',   updated: 'Jan 09',      featured: false, accent: false, lines: ['long','long','med','short','long'] },
-  { id: 't8', name: 'Records request — payer',     cat: 'Records request',  uses: 73,   by: 'Priya Khanna',       updated: 'Dec 22',      featured: false, accent: false, lines: ['med','short','long','med','long'] },
+  { id: 't1', name: 'Standard cover page',         cat: 'Cover pages',      uses: 1284, by: 'Workspace default',  updated: '2 weeks ago', featured: true,  accent: true,  lines: ['long','med','long','short','med','long','long'], usageCount: '1,284×', lastUsed: 'Used today',   createdBy: 'A. Park'   },
+  { id: 't2', name: 'BlueShield prior auth',        cat: 'Prior auth',       uses: 412,  by: 'Amelia Park',        updated: 'Mar 18',      featured: false, accent: false, lines: ['short','long','med','long','short'],            usageCount: '412×',   lastUsed: 'Used 1d ago',  createdBy: 'A. Park'   },
+  { id: 't3', name: 'Aetna prior auth',             cat: 'Prior auth',       uses: 287,  by: 'Amelia Park',        updated: 'Mar 12',      featured: false, accent: false, lines: ['med','long','short','long','med'],              usageCount: '287×',   lastUsed: 'Used 3d ago',  createdBy: 'M. Torres' },
+  { id: 't4', name: 'Cardiology referral',          cat: 'Referrals',        uses: 198,  by: 'Dr. M. Greaves',     updated: 'Feb 28',      featured: false, accent: false, lines: ['long','short','long','med','long'],             usageCount: '198×',   lastUsed: 'Used 2d ago',  createdBy: 'A. Park'   },
+  { id: 't5', name: 'Records request — standard',  cat: 'Records request',  uses: 176,  by: 'Priya Khanna',       updated: 'Feb 20',      featured: false, accent: false, lines: ['med','long','med','short','long'],              usageCount: '176×',   lastUsed: 'Used 5d ago',  createdBy: 'J. Kim'    },
+  { id: 't6', name: 'Legal hold notice',            cat: 'Legal',            uses: 44,   by: 'Outside counsel',    updated: 'Jan 14',      featured: false, accent: false, lines: ['short','med','long','long','short'],            usageCount: '44×',    lastUsed: 'Used 12d ago', createdBy: 'A. Park'   },
+  { id: 't7', name: 'Patient consent cover',        cat: 'Cover pages',      uses: 391,  by: 'Brand · Maria K.',   updated: 'Jan 09',      featured: false, accent: false, lines: ['long','long','med','short','long'],             usageCount: '391×',   lastUsed: 'Used 1d ago',  createdBy: 'M. Torres' },
+  { id: 't8', name: 'Lab order routing',            cat: 'Records request',  uses: 89,   by: 'Priya Khanna',       updated: 'Dec 22',      featured: false, accent: false, lines: ['med','short','long','med','long'],              usageCount: '89×',    lastUsed: 'Used 4d ago',  createdBy: 'J. Kim'    },
 ];
 type Template = typeof TEMPLATES[number];
 
@@ -57,31 +57,24 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
       className={`w-full text-left rounded-[24px] p-1 transition ${selected ? 'ring-2 ring-[var(--color-primary)] ring-offset-2' : ''}`}>
       <div className="rounded-[20px] overflow-hidden border border-slate-200/70 bg-white">
         {/* Thumbnail */}
-        <div className="relative p-4" style={{ aspectRatio: '3/4', background: 'var(--color-surface)' }}>
+        <div className="relative" style={{ height: 108, maxHeight: 108, background: 'var(--color-bg)', overflow: 'hidden' }}>
           {t.featured && (
-            <div className="absolute top-3 right-3 z-10">
+            <div className="absolute top-2 right-2 z-10">
               <Pill tone="teal" dot={false}>Default</Pill>
             </div>
           )}
-          <div className="h-full rounded-xl bg-white border border-slate-100 shadow-sm flex flex-col overflow-hidden">
-            <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-1.5" style={{ background: 'var(--color-primary-subtle)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-primary)' }} />
-              <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-primary)' }}>{t.cat}</span>
-            </div>
-            <div className="flex-1 p-3 space-y-1.5">
-              {t.lines.map((w, i) => (
-                <div key={i} className="h-1.5 rounded-full bg-slate-100" style={{ width: LINE_WIDTHS[w] }} />
-              ))}
-            </div>
+          <div style={{ margin: '8px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {t.lines.slice(0, 5).map((w, i) => (
+              <div key={i} style={{ height: i % 2 === 0 ? 8 : 6, background: 'var(--color-border)', borderRadius: 3, width: LINE_WIDTHS[w] }} />
+            ))}
           </div>
         </div>
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
-          <div className="min-w-0">
-            <div className="text-[13.5px] font-semibold text-slate-900 truncate">{t.name}</div>
-            <div className="text-[11.5px] text-slate-500">{t.cat}</div>
+        <div className="px-4 py-3 border-t border-slate-100">
+          <div className="text-[13.5px] font-semibold text-slate-900 truncate">{t.name}</div>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--color-text-tertiary)', marginTop: 3 }}>
+            {t.usageCount} · {t.lastUsed} · {t.createdBy}
           </div>
-          <div className="text-[11.5px] text-slate-500 shrink-0 ml-2">{t.uses.toLocaleString()}×</div>
         </div>
       </div>
     </button>
@@ -102,19 +95,16 @@ export default function TemplatesPage() {
   return (
     <div>
       {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Templates · {TEMPLATES.length} saved</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Reusable cover pages and forms.</h1>
-            <p className="text-[14px] text-slate-500 mt-2">Save time on repetitive faxes. Create once, reuse with merge fields like {`{{patient.id}}`} and {`{{provider.npi}}`}.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Upload size={14} />}>Import</AppButton>
-            <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New template</AppButton>
-          </div>
+      <div style={{ paddingTop: 32, paddingBottom: 24, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24 }}>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Templates · {TEMPLATES.length} saved</div>
+          <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Your fax templates.</h1>
+          <p className="text-[14px] text-slate-500 mt-2">Pre-built fax layouts for recurring sends. Select a template to pre-fill the compose form.</p>
         </div>
-      </Card>
+        <div className="flex items-center gap-2 shrink-0 pt-1">
+          <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New template</AppButton>
+        </div>
+      </div>
 
       {/* Filter bar */}
       <Card className="p-4 mb-6">
