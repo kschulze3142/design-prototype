@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { I } from '@/components/app/icons';
 import { Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 
@@ -41,6 +41,33 @@ const STATUS_TONES: Record<string, { bg: string; fg: string; dot: string }> = {
   slate:   { bg: '#f1f5f9',               fg: '#475569',             dot: '#94a3b8' },
   violet:  { bg: '#f5f3ff',               fg: '#6d28d9',             dot: '#8b5cf6' },
 };
+
+const AVATAR_COLOR_MAP: Record<string, { bg: string; fg: string }> = {
+  BP: { bg: '#fef3c7',                       fg: '#d97706' },
+  SM: { bg: 'var(--color-phi-bg)',            fg: 'var(--color-phi)' },
+  PL: { bg: 'var(--color-processing-bg)',    fg: 'var(--color-processing)' },
+  AC: { bg: 'var(--color-review-bg)',        fg: 'var(--color-review)' },
+  DS: { bg: 'var(--color-primary-subtle)',   fg: 'var(--color-primary)' },
+  DM: { bg: '#f0fdf4',                       fg: '#16a34a' },
+  GH: { bg: '#fef3c7',                       fg: '#d97706' },
+  QD: { bg: 'var(--color-processing-bg)',    fg: 'var(--color-processing)' },
+  NI: { bg: 'var(--color-primary-subtle)',   fg: 'var(--color-primary)' },
+};
+
+function getInitials(name: string): string {
+  const words = name.split(/[\s·]+/).filter(w => w.length > 0);
+  return words.slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
+
+function getAvatarStyle(name: string): { bg: string; fg: string } {
+  const initials = getInitials(name);
+  return AVATAR_COLOR_MAP[initials] ?? { bg: 'var(--color-primary-subtle)', fg: 'var(--color-primary)' };
+}
+
+function chipLabel(name: string): string {
+  const parts = name.split(/\s*·\s*/)[0].trim().split(/\s+/);
+  return parts.slice(0, 2).join(' ');
+}
 
 function sparkFor(id: string): number[] {
   let s = 0;
@@ -427,27 +454,56 @@ function ContactDrawer({ c, onClose }: { c: Contact | null; onClose: () => void 
   );
 }
 
+const RECENT_NAMES = ['BlueShield Prior Auth', 'Pacific Lab Diagnostics', 'Swedish Medical · Records'];
+
 export default function ContactsPage() {
   const [cat, setCat] = useState('all');
-  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [view, setView] = useState<'table' | 'grid'>('table');
   const [open, setOpen] = useState<Contact | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
+  const [dropHover, setDropHover] = useState<string | null>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchFocused(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   const filtered = CONTACTS.filter(c => {
     if (cat !== 'all' && c.category.toLowerCase().replace(' / ', '/').replace(' ', '') !== cat) return false;
-    if (search && !`${c.name} ${c.number} ${c.subtitle}`.toLowerCase().includes(search.toLowerCase())) return false;
+    if (searchValue && !`${c.name} ${c.number} ${c.subtitle}`.toLowerCase().includes(searchValue.toLowerCase())) return false;
     return true;
   });
 
-  useEffect(() => { setPage(1); }, [cat, search]);
+  useEffect(() => { setPage(1); }, [cat, searchValue]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const paginatedContacts = filtered.slice((page - 1) * pageSize, page * pageSize);
   const showStart = filtered.length === 0 ? 0 : (page - 1) * pageSize + 1;
   const showEnd = Math.min(page * pageSize, filtered.length);
+
+  const recentContacts = RECENT_NAMES.map(n => CONTACTS.find(c => c.name === n)).filter(Boolean) as Contact[];
+  const dropResults = searchValue
+    ? CONTACTS.filter(c => c.name.toLowerCase().includes(searchValue.toLowerCase()))
+    : null;
+
+  const sectionLabelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-mono)',
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    color: 'var(--color-text-tertiary)',
+    padding: '10px 16px 6px',
+    display: 'block',
+  };
 
   return (
     <div style={{ paddingBottom: 48 }}>
@@ -598,7 +654,7 @@ export default function ContactsPage() {
               </span>
               <div>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)' }}>Auto-cleanup</div>
-                <div style={{ fontSize: 12.5, color: 'var(--color-text-secondary)', marginTop: 4, lineHeight: 1.5, fontFamily: 'var(--font-body)' }}>5 contacts haven't received a fax in 12+ months. Review and archive?</div>
+                <div style={{ fontSize: 12.5, color: 'var(--color-text-secondary)', marginTop: 4, lineHeight: 1.5, fontFamily: 'var(--font-body)' }}>5 contacts haven&apos;t received a fax in 12+ months. Review and archive?</div>
                 <button style={{
                   marginTop: 8,
                   fontSize: 12.5,
@@ -635,17 +691,23 @@ export default function ContactsPage() {
               gap: 8,
               background: 'var(--color-surface)',
             }}>
-              <div style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                height: '42px',
-                background: 'var(--color-surface)',
-                border: '1px solid var(--color-border-strong)',
-                borderRadius: 'var(--radius-pill)',
-                boxShadow: 'var(--shadow-card)',
-                flex: 1,
-              }}>
+              {/* Search pill with dropdown */}
+              <div
+                ref={searchRef}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '42px',
+                  background: 'var(--color-surface)',
+                  border: '1px solid var(--color-border-strong)',
+                  borderColor: searchFocused ? 'var(--color-primary)' : 'var(--color-border-strong)',
+                  borderRadius: 'var(--radius-pill)',
+                  boxShadow: searchFocused ? '0 0 0 3px rgba(61,80,128,0.12)' : 'var(--shadow-card)',
+                  flex: 1,
+                  outline: 'none',
+                }}
+              >
                 <svg
                   width="14"
                   height="14"
@@ -660,11 +722,13 @@ export default function ContactsPage() {
                 <input
                   type="text"
                   placeholder="Search contacts, numbers, ATTN..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
+                  value={searchValue}
+                  onFocus={() => setSearchFocused(true)}
+                  onChange={e => { setSearchValue(e.target.value); setSearchFocused(true); }}
                   style={{
                     border: 'none',
                     outline: 'none',
+                    boxShadow: 'none',
                     background: 'transparent',
                     paddingLeft: '38px',
                     paddingRight: '16px',
@@ -675,7 +739,131 @@ export default function ContactsPage() {
                     color: 'var(--color-text-primary)',
                   }}
                 />
+
+                {/* Autosuggest dropdown */}
+                {searchFocused && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    right: 0,
+                    background: 'var(--color-surface)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: 'var(--shadow-modal)',
+                    border: '1px solid var(--color-border)',
+                    zIndex: 50,
+                    overflow: 'hidden',
+                  }}>
+                    {!searchValue ? (
+                      <>
+                        {/* Recent */}
+                        <span style={sectionLabelStyle}>Recent</span>
+                        {recentContacts.map(c => (
+                          <div
+                            key={c.id}
+                            onMouseEnter={() => setDropHover('recent-' + c.id)}
+                            onMouseLeave={() => setDropHover(null)}
+                            onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
+                            style={{
+                              padding: '10px 16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              cursor: 'pointer',
+                              background: dropHover === 'recent-' + c.id ? 'var(--color-primary-subtle)' : 'transparent',
+                            }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
+                              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            <span style={{ fontFamily: 'var(--font-sora)', fontSize: 13, color: 'var(--color-text-primary)' }}>{c.name}</span>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--color-text-tertiary)', marginLeft: 'auto' }}>{c.number}</span>
+                          </div>
+                        ))}
+
+                        {/* Pinned */}
+                        <div style={{ borderTop: '1px solid var(--color-border)' }}>
+                          <span style={sectionLabelStyle}>Pinned</span>
+                          <div style={{ padding: '6px 16px 12px', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                            {PINNED.map(c => {
+                              const av = getAvatarStyle(c.name);
+                              const initials = getInitials(c.name);
+                              const isHovered = dropHover === 'pin-' + c.id;
+                              return (
+                                <div
+                                  key={c.id}
+                                  onMouseEnter={() => setDropHover('pin-' + c.id)}
+                                  onMouseLeave={() => setDropHover(null)}
+                                  onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    padding: '4px 10px 4px 4px',
+                                    borderRadius: 'var(--radius-pill)',
+                                    border: isHovered ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                                    background: isHovered ? 'var(--color-primary-subtle)' : 'var(--color-bg)',
+                                    cursor: 'pointer',
+                                    transition: 'all var(--duration-fast)',
+                                  }}
+                                >
+                                  <div style={{
+                                    width: 20, height: 20, borderRadius: 999,
+                                    background: av.bg, color: av.fg,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    fontSize: 8, fontWeight: 700, flexShrink: 0,
+                                  }}>{initials}</div>
+                                  <span style={{ fontFamily: 'var(--font-sora)', fontSize: 12, color: 'var(--color-text-primary)' }}>
+                                    {chipLabel(c.name)}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    ) : dropResults && dropResults.length > 0 ? (
+                      dropResults.map(c => {
+                        const av = getAvatarStyle(c.name);
+                        const initials = getInitials(c.name);
+                        return (
+                          <div
+                            key={c.id}
+                            onMouseEnter={() => setDropHover('res-' + c.id)}
+                            onMouseLeave={() => setDropHover(null)}
+                            onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
+                            style={{
+                              padding: '10px 16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              cursor: 'pointer',
+                              background: dropHover === 'res-' + c.id ? 'var(--color-primary-subtle)' : 'transparent',
+                            }}
+                          >
+                            <div style={{
+                              width: 28, height: 28, borderRadius: 999,
+                              background: av.bg, color: av.fg,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: 11, fontWeight: 600, flexShrink: 0,
+                            }}>{initials}</div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontFamily: 'var(--font-sora)', fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{c.name}</div>
+                              {c.subtitle && <div style={{ fontFamily: 'var(--font-sora)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>{c.subtitle}</div>}
+                            </div>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--color-text-tertiary)', marginLeft: 'auto', flexShrink: 0 }}>{c.number}</span>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div style={{ padding: '20px 16px', textAlign: 'center', fontFamily: 'var(--font-sora)', fontSize: 13, color: 'var(--color-text-tertiary)' }}>
+                        No contacts match &ldquo;{searchValue}&rdquo;
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+
               <span style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginLeft: 4 }}>{filtered.length} of {CONTACTS.length}</span>
               <div style={{ flex: 1 }} />
               <div style={{
