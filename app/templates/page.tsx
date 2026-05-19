@@ -176,6 +176,7 @@ export default function TemplatesPage() {
                 boxShadow: 'var(--shadow-card)',
                 overflow: 'hidden',
                 cursor: 'pointer',
+                position: 'relative',
                 transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)',
               }}
               onMouseEnter={e => {
