@@ -174,7 +174,6 @@ export default function TemplatesPage() {
                 background: 'var(--color-surface)',
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: 'var(--shadow-card)',
-                overflow: 'hidden',
                 cursor: 'pointer',
                 position: 'relative',
                 transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)',
