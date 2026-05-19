@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { I } from '@/components/app/icons';
-import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
+import { Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 
 const CONTACT_CATEGORIES = [
   { id: 'all',       label: 'All contacts',  count: 284, tone: 'slate' },
@@ -50,7 +50,21 @@ function sparkFor(id: string): number[] {
 
 function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} className={`px-3.5 py-1.5 text-[13px] rounded-full font-medium transition ${active ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
+    <button
+      onClick={onClick}
+      style={{
+        padding: '6px 14px',
+        fontSize: 12,
+        fontWeight: 600,
+        borderRadius: 'var(--radius-pill)',
+        background: active ? 'var(--color-primary)' : 'transparent',
+        color: active ? 'white' : 'var(--color-text-secondary)',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all var(--duration-fast)',
+        fontFamily: 'var(--font-body)',
+      }}
+    >
       {children}
     </button>
   );
@@ -73,24 +87,103 @@ function SoftCard({ children, className = '' }: { children: React.ReactNode; cla
   return <div className={`rounded-2xl border border-slate-100 ${className}`} style={{ background: 'rgba(248,250,252,0.7)' }}>{children}</div>;
 }
 
+function StatItem({ label, value, helper, trend, icon }: {
+  label: string; value: string; helper?: string; trend?: 'up' | 'down'; icon?: React.ReactNode;
+}) {
+  return (
+    <div style={{
+      background: 'var(--color-surface)',
+      borderRadius: 'var(--radius-lg)',
+      boxShadow: 'var(--shadow-card)',
+      padding: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{
+          fontSize: 12.5,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          color: 'var(--color-text-tertiary)',
+          fontWeight: 600,
+          fontFamily: 'var(--font-body)',
+        }}>{label}</span>
+        {icon && (
+          <span style={{
+            width: 32, height: 32,
+            borderRadius: 'var(--radius-md)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--color-primary-subtle)',
+            color: 'var(--color-primary)',
+            flexShrink: 0,
+          }}>{icon}</span>
+        )}
+      </div>
+      <span style={{
+        fontSize: 44,
+        lineHeight: 1,
+        fontWeight: 600,
+        letterSpacing: '-0.02em',
+        color: 'var(--color-text-primary)',
+        fontFamily: 'var(--font-heading)',
+      }}>{value}</span>
+      {helper && (
+        <div style={{
+          fontSize: 12.5,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          color: trend === 'up' ? '#16a34a' : trend === 'down' ? '#dc2626' : 'var(--color-text-secondary)',
+          fontFamily: 'var(--font-body)',
+        }}>
+          {trend === 'up' && <I.ArrowUp size={12} strokeWidth={2.4} />}
+          {trend === 'down' && <I.ArrowDown size={12} strokeWidth={2.4} />}
+          {helper}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
+  const [hovered, setHovered] = useState(false);
   const spark = sparkFor(c.id);
   return (
-    <button onClick={onOpen}
-      className="shrink-0 w-[220px] text-left rounded-[20px] border border-slate-200/80 bg-white/85 backdrop-blur-[14px] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] hover:border-[var(--color-primary)] transition overflow-hidden flex flex-col">
-      <div className="p-4 flex items-start gap-3">
+    <button
+      onClick={onOpen}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        flexShrink: 0,
+        width: 220,
+        textAlign: 'left',
+        borderRadius: 'var(--radius-lg)',
+        background: 'var(--color-surface)',
+        border: 'none',
+        boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+        transform: hovered ? 'translateY(-2px)' : 'none',
+        transition: `all var(--duration-base) var(--ease-out)`,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        cursor: 'pointer',
+        padding: 0,
+      }}
+    >
+      <div style={{ padding: 20, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <Avatar name={c.name} size={42} tone={c.tone} />
-        <div className="flex-1 min-w-0">
+        <div style={{ flex: 1, minWidth: 0 }}>
           <Pill tone={c.tone} dot={false} className="mb-1.5">{c.category}</Pill>
-          <div className="text-[13.5px] font-semibold text-slate-900 leading-snug truncate">{c.name}</div>
-          {c.attn && <div className="text-[11.5px] text-slate-500 truncate">{c.attn}</div>}
-          <div className="text-[12px] font-mono text-slate-600 mt-1">{c.number}</div>
+          <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-text-primary)', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 6 }}>{c.name}</div>
+          {c.attn && <div style={{ fontSize: 11.5, color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.attn}</div>}
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--color-text-secondary)', marginTop: 4 }}>{c.number}</div>
         </div>
       </div>
-      <div className="px-4 pb-4 pt-1 border-t border-slate-100 flex items-center justify-between">
+      <div style={{ padding: '12px 20px 20px', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <div className="text-[10.5px] uppercase tracking-wider text-slate-400 font-semibold">Last 30d</div>
-          <div className="text-[13px] font-semibold text-slate-900">{c.recent} faxes</div>
+          <div style={{ fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-tertiary)', fontWeight: 600 }}>Last 30d</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-primary)' }}>{c.recent} faxes</div>
         </div>
         <Sparkline data={spark} w={72} h={24} />
       </div>
@@ -98,39 +191,59 @@ function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
   );
 }
 
-function ContactRow({ c, onOpen }: { c: Contact; onOpen: () => void }) {
+function ContactRow({ c, onOpen, isLast }: { c: Contact; onOpen: () => void; isLast?: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  const cellStyle: React.CSSProperties = {
+    padding: '14px 20px',
+    borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
+  };
   return (
-    <tr className="hover:bg-slate-50/70 cursor-pointer transition" onClick={onOpen}>
-      <td className="px-4 py-3 border-b border-slate-100">
-        <div className="flex items-center gap-3">
+    <tr
+      style={{
+        cursor: 'pointer',
+        background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
+        transition: `background var(--duration-fast)`,
+      }}
+      onClick={onOpen}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <td style={cellStyle}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Avatar name={c.name} size={36} tone={c.tone} />
-          <div className="min-w-0">
-            <div className="text-[13.5px] font-semibold text-slate-900 truncate">{c.name}</div>
-            <div className="text-[11.5px] text-slate-500 truncate">{c.subtitle || '—'}</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</div>
+            <div style={{ fontSize: 11.5, color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.subtitle || '—'}</div>
           </div>
         </div>
       </td>
-      <td className="px-4 py-3 border-b border-slate-100">
-        <span className="text-[12.5px] font-mono text-slate-700">{c.number}</span>
+      <td style={cellStyle}>
+        <span style={{ fontSize: 12.5, fontFamily: 'var(--font-mono)', color: 'var(--color-text-secondary)' }}>{c.number}</span>
       </td>
-      <td className="px-4 py-3 border-b border-slate-100">
+      <td style={cellStyle}>
         <Pill tone={c.tone} dot={false}>{c.category}</Pill>
       </td>
-      <td className="px-4 py-3 border-b border-slate-100 text-[13px] text-slate-500">{c.lastSent}</td>
-      <td className="px-4 py-3 border-b border-slate-100">
-        <div className="flex items-center gap-2">
-          <span className="text-[13px] font-semibold text-slate-900">{c.deliveryRate}%</span>
-          <div className="w-16 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: `${c.deliveryRate}%`, background: 'var(--color-primary)' }} />
+      <td style={{ ...cellStyle, fontSize: 13, color: 'var(--color-text-secondary)' }}>{c.lastSent}</td>
+      <td style={cellStyle}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-primary)' }}>{c.deliveryRate}%</span>
+          <div style={{ width: 64, height: 6, borderRadius: 999, background: 'var(--color-border)', overflow: 'hidden' }}>
+            <div style={{ height: '100%', borderRadius: 999, background: 'var(--color-primary)', width: `${c.deliveryRate}%` }} />
           </div>
         </div>
       </td>
-      <td className="px-4 py-3 border-b border-slate-100 text-right">
-        <div className="flex items-center justify-end gap-1">
-          <button className="w-8 h-8 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700">
+      <td style={{ ...cellStyle, textAlign: 'right' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
+          <button
+            onClick={e => e.stopPropagation()}
+            style={{ width: 32, height: 32, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+          >
             <I.Send size={13} />
           </button>
-          <button className="w-8 h-8 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700">
+          <button
+            onClick={e => e.stopPropagation()}
+            style={{ width: 32, height: 32, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+          >
             <I.More size={14} />
           </button>
         </div>
@@ -272,6 +385,7 @@ function ContactDrawer({ c, onClose }: { c: Contact | null; onClose: () => void 
 export default function ContactsPage() {
   const [cat, setCat] = useState('all');
   const [search, setSearch] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
   const [view, setView] = useState<'table' | 'grid'>('table');
   const [open, setOpen] = useState<Contact | null>(null);
 
@@ -283,30 +397,61 @@ export default function ContactsPage() {
 
   return (
     <div>
-      {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Address book · {CONTACTS.length} contacts</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Your fax directory.</h1>
-            <p className="text-[14px] text-slate-500 mt-2">Recipients you fax regularly — organizations and people. Saved contacts auto-fill the compose form.</p>
+      {/* ── Header — sits directly on var(--color-bg) ── */}
+      <div style={{
+        padding: '32px 0 24px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+      }}>
+        <div>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-tertiary)',
+            marginBottom: 4,
+          }}>
+            ADDRESS BOOK · {CONTACTS.length} CONTACTS
           </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Upload size={14} />}>Import CSV</AppButton>
-            <AppButton icon={<I.Plus size={15} strokeWidth={2.4} />}>New contact</AppButton>
-          </div>
+          <h1 style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 26,
+            fontWeight: 700,
+            color: 'var(--color-text-primary)',
+            margin: 0,
+            lineHeight: 1.15,
+          }}>
+            Your fax directory.
+          </h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--color-text-secondary)',
+            margin: 0,
+            marginTop: 4,
+          }}>
+            Recipients you fax regularly — organizations and people. Saved contacts auto-fill the compose form.
+          </p>
         </div>
-      </Card>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} />
-        <StatCard label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} />
-        <StatCard label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} />
-        <StatCard label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, paddingTop: 4 }}>
+          <AppButton variant="secondary" size="md" icon={<I.Upload size={14} />}>↑ Import CSV</AppButton>
+          <AppButton variant="primary" size="md" icon={<I.Plus size={15} strokeWidth={2.4} />}>+ New contact</AppButton>
+        </div>
       </div>
 
-      {/* Pinned strip */}
+      {/* ── Stat cards ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} />
+        <StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} />
+        <StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} />
+        <StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} />
+      </div>
+
+      {/* ── Pinned strip ── */}
       <div className="mb-7">
         <SectionTitle title="Pinned" subtitle="Your most-used recipients — pinned for one-tap sending."
           action={<AppButton variant="ghost" size="sm">Manage</AppButton>} />
@@ -315,75 +460,220 @@ export default function ContactsPage() {
         </div>
       </div>
 
-      {/* Main layout */}
+      {/* ── Main layout ── */}
       <div className="grid grid-cols-12 gap-6">
-        {/* Category rail */}
+
+        {/* ── Category rail ── */}
         <aside className="col-span-12 lg:col-span-3 space-y-4">
-          <Card className="p-4">
-            <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold px-2 mb-2">Categories</div>
-            <div className="space-y-0.5">
+
+          {/* Category card */}
+          <div style={{
+            background: 'var(--color-surface)',
+            border: 'none',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-card)',
+            padding: 16,
+          }}>
+            <div style={{
+              fontSize: 11,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              color: 'var(--color-text-tertiary)',
+              fontWeight: 600,
+              padding: '0 4px',
+              marginBottom: 8,
+              fontFamily: 'var(--font-body)',
+            }}>Categories</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {CONTACT_CATEGORIES.map(c => {
                 const active = cat === c.id;
                 return (
-                  <button key={c.id} onClick={() => setCat(c.id)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition ${active ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-50'}`}>
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: STATUS_TONES[c.tone]?.dot }} />
-                    <span className="flex-1 text-[13px] font-medium">{c.label}</span>
-                    <span className={`text-[11.5px] font-mono ${active ? 'text-white/60' : 'text-slate-400'}`}>{c.count}</span>
-                  </button>
+                  <CategoryItem
+                    key={c.id}
+                    active={active}
+                    onClick={() => setCat(c.id)}
+                    dot={STATUS_TONES[c.tone]?.dot}
+                    label={c.label}
+                    count={c.count}
+                  />
                 );
               })}
-              <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-[13px] text-slate-500 hover:bg-slate-50 mt-1">
+              <button
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 12px',
+                  borderRadius: 'var(--radius-pill)',
+                  fontSize: 13,
+                  color: 'var(--color-text-secondary)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  marginTop: 4,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
                 <I.Plus size={13} /> New category
               </button>
             </div>
-          </Card>
-          <Card className="p-5">
-            <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
+          </div>
+
+          {/* Auto-cleanup card */}
+          <div style={{
+            background: 'var(--color-primary-subtle)',
+            border: 'none',
+            borderLeft: '3px solid var(--color-primary)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-card)',
+            padding: '16px 20px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <span style={{
+                width: 36, height: 36,
+                borderRadius: 'var(--radius-md)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+                background: 'var(--color-primary-subtle)',
+                color: 'var(--color-primary)',
+              }}>
                 <I.Sparkle size={15} />
               </span>
               <div>
-                <div className="text-[13.5px] font-semibold text-slate-900">Auto-cleanup</div>
-                <div className="text-[12.5px] text-slate-500 mt-1 leading-relaxed">5 contacts haven't received a fax in 12+ months. Review and archive?</div>
-                <button className="mt-2 text-[12.5px] font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>Review →</button>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)' }}>Auto-cleanup</div>
+                <div style={{ fontSize: 12.5, color: 'var(--color-text-secondary)', marginTop: 4, lineHeight: 1.5, fontFamily: 'var(--font-body)' }}>5 contacts haven't received a fax in 12+ months. Review and archive?</div>
+                <button style={{
+                  marginTop: 8,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontFamily: 'var(--font-body)',
+                }}>Review →</button>
               </div>
             </div>
-          </Card>
+          </div>
+
         </aside>
 
-        {/* Directory */}
+        {/* ── Directory ── */}
         <div className="col-span-12 lg:col-span-9">
-          <Card className="overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2 bg-slate-50/40">
-              <div className="relative flex-1 max-w-md">
-                <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts, numbers, ATTN…"
-                  className="w-full pl-9 pr-3 py-1.5 rounded-full border border-slate-200 bg-white text-[13px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400" />
+          <div style={{
+            background: 'var(--color-surface)',
+            border: 'none',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-card)',
+            overflow: 'hidden',
+          }}>
+
+            {/* Search + toggle bar */}
+            <div style={{
+              padding: '12px 16px',
+              borderBottom: '1px solid var(--color-border)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'var(--color-surface)',
+            }}>
+              <div style={{ position: 'relative', flex: 1, maxWidth: 400 }}>
+                <I.Search size={14} style={{
+                  position: 'absolute',
+                  left: 14,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: searchFocused ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                  pointerEvents: 'none',
+                  transition: 'color var(--duration-fast)',
+                }} />
+                <input
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  placeholder="Search contacts, numbers, ATTN…"
+                  style={{
+                    width: '100%',
+                    height: 42,
+                    background: 'var(--color-surface)',
+                    border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
+                    borderRadius: 'var(--radius-pill)',
+                    padding: '0 16px 0 40px',
+                    fontSize: 14,
+                    fontFamily: 'var(--font-body)',
+                    color: 'var(--color-text-primary)',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    boxShadow: searchFocused
+                      ? '0 0 0 3px rgba(61, 80, 128, 0.12), var(--shadow-card)'
+                      : 'var(--shadow-card)',
+                    transition: 'all var(--duration-fast) var(--ease-out)',
+                  }}
+                />
               </div>
-              <span className="text-[12px] text-slate-500 ml-2">{filtered.length} of {CONTACTS.length}</span>
-              <div className="flex-1" />
-              <div className="flex items-center gap-1 bg-white rounded-xl p-0.5 border border-slate-200">
-                <button onClick={() => setView('table')} className={`px-2.5 py-1 rounded-lg text-[12px] font-medium transition ${view === 'table' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900'}`}>List</button>
-                <button onClick={() => setView('grid')} className={`px-2.5 py-1 rounded-lg text-[12px] font-medium transition ${view === 'grid' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900'}`}>Cards</button>
+              <span style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginLeft: 4 }}>{filtered.length} of {CONTACTS.length}</span>
+              <div style={{ flex: 1 }} />
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                borderRadius: 'var(--radius-pill)',
+                padding: 2,
+              }}>
+                <Tab active={view === 'table'} onClick={() => setView('table')}>List</Tab>
+                <Tab active={view === 'grid'} onClick={() => setView('grid')}>Cards</Tab>
               </div>
-              <button className="w-9 h-9 rounded-xl hover:bg-white flex items-center justify-center text-slate-500"><I.Filter size={14} /></button>
+              <button style={{
+                width: 36, height: 36,
+                borderRadius: 'var(--radius-md)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--color-text-secondary)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+              }}>
+                <I.Filter size={14} />
+              </button>
             </div>
 
             {view === 'table' ? (
               <div className="overflow-auto scrollbar-thin">
-                <table className="w-full border-collapse">
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr>
-                      {['Name','Fax number','Category','Last sent','Delivery','Actions'].map(h => (
-                        <th key={h} className={`text-[11.5px] uppercase tracking-[0.06em] text-slate-500 font-semibold px-4 py-3 text-left bg-slate-50/70 border-b border-slate-100 ${h === 'Actions' ? 'text-right' : ''}`}>{h}</th>
+                      {['Name', 'Fax number', 'Category', 'Last sent', 'Delivery', 'Actions'].map(h => (
+                        <th
+                          key={h}
+                          style={{
+                            fontSize: 11,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.06em',
+                            fontWeight: 600,
+                            color: 'var(--color-text-tertiary)',
+                            padding: '10px 20px',
+                            textAlign: h === 'Actions' ? 'right' : 'left',
+                            background: 'var(--color-bg)',
+                            borderBottom: '1px solid var(--color-border)',
+                            fontFamily: 'var(--font-body)',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map(c => <ContactRow key={c.id} c={c} onOpen={() => setOpen(c)} />)}
+                    {filtered.map((c, i) => (
+                      <ContactRow key={c.id} c={c} onOpen={() => setOpen(c)} isLast={i === filtered.length - 1} />
+                    ))}
                     {filtered.length === 0 && (
-                      <tr><td colSpan={6} className="text-center text-slate-500 py-12 text-[13.5px]">No contacts match.</td></tr>
+                      <tr>
+                        <td colSpan={6} style={{ textAlign: 'center', color: 'var(--color-text-secondary)', padding: '48px 20px', fontSize: 13.5 }}>
+                          No contacts match.
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -407,11 +697,45 @@ export default function ContactsPage() {
                 ))}
               </div>
             )}
-          </Card>
+          </div>
         </div>
       </div>
 
       <ContactDrawer c={open} onClose={() => setOpen(null)} />
     </div>
+  );
+}
+
+function CategoryItem({
+  active, onClick, dot, label, count,
+}: {
+  active: boolean; onClick: () => void; dot: string; label: string; count: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '8px 12px',
+        borderRadius: 'var(--radius-pill)',
+        textAlign: 'left',
+        background: active ? 'var(--color-primary)' : hovered ? 'var(--color-primary-subtle)' : 'transparent',
+        color: active ? 'white' : 'var(--color-text-secondary)',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all var(--duration-fast)',
+        fontFamily: 'var(--font-body)',
+      }}
+    >
+      <span style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: dot }} />
+      <span style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>{label}</span>
+      <span style={{ fontSize: 11.5, fontFamily: 'var(--font-mono)', opacity: active ? 0.65 : 1 }}>{count}</span>
+    </button>
   );
 }
