@@ -204,15 +204,15 @@ export default function AnalyticsPage() {
   return (
     <div>
       {/* Header */}
-      <Card className="px-7 py-6 mb-6">
+      <div className="px-7 py-6 mb-6">
         <div className="flex items-start gap-6">
           <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Reporting · Apr 14 → May 13</div>
+            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">ANALYTICS · LAST 30 DAYS</div>
             <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
               style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
-              How your fax program is performing.
+              Usage and delivery insights.
             </h1>
-            <p className="text-[14px] text-slate-500 mt-2">8,412 faxes across 6 destinations and 9 senders. Delivery is trending up, costs are trending down.</p>
+            <p className="text-[14px] text-slate-500 mt-2">Volume trends, delivery performance, and team activity across all your numbers.</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">
             <AppButton variant="secondary" icon={<I.Calendar size={14} />} iconRight={<I.ChevronDown size={12} />}>{range}</AppButton>
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
             <AppButton variant="secondary" icon={<I.Download size={14} />}>Export CSV</AppButton>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
