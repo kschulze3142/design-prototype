@@ -202,7 +202,7 @@ export default function TeamPage() {
         borderLeft: '3px solid var(--color-review)',
         borderRadius: 'var(--radius-lg)',
         boxShadow: 'var(--shadow-card)',
-        padding: '16px 20px',
+        padding: '10px 16px',
         marginBottom: 24,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
@@ -218,8 +218,8 @@ export default function TeamPage() {
       </div>
 
       {/* Pending Invitations */}
-      <Card noPadding style={{ padding: '20px 24px', marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+      <Card noPadding style={{ padding: '10px 16px', marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>
               2 pending invitations
@@ -233,7 +233,7 @@ export default function TeamPage() {
         {PENDING_INVITES.map((p, i) => (
           <div key={p.email} style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 0',
+            padding: '10px 0',
             borderBottom: i < PENDING_INVITES.length - 1 ? '1px solid var(--color-border)' : 'none',
           }}>
             <Avatar initials={p.initials} size={32} />
@@ -256,7 +256,7 @@ export default function TeamPage() {
       </Card>
 
       {/* Main Content */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
 
         {/* Left — Member Table */}
         <div>
