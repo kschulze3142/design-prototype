@@ -4,7 +4,7 @@ import { I } from '@/components/app/icons';
 import { Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 
 const CONTACT_CATEGORIES = [
-  { id: 'all',       label: 'All contacts',  count: 284, tone: 'slate' },
+  { id: 'all',       label: 'All contacts',  count: 13,  tone: 'slate' },
   { id: 'insurance', label: 'Insurance',     count: 38,  tone: 'amber' },
   { id: 'labs',      label: 'Labs',          count: 21,  tone: 'violet' },
   { id: 'providers', label: 'Providers',     count: 142, tone: 'teal' },
@@ -87,9 +87,10 @@ function SoftCard({ children, className = '' }: { children: React.ReactNode; cla
   return <div className={`rounded-2xl border border-slate-100 ${className}`} style={{ background: 'rgba(248,250,252,0.7)' }}>{children}</div>;
 }
 
-function StatItem({ label, value, helper, trend, icon }: {
-  label: string; value: string; helper?: string; trend?: 'up' | 'down'; icon?: React.ReactNode;
+function StatItem({ label, value, helper, trend, icon, tooltip }: {
+  label: string; value: string; helper?: string; trend?: 'up' | 'down'; icon?: React.ReactNode; tooltip?: string;
 }) {
+  const [tipVisible, setTipVisible] = useState(false);
   return (
     <div style={{
       background: 'var(--color-surface)',
@@ -101,14 +102,59 @@ function StatItem({ label, value, helper, trend, icon }: {
       gap: 12,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{
-          fontSize: 12.5,
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          color: 'var(--color-text-tertiary)',
-          fontWeight: 600,
-          fontFamily: 'var(--font-body)',
-        }}>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{
+            fontSize: 12.5,
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            color: 'var(--color-text-tertiary)',
+            fontWeight: 600,
+            fontFamily: 'var(--font-body)',
+          }}>{label}</span>
+          {tooltip && (
+            <div style={{ position: 'relative' }}>
+              <button
+                onMouseEnter={() => setTipVisible(true)}
+                onMouseLeave={() => setTipVisible(false)}
+                style={{
+                  width: 16, height: 16,
+                  borderRadius: '50%',
+                  background: 'transparent',
+                  border: tipVisible ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
+                  color: tipVisible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                  fontSize: 10,
+                  fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'border-color var(--duration-fast), color var(--duration-fast)',
+                  flexShrink: 0,
+                  lineHeight: 1,
+                }}
+              >?</button>
+              {tipVisible && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: 'calc(100% + 8px)',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: 'var(--color-surface-dark)',
+                  color: 'white',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px 14px',
+                  fontSize: 12,
+                  maxWidth: 220,
+                  width: 'max-content',
+                  boxShadow: 'var(--shadow-modal)',
+                  zIndex: 50,
+                  pointerEvents: 'none',
+                  lineHeight: 1.5,
+                  fontFamily: 'var(--font-body)',
+                }}>{tooltip}</div>
+              )}
+            </div>
+          )}
+        </div>
         {icon && (
           <span style={{
             width: 32, height: 32,
@@ -218,7 +264,7 @@ function ContactRow({ c, onOpen, isLast }: { c: Contact; onOpen: () => void; isL
         </div>
       </td>
       <td style={cellStyle}>
-        <span style={{ fontSize: 12.5, fontFamily: 'var(--font-mono)', color: 'var(--color-text-secondary)' }}>{c.number}</span>
+        <span style={{ fontSize: 13, fontFamily: 'var(--font-mono)', color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>{c.number}</span>
       </td>
       <td style={cellStyle}>
         <Pill tone={c.tone} dot={false}>{c.category}</Pill>
@@ -447,8 +493,8 @@ export default function ContactsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} />
         <StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} />
-        <StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} />
-        <StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} />
+        <StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} tooltip="Fax numbers confirmed to receive transmissions successfully. Unverified numbers haven't had a successful delivery yet and may increase failed send risk." />
+        <StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} tooltip="Average delivery success rate across all contacts over the last 30 days. Industry average is typically 94–96%." />
       </div>
 
       {/* ── Pinned strip ── */}
@@ -580,7 +626,7 @@ export default function ContactsPage() {
               background: 'var(--color-surface)',
             }}>
               <div style={{ position: 'relative', flex: 1, maxWidth: 400 }}>
-                <I.Search size={14} style={{
+                <I.Search size={16} style={{
                   position: 'absolute',
                   left: 14,
                   top: '50%',
@@ -608,7 +654,7 @@ export default function ContactsPage() {
                     outline: 'none',
                     boxSizing: 'border-box',
                     boxShadow: searchFocused
-                      ? '0 0 0 3px rgba(61, 80, 128, 0.12), var(--shadow-card)'
+                      ? '0 0 0 3px rgba(61, 80, 128, 0.12)'
                       : 'var(--shadow-card)',
                     transition: 'all var(--duration-fast) var(--ease-out)',
                   }}
@@ -659,6 +705,7 @@ export default function ContactsPage() {
                             borderBottom: '1px solid var(--color-border)',
                             fontFamily: 'var(--font-body)',
                             whiteSpace: 'nowrap',
+                            minWidth: h === 'Fax number' ? 160 : undefined,
                           }}
                         >{h}</th>
                       ))}
