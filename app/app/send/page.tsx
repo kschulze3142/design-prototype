@@ -58,8 +58,7 @@ const STEP_LABELS = ['Compose', 'Preview', 'Confirmation'];
 
 function StepIndicator({ current }: { current: number }) {
   return (
-    <Card noPadding style={{ marginBottom: 20, border: '1px solid var(--color-border)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', padding: '14px 24px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', padding: '14px 0', marginBottom: 20 }}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {STEP_LABELS.map((label, i) => {
             const done = i < current;
@@ -120,7 +119,6 @@ function StepIndicator({ current }: { current: number }) {
           </span>
         </div>
       </div>
-    </Card>
   );
 }
 
@@ -205,7 +203,7 @@ function StepCompose({ form, setForm, onNext }: {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
 
       {/* ── Left: unified canvas card ── */}
-      <Card noPadding style={{ borderRadius: 'var(--radius-lg)' }}>
+      <Card noPadding style={{ borderRadius: 'var(--radius-lg)', maxWidth: '860px' }}>
 
         {/* Section: Recipient */}
         <div style={{ padding: 28 }}>
@@ -329,43 +327,31 @@ function StepCompose({ form, setForm, onNext }: {
 
         {/* Section: Documents */}
         <div style={{ padding: 28 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div>
-              <div className="text-title">Documents</div>
-              <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>PDF, PNG, JPG, or TIFF. Up to 50 MB and 200 pages.</div>
-            </div>
-            {form.file && (
-              <Button variant="ghost" size="sm" onClick={() => setForm(f => ({ ...f, file: null }))}>
-                Remove
-              </Button>
-            )}
+          <div style={{ marginBottom: 16 }}>
+            <div className="text-title">Documents</div>
+            <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>PDF, PNG, JPG, or TIFF. Up to 50 MB and 200 pages.</div>
           </div>
 
           {form.file && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: 14, borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-surface)',
-              marginBottom: 12,
-            }}>
+            <div style={{ marginBottom: 12 }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 'var(--radius-sm)',
-                background: 'var(--color-primary-subtle)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-                color: 'var(--color-primary)',
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                height: 36, padding: '0 12px 0 10px',
+                background: 'var(--color-bg)', border: '1px solid var(--color-border-strong)',
+                borderRadius: 'var(--radius-pill)', maxWidth: 'fit-content',
               }}>
-                <I.Document size={16} />
+                <I.Document size={14} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)', whiteSpace: 'nowrap' }}>{form.file.name}</span>
+                <span style={{ color: 'var(--color-text-tertiary)' }}>·</span>
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: 12, color: 'var(--color-text-tertiary)', whiteSpace: 'nowrap' }}>{form.file.pages}p</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--color-delivered)', marginLeft: 4 }}>● Ready</span>
+                <button
+                  onClick={() => setForm(f => ({ ...f, file: null }))}
+                  style={{ color: 'var(--color-text-tertiary)', marginLeft: 4, border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1, display: 'flex', alignItems: 'center' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-failed)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-text-tertiary)')}
+                >×</button>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="text-body-strong" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{form.file.name}</div>
-                <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>{form.file.pages} pages · {form.file.size}</div>
-              </div>
-              <StatusBadge variant="delivered" label="Ready" />
-              <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-text-tertiary)' }}>
-                <I.Eye size={15} />
-              </button>
             </div>
           )}
 
