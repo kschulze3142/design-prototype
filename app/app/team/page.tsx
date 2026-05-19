@@ -293,7 +293,7 @@ export default function TeamPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '16px' }}>
+          <div style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', padding: '12px 16px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
             {FILTER_TABS.map(tab => {
               const active = activeFilter === tab.key;
               return (
@@ -306,8 +306,9 @@ export default function TeamPage() {
                     background: active ? 'var(--color-primary)' : (hoveredFilter === tab.key ? 'var(--color-primary-subtle)' : 'transparent'),
                     color: active ? 'white' : 'var(--color-text-secondary)',
                     borderRadius: 'var(--radius-pill)',
-                    padding: '6px 14px',
+                    padding: '5px 12px',
                     fontSize: 13,
+                    fontWeight: 500,
                     fontFamily: 'var(--font-body)',
                     border: 'none',
                     cursor: 'pointer',
@@ -402,7 +403,7 @@ export default function TeamPage() {
         </div>
 
         {/* Right Panel */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start', marginTop: '106px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start', marginTop: '154px' }}>
 
           {/* Roles Card */}
           <Card noPadding style={{ padding: '20px 24px' }}>
