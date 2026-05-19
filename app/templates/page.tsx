@@ -288,7 +288,7 @@ export default function TemplatesPage() {
           fontSize: 14,
           color: 'var(--color-text-primary)',
           outline: 'none',
-          marginBottom: 16,
+          marginBottom: 12,
           transition: `border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)`,
         }}
       />
