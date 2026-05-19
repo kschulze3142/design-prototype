@@ -201,8 +201,7 @@ function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        flexShrink: 0,
-        width: 220,
+        width: '100%',
         textAlign: 'left',
         borderRadius: 'var(--radius-lg)',
         background: 'var(--color-surface)',
@@ -510,7 +509,7 @@ export default function ContactsPage() {
       <div className="mb-7">
         <SectionTitle title="Pinned" subtitle="Your most-used recipients — pinned for one-tap sending."
           action={<AppButton variant="ghost" size="sm">Manage</AppButton>} />
-        <div className="mt-4 flex gap-4 overflow-x-auto scrollbar-thin pb-2 -mx-1 px-1">
+        <div className="mt-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
           {PINNED.map(p => <ContactPin key={p.id} c={p} onOpen={() => setOpen(p)} />)}
         </div>
       </div>
