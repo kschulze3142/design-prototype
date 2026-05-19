@@ -518,7 +518,7 @@ export default function ContactsPage() {
       <div className="grid grid-cols-12 gap-6">
 
         {/* ── Category rail ── */}
-        <aside className="col-span-12 lg:col-span-3 space-y-4">
+        <aside className="col-span-12 lg:col-span-4 space-y-4">
 
           {/* Category card */}
           <div style={{
@@ -615,7 +615,7 @@ export default function ContactsPage() {
         </aside>
 
         {/* ── Directory ── */}
-        <div className="col-span-12 lg:col-span-9">
+        <div className="col-span-12 lg:col-span-8">
           <div style={{
             background: 'var(--color-surface)',
             border: 'none',
