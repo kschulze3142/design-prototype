@@ -66,6 +66,23 @@ function TemplateCard({ template }: { template: Template }) {
     >
       {/* Preview area */}
       <div style={{ height: 108, background: 'var(--color-bg)', position: 'relative', overflow: 'hidden' }}>
+        {/* Category pill */}
+        <span style={{
+          position: 'absolute',
+          top: '8px',
+          left: '8px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '9px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          padding: '3px 8px',
+          borderRadius: 'var(--radius-pill)',
+          color: colors.text,
+          background: colors.bg,
+        }}>
+          {template.category}
+        </span>
+
         <div style={{ margin: '8px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {SKELETON_LINES.map((line, i) => (
             <div
@@ -78,24 +95,6 @@ function TemplateCard({ template }: { template: Template }) {
               }}
             />
           ))}
-        </div>
-
-        {/* Category pill */}
-        <div style={{
-          position: 'absolute',
-          top: 8,
-          left: 8,
-          background: colors.bg,
-          color: colors.text,
-          fontSize: 9,
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 600,
-          letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-          borderRadius: 'var(--radius-pill)',
-          padding: '3px 8px',
-        }}>
-          {template.category}
         </div>
 
         {/* Default badge */}
@@ -263,44 +262,45 @@ export default function TemplatesPage() {
       </div>
 
       {/* Search bar */}
-      <input
-        type="text"
-        placeholder="Search templates…"
-        value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-        onFocus={() => setSearchFocused(true)}
-        onBlur={() => setSearchFocused(false)}
-        style={{
-          display: 'block',
-          width: '100%',
-          maxWidth: 380,
-          height: 42,
-          background: 'var(--color-surface)',
-          border: searchFocused
-            ? '1px solid var(--color-primary)'
-            : '1px solid var(--color-border-strong)',
-          borderRadius: 'var(--radius-pill)',
-          boxShadow: searchFocused
-            ? '0 0 0 3px rgba(61,80,128,0.12)'
-            : 'var(--shadow-card)',
-          padding: '0 16px',
-          fontFamily: 'var(--font-body)',
-          fontSize: 14,
-          color: 'var(--color-text-primary)',
-          outline: 'none',
-          marginBottom: 12,
-          transition: `border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)`,
-        }}
-      />
+      <div style={{ marginBottom: '12px' }}>
+        <input
+          type="text"
+          placeholder="Search templates…"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          style={{
+            display: 'block',
+            width: '100%',
+            maxWidth: 380,
+            height: 42,
+            background: 'var(--color-surface)',
+            border: searchFocused
+              ? '1px solid var(--color-primary)'
+              : '1px solid var(--color-border-strong)',
+            borderRadius: 'var(--radius-pill)',
+            boxShadow: searchFocused
+              ? '0 0 0 3px rgba(61,80,128,0.12)'
+              : 'var(--shadow-card)',
+            padding: '0 16px',
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            color: 'var(--color-text-primary)',
+            outline: 'none',
+            transition: `border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)`,
+          }}
+        />
+      </div>
 
       {/* Filter + sort row */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginBottom: '20px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', gap: '4px' }}>
           {FILTERS.map(filter => (
             <FilterTab
               key={filter}
@@ -310,18 +310,14 @@ export default function TemplatesPage() {
             />
           ))}
         </div>
-        <button style={{
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
+        <span style={{
+          fontFamily: 'var(--font-sora)',
+          fontSize: '13px',
           color: 'var(--color-text-secondary)',
-          padding: '6px 4px',
-          whiteSpace: 'nowrap',
+          cursor: 'pointer',
         }}>
           Sort: Most used ▾
-        </button>
+        </span>
       </div>
 
       {/* Template grid */}
