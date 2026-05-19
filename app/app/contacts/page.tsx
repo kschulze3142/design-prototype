@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { I } from '@/components/app/icons';
 import { Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 
@@ -434,6 +434,8 @@ export default function ContactsPage() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [view, setView] = useState<'table' | 'grid'>('table');
   const [open, setOpen] = useState<Contact | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
 
   const filtered = CONTACTS.filter(c => {
     if (cat !== 'all' && c.category.toLowerCase().replace(' / ', '/').replace(' ', '') !== cat) return false;
@@ -441,8 +443,15 @@ export default function ContactsPage() {
     return true;
   });
 
+  useEffect(() => { setPage(1); }, [cat, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const paginatedContacts = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const showStart = filtered.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const showEnd = Math.min(page * pageSize, filtered.length);
+
   return (
-    <div>
+    <div style={{ paddingBottom: 48 }}>
       {/* ── Header — sits directly on var(--color-bg) ── */}
       <div style={{
         padding: '32px 0 24px',
@@ -636,6 +645,7 @@ export default function ContactsPage() {
                   transition: 'color var(--duration-fast)',
                 }} />
                 <input
+                  className="contacts-search"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
@@ -712,8 +722,8 @@ export default function ContactsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((c, i) => (
-                      <ContactRow key={c.id} c={c} onOpen={() => setOpen(c)} isLast={i === filtered.length - 1} />
+                    {paginatedContacts.map((c, i) => (
+                      <ContactRow key={c.id} c={c} onOpen={() => setOpen(c)} isLast={i === paginatedContacts.length - 1} />
                     ))}
                     {filtered.length === 0 && (
                       <tr>
@@ -727,7 +737,7 @@ export default function ContactsPage() {
               </div>
             ) : (
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {filtered.map(c => (
+                {paginatedContacts.map(c => (
                   <button key={c.id} onClick={() => setOpen(c)}
                     className="text-left p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-[var(--color-primary)] transition flex gap-3">
                     <Avatar name={c.name} size={40} tone={c.tone} />
@@ -744,6 +754,61 @@ export default function ContactsPage() {
                 ))}
               </div>
             )}
+
+            {/* Pagination bar */}
+            <div style={{
+              padding: '16px 20px',
+              borderTop: '1px solid var(--color-border)',
+              background: 'var(--color-surface)',
+              borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+              <span style={{ fontSize: 13, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
+                Showing {showStart}–{showEnd} of {filtered.length} contacts
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <select
+                  value={pageSize}
+                  onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                  style={{
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-border-strong)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '6px 10px',
+                    fontSize: 13,
+                    color: 'var(--color-text-primary)',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-body)',
+                    outline: 'none',
+                  }}
+                >
+                  {[15, 25, 50, 100].map(n => <option key={n} value={n}>{n} per page</option>)}
+                </select>
+                <AppButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setPage(p => p - 1)}
+                  disabled={page === 1}
+                  style={{ opacity: page === 1 ? 0.4 : 1, cursor: page === 1 ? 'not-allowed' : undefined }}
+                >
+                  Previous
+                </AppButton>
+                <span style={{ fontSize: 13, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
+                  Page {page} of {totalPages}
+                </span>
+                <AppButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={page === totalPages}
+                  style={{ opacity: page === totalPages ? 0.4 : 1, cursor: page === totalPages ? 'not-allowed' : undefined }}
+                >
+                  Next
+                </AppButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
