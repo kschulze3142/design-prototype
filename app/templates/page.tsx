@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
 const TEMPLATES = [
   { id: 1, name: 'Standard cover page', category: 'Cover pages', uses: '1,284', lastUsed: 'Used today', createdBy: 'A. Park', isDefault: true },
