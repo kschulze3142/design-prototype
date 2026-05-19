@@ -198,6 +198,10 @@ function StepCompose({ form, setForm, onNext }: {
 }) {
   const [dragOver, setDragOver] = useState(false);
   const canContinue = !!form.recipientNumber && !!form.subject && !!form.file;
+  const composeTotalPages = (form.file?.pages ?? 0) + (form.includeCover ? 1 : 0);
+  const composeCredits = Math.ceil(composeTotalPages * (form.priority ? 1.5 : 1));
+  const activeSender = SENDER_NUMBERS.find(s => s.number === form.senderNumber) ?? SENDER_NUMBERS[0];
+  const senderDept = activeSender.label.split(' · ').pop() ?? activeSender.label;
 
   const selectRecipient = (r: typeof RECENT_RECIPIENTS[0]) =>
     setForm(f => ({ ...f, recipientName: r.name, recipientNumber: r.number, recipientAttn: r.attn }));
@@ -397,6 +401,101 @@ function StepCompose({ form, setForm, onNext }: {
       {/* ── Right column ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 32 }}>
 
+        {/* Card: Ready to preview? */}
+        <div style={{
+          background: 'var(--color-surface)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-card)',
+          padding: 16,
+        }}>
+          <div style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 600,
+            fontSize: 15,
+            color: 'var(--color-text-primary)',
+            marginBottom: 12,
+          }}>Ready to preview?</div>
+
+          {[
+            { key: 'FROM',       val: `${form.senderNumber} · ${senderDept}` },
+            { key: 'TO',         val: `${form.recipientName} · ${form.recipientNumber}` },
+            { key: 'ATTN',       val: form.recipientAttn || '—' },
+            { key: 'Subject',    val: form.subject || '—' },
+            { key: 'Cover sheet', val: form.includeCover ? 'Included' : 'None' },
+            { key: 'Documents',  val: form.file ? `${form.file.name} · ${form.file.pages}p` : '—' },
+            { key: 'Schedule',   val: form.schedule ? 'Scheduled' : 'Send now' },
+          ].map(({ key, val }, i, arr) => (
+            <div key={key} style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              paddingBottom: 6,
+              borderBottom: i < arr.length - 1 ? '1px solid var(--color-border)' : 'none',
+              marginBottom: i < arr.length - 1 ? 6 : 0,
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'var(--color-text-tertiary)',
+                width: 80,
+                flexShrink: 0,
+                paddingRight: 8,
+              }}>{key}</span>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                fontWeight: 500,
+                color: 'var(--color-text-primary)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                minWidth: 0,
+                flex: 1,
+              }}>{val}</span>
+            </div>
+          ))}
+
+          <div style={{ height: 1, background: 'var(--color-border)', margin: '12px 0' }} />
+
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 6 }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>
+              {composeTotalPages} pages × {form.priority ? '1.5' : '1'} credit
+            </span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>Balance after</span>
+              <span style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                fontSize: 20,
+                color: 'var(--color-text-primary)',
+                lineHeight: 1,
+              }}>{CREDIT_BALANCE - composeCredits}</span>
+            </div>
+          </div>
+
+          <div style={{ height: 3, borderRadius: 999, background: 'var(--color-border)', overflow: 'hidden', marginBottom: 4 }}>
+            <div style={{
+              height: '100%',
+              borderRadius: 999,
+              background: 'var(--color-primary)',
+              width: `${Math.min(100, Math.round((composeCredits / CREDIT_BALANCE) * 100))}%`,
+            }} />
+          </div>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--color-text-tertiary)' }}>
+            {composeCredits} of {CREDIT_BALANCE} credits used for this send
+          </div>
+
+          <Button
+            variant="primary"
+            disabled={!canContinue}
+            onClick={onNext}
+            style={{ width: '100%', height: 44, justifyContent: 'center', marginTop: 12 }}
+          >
+            Continue to preview →
+          </Button>
+        </div>
+
         {/* Card: Send from */}
         <Card>
           <div className="text-title" style={{ marginBottom: 14 }}>Send from</div>
@@ -488,21 +587,6 @@ function StepCompose({ form, setForm, onNext }: {
             </div>
           </div>
         </Card>
-
-        {/* CTA */}
-        <Button
-          variant="primary"
-          disabled={!canContinue}
-          onClick={onNext}
-          style={{ width: '100%', height: 44, justifyContent: 'center', marginTop: 24 }}
-        >
-          Continue to preview →
-        </Button>
-        {!canContinue && (
-          <p className="text-body" style={{ color: 'var(--color-text-tertiary)', textAlign: 'center', marginTop: -8 }}>
-            Add a fax number, subject, and at least one document.
-          </p>
-        )}
       </div>
     </div>
   );
