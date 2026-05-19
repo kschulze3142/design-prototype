@@ -58,6 +58,9 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
       <div className="rounded-[20px] overflow-hidden border border-slate-200/70 bg-white">
         {/* Thumbnail */}
         <div className="relative" style={{ height: 108, maxHeight: 108, background: 'var(--color-bg)', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', backgroundColor: 'var(--color-primary-subtle)', color: 'var(--color-primary)', border: '1px solid var(--color-primary)', lineHeight: 1.4 }}>
+            {t.cat}
+          </div>
           {t.featured && (
             <div className="absolute top-2 right-2 z-10">
               <Pill tone="teal" dot={false}>Default</Pill>
@@ -107,18 +110,16 @@ export default function TemplatesPage() {
       </div>
 
       {/* Filter bar */}
-      <Card className="p-4 mb-6">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-[240px] max-w-md">
-            <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
-              placeholder="Search templates…" value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
-          <div className="flex items-center gap-1 overflow-x-auto">
-            {TEMPLATE_CATEGORIES.map(c => <Tab key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Tab>)}
-          </div>
+      <div className="flex items-center gap-3 flex-wrap" style={{ marginBottom: '24px' }}>
+        <div className="relative flex-1 min-w-[240px] max-w-md">
+          <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
+            placeholder="Search templates…" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
-      </Card>
+        <div className="flex items-center gap-1 overflow-x-auto">
+          {TEMPLATE_CATEGORIES.map(c => <Tab key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Tab>)}
+        </div>
+      </div>
 
       {/* Grid or empty state */}
       {filtered.length === 0 ? (
