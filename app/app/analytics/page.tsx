@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { I } from '@/components/app/icons';
-import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
+import { Card, Pill, AppButton, Avatar, StatCard } from '@/components/app/primitives';
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -11,6 +11,14 @@ const ANALYTICS_KPIS = [
   { label: 'Avg confirm',   value: '1m 18s', helper: '−9s vs. prev 30d',     trend: 'up' as const,   icon: 'Clock' },
   { label: 'Pages sent',    value: '31,847', helper: 'Avg 3.8 pages/fax',    trend: undefined,        icon: 'Document' },
   { label: 'Cost per fax',  value: '$0.062', helper: '−$0.004 vs. prev 30d', trend: 'up' as const,   icon: 'Billing' },
+];
+
+const KPI_TIPS = [
+  'Total outbound and inbound faxes processed in the selected period.',
+  "Percentage of outbound faxes confirmed delivered by the recipient's fax machine.",
+  'Average time from send to delivery confirmation. Lower is better.',
+  'Total pages transmitted outbound. Multi-page faxes count each page separately.',
+  'Average transmission cost per outbound fax, excluding subscription fee.',
 ];
 
 const DAILY_VOLUME = (() => {
@@ -75,6 +83,69 @@ const HEATMAP = (() => {
 })();
 
 // ── Local sub-components ─────────────────────────────────────────────────────
+
+function HelpTip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span style={{ position: 'relative', display: 'inline-flex' }}>
+      <button
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        style={{
+          width: 16, height: 16,
+          background: 'var(--color-primary-subtle)',
+          color: 'var(--color-primary)',
+          border: 'none',
+          borderRadius: 999,
+          fontSize: 10,
+          fontWeight: 700,
+          cursor: 'pointer',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >?</button>
+      {show && (
+        <span style={{
+          position: 'absolute',
+          bottom: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          marginBottom: 6,
+          zIndex: 50,
+          background: 'var(--color-surface-dark)',
+          color: 'white',
+          fontFamily: 'Sora, sans-serif',
+          fontSize: 12,
+          lineHeight: 1.5,
+          padding: '8px 12px',
+          borderRadius: 'var(--radius-md)',
+          maxWidth: 220,
+          boxShadow: 'var(--shadow-modal)',
+          pointerEvents: 'none',
+          whiteSpace: 'normal',
+        }}>
+          {text}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function SectionHeader({ title, tip, subtitle, action }: { title: string; tip: string; subtitle?: string; action?: React.ReactNode }) {
+  return (
+    <div className="flex items-end justify-between gap-4">
+      <div>
+        <h2 className="text-[20px] font-semibold text-slate-900 tracking-tight flex items-center gap-1.5">
+          {title} <HelpTip text={tip} />
+        </h2>
+        {subtitle && <p className="text-[13.5px] text-slate-500 mt-1">{subtitle}</p>}
+      </div>
+      {action && <div className="shrink-0">{action}</div>}
+    </div>
+  );
+}
 
 function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -171,6 +242,7 @@ function Donut({ data, size = 168, thickness = 22, centerLabel, centerValue }: {
 }
 
 function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: string[]; data: number[][] }) {
+  const [hovered, setHovered] = useState<{ ri: number; ci: number } | null>(null);
   const color = (v: number) => `rgba(61, 80, 128, ${0.06 + 0.94 * Math.max(0.04, v)})`;
   return (
     <div className="overflow-hidden">
@@ -180,9 +252,42 @@ function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: strin
       {data.map((row, ri) => (
         <div key={ri} className="flex items-center gap-[3px] mb-[3px]">
           <div className="w-[36px] text-[11px] text-slate-500 font-medium pr-1">{rows[ri]}</div>
-          {row.map((v, ci) => (
-            <div key={ci} className="flex-1 aspect-square rounded-[3px]" style={{ background: color(v) }} />
-          ))}
+          {row.map((v, ci) => {
+            const hour = ci + 6;
+            const hourLabel = hour < 12 ? `${hour}a` : hour === 12 ? '12p' : `${hour - 12}p`;
+            const fakeCount = Math.round(v * 50);
+            const isHovered = hovered?.ri === ri && hovered?.ci === ci;
+            return (
+              <div
+                key={ci}
+                className="flex-1 aspect-square rounded-[3px]"
+                style={{ background: color(v), position: 'relative' }}
+                onMouseEnter={() => setHovered({ ri, ci })}
+                onMouseLeave={() => setHovered(null)}
+              >
+                {isHovered && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginBottom: 4,
+                    zIndex: 50,
+                    background: 'var(--color-surface-dark)',
+                    color: 'white',
+                    fontFamily: 'Sora, sans-serif',
+                    fontSize: 11,
+                    padding: '4px 8px',
+                    borderRadius: 'var(--radius-sm)',
+                    pointerEvents: 'none',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {rows[ri]} {hourLabel} · {fakeCount} faxes
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       ))}
       <div className="flex items-center gap-3 mt-3 text-[11px] text-slate-500">
@@ -215,9 +320,29 @@ export default function AnalyticsPage() {
             <p className="text-[14px] text-slate-500 mt-2">Volume trends, delivery performance, and team activity across all your numbers.</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Calendar size={14} />} iconRight={<I.ChevronDown size={12} />}>{range}</AppButton>
-            <AppButton variant="secondary" icon={<I.Filter size={14} />} iconRight={<I.ChevronDown size={12} />}>{scope}</AppButton>
-            <AppButton variant="secondary" icon={<I.Download size={14} />}>Export CSV</AppButton>
+            <AppButton
+              variant="secondary"
+              icon={<I.Calendar size={14} />}
+              iconRight={<I.ChevronDown size={12} />}
+              style={{ transition: 'background var(--duration-fast)' }}
+              onMouseEnter={(e: any) => { e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
+              onMouseLeave={(e: any) => { e.currentTarget.style.background = ''; }}
+            >{range}</AppButton>
+            <AppButton
+              variant="secondary"
+              icon={<I.Filter size={14} />}
+              iconRight={<I.ChevronDown size={12} />}
+              style={{ transition: 'background var(--duration-fast)' }}
+              onMouseEnter={(e: any) => { e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
+              onMouseLeave={(e: any) => { e.currentTarget.style.background = ''; }}
+            >{scope}</AppButton>
+            <AppButton
+              variant="secondary"
+              icon={<I.Download size={14} />}
+              style={{ transition: 'background var(--duration-fast)' }}
+              onMouseEnter={(e: any) => { e.currentTarget.style.background = 'var(--color-primary-subtle)'; }}
+              onMouseLeave={(e: any) => { e.currentTarget.style.background = ''; }}
+            >Export CSV</AppButton>
           </div>
         </div>
       </div>
@@ -227,9 +352,24 @@ export default function AnalyticsPage() {
         {ANALYTICS_KPIS.map((s, i) => {
           const Ico = I[s.icon as keyof typeof I];
           return (
-            <Card key={i} className={`p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}>
+            <div
+              key={i}
+              className={`rounded-[28px] bg-white/85 backdrop-blur-[14px] border border-white/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}
+              style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-panel)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = '';
+                e.currentTarget.style.boxShadow = '';
+              }}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">{s.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">{s.label}</span>
+                  <HelpTip text={KPI_TIPS[i]} />
+                </div>
                 <span className={`w-7 h-7 rounded-xl flex items-center justify-center ${i === 0 ? 'text-white' : 'bg-slate-50 text-slate-500'}`}
                   style={i === 0 ? { background: 'var(--color-primary)' } : undefined}>
                   <Ico size={14} />
@@ -237,7 +377,7 @@ export default function AnalyticsPage() {
               </div>
               <div className="text-[28px] leading-none font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>{s.value}</div>
               <Delta trend={s.trend}>{s.helper}</Delta>
-            </Card>
+            </div>
           );
         })}
       </div>
@@ -248,8 +388,9 @@ export default function AnalyticsPage() {
 
           {/* Volume trend */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="Volume trend"
+              tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
               subtitle="Daily outbound (solid) and inbound (soft). Weekends visible at glance."
               action={
                 <div className="flex items-center gap-1">
@@ -281,8 +422,9 @@ export default function AnalyticsPage() {
 
           {/* Heatmap */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="When you fax"
+              tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
               subtitle="Outbound activity by hour and weekday. Useful for staffing the queue."
               action={<Pill tone="teal">Pacific Time</Pill>}
             />
@@ -305,10 +447,19 @@ export default function AnalyticsPage() {
 
           {/* Top destinations */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="Top destinations"
+              tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
               subtitle="Where your outbound traffic is going."
-              action={<AppButton variant="ghost" size="sm">View all 84</AppButton>}
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >View all 84</AppButton>
+              }
             />
             <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100">
               <table className="w-full text-[13px]">
@@ -323,7 +474,13 @@ export default function AnalyticsPage() {
                   {TOP_DESTINATIONS.map((d, i) => {
                     const maxCount = TOP_DESTINATIONS[0].count;
                     return (
-                      <tr key={i} className="border-t border-slate-100 group hover:bg-slate-50/60 transition">
+                      <tr
+                        key={i}
+                        className="border-t border-slate-100 group transition"
+                        style={{ transition: 'background var(--duration-fast)' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                      >
                         <td className="px-4 py-3 font-medium text-slate-900">{d.org}</td>
                         <td className="px-4 py-3 text-slate-500 font-mono text-[12px]">{d.number}</td>
                         <td className="px-4 py-3 text-right">
@@ -359,7 +516,11 @@ export default function AnalyticsPage() {
 
           {/* Status donut */}
           <Card className="p-6">
-            <SectionTitle title="Delivery breakdown" subtitle="Last 30 days · all numbers." />
+            <SectionHeader
+              title="Delivery breakdown"
+              tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
+              subtitle="Last 30 days · all numbers."
+            />
             <div className="mt-5 flex justify-center">
               <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
             </div>
@@ -377,10 +538,19 @@ export default function AnalyticsPage() {
 
           {/* Failure reasons */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="Why faxes failed"
+              tip="Root causes for faxes that failed permanently after all retries were exhausted."
               subtitle="51 failures · 0.6% of volume. Most resolved on retry."
-              action={<AppButton variant="ghost" size="sm">Audit</AppButton>}
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Audit</AppButton>
+              }
             />
             <div className="mt-5 space-y-3.5">
               {FAILURE_REASONS.map((f, i) => (
@@ -404,16 +574,31 @@ export default function AnalyticsPage() {
 
           {/* Team leaderboard */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="Sender leaderboard"
+              tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
               subtitle="Top 6 senders · last 30 days."
-              action={<AppButton variant="ghost" size="sm">Team</AppButton>}
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Team</AppButton>
+              }
             />
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-1">
               {TEAM_LEADERBOARD.map((m, i) => {
                 const maxSent = TEAM_LEADERBOARD[0].sent;
                 return (
-                  <div key={i} className="flex items-center gap-3">
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
                     <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
                     <Avatar name={m.who} size={32} tone={m.tone} />
                     <div className="flex-1 min-w-0">
@@ -435,17 +620,32 @@ export default function AnalyticsPage() {
 
           {/* Numbers performance */}
           <Card className="p-6">
-            <SectionTitle
+            <SectionHeader
               title="Numbers"
+              tip="Inbound and outbound volume breakdown per owned fax number."
               subtitle="In/out volume per owned number."
-              action={<AppButton variant="ghost" size="sm">Manage</AppButton>}
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Manage</AppButton>
+              }
             />
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-2">
               {NUMBER_PERF.map((n, i) => {
                 const total = n.in + n.out;
                 const outPct = total ? (n.out / total) * 100 : 0;
                 return (
-                  <div key={i}>
+                  <div
+                    key={i}
+                    className="rounded-xl px-2 py-2 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-[13px] font-medium text-slate-900">{n.label}</span>
                       <span className="text-[11px] font-mono text-slate-400">{n.number}</span>
@@ -479,7 +679,13 @@ export default function AnalyticsPage() {
               <div className="text-[13px] font-semibold text-slate-900">Reports are HIPAA-safe</div>
               <div className="text-[11.5px] text-slate-500 mt-0.5">Aggregate counts only · no PHI · BAA on file.</div>
             </div>
-            <AppButton variant="ghost" size="sm">Audit</AppButton>
+            <AppButton
+              variant="ghost"
+              size="sm"
+              style={{ transition: 'color var(--duration-fast)' }}
+              onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+              onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+            >Audit</AppButton>
           </Card>
         </div>
       </div>
