@@ -56,17 +56,10 @@ const inputStyle: React.CSSProperties = {
 
 const STEP_LABELS = ['Compose', 'Preview', 'Confirmation'];
 
-function StepIndicator({ current, onBack }: { current: number; onBack?: () => void }) {
+function StepIndicator({ current }: { current: number }) {
   return (
     <Card noPadding style={{ marginBottom: 20, border: '1px solid var(--color-border)' }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: '14px 24px' }}>
-        <div style={{ flexShrink: 0, marginRight: 16 }}>
-          {onBack && (
-            <Button variant="ghost" onClick={onBack} style={{ gap: 4 }}>
-              <I.Chevron size={14} className="rotate-180" /> Back
-            </Button>
-          )}
-        </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {STEP_LABELS.map((label, i) => {
             const done = i < current;
@@ -594,13 +587,14 @@ function StepCompose({ form, setForm, onNext }: {
 
 // ── STEP 2: PREVIEW ───────────────────────────────────────────────────────────
 
-function StepPreview({ form, sender, totalPages, credits, onSend, sending }: {
+function StepPreview({ form, sender, totalPages, credits, onSend, sending, onBack }: {
   form: typeof defaultForm;
   sender: typeof SENDER_NUMBERS[0];
   totalPages: number;
   credits: number;
   onSend: () => void;
   sending: boolean;
+  onBack: () => void;
 }) {
   const remaining = CREDIT_BALANCE - credits;
   const usagePct = Math.min(100, Math.round((credits / CREDIT_BALANCE) * 100));
@@ -765,13 +759,34 @@ function StepPreview({ form, sender, totalPages, credits, onSend, sending }: {
             </div>
           </div>
         ) : (
-          <Button
-            variant="primary"
-            onClick={onSend}
-            style={{ width: '100%', height: 44, justifyContent: 'center' }}
-          >
-            Send fax · {credits} {credits === 1 ? 'credit' : 'credits'}
-          </Button>
+          <>
+            <Button
+              variant="primary"
+              onClick={onSend}
+              style={{ width: '100%', height: 44, justifyContent: 'center' }}
+            >
+              Send fax · {credits} {credits === 1 ? 'credit' : 'credits'}
+            </Button>
+            <button
+              onClick={onBack}
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'center',
+                marginTop: 10,
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--color-text-tertiary)',
+                cursor: 'pointer',
+                border: 'none',
+                background: 'transparent',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-secondary)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-text-tertiary)')}
+            >
+              ← Back to compose
+            </button>
+          </>
         )}
       </Card>
     </div>
@@ -1016,7 +1031,7 @@ export default function SendPage() {
       />
 
       <div style={{ paddingBottom: 48 }}>
-        <StepIndicator current={step} onBack={step === 1 ? () => setStep(0) : undefined} />
+        <StepIndicator current={step} />
 
         {step === 0 && <StepCompose form={form} setForm={setForm} onNext={() => setStep(1)} />}
         {step === 1 && (
@@ -1027,6 +1042,7 @@ export default function SendPage() {
             credits={credits}
             onSend={goSend}
             sending={sending}
+            onBack={() => setStep(0)}
           />
         )}
         {step === 2 && (
