@@ -90,13 +90,17 @@ export default function SentDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div style={{
+    <>
+    <style>{`.sent-detail-scroll::-webkit-scrollbar { display: none; }`}</style>
+    <div className="sent-detail-scroll" style={{
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
       overflowY: 'auto',
       margin: '0 -32px',
-    }}>
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+    } as React.CSSProperties}>
 
       {/* ── Detail header ─────────────────────────────────────────────────── */}
       <div style={{
@@ -619,5 +623,6 @@ export default function SentDetailPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
