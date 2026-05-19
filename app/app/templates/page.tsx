@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { I } from '@/components/app/icons';
 import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
 
@@ -16,6 +16,28 @@ const TEMPLATES = [
   { id: 't8', name: 'Lab order routing',            cat: 'Records request',  uses: 89,   by: 'Priya Khanna',       updated: 'Dec 22',      featured: false, accent: false, lines: ['med','short','long','med','long'],              usageCount: '89×',    lastUsed: 'Used 4d ago',  createdBy: 'J. Kim'    },
 ];
 type Template = typeof TEMPLATES[number];
+type EditFields = { name: string; subject: string; body: string; urgency: string };
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getDefaultFields(t: Template): EditFields {
+  if (t.name === 'Cardiology referral') {
+    return {
+      name: t.name,
+      subject: 'Cardiology Referral — Patient {{patient.id}}',
+      body: 'Please find enclosed a referral for the above-named patient requiring cardiology consultation. The patient presents with chest pain and shortness of breath. Recent ECG findings are attached for your review.\n\nPlease contact our office at your earliest convenience to schedule an appointment. We request this be treated as {{urgency}} priority.\n\nThank you for your continued partnership.',
+      urgency: 'Routine',
+    };
+  }
+  return {
+    name: t.name,
+    subject: t.name,
+    body: `Template body content for ${t.name}. Edit to customize.`,
+    urgency: 'Routine',
+  };
+}
+
+// ── Tab ───────────────────────────────────────────────────────────────────────
 
 function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -26,6 +48,8 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
 }
 
 const LINE_WIDTHS: Record<string, string> = { long: '85%', med: '60%', short: '35%' };
+
+// ── DocPreview (kept, not used in modal) ──────────────────────────────────────
 
 function DocPreview({ title, from, to, pages }: { title: string; from: string; to: string; pages: number }) {
   return (
@@ -47,9 +71,13 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
   );
 }
 
+// ── SoftCard ──────────────────────────────────────────────────────────────────
+
 function SoftCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return <div className={`rounded-2xl border border-slate-100 ${className}`} style={{ background: 'rgba(248,250,252,0.7)' }}>{children}</div>;
 }
+
+// ── TemplateCard ──────────────────────────────────────────────────────────────
 
 function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => void; selected: boolean }) {
   const [hovered, setHovered] = useState(false);
@@ -74,7 +102,6 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
         onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-panel)'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = ''; }}
       >
-        {/* Thumbnail */}
         <div className="relative" style={{ height: 108, maxHeight: 108, background: 'var(--color-bg)', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', backgroundColor: cs.bg, color: cs.color, lineHeight: 1.4 }}>
             {t.cat}
@@ -97,7 +124,6 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
             </div>
           )}
         </div>
-        {/* Footer */}
         <div className="px-4 py-3 border-t border-slate-100">
           <div className="text-[13.5px] font-semibold text-slate-900 truncate">{t.name}</div>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--color-text-tertiary)', marginTop: 3 }}>
@@ -109,16 +135,150 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
   );
 }
 
+// ── LiveDocPreview sub-components ─────────────────────────────────────────────
+
+function HeaderPair({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', padding: '2px 0' }}>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-tertiary)', minWidth: 60, flexShrink: 0 }}>
+        {label}
+      </span>
+      <span style={{ fontFamily: 'var(--font-sora)', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function BodyWithPills({ text }: { text: string }) {
+  const paragraphs = text.split('\n\n');
+  return (
+    <>
+      {paragraphs.map((para, pIdx) => (
+        <p key={pIdx} style={{ margin: 0, marginBottom: pIdx < paragraphs.length - 1 ? '1em' : 0 }}>
+          {para.split(/({{[^}]+}})/g).map((part, i) =>
+            /^{{[^}]+}}$/.test(part) ? (
+              <span key={i} style={{ background: 'rgba(20,184,166,0.1)', color: 'var(--color-processing)', border: '1px solid rgba(20,184,166,0.25)', borderRadius: '4px', padding: '1px 5px', fontSize: '11px', fontFamily: 'var(--font-mono)', margin: '0 1px' }}>
+                {part}
+              </span>
+            ) : (
+              <span key={i}>{part}</span>
+            )
+          )}
+        </p>
+      ))}
+    </>
+  );
+}
+
+function LiveDocPreview({ template, fields }: { template: Template; fields: EditFields; editMode: boolean }) {
+  const isCardiology = template.name === 'Cardiology referral';
+
+  return (
+    <div style={{ background: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: '24px', fontFamily: 'var(--font-sora)', fontSize: '12px' }}>
+      {/* Letterhead */}
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-tertiary)', marginBottom: 10 }}>
+        NORTHWIND HEALTH · CARDIOLOGY
+      </div>
+      <div style={{ height: 1, background: 'var(--color-border)', marginBottom: 14 }} />
+
+      {/* Fax header block */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', marginBottom: 14 }}>
+        <HeaderPair label="TO"      value="Valley Medical Group · Dr. Sarah Chen" />
+        <HeaderPair label="FAX"     value="+1 (801) 555-0187" />
+        <HeaderPair label="FROM"    value="Northwind Health · Cardiology" />
+        <HeaderPair label="FAX"     value="+1 (206) 555-0142" />
+        <HeaderPair label="DATE"    value="May 19, 2026" />
+        <HeaderPair label="PAGES"   value="2" />
+        <div style={{ gridColumn: '1 / -1' }}>
+          <HeaderPair label="RE" value={fields.subject} />
+        </div>
+        <HeaderPair label="PATIENT"  value="{{patient.id}}" />
+        <HeaderPair label="URGENCY"  value={fields.urgency} />
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: 1, background: 'var(--color-border)', marginBottom: 18 }} />
+
+      {/* Body or skeleton */}
+      {isCardiology ? (
+        <div>
+          <div style={{ fontSize: '13px', lineHeight: 1.7, color: 'var(--color-text-primary)' }}>
+            <BodyWithPills text={fields.body} />
+          </div>
+          <div style={{ marginTop: 32 }}>
+            <div style={{ height: 1, background: 'var(--color-border)', marginBottom: 12, width: '40%' }} />
+            <div style={{ fontFamily: 'var(--font-sora)', fontSize: '11px', color: 'var(--color-text-tertiary)', lineHeight: 1.6 }}>
+              Dr. Michael Greaves, MD · Cardiologist<br />
+              Northwind Health · Cardiology Department
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {(['long','med','long','short','med','long'] as const).map((w, i) => (
+            <div key={i} style={{ height: i % 2 === 0 ? 8 : 6, background: 'var(--color-border)', borderRadius: 3, width: LINE_WIDTHS[w] }} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── EditField ─────────────────────────────────────────────────────────────────
+
+function EditField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div style={{ fontFamily: 'var(--font-sora)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginBottom: 6, fontWeight: 500 }}>
+        {label}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── TemplatesPage ─────────────────────────────────────────────────────────────
+
 export default function TemplatesPage() {
   const [cat, setCat] = useState('All');
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState<Template | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editFields, setEditFields] = useState<EditFields>({ name: '', subject: '', body: '', urgency: 'Routine' });
+
+  useEffect(() => {
+    if (open) {
+      setEditMode(false);
+      setEditFields(getDefaultFields(open));
+    }
+  }, [open]);
 
   const filtered = TEMPLATES.filter(t => {
     if (cat !== 'All' && t.cat !== cat) return false;
     if (search && !t.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+
+  const inputBase = {
+    width: '100%',
+    fontFamily: 'var(--font-sora)',
+    fontSize: '13px',
+    border: '1px solid var(--color-border-strong)',
+    borderRadius: 'var(--radius-md)',
+    padding: '8px 12px',
+    boxSizing: 'border-box' as const,
+    outline: 'none',
+    background: 'white',
+    color: 'var(--color-text-primary)',
+  };
+
+  const focusBorder = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = 'var(--color-primary)';
+  };
+  const blurBorder = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = 'var(--color-border-strong)';
+  };
 
   return (
     <div>
@@ -165,70 +325,167 @@ export default function TemplatesPage() {
 
       {/* Modal */}
       {open && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center p-6" onClick={() => setOpen(null)}>
+        <div
+          className="fixed inset-0 z-30 flex items-center justify-center p-6"
+          onClick={() => { if (!editMode) setOpen(null); }}
+        >
           <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[3px]" />
-          <div className="relative w-[860px] max-w-full max-h-[88vh] overflow-hidden flex flex-col rounded-[28px] bg-white/90 backdrop-blur-[14px] border border-white/85 shadow-[0_32px_80px_-24px_rgba(15,23,42,0.35)]"
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+          <div
+            className="relative w-[920px] max-w-full max-h-[88vh] overflow-hidden flex flex-col rounded-[28px] bg-white/90 backdrop-blur-[14px] border border-white/85 shadow-[0_32px_80px_-24px_rgba(15,23,42,0.35)]"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          >
             {/* Header */}
             <div className="relative p-7 pb-5 border-b border-slate-100" style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
-              <button className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-white/70 hover:bg-white flex items-center justify-center text-slate-500"
-                onClick={() => setOpen(null)}><I.X size={16} /></button>
+              <button
+                className="absolute top-4 right-4 w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: 'rgba(255,255,255,0.7)', color: 'var(--color-text-secondary)' }}
+                onClick={() => setOpen(null)}
+              >
+                <I.X size={16} />
+              </button>
               <div className="flex items-start gap-4">
-                <span className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
+                <span className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                   <I.Templates size={20} />
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Template</div>
-                  <div className="text-[28px] font-semibold text-slate-900 leading-tight mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>{open.name}</div>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-tertiary)', fontWeight: 600 }}>Template</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 2, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '28px', fontWeight: 600, color: 'var(--color-text-primary)', fontFamily: 'Georgia, serif', lineHeight: 1.2 }}>
+                      {open.name}
+                    </span>
+                    {editMode && (
+                      <span style={{ background: '#fffbeb', color: '#d97706', border: '1px solid #fde68a', borderRadius: '999px', fontSize: '11px', padding: '2px 10px', fontFamily: 'var(--font-mono)' }}>
+                        EDITING
+                      </span>
+                    )}
+                  </div>
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     <Pill tone="teal" dot={false}>{open.cat}</Pill>
-                    <span className="text-[12.5px] text-slate-500">Used {open.uses.toLocaleString()} times · Updated {open.updated}</span>
+                    <span style={{ fontSize: '12.5px', color: 'var(--color-text-tertiary)' }}>
+                      Used {open.uses.toLocaleString()} times · Updated {open.updated}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-auto scrollbar-thin grid grid-cols-12 gap-6 p-7">
-              <div className="col-span-12 md:col-span-7">
-                <DocPreview title={open.name} from="Northwind Health" to="{{recipient.name}}" pages={1} />
+            <div
+              className="flex-1 overflow-auto scrollbar-thin"
+              style={{ display: 'grid', gridTemplateColumns: '55fr 45fr', gap: 24, padding: 28 }}
+            >
+              {/* Left: live preview */}
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
+                  PREVIEW
+                </div>
+                <LiveDocPreview template={open} fields={editFields} editMode={editMode} />
               </div>
-              <div className="col-span-12 md:col-span-5 space-y-5">
-                <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-3">Details</div>
-                  <SoftCard className="p-4 space-y-2.5 text-[13px]">
-                    {[['Owner', open.by], ['Updated', open.updated], ['Visibility', 'Workspace'], ['Pages', '1 page'], ['Uses', open.uses.toLocaleString()]].map(([k, v]) => (
-                      <div key={k} className="flex justify-between">
-                        <span className="text-slate-500">{k}</span>
-                        <span className="text-slate-900 font-medium">{v}</span>
+
+              {/* Right: details or edit form */}
+              <div>
+                {!editMode ? (
+                  <div className="space-y-5">
+                    <div>
+                      <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-tertiary)', fontWeight: 600, marginBottom: 12 }}>Details</div>
+                      <SoftCard className="p-4 space-y-2.5 text-[13px]">
+                        {[['Owner', open.by], ['Updated', open.updated], ['Visibility', 'Workspace'], ['Pages', '1 page'], ['Uses', open.uses.toLocaleString()]].map(([k, v]) => (
+                          <div key={k} className="flex justify-between">
+                            <span style={{ color: 'var(--color-text-secondary)' }}>{k}</span>
+                            <span style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}>{v}</span>
+                          </div>
+                        ))}
+                      </SoftCard>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-tertiary)', fontWeight: 600, marginBottom: 8 }}>Merge fields</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['{{recipient.name}}','{{recipient.fax}}','{{patient.id}}','{{provider.npi}}','{{date.today}}'].map(m => (
+                          <Pill key={m} tone="teal" dot={false}><span className="font-mono text-[11px]">{m}</span></Pill>
+                        ))}
                       </div>
-                    ))}
-                  </SoftCard>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Merge fields</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {['{{recipient.name}}','{{recipient.fax}}','{{patient.id}}','{{provider.npi}}','{{date.today}}'].map(m => (
-                      <Pill key={m} tone="teal" dot={false}><span className="font-mono text-[11px]">{m}</span></Pill>
-                    ))}
+                      <div style={{ fontSize: '11.5px', color: 'var(--color-text-tertiary)', marginTop: 8, lineHeight: 1.6 }}>
+                        Filled in automatically when sending — pulled from the recipient and patient context.
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[11.5px] text-slate-400 mt-2 leading-relaxed">Filled in automatically when sending — pulled from the recipient and patient context.</div>
-                </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <EditField label="Template Name">
+                      <input
+                        style={inputBase}
+                        value={editFields.name}
+                        onChange={e => setEditFields(p => ({ ...p, name: e.target.value }))}
+                        onFocus={focusBorder}
+                        onBlur={blurBorder}
+                      />
+                    </EditField>
+                    <EditField label="Subject / Re line">
+                      <input
+                        style={inputBase}
+                        value={editFields.subject}
+                        onChange={e => setEditFields(p => ({ ...p, subject: e.target.value }))}
+                        onFocus={focusBorder}
+                        onBlur={blurBorder}
+                      />
+                    </EditField>
+                    <EditField label="Urgency">
+                      <select
+                        style={inputBase}
+                        value={editFields.urgency}
+                        onChange={e => setEditFields(p => ({ ...p, urgency: e.target.value }))}
+                        onFocus={focusBorder}
+                        onBlur={blurBorder}
+                      >
+                        <option>Routine</option>
+                        <option>Urgent</option>
+                        <option>STAT</option>
+                      </select>
+                    </EditField>
+                    <EditField label="Body">
+                      <textarea
+                        rows={6}
+                        style={{ ...inputBase, fontFamily: 'var(--font-mono)', resize: 'vertical' }}
+                        value={editFields.body}
+                        onChange={e => setEditFields(p => ({ ...p, body: e.target.value }))}
+                        onFocus={focusBorder}
+                        onBlur={blurBorder}
+                      />
+                    </EditField>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Footer */}
-            <div className="px-7 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/40">
-              <div className="flex items-center gap-2">
-                <AppButton variant="secondary" size="sm" icon={<I.Wand size={13} />}>Edit</AppButton>
-                <AppButton variant="secondary" size="sm" icon={<I.Forward size={13} />}>Duplicate</AppButton>
-                <button className="text-[13px] text-red-600 hover:text-red-700 font-semibold px-2">Archive</button>
-              </div>
-              <div className="flex items-center gap-2">
-                <AppButton variant="secondary" onClick={() => setOpen(null)}>Close</AppButton>
-                <AppButton icon={<I.Send size={13} />}>Use template</AppButton>
-              </div>
+            <div className="px-7 py-4 border-t border-slate-100 flex items-center justify-between" style={{ background: 'rgba(248,250,252,0.4)' }}>
+              {!editMode ? (
+                <>
+                  <div className="flex items-center gap-2">
+                    <AppButton
+                      variant="secondary"
+                      size="sm"
+                      icon={<I.Wand size={13} />}
+                      onClick={() => { setEditMode(true); setEditFields(getDefaultFields(open)); }}
+                    >
+                      Edit
+                    </AppButton>
+                    <AppButton variant="secondary" size="sm" icon={<I.Forward size={13} />}>Duplicate</AppButton>
+                    <button className="text-[13px] text-red-600 hover:text-red-700 font-semibold px-2">Archive</button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <AppButton variant="secondary" onClick={() => setOpen(null)}>Close</AppButton>
+                    <AppButton icon={<I.Send size={13} />}>Use template</AppButton>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <AppButton variant="secondary" onClick={() => { setEditMode(false); setEditFields(getDefaultFields(open)); }}>
+                    Discard changes
+                  </AppButton>
+                  <AppButton>Save changes</AppButton>
+                </>
+              )}
             </div>
           </div>
         </div>
