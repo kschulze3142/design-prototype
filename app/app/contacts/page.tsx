@@ -635,39 +635,44 @@ export default function ContactsPage() {
               gap: 8,
               background: 'var(--color-surface)',
             }}>
-              <div style={{ position: 'relative', flex: 1, maxWidth: 400, display: 'flex', alignItems: 'center' }}>
-                <I.Search size={16} style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  pointerEvents: 'none',
-                  color: 'var(--color-text-tertiary)',
-                }} />
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                height: '42px',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: 'var(--radius-pill)',
+                boxShadow: 'var(--shadow-card)',
+                flex: 1,
+              }}>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', pointerEvents: 'none', flexShrink: 0 }}
+                >
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
                 <input
-                  className="contacts-search"
+                  type="text"
+                  placeholder="Search contacts, numbers, ATTN..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  placeholder="Search contacts, numbers, ATTN…"
                   style={{
-                    width: '100%',
-                    height: 42,
-                    background: 'var(--color-surface)',
-                    border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
-                    borderRadius: 'var(--radius-pill)',
-                    padding: '0 16px',
-                    paddingLeft: '36px',
-                    fontSize: 14,
-                    fontFamily: 'var(--font-body)',
-                    color: 'var(--color-text-primary)',
+                    border: 'none',
                     outline: 'none',
-                    boxSizing: 'border-box',
-                    boxShadow: searchFocused
-                      ? '0 0 0 3px rgba(61, 80, 128, 0.12)'
-                      : 'var(--shadow-card)',
-                    transition: 'all var(--duration-fast) var(--ease-out)',
+                    background: 'transparent',
+                    paddingLeft: '38px',
+                    paddingRight: '16px',
+                    width: '100%',
+                    height: '100%',
+                    fontFamily: 'var(--font-sora)',
+                    fontSize: '14px',
+                    color: 'var(--color-text-primary)',
                   }}
                 />
               </div>
