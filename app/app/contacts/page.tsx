@@ -498,11 +498,11 @@ export default function ContactsPage() {
       </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} />
-        <StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} />
-        <StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} tooltip="Fax numbers confirmed to receive transmissions successfully. Unverified numbers haven't had a successful delivery yet and may increase failed send risk." />
-        <StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} tooltip="Average delivery success rate across all contacts over the last 30 days. Industry average is typically 94–96%." />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: 24 }}>
+        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Contacts" value={String(CONTACTS.length)} helper="+4 this month" trend="up" icon={<I.Contacts size={15} />} /></div>
+        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Organizations" value="76" helper="across 11 categories" icon={<I.Building size={15} />} /></div>
+        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Verified numbers" value="262" helper="of 284 total" icon={<I.Shield size={15} />} tooltip="Fax numbers confirmed to receive transmissions successfully. Unverified numbers haven't had a successful delivery yet and may increase failed send risk." /></div>
+        <div style={{ width: '220px', minWidth: '220px' }}><StatItem label="Avg delivery" value="98.9%" helper="↑ 0.4 vs last month" trend="up" icon={<I.Sparkle size={15} />} tooltip="Average delivery success rate across all contacts over the last 30 days. Industry average is typically 94–96%." /></div>
       </div>
 
       {/* ── Pinned strip ── */}
@@ -515,10 +515,10 @@ export default function ContactsPage() {
       </div>
 
       {/* ── Main layout ── */}
-      <div className="grid grid-cols-12 gap-6">
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
 
         {/* ── Category rail ── */}
-        <aside className="col-span-12 lg:col-span-4 space-y-4">
+        <aside style={{ width: '200px', minWidth: '200px', maxWidth: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
           {/* Category card */}
           <div style={{
@@ -582,6 +582,8 @@ export default function ContactsPage() {
             borderRadius: 'var(--radius-lg)',
             boxShadow: 'var(--shadow-card)',
             padding: '16px 20px',
+            maxWidth: '200px',
+            width: '100%',
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
               <span style={{
@@ -615,7 +617,7 @@ export default function ContactsPage() {
         </aside>
 
         {/* ── Directory ── */}
-        <div className="col-span-12 lg:col-span-8">
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
             background: 'var(--color-surface)',
             border: 'none',
@@ -636,7 +638,7 @@ export default function ContactsPage() {
               <div style={{ position: 'relative', flex: 1, maxWidth: 400 }}>
                 <I.Search size={16} style={{
                   position: 'absolute',
-                  left: 14,
+                  left: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   color: searchFocused ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
@@ -656,7 +658,7 @@ export default function ContactsPage() {
                     background: 'var(--color-surface)',
                     border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
                     borderRadius: 'var(--radius-pill)',
-                    padding: '0 16px 0 40px',
+                    padding: '0 16px 0 36px',
                     fontSize: 14,
                     fontFamily: 'var(--font-body)',
                     color: 'var(--color-text-primary)',
@@ -735,7 +737,7 @@ export default function ContactsPage() {
                 </table>
               </div>
             ) : (
-              <div className="p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              <div style={{ padding: 16, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 280px))', gap: 12, justifyContent: 'flex-start' }}>
                 {paginatedContacts.map(c => (
                   <button key={c.id} onClick={() => setOpen(c)}
                     className="text-left p-4 rounded-2xl bg-white border border-slate-200/80 hover:border-[var(--color-primary)] transition flex gap-3">
