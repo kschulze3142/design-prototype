@@ -203,7 +203,7 @@ function StepCompose({ form, setForm, onNext }: {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
 
       {/* ── Left: unified canvas card ── */}
-      <Card noPadding style={{ borderRadius: 'var(--radius-lg)' }}>
+      <Card noPadding style={{ borderRadius: 'var(--radius-lg)', maxWidth: '780px', margin: '0 auto' }}>
 
         {/* Section: Recipient */}
         <div style={{ padding: 28 }}>
@@ -214,7 +214,7 @@ function StepCompose({ form, setForm, onNext }: {
 
           {/* Fax number + Recipient name */}
           <div style={{ display: 'flex', gap: 16, marginBottom: 10 }}>
-            <div style={{ maxWidth: 320, flex: '0 1 320px' }}>
+            <div style={{ flex: 1 }}>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Fax number</label>
               <div style={{
                 display: 'flex', alignItems: 'center',
@@ -244,7 +244,7 @@ function StepCompose({ form, setForm, onNext }: {
                 />
               </div>
             </div>
-            <div style={{ maxWidth: 320, flex: '0 1 320px' }}>
+            <div style={{ flex: 1 }}>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Recipient name</label>
               <input style={{ ...inputStyle, height: 40, padding: '0 14px' }} value={form.recipientName} onChange={e => setForm(f => ({ ...f, recipientName: e.target.value }))} placeholder="Organization or person" />
             </div>
@@ -253,7 +253,7 @@ function StepCompose({ form, setForm, onNext }: {
           {/* ATTN */}
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>ATTN <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
-            <input style={{ ...inputStyle, height: 40, padding: '0 14px', maxWidth: 480 }} value={form.recipientAttn} onChange={e => setForm(f => ({ ...f, recipientAttn: e.target.value }))} placeholder="Attention line — e.g. Authorization Dept." />
+            <input style={{ ...inputStyle, height: 40, padding: '0 14px' }} value={form.recipientAttn} onChange={e => setForm(f => ({ ...f, recipientAttn: e.target.value }))} placeholder="Attention line — e.g. Authorization Dept." />
           </div>
 
           {/* Recent recipients */}
@@ -301,13 +301,13 @@ function StepCompose({ form, setForm, onNext }: {
 
           <div style={{ marginBottom: 12 }}>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Subject</label>
-            <input style={{ ...inputStyle, height: 40, padding: '0 14px', maxWidth: 580 }} value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} placeholder="Subject line" />
+            <input style={{ ...inputStyle, height: 40, padding: '0 14px' }} value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} placeholder="Subject line" />
           </div>
 
           <div style={{ marginBottom: 16, position: 'relative' }}>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Cover note</label>
             <textarea
-              style={{ ...inputStyle, height: 100, padding: '10px 14px', resize: 'none', display: 'block', lineHeight: 1.5, maxWidth: 680 }}
+              style={{ ...inputStyle, height: 100, padding: '10px 14px', resize: 'none', display: 'block', lineHeight: 1.5 }}
               value={form.cover}
               onChange={e => setForm(f => ({ ...f, cover: e.target.value.slice(0, 500) }))}
               placeholder="Add a message to appear on the cover sheet..."
