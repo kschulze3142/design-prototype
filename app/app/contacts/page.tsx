@@ -219,28 +219,80 @@ function StatItem({ label, value, helper, trend, icon, tooltip }: {
   );
 }
 
-function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
+function RowMenuItem({ label, color, onClick }: { label: string; color: string; onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'block',
+        width: '100%',
+        textAlign: 'left',
+        padding: '10px 16px',
+        fontSize: 13,
+        fontFamily: 'var(--font-body)',
+        color,
+        background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ManagePinnedRow({ p }: { p: Contact }) {
+  const [removeHovered, setRemoveHovered] = useState(false);
+  const av = getAvatarStyle(p.name);
+  const initials = getInitials(p.name);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-bg)' }}>
+      <span style={{ color: 'var(--color-text-tertiary)', cursor: 'grab', fontSize: 16, userSelect: 'none' }}>⠿</span>
+      <div style={{ width: 32, height: 32, borderRadius: 999, background: av.bg, color: av.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{initials}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{p.name}</div>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>{p.number}</div>
+      </div>
+      <button
+        onMouseEnter={() => setRemoveHovered(true)}
+        onMouseLeave={() => setRemoveHovered(false)}
+        style={{ color: removeHovered ? 'var(--color-failed)' : 'var(--color-text-tertiary)', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: '0 2px', transition: 'color var(--duration-fast)' }}
+      >×</button>
+    </div>
+  );
+}
+
+function ContactPin({ c, onOpen, isHovered, onMouseEnter, onMouseLeave }: {
+  c: Contact;
+  onOpen: () => void;
+  isHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}) {
   const spark = sparkFor(c.id);
   return (
     <button
       onClick={onOpen}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       style={{
         width: '100%',
         textAlign: 'left',
         borderRadius: 'var(--radius-lg)',
         background: 'var(--color-surface)',
         border: 'none',
-        boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
-        transform: hovered ? 'translateY(-2px)' : 'none',
+        boxShadow: isHovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+        transform: isHovered ? 'translateY(-2px)' : 'none',
         transition: `all var(--duration-base) var(--ease-out)`,
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
         padding: 0,
+        position: 'relative',
       }}
     >
       <div style={{ padding: 20, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -259,12 +311,31 @@ function ContactPin({ c, onOpen }: { c: Contact; onOpen: () => void }) {
         </div>
         <Sparkline data={spark} w={72} h={24} />
       </div>
+      {isHovered && (
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '10px 14px', background: 'linear-gradient(to top, rgba(61,80,128,0.08), transparent)', display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={e => e.stopPropagation()}
+            style={{ background: 'var(--color-primary)', color: 'white', fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, padding: '5px 12px', borderRadius: 'var(--radius-pill)', border: 'none', cursor: 'pointer' }}
+          >
+            Send fax →
+          </button>
+        </div>
+      )}
     </button>
   );
 }
 
-function ContactRow({ c, onOpen, isLast }: { c: Contact; onOpen: () => void; isLast?: boolean }) {
+function ContactRow({ c, onOpen, isLast, openMenuId, setOpenMenuId, menuRef }: {
+  c: Contact;
+  onOpen: () => void;
+  isLast?: boolean;
+  openMenuId: string | null;
+  setOpenMenuId: (id: string | null) => void;
+  menuRef: { current: HTMLDivElement | null };
+}) {
   const [hovered, setHovered] = useState(false);
+  const [sendHovered, setSendHovered] = useState(false);
+  const isMenuOpen = openMenuId === c.id;
   const cellStyle: React.CSSProperties = {
     padding: '14px 20px',
     borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
@@ -308,16 +379,42 @@ function ContactRow({ c, onOpen, isLast }: { c: Contact; onOpen: () => void; isL
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
           <button
             onClick={e => e.stopPropagation()}
-            style={{ width: 32, height: 32, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            onMouseEnter={() => setSendHovered(true)}
+            onMouseLeave={() => setSendHovered(false)}
+            title="Send fax"
+            style={{
+              width: 32, height: 32,
+              borderRadius: 'var(--radius-md)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: sendHovered ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              transition: 'color var(--duration-fast)',
+            }}
           >
             <I.Send size={13} />
           </button>
-          <button
-            onClick={e => e.stopPropagation()}
-            style={{ width: 32, height: 32, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
-          >
-            <I.More size={14} />
-          </button>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={e => { e.stopPropagation(); setOpenMenuId(isMenuOpen ? null : c.id); }}
+              style={{ width: 32, height: 32, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
+              <I.More size={14} />
+            </button>
+            {isMenuOpen && (
+              <div
+                ref={menuRef}
+                onClick={e => e.stopPropagation()}
+                style={{ position: 'absolute', right: 0, top: '100%', zIndex: 40, background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-modal)', border: '1px solid var(--color-border)', minWidth: '180px', overflow: 'hidden' }}
+              >
+                <RowMenuItem label="Send fax →"       color="var(--color-text-primary)" onClick={() => setOpenMenuId(null)} />
+                <RowMenuItem label="Edit contact"      color="var(--color-text-primary)" onClick={() => setOpenMenuId(null)} />
+                <RowMenuItem label="Pin / Unpin"       color="var(--color-text-primary)" onClick={() => setOpenMenuId(null)} />
+                <RowMenuItem label="Copy fax number"   color="var(--color-text-primary)" onClick={() => setOpenMenuId(null)} />
+                <div style={{ height: 1, background: 'var(--color-border)' }} />
+                <RowMenuItem label="Archive"           color="var(--color-failed)"        onClick={() => setOpenMenuId(null)} />
+              </div>
+            )}
+          </div>
         </div>
       </td>
     </tr>
@@ -465,12 +562,36 @@ export default function ContactsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [dropHover, setDropHover] = useState<string | null>(null);
+  // Feature state
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [newCatValue, setNewCatValue] = useState('');
+  const [hoveredPinId, setHoveredPinId] = useState<string | null>(null);
+  const [manageOpen, setManageOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importDragging, setImportDragging] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterDeliveryRate, setFilterDeliveryRate] = useState('any');
+  const [filterLastSent, setFilterLastSent] = useState('any');
+  const [filterCategories, setFilterCategories] = useState<string[]>(['all']);
+
   const searchRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setSearchFocused(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpenMenuId(null);
       }
     }
     document.addEventListener('mousedown', handleClick);
@@ -507,48 +628,21 @@ export default function ContactsPage() {
 
   return (
     <div style={{ paddingBottom: 48 }}>
-      {/* ── Header — sits directly on var(--color-bg) ── */}
-      <div style={{
-        padding: '32px 0 24px',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-      }}>
+      {/* ── Header ── */}
+      <div style={{ padding: '32px 0 24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 4,
-          }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 4 }}>
             ADDRESS BOOK · {CONTACTS.length} CONTACTS
           </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 26,
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            margin: 0,
-            lineHeight: 1.15,
-          }}>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 700, color: 'var(--color-text-primary)', margin: 0, lineHeight: 1.15 }}>
             Your fax directory.
           </h1>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: 400,
-            color: 'var(--color-text-secondary)',
-            margin: 0,
-            marginTop: 4,
-          }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 400, color: 'var(--color-text-secondary)', margin: 0, marginTop: 4 }}>
             Recipients you fax regularly — organizations and people. Saved contacts auto-fill the compose form.
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, paddingTop: 4 }}>
-          <AppButton variant="secondary" size="md" icon={<I.Upload size={14} />}>↑ Import CSV</AppButton>
+          <AppButton variant="secondary" size="md" icon={<I.Upload size={14} />} onClick={() => setImportOpen(true)}>↑ Import CSV</AppButton>
           <AppButton variant="primary" size="md" icon={<I.Plus size={15} strokeWidth={2.4} />}>+ New contact</AppButton>
         </div>
       </div>
@@ -563,10 +657,22 @@ export default function ContactsPage() {
 
       {/* ── Pinned strip ── */}
       <div className="mb-7">
-        <SectionTitle title="Pinned" subtitle="Your most-used recipients — pinned for one-tap sending."
-          action={<AppButton variant="ghost" size="sm">Manage</AppButton>} />
+        <SectionTitle
+          title="Pinned"
+          subtitle="Your most-used recipients — pinned for one-tap sending."
+          action={<AppButton variant="ghost" size="sm" onClick={() => setManageOpen(true)}>Manage</AppButton>}
+        />
         <div className="mt-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-          {PINNED.map(p => <ContactPin key={p.id} c={p} onOpen={() => setOpen(p)} />)}
+          {PINNED.map(p => (
+            <ContactPin
+              key={p.id}
+              c={p}
+              onOpen={() => setOpen(p)}
+              isHovered={hoveredPinId === p.id}
+              onMouseEnter={() => setHoveredPinId(p.id)}
+              onMouseLeave={() => setHoveredPinId(null)}
+            />
+          ))}
         </div>
       </div>
 
@@ -577,23 +683,8 @@ export default function ContactsPage() {
         <aside style={{ width: '280px', minWidth: '280px', maxWidth: '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
           {/* Category card */}
-          <div style={{
-            background: 'var(--color-surface)',
-            border: 'none',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-card)',
-            padding: 16,
-          }}>
-            <div style={{
-              fontSize: 11,
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-              color: 'var(--color-text-tertiary)',
-              fontWeight: 600,
-              padding: '0 4px',
-              marginBottom: 8,
-              fontFamily: 'var(--font-body)',
-            }}>Categories</div>
+          <div style={{ background: 'var(--color-surface)', border: 'none', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', padding: 16 }}>
+            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-tertiary)', fontWeight: 600, padding: '0 4px', marginBottom: 8, fontFamily: 'var(--font-body)' }}>Categories</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {CONTACT_CATEGORIES.map(c => {
                 const active = cat === c.id;
@@ -608,64 +699,54 @@ export default function ContactsPage() {
                   />
                 );
               })}
-              <button
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '8px 12px',
-                  borderRadius: 'var(--radius-pill)',
-                  fontSize: 13,
-                  color: 'var(--color-text-secondary)',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  marginTop: 4,
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                <I.Plus size={13} /> New category
-              </button>
+
+              {addingCategory ? (
+                <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <input
+                    autoFocus
+                    value={newCatValue}
+                    onChange={e => setNewCatValue(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') { if (newCatValue.trim()) { setAddingCategory(false); setNewCatValue(''); } }
+                      if (e.key === 'Escape') { setAddingCategory(false); setNewCatValue(''); }
+                    }}
+                    placeholder="Category name"
+                    style={{ height: 32, border: '1px solid var(--color-primary)', borderRadius: 'var(--radius-md)', padding: '4px 10px', fontFamily: 'var(--font-body)', fontSize: 13, outline: 'none', width: '100%', color: 'var(--color-text-primary)', background: 'var(--color-surface)' }}
+                  />
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <AppButton
+                      variant="primary"
+                      size="sm"
+                      onClick={() => { if (newCatValue.trim()) { setAddingCategory(false); setNewCatValue(''); } }}
+                    >Add</AppButton>
+                    <AppButton
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => { setAddingCategory(false); setNewCatValue(''); }}
+                    >Cancel</AppButton>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setAddingCategory(true)}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 'var(--radius-pill)', fontSize: 13, color: 'var(--color-text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', marginTop: 4, fontFamily: 'var(--font-body)' }}
+                >
+                  <I.Plus size={13} /> New category
+                </button>
+              )}
             </div>
           </div>
 
           {/* Auto-cleanup card */}
-          <div style={{
-            background: 'var(--color-primary-subtle)',
-            border: 'none',
-            borderLeft: '3px solid var(--color-primary)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-card)',
-            padding: '16px 20px',
-            maxWidth: '280px',
-            width: '100%',
-          }}>
+          <div style={{ background: 'var(--color-primary-subtle)', border: 'none', borderLeft: '3px solid var(--color-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', padding: '16px 20px', maxWidth: '280px', width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-              <span style={{
-                width: 36, height: 36,
-                borderRadius: 'var(--radius-md)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-                background: 'var(--color-primary-subtle)',
-                color: 'var(--color-primary)',
-              }}>
+              <span style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>
                 <I.Sparkle size={15} />
               </span>
               <div>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-text-primary)', fontFamily: 'var(--font-body)' }}>Auto-cleanup</div>
                 <div style={{ fontSize: 12.5, color: 'var(--color-text-secondary)', marginTop: 4, lineHeight: 1.5, fontFamily: 'var(--font-body)' }}>5 contacts haven&apos;t received a fax in 12+ months. Review and archive?</div>
-                <button style={{
-                  marginTop: 8,
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: 'var(--color-primary)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  fontFamily: 'var(--font-body)',
-                }}>Review →</button>
+                <button style={{ marginTop: 8, fontSize: 12.5, fontWeight: 600, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'var(--font-body)' }}>Review →</button>
               </div>
             </div>
           </div>
@@ -674,23 +755,10 @@ export default function ContactsPage() {
 
         {/* ── Directory ── */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            background: 'var(--color-surface)',
-            border: 'none',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-card)',
-            overflow: 'hidden',
-          }}>
+          <div style={{ background: 'var(--color-surface)', border: 'none', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
 
             {/* Search + toggle bar */}
-            <div style={{
-              padding: '12px 16px',
-              borderBottom: '1px solid var(--color-border)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--color-surface)',
-            }}>
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--color-surface)' }}>
               {/* Search pill with dropdown */}
               <div
                 ref={searchRef}
@@ -708,15 +776,7 @@ export default function ContactsPage() {
                   outline: 'none',
                 }}
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', pointerEvents: 'none', flexShrink: 0 }}
-                >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)', pointerEvents: 'none', flexShrink: 0 }}>
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
@@ -725,38 +785,14 @@ export default function ContactsPage() {
                   value={searchValue}
                   onFocus={() => setSearchFocused(true)}
                   onChange={e => { setSearchValue(e.target.value); setSearchFocused(true); }}
-                  style={{
-                    border: 'none',
-                    outline: 'none',
-                    boxShadow: 'none',
-                    background: 'transparent',
-                    paddingLeft: '38px',
-                    paddingRight: '16px',
-                    width: '100%',
-                    height: '100%',
-                    fontFamily: 'var(--font-sora)',
-                    fontSize: '14px',
-                    color: 'var(--color-text-primary)',
-                  }}
+                  style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent', paddingLeft: '38px', paddingRight: '16px', width: '100%', height: '100%', fontFamily: 'var(--font-sora)', fontSize: '14px', color: 'var(--color-text-primary)' }}
                 />
 
                 {/* Autosuggest dropdown */}
                 {searchFocused && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 6px)',
-                    left: 0,
-                    right: 0,
-                    background: 'var(--color-surface)',
-                    borderRadius: 'var(--radius-lg)',
-                    boxShadow: 'var(--shadow-modal)',
-                    border: '1px solid var(--color-border)',
-                    zIndex: 50,
-                    overflow: 'hidden',
-                  }}>
+                  <div style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-modal)', border: '1px solid var(--color-border)', zIndex: 50, overflow: 'hidden' }}>
                     {!searchValue ? (
                       <>
-                        {/* Recent */}
                         <span style={sectionLabelStyle}>Recent</span>
                         {recentContacts.map(c => (
                           <div
@@ -764,14 +800,7 @@ export default function ContactsPage() {
                             onMouseEnter={() => setDropHover('recent-' + c.id)}
                             onMouseLeave={() => setDropHover(null)}
                             onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
-                            style={{
-                              padding: '10px 16px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
-                              cursor: 'pointer',
-                              background: dropHover === 'recent-' + c.id ? 'var(--color-primary-subtle)' : 'transparent',
-                            }}
+                            style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', background: dropHover === 'recent-' + c.id ? 'var(--color-primary-subtle)' : 'transparent' }}
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
                               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -781,41 +810,23 @@ export default function ContactsPage() {
                           </div>
                         ))}
 
-                        {/* Pinned */}
                         <div style={{ borderTop: '1px solid var(--color-border)' }}>
                           <span style={sectionLabelStyle}>Pinned</span>
                           <div style={{ padding: '6px 16px 12px', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                             {PINNED.map(c => {
                               const av = getAvatarStyle(c.name);
                               const initials = getInitials(c.name);
-                              const isHovered = dropHover === 'pin-' + c.id;
+                              const isHov = dropHover === 'pin-' + c.id;
                               return (
                                 <div
                                   key={c.id}
                                   onMouseEnter={() => setDropHover('pin-' + c.id)}
                                   onMouseLeave={() => setDropHover(null)}
                                   onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 6,
-                                    padding: '4px 10px 4px 4px',
-                                    borderRadius: 'var(--radius-pill)',
-                                    border: isHovered ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
-                                    background: isHovered ? 'var(--color-primary-subtle)' : 'var(--color-bg)',
-                                    cursor: 'pointer',
-                                    transition: 'all var(--duration-fast)',
-                                  }}
+                                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px 4px 4px', borderRadius: 'var(--radius-pill)', border: isHov ? '1px solid var(--color-primary)' : '1px solid var(--color-border)', background: isHov ? 'var(--color-primary-subtle)' : 'var(--color-bg)', cursor: 'pointer', transition: 'all var(--duration-fast)' }}
                                 >
-                                  <div style={{
-                                    width: 20, height: 20, borderRadius: 999,
-                                    background: av.bg, color: av.fg,
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: 8, fontWeight: 700, flexShrink: 0,
-                                  }}>{initials}</div>
-                                  <span style={{ fontFamily: 'var(--font-sora)', fontSize: 12, color: 'var(--color-text-primary)' }}>
-                                    {chipLabel(c.name)}
-                                  </span>
+                                  <div style={{ width: 20, height: 20, borderRadius: 999, background: av.bg, color: av.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, flexShrink: 0 }}>{initials}</div>
+                                  <span style={{ fontFamily: 'var(--font-sora)', fontSize: 12, color: 'var(--color-text-primary)' }}>{chipLabel(c.name)}</span>
                                 </div>
                               );
                             })}
@@ -832,21 +843,9 @@ export default function ContactsPage() {
                             onMouseEnter={() => setDropHover('res-' + c.id)}
                             onMouseLeave={() => setDropHover(null)}
                             onClick={() => { setSearchValue(c.name); setSearchFocused(false); }}
-                            style={{
-                              padding: '10px 16px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
-                              cursor: 'pointer',
-                              background: dropHover === 'res-' + c.id ? 'var(--color-primary-subtle)' : 'transparent',
-                            }}
+                            style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', background: dropHover === 'res-' + c.id ? 'var(--color-primary-subtle)' : 'transparent' }}
                           >
-                            <div style={{
-                              width: 28, height: 28, borderRadius: 999,
-                              background: av.bg, color: av.fg,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontSize: 11, fontWeight: 600, flexShrink: 0,
-                            }}>{initials}</div>
+                            <div style={{ width: 28, height: 28, borderRadius: 999, background: av.bg, color: av.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{initials}</div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontFamily: 'var(--font-sora)', fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{c.name}</div>
                               {c.subtitle && <div style={{ fontFamily: 'var(--font-sora)', fontSize: 11, color: 'var(--color-text-tertiary)' }}>{c.subtitle}</div>}
@@ -866,27 +865,101 @@ export default function ContactsPage() {
 
               <span style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginLeft: 4 }}>{filtered.length} of {CONTACTS.length}</span>
               <div style={{ flex: 1 }} />
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                borderRadius: 'var(--radius-pill)',
-                padding: 2,
-              }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 2, borderRadius: 'var(--radius-pill)', padding: 2 }}>
                 <Tab active={view === 'table'} onClick={() => setView('table')}>List</Tab>
                 <Tab active={view === 'grid'} onClick={() => setView('grid')}>Cards</Tab>
               </div>
-              <button style={{
-                width: 36, height: 36,
-                borderRadius: 'var(--radius-md)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'var(--color-text-secondary)',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-              }}>
+              <button
+                onClick={() => setFilterOpen(v => !v)}
+                style={{
+                  width: 36, height: 36,
+                  borderRadius: 'var(--radius-md)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: filterOpen ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                  background: filterOpen ? 'var(--color-primary-subtle)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all var(--duration-fast)',
+                }}
+              >
                 <I.Filter size={14} />
               </button>
+            </div>
+
+            {/* Filter panel */}
+            <div style={{ display: filterOpen ? 'flex' : 'none', background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', padding: '16px 20px', marginBottom: 0, borderBottom: '1px solid var(--color-border)', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              {/* Category group */}
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>Category</div>
+                {['All', 'Insurance', 'Labs', 'Providers', 'Records/ROI', 'Billing', 'Internal'].map(label => (
+                  <label key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)', fontSize: 13, cursor: 'pointer', marginBottom: 4 }}>
+                    <input
+                      type="checkbox"
+                      checked={filterCategories.includes(label.toLowerCase())}
+                      onChange={e => {
+                        const key = label.toLowerCase();
+                        setFilterCategories(prev => e.target.checked ? [...prev, key] : prev.filter(k => k !== key));
+                      }}
+                      style={{ accentColor: 'var(--color-primary)' }}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+
+              {/* Last sent group */}
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>Last Sent</div>
+                {['Any time', 'Today', 'This week', 'This month', 'Over 3 months ago'].map(label => (
+                  <label key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)', fontSize: 13, cursor: 'pointer', marginBottom: 4 }}>
+                    <input
+                      type="radio"
+                      name="filter-last-sent"
+                      checked={filterLastSent === label.toLowerCase()}
+                      onChange={() => setFilterLastSent(label.toLowerCase())}
+                      style={{ accentColor: 'var(--color-primary)' }}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+
+              {/* Delivery rate group */}
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginBottom: 8 }}>Min Delivery Rate</div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {['any', '95%+', '98%+', '99%+'].map(opt => {
+                    const active = filterDeliveryRate === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => setFilterDeliveryRate(opt)}
+                        style={{
+                          background: active ? 'var(--color-primary)' : 'var(--color-bg)',
+                          color: active ? 'white' : 'var(--color-text-secondary)',
+                          border: active ? 'none' : '1px solid var(--color-border)',
+                          borderRadius: 'var(--radius-pill)',
+                          padding: '4px 12px',
+                          fontFamily: 'var(--font-body)',
+                          fontSize: 12,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {opt === 'any' ? 'Any' : opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Filter actions */}
+              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+                <button
+                  onClick={() => { setFilterCategories(['all']); setFilterLastSent('any'); setFilterDeliveryRate('any'); }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-secondary)' }}
+                >Clear filters</button>
+                <AppButton variant="primary" size="sm" onClick={() => setFilterOpen(false)}>Apply</AppButton>
+              </div>
             </div>
 
             {view === 'table' ? (
@@ -897,27 +970,22 @@ export default function ContactsPage() {
                       {['Name', 'Fax number', 'Category', 'Last sent', 'Delivery', 'Actions'].map(h => (
                         <th
                           key={h}
-                          style={{
-                            fontSize: 11,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.06em',
-                            fontWeight: 600,
-                            color: 'var(--color-text-tertiary)',
-                            padding: '10px 20px',
-                            textAlign: h === 'Actions' ? 'right' : 'left',
-                            background: 'var(--color-bg)',
-                            borderBottom: '1px solid var(--color-border)',
-                            fontFamily: 'var(--font-body)',
-                            whiteSpace: 'nowrap',
-                            minWidth: h === 'Fax number' ? 160 : undefined,
-                          }}
+                          style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600, color: 'var(--color-text-tertiary)', padding: '10px 20px', textAlign: h === 'Actions' ? 'right' : 'left', background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap', minWidth: h === 'Fax number' ? 160 : undefined }}
                         >{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {paginatedContacts.map((c, i) => (
-                      <ContactRow key={c.id} c={c} onOpen={() => setOpen(c)} isLast={i === paginatedContacts.length - 1} />
+                      <ContactRow
+                        key={c.id}
+                        c={c}
+                        onOpen={() => setOpen(c)}
+                        isLast={i === paginatedContacts.length - 1}
+                        openMenuId={openMenuId}
+                        setOpenMenuId={setOpenMenuId}
+                        menuRef={menuRef}
+                      />
                     ))}
                     {filtered.length === 0 && (
                       <tr>
@@ -950,15 +1018,7 @@ export default function ContactsPage() {
             )}
 
             {/* Pagination bar */}
-            <div style={{
-              padding: '16px 20px',
-              borderTop: '1px solid var(--color-border)',
-              background: 'var(--color-surface)',
-              borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+            <div style={{ padding: '16px 20px', borderTop: '1px solid var(--color-border)', background: 'var(--color-surface)', borderRadius: '0 0 var(--radius-lg) var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)' }}>
                 Showing {showStart}–{showEnd} of {filtered.length} contacts
               </span>
@@ -966,41 +1026,13 @@ export default function ContactsPage() {
                 <select
                   value={pageSize}
                   onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                  style={{
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-border-strong)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '6px 10px',
-                    fontSize: 13,
-                    color: 'var(--color-text-primary)',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-body)',
-                    outline: 'none',
-                  }}
+                  style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-md)', padding: '6px 10px', fontSize: 13, color: 'var(--color-text-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)', outline: 'none' }}
                 >
                   {[15, 25, 50, 100].map(n => <option key={n} value={n}>{n} per page</option>)}
                 </select>
-                <AppButton
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setPage(p => p - 1)}
-                  disabled={page === 1}
-                  style={{ opacity: page === 1 ? 0.4 : 1, cursor: page === 1 ? 'not-allowed' : undefined }}
-                >
-                  Previous
-                </AppButton>
-                <span style={{ fontSize: 13, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
-                  Page {page} of {totalPages}
-                </span>
-                <AppButton
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setPage(p => p + 1)}
-                  disabled={page === totalPages}
-                  style={{ opacity: page === totalPages ? 0.4 : 1, cursor: page === totalPages ? 'not-allowed' : undefined }}
-                >
-                  Next
-                </AppButton>
+                <AppButton variant="secondary" size="sm" onClick={() => setPage(p => p - 1)} disabled={page === 1} style={{ opacity: page === 1 ? 0.4 : 1, cursor: page === 1 ? 'not-allowed' : undefined }}>Previous</AppButton>
+                <span style={{ fontSize: 13, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>Page {page} of {totalPages}</span>
+                <AppButton variant="secondary" size="sm" onClick={() => setPage(p => p + 1)} disabled={page === totalPages} style={{ opacity: page === totalPages ? 0.4 : 1, cursor: page === totalPages ? 'not-allowed' : undefined }}>Next</AppButton>
               </div>
             </div>
           </div>
@@ -1008,6 +1040,98 @@ export default function ContactsPage() {
       </div>
 
       <ContactDrawer c={open} onClose={() => setOpen(null)} />
+
+      {/* ── Manage pinned modal ── */}
+      {manageOpen && (
+        <div
+          onClick={() => setManageOpen(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 30, background: 'rgba(26,34,54,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <div onClick={e => e.stopPropagation()} style={{ width: 480, background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-modal)', overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 600, color: 'var(--color-text-primary)' }}>Manage pinned contacts</span>
+              <button
+                onClick={() => setManageOpen(false)}
+                style={{ width: 28, height: 28, borderRadius: 999, background: 'var(--color-bg)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)', fontSize: 18, lineHeight: 1 }}
+              >×</button>
+            </div>
+            {/* Body */}
+            <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)', marginBottom: 8 }}>
+                Pinned contacts appear at the top for quick sending. Drag to reorder.
+              </div>
+              {PINNED.map(p => <ManagePinnedRow key={p.id} p={p} />)}
+            </div>
+            {/* Footer */}
+            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between' }}>
+              <AppButton variant="ghost" size="sm">+ Pin another contact</AppButton>
+              <AppButton variant="primary" size="sm" onClick={() => setManageOpen(false)}>Done</AppButton>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Import CSV modal ── */}
+      {importOpen && (
+        <div
+          onClick={() => setImportOpen(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 30, background: 'rgba(26,34,54,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <div onClick={e => e.stopPropagation()} style={{ width: 540, background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-modal)', overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 600, color: 'var(--color-text-primary)' }}>Import contacts</span>
+              <button
+                onClick={() => setImportOpen(false)}
+                style={{ width: 28, height: 28, borderRadius: 999, background: 'var(--color-bg)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)', fontSize: 18, lineHeight: 1 }}
+              >×</button>
+            </div>
+            {/* Body */}
+            <div style={{ padding: '20px 24px' }}>
+              {/* Drop zone */}
+              <div
+                onDragOver={e => { e.preventDefault(); setImportDragging(true); }}
+                onDragLeave={() => setImportDragging(false)}
+                onDrop={e => { e.preventDefault(); setImportDragging(false); }}
+                style={{
+                  border: `2px dashed ${importDragging ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
+                  borderRadius: 'var(--radius-lg)',
+                  padding: 32,
+                  textAlign: 'center',
+                  background: importDragging ? 'var(--color-primary-subtle)' : 'var(--color-bg)',
+                  transition: 'all var(--duration-base)',
+                  cursor: 'pointer',
+                }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--color-primary)', margin: '0 auto' }}>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 500, color: 'var(--color-text-primary)', marginTop: 10 }}>Drop your CSV file here</div>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)', marginTop: 4 }}>or click to browse · Max 10MB · UTF-8 encoded</div>
+                <button style={{ marginTop: 12, fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
+                  Download template CSV →
+                </button>
+              </div>
+
+              {/* Column mapping */}
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginTop: 20, marginBottom: 8 }}>Expected Columns</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {['Name', 'Fax Number', 'Organization', 'Category', 'Notes'].map(col => (
+                  <span key={col} style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)', fontFamily: 'var(--font-body)', fontSize: 11, padding: '3px 10px', borderRadius: 'var(--radius-pill)' }}>{col}</span>
+                ))}
+              </div>
+            </div>
+            {/* Footer */}
+            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <AppButton variant="secondary" size="sm" onClick={() => setImportOpen(false)}>Cancel</AppButton>
+              <AppButton variant="primary" size="sm" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Import</AppButton>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
