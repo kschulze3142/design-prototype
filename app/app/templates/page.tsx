@@ -52,13 +52,31 @@ function SoftCard({ children, className = '' }: { children: React.ReactNode; cla
 }
 
 function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => void; selected: boolean }) {
+  const [hovered, setHovered] = useState(false);
+
+  const CAT_STYLE: Record<string, { color: string; bg: string }> = {
+    'Cover pages':     { color: 'var(--color-primary)',    bg: 'var(--color-primary-subtle)' },
+    'Prior auth':      { color: 'var(--color-phi)',        bg: 'var(--color-phi-bg)' },
+    'Referrals':       { color: 'var(--color-processing)', bg: 'var(--color-processing-bg)' },
+    'Records request': { color: 'var(--color-review)',     bg: 'var(--color-review-bg)' },
+    'Legal':           { color: 'var(--color-archived)',   bg: 'var(--color-archived-bg)' },
+  };
+  const cs = CAT_STYLE[t.cat] ?? CAT_STYLE['Cover pages'];
+
   return (
     <button onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className={`w-full text-left rounded-[24px] p-1 transition ${selected ? 'ring-2 ring-[var(--color-primary)] ring-offset-2' : ''}`}>
-      <div className="rounded-[20px] overflow-hidden border border-slate-200/70 bg-white">
+      <div
+        className="rounded-[20px] overflow-hidden border border-slate-200/70 bg-white"
+        style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-panel)'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = ''; }}
+      >
         {/* Thumbnail */}
         <div className="relative" style={{ height: 108, maxHeight: 108, background: 'var(--color-bg)', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', backgroundColor: 'var(--color-primary-subtle)', color: 'var(--color-primary)', border: '1px solid var(--color-primary)', lineHeight: 1.4 }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', backgroundColor: cs.bg, color: cs.color, lineHeight: 1.4 }}>
             {t.cat}
           </div>
           {t.featured && (
@@ -71,6 +89,13 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
               <div key={i} style={{ height: i % 2 === 0 ? 8 : 6, background: 'var(--color-border)', borderRadius: 3, width: LINE_WIDTHS[w] }} />
             ))}
           </div>
+          {hovered && (
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(61,80,128,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+              <span style={{ fontFamily: 'var(--font-sora)', fontSize: '13px', fontWeight: 500, color: 'var(--color-primary)', background: 'var(--color-surface)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-pill)', padding: '6px 16px' }}>
+                Use template →
+              </span>
+            </div>
+          )}
         </div>
         {/* Footer */}
         <div className="px-4 py-3 border-t border-slate-100">
