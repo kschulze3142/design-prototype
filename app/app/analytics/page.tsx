@@ -421,7 +421,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Heatmap */}
-          <Card className="p-6" style={{ maxWidth: '860px' }}>
+          <Card className="p-6" style={{ width: 'fit-content' }}>
             <SectionHeader
               title="When you fax"
               tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
