@@ -127,8 +127,6 @@ function GaugeCard({ used, total, label, sub, color }: {
         borderRadius: 'var(--radius-lg)',
         boxShadow: hover ? 'var(--shadow-panel)' : 'var(--shadow-card)',
         padding: '20px',
-        width: '220px',
-        minWidth: '220px',
         display: 'flex',
         flexDirection: 'column',
         transform: hover ? 'translateY(-2px)' : 'translateY(0)',
@@ -207,142 +205,139 @@ export default function BillingPage() {
 
       {/* Overview tab */}
       {tab === 'overview' && (
-        <div className="space-y-6">
-          {/* Plan + cost estimate */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              {/* Plan header row — floats on bg, no surface */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <span style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))', flexShrink: 0 }}>
-                    <I.Star size={16} />
-                  </span>
-                  <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)' }}>{PLAN.name}</span>
-                  <Pill tone="teal">Active</Pill>
-                  <span style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '13px', color: 'var(--color-text-secondary)' }}>{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <AppButton
-                    variant="secondary"
-                    icon={<I.Refresh size={14} />}
-                    onMouseEnter={() => setSwitchHover(true)}
-                    onMouseLeave={() => setSwitchHover(false)}
-                    style={{
-                      color: switchHover ? 'var(--color-primary)' : undefined,
-                      transition: 'color var(--duration-fast)',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Switch to annual
-                  </AppButton>
-                  <AppButton
-                    variant="ghost"
-                    onMouseEnter={() => setCancelHover(true)}
-                    onMouseLeave={() => setCancelHover(false)}
-                    style={{
-                      color: cancelHover ? 'var(--color-failed)' : undefined,
-                      transition: 'color var(--duration-fast)',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Cancel plan
-                  </AppButton>
-                </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Plan header row — floats on bg, no surface */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))', flexShrink: 0 }}>
+                  <I.Star size={16} />
+                </span>
+                <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)' }}>{PLAN.name}</span>
+                <Pill tone="teal">Active</Pill>
+                <span style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '13px', color: 'var(--color-text-secondary)' }}>{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</span>
               </div>
-              {/* Four individual gauge cards */}
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <GaugeCard used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              color="var(--color-primary)" />
-                <GaugeCard used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         color="#10b981" />
-                <GaugeCard used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       color="var(--color-primary)" />
-                <GaugeCard used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} color="#f59e0b" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AppButton
+                  variant="secondary"
+                  icon={<I.Refresh size={14} />}
+                  onMouseEnter={() => setSwitchHover(true)}
+                  onMouseLeave={() => setSwitchHover(false)}
+                  style={{
+                    color: switchHover ? 'var(--color-primary)' : undefined,
+                    transition: 'color var(--duration-fast)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Switch to annual
+                </AppButton>
+                <AppButton
+                  variant="ghost"
+                  onMouseEnter={() => setCancelHover(true)}
+                  onMouseLeave={() => setCancelHover(false)}
+                  style={{
+                    color: cancelHover ? 'var(--color-failed)' : undefined,
+                    transition: 'color var(--duration-fast)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel plan
+                </AppButton>
               </div>
             </div>
+            {/* Four individual gauge cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', width: '100%' }}>
+              <GaugeCard used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              color="var(--color-primary)" />
+              <GaugeCard used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         color="#10b981" />
+              <GaugeCard used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       color="var(--color-primary)" />
+              <GaugeCard used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} color="#f59e0b" />
+            </div>
 
-            <Card className="p-7 flex flex-col">
-              <SectionTitle title="This cycle" subtitle="Mar 1 – Mar 31, 2026" />
-              <div className="mt-5 flex-1 space-y-3.5">
-                {[
-                  ['Plan (Blue Lark Pro)',         '$298.00'],
-                  ['Additional numbers (2 × $5)', '$10.00'],
-                  ['Toll-free routing',            '$15.00'],
-                  ['Archive storage',              '$25.00'],
-                ].map(([label, amount]) => (
-                  <div key={label} className="flex justify-between text-[14px]">
-                    <span className="text-slate-600">{label}</span>
-                    <span className="text-slate-900 font-medium">{amount}</span>
-                  </div>
-                ))}
-                <div className="flex justify-between text-[14px]">
-                  <span className="text-slate-600 flex items-center gap-1.5">
-                    Page overage
-                    <span className="text-[11px] px-1.5 py-0.5 rounded-md font-semibold" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>est.</span>
-                  </span>
-                  <span className="text-slate-400 font-medium">$0.00</span>
-                </div>
+            {/* Recent invoices preview */}
+            <Card className="overflow-hidden">
+              <div className="px-7 pt-6 pb-4">
+                <SectionTitle title="Recent invoices"
+                  action={<AppButton variant="ghost" onClick={() => setTab('invoices')}>View all</AppButton>} />
               </div>
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-baseline justify-between">
-                <span className="text-[13px] text-slate-500">Estimated total</span>
-                <span className="text-[34px] font-semibold text-slate-900" style={{ fontFamily: 'Georgia, serif' }}>$348.00</span>
+              <div className="overflow-auto scrollbar-thin">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr>{['Invoice','Date','Period','Amount','Status',''].map(h => (
+                      <th key={h} className="text-[11.5px] uppercase tracking-[0.06em] text-slate-500 font-semibold px-4 py-3 text-left bg-slate-50/70 border-b border-slate-100">{h}</th>
+                    ))}</tr>
+                  </thead>
+                  <tbody>
+                    {INVOICES.slice(0, 3).map(inv => {
+                      const isHover = hoveredInvoice === `o-${inv.id}`;
+                      return (
+                        <tr
+                          key={inv.id}
+                          onClick={() => setOpenInvoice(inv)}
+                          onMouseEnter={() => setHoveredInvoice(`o-${inv.id}`)}
+                          onMouseLeave={() => setHoveredInvoice(null)}
+                          className="border-b border-slate-100 last:border-0"
+                          style={{
+                            background: isHover ? 'var(--color-primary-subtle)' : 'transparent',
+                            cursor: 'pointer',
+                            transition: 'background var(--duration-fast)',
+                          }}
+                        >
+                          <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
+                          <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
+                          <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
+                          <td className="px-4 py-4 text-[14px] font-medium text-slate-900">
+                            ${inv.amount.toFixed(2)}
+                            {'note' in inv && inv.note && <span className="text-[11px] text-amber-600 ml-1">{inv.note}</span>}
+                          </td>
+                          <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
+                          <td className="px-4 py-4 text-right">
+                            <button
+                              onClick={e => e.stopPropagation()}
+                              style={{
+                                color: isHover ? 'var(--color-primary)' : 'rgb(148 163 184)',
+                                transition: 'color var(--duration-fast)',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <I.Download size={15} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-              <AppButton variant="secondary" className="mt-4 w-full justify-center" icon={<I.Download size={14} />}>Download estimate</AppButton>
             </Card>
           </div>
 
-          {/* Recent invoices preview */}
-          <Card className="overflow-hidden">
-            <div className="px-7 pt-6 pb-4">
-              <SectionTitle title="Recent invoices"
-                action={<AppButton variant="ghost" onClick={() => setTab('invoices')}>View all</AppButton>} />
+          <Card className="p-7 flex flex-col">
+            <SectionTitle title="This cycle" subtitle="Mar 1 – Mar 31, 2026" />
+            <div className="mt-5 flex-1 space-y-3.5">
+              {[
+                ['Plan (Blue Lark Pro)',         '$298.00'],
+                ['Additional numbers (2 × $5)', '$10.00'],
+                ['Toll-free routing',            '$15.00'],
+                ['Archive storage',              '$25.00'],
+              ].map(([label, amount]) => (
+                <div key={label} className="flex justify-between text-[14px]">
+                  <span className="text-slate-600">{label}</span>
+                  <span className="text-slate-900 font-medium">{amount}</span>
+                </div>
+              ))}
+              <div className="flex justify-between text-[14px]">
+                <span className="text-slate-600 flex items-center gap-1.5">
+                  Page overage
+                  <span className="text-[11px] px-1.5 py-0.5 rounded-md font-semibold" style={{ background: 'var(--color-primary-subtle)', color: 'var(--color-primary)' }}>est.</span>
+                </span>
+                <span className="text-slate-400 font-medium">$0.00</span>
+              </div>
             </div>
-            <div className="overflow-auto scrollbar-thin">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>{['Invoice','Date','Period','Amount','Status',''].map(h => (
-                    <th key={h} className="text-[11.5px] uppercase tracking-[0.06em] text-slate-500 font-semibold px-4 py-3 text-left bg-slate-50/70 border-b border-slate-100">{h}</th>
-                  ))}</tr>
-                </thead>
-                <tbody>
-                  {INVOICES.slice(0, 3).map(inv => {
-                    const isHover = hoveredInvoice === `o-${inv.id}`;
-                    return (
-                      <tr
-                        key={inv.id}
-                        onClick={() => setOpenInvoice(inv)}
-                        onMouseEnter={() => setHoveredInvoice(`o-${inv.id}`)}
-                        onMouseLeave={() => setHoveredInvoice(null)}
-                        className="border-b border-slate-100 last:border-0"
-                        style={{
-                          background: isHover ? 'var(--color-primary-subtle)' : 'transparent',
-                          cursor: 'pointer',
-                          transition: 'background var(--duration-fast)',
-                        }}
-                      >
-                        <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
-                        <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
-                        <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
-                        <td className="px-4 py-4 text-[14px] font-medium text-slate-900">
-                          ${inv.amount.toFixed(2)}
-                          {'note' in inv && inv.note && <span className="text-[11px] text-amber-600 ml-1">{inv.note}</span>}
-                        </td>
-                        <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
-                        <td className="px-4 py-4 text-right">
-                          <button
-                            onClick={e => e.stopPropagation()}
-                            style={{
-                              color: isHover ? 'var(--color-primary)' : 'rgb(148 163 184)',
-                              transition: 'color var(--duration-fast)',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <I.Download size={15} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-baseline justify-between">
+              <span className="text-[13px] text-slate-500">Estimated total</span>
+              <span className="text-[34px] font-semibold text-slate-900" style={{ fontFamily: 'Georgia, serif' }}>$348.00</span>
             </div>
+            <AppButton variant="secondary" className="mt-4 w-full justify-center" icon={<I.Download size={14} />}>Download estimate</AppButton>
           </Card>
         </div>
       )}
