@@ -102,7 +102,7 @@ function TemplateCard({ t, onClick, selected }: { t: Template; onClick: () => vo
         onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-panel)'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = ''; }}
       >
-        <div className="relative" style={{ height: 108, maxHeight: 108, background: 'var(--color-bg)', overflow: 'hidden' }}>
+        <div className="relative" style={{ height: '300px', maxHeight: '300px', background: 'var(--color-bg)', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 20, fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 8px', borderRadius: '999px', backgroundColor: cs.bg, color: cs.color, lineHeight: 1.4 }}>
             {t.cat}
           </div>
@@ -318,7 +318,7 @@ export default function TemplatesPage() {
           <AppButton className="mt-6" icon={<I.Plus size={14} />}>Create new template</AppButton>
         </Card>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 280px))', justifyContent: 'flex-start' }}>
           {filtered.map(t => <TemplateCard key={t.id} t={t} onClick={() => setOpen(t)} selected={open?.id === t.id} />)}
         </div>
       )}
