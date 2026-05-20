@@ -382,14 +382,14 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      {/* Two-column layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px', alignItems: 'flex-start', marginTop: '20px' }}>
+      {/* Two-row layout */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
 
-        {/* Left column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Row 1 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '20px', alignItems: 'flex-start' }}>
 
           {/* Volume trend */}
-          <Card className="p-6" style={{ maxWidth: '860px' }}>
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
             <SectionHeader
               title="Volume trend"
               tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
@@ -422,8 +422,131 @@ export default function AnalyticsPage() {
             </div>
           </Card>
 
+          {/* Numbers performance */}
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
+            <SectionHeader
+              title="Numbers"
+              tip="Inbound and outbound volume breakdown per owned fax number."
+              subtitle="In/out volume per owned number."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Manage</AppButton>
+              }
+            />
+            <div className="mt-4 space-y-2">
+              {NUMBER_PERF.map((n, i) => {
+                const total = n.in + n.out;
+                const outPct = total ? (n.out / total) * 100 : 0;
+                return (
+                  <div
+                    key={i}
+                    className="rounded-xl px-2 py-2 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-[13px] font-medium text-slate-900">{n.label}</span>
+                      <span className="text-[11px] font-mono text-slate-400">{n.number}</span>
+                      <span className="ml-auto text-[12px] font-mono font-semibold text-slate-900">{n.rate}%</span>
+                    </div>
+                    <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
+                      <div style={{ width: `${outPct}%`, background: 'var(--color-primary)' }} />
+                      <div style={{ width: `${100 - outPct}%`, background: 'var(--color-accent)' }} />
+                    </div>
+                    <div className="flex items-center gap-3 mt-1.5 text-[11.5px] text-slate-500">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Out {n.out.toLocaleString()}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-accent)' }} /> In {n.in.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Team leaderboard */}
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
+            <SectionHeader
+              title="Sender leaderboard"
+              tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
+              subtitle="Top 6 senders · last 30 days."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Team</AppButton>
+              }
+            />
+            <div className="mt-4 space-y-1">
+              {TEAM_LEADERBOARD.map((m, i) => {
+                const maxSent = TEAM_LEADERBOARD[0].sent;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
+                    <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
+                    <Avatar name={m.who} size={32} tone={m.tone} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
+                        {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
+                      </div>
+                      <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
+                      <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
+                      </div>
+                    </div>
+                    <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Delivery breakdown */}
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
+            <SectionHeader
+              title="Delivery breakdown"
+              tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
+              subtitle="Last 30 days · all numbers."
+            />
+            <div className="mt-5 flex justify-center">
+              <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
+            </div>
+            <div className="mt-5 space-y-2">
+              {STATUS_MIX.map(s => (
+                <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
+                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
+                  <span className="flex-1 text-slate-700">{s.label}</span>
+                  <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
+                  <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Row 2 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', alignItems: 'flex-start' }}>
+
           {/* Heatmap */}
-          <Card className="p-6" style={{ width: 'fit-content' }}>
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
             <SectionHeader
               title="When you fax"
               tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
@@ -448,7 +571,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Top destinations */}
-          <Card className="p-6" style={{ maxWidth: '860px' }}>
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
             <SectionHeader
               title="Top destinations"
               tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
@@ -514,35 +637,9 @@ export default function AnalyticsPage() {
               </table>
             </div>
           </Card>
-        </div>
-
-        {/* Right column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-          {/* Delivery breakdown */}
-          <Card className="p-6">
-            <SectionHeader
-              title="Delivery breakdown"
-              tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
-              subtitle="Last 30 days · all numbers."
-            />
-            <div className="mt-5 flex justify-center">
-              <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
-            </div>
-            <div className="mt-5 space-y-2">
-              {STATUS_MIX.map(s => (
-                <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
-                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
-                  <span className="flex-1 text-slate-700">{s.label}</span>
-                  <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
-                  <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
-                </div>
-              ))}
-            </div>
-          </Card>
 
           {/* Failure reasons */}
-          <Card className="p-6">
+          <Card className="p-6" style={{ alignSelf: 'start' }}>
             <SectionHeader
               title="Why faxes failed"
               tip="Root causes for faxes that failed permanently after all retries were exhausted."
@@ -577,105 +674,8 @@ export default function AnalyticsPage() {
             </div>
           </Card>
 
-          {/* Team leaderboard */}
-          <Card className="p-6">
-            <SectionHeader
-              title="Sender leaderboard"
-              tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
-              subtitle="Top 6 senders · last 30 days."
-              action={
-                <AppButton
-                  variant="ghost"
-                  size="sm"
-                  style={{ transition: 'color var(--duration-fast)' }}
-                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-                >Team</AppButton>
-              }
-            />
-            <div className="mt-4 space-y-1">
-              {TEAM_LEADERBOARD.map((m, i) => {
-                const maxSent = TEAM_LEADERBOARD[0].sent;
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
-                    style={{ transition: 'background var(--duration-fast)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                  >
-                    <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
-                    <Avatar name={m.who} size={32} tone={m.tone} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
-                        {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
-                      </div>
-                      <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
-                      <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
-                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
-                      </div>
-                    </div>
-                    <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-
-          {/* Numbers performance */}
-          <Card className="p-6">
-            <SectionHeader
-              title="Numbers"
-              tip="Inbound and outbound volume breakdown per owned fax number."
-              subtitle="In/out volume per owned number."
-              action={
-                <AppButton
-                  variant="ghost"
-                  size="sm"
-                  style={{ transition: 'color var(--duration-fast)' }}
-                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-                >Manage</AppButton>
-              }
-            />
-            <div className="mt-4 space-y-2">
-              {NUMBER_PERF.map((n, i) => {
-                const total = n.in + n.out;
-                const outPct = total ? (n.out / total) * 100 : 0;
-                return (
-                  <div
-                    key={i}
-                    className="rounded-xl px-2 py-2 -mx-2"
-                    style={{ transition: 'background var(--duration-fast)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                  >
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-[13px] font-medium text-slate-900">{n.label}</span>
-                      <span className="text-[11px] font-mono text-slate-400">{n.number}</span>
-                      <span className="ml-auto text-[12px] font-mono font-semibold text-slate-900">{n.rate}%</span>
-                    </div>
-                    <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
-                      <div style={{ width: `${outPct}%`, background: 'var(--color-primary)' }} />
-                      <div style={{ width: `${100 - outPct}%`, background: 'var(--color-accent)' }} />
-                    </div>
-                    <div className="flex items-center gap-3 mt-1.5 text-[11.5px] text-slate-500">
-                      <span className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Out {n.out.toLocaleString()}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-accent)' }} /> In {n.in.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-
           {/* Compliance footer */}
-          <Card className="flex items-center gap-3" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border-strong)', padding: '14px 16px' }}>
+          <Card className="flex items-center gap-3" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border-strong)', padding: '14px 16px', alignSelf: 'start' }}>
             <span className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 ring-1 ring-white shadow-sm"
               style={{ color: 'var(--color-primary)' }}>
               <I.Shield size={16} />
