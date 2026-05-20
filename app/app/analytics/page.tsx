@@ -382,11 +382,14 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      {/* Row 2: Volume trend + Delivery breakdown */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', alignItems: 'flex-start', marginBottom: '20px' }}>
+      {/* Two-column layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px', alignItems: 'flex-start' }}>
 
-        {/* Volume trend */}
-        <Card className="p-6" style={{ maxWidth: '860px' }}>
+        {/* Left column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Volume trend */}
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
             <SectionHeader
               title="Volume trend"
               tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
@@ -419,34 +422,8 @@ export default function AnalyticsPage() {
             </div>
           </Card>
 
-        {/* Delivery breakdown — moved into row 2 */}
-        <Card className="p-6">
-          <SectionHeader
-            title="Delivery breakdown"
-            tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
-            subtitle="Last 30 days · all numbers."
-          />
-          <div className="mt-5 flex justify-center">
-            <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
-          </div>
-          <div className="mt-5 space-y-2">
-            {STATUS_MIX.map(s => (
-              <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
-                <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
-                <span className="flex-1 text-slate-700">{s.label}</span>
-                <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
-                <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      {/* Row 3: When you fax + Why faxes failed */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', alignItems: 'flex-start', marginBottom: '20px' }}>
-
-        {/* Heatmap */}
-        <Card className="p-6" style={{ width: 'fit-content' }}>
+          {/* Heatmap */}
+          <Card className="p-6" style={{ width: 'fit-content' }}>
             <SectionHeader
               title="When you fax"
               tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
@@ -470,48 +447,8 @@ export default function AnalyticsPage() {
             </div>
           </Card>
 
-        {/* Failure reasons — moved into row 3 */}
-        <Card className="p-6">
-          <SectionHeader
-            title="Why faxes failed"
-            tip="Root causes for faxes that failed permanently after all retries were exhausted."
-            subtitle="51 failures · 0.6% of volume. Most resolved on retry."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >Audit</AppButton>
-            }
-          />
-          <div className="mt-5 space-y-3.5">
-            {FAILURE_REASONS.map((f, i) => (
-              <div key={i}>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[13.5px] font-medium text-slate-900 flex-1">{f.reason}</span>
-                  <span className="text-[13px] font-mono font-semibold text-slate-900">{f.count}</span>
-                  <span className="text-[11.5px] font-mono text-slate-400 w-10 text-right">{Math.round(f.share * 100)}%</span>
-                </div>
-                <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                  <div className="h-full rounded-full" style={{
-                    width: `${f.share * 100}%`,
-                    background: f.tone === 'rose' ? '#f87171' : f.tone === 'amber' ? '#f59e0b' : '#94a3b8',
-                  }} />
-                </div>
-                <div className="text-[11.5px] text-slate-500 mt-1">{f.note}</div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      {/* Row 4: Top destinations + Sender leaderboard */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', alignItems: 'flex-start', marginBottom: '20px' }}>
-
-        {/* Top destinations */}
-        <Card className="p-6" style={{ maxWidth: '860px' }}>
+          {/* Top destinations */}
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
             <SectionHeader
               title="Top destinations"
               tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
@@ -577,57 +514,114 @@ export default function AnalyticsPage() {
               </table>
             </div>
           </Card>
+        </div>
 
-        {/* Team leaderboard — moved into row 4 */}
-        <Card className="p-6">
-          <SectionHeader
-            title="Sender leaderboard"
-            tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
-            subtitle="Top 6 senders · last 30 days."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >Team</AppButton>
-            }
-          />
-          <div className="mt-4 space-y-1">
-            {TEAM_LEADERBOARD.map((m, i) => {
-              const maxSent = TEAM_LEADERBOARD[0].sent;
-              return (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
-                  style={{ transition: 'background var(--duration-fast)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                >
-                  <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
-                  <Avatar name={m.who} size={32} tone={m.tone} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
-                      {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
-                    </div>
-                    <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
-                    <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
-                    </div>
-                  </div>
-                  <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
+        {/* Right column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Delivery breakdown */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Delivery breakdown"
+              tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
+              subtitle="Last 30 days · all numbers."
+            />
+            <div className="mt-5 flex justify-center">
+              <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
+            </div>
+            <div className="mt-5 space-y-2">
+              {STATUS_MIX.map(s => (
+                <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
+                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
+                  <span className="flex-1 text-slate-700">{s.label}</span>
+                  <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
+                  <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
-      </div>
+              ))}
+            </div>
+          </Card>
 
-      {/* Row 5: Numbers + HIPAA notice */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '80px' }}>
-        <div style={{ width: '380px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Failure reasons */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Why faxes failed"
+              tip="Root causes for faxes that failed permanently after all retries were exhausted."
+              subtitle="51 failures · 0.6% of volume. Most resolved on retry."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Audit</AppButton>
+              }
+            />
+            <div className="mt-5 space-y-3.5">
+              {FAILURE_REASONS.map((f, i) => (
+                <div key={i}>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-[13.5px] font-medium text-slate-900 flex-1">{f.reason}</span>
+                    <span className="text-[13px] font-mono font-semibold text-slate-900">{f.count}</span>
+                    <span className="text-[11.5px] font-mono text-slate-400 w-10 text-right">{Math.round(f.share * 100)}%</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-full" style={{
+                      width: `${f.share * 100}%`,
+                      background: f.tone === 'rose' ? '#f87171' : f.tone === 'amber' ? '#f59e0b' : '#94a3b8',
+                    }} />
+                  </div>
+                  <div className="text-[11.5px] text-slate-500 mt-1">{f.note}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Team leaderboard */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Sender leaderboard"
+              tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
+              subtitle="Top 6 senders · last 30 days."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Team</AppButton>
+              }
+            />
+            <div className="mt-4 space-y-1">
+              {TEAM_LEADERBOARD.map((m, i) => {
+                const maxSent = TEAM_LEADERBOARD[0].sent;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
+                    <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
+                    <Avatar name={m.who} size={32} tone={m.tone} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
+                        {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
+                      </div>
+                      <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
+                      <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
+                      </div>
+                    </div>
+                    <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
 
           {/* Numbers performance */}
           <Card className="p-6">
