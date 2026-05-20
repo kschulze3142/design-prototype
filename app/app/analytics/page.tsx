@@ -247,7 +247,7 @@ function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: strin
   return (
     <div className="overflow-hidden">
       <div className="flex pl-[40px] gap-[3px] mb-2">
-        {hourLabels.map((h, i) => <div key={i} className="flex-1 text-[10.5px] text-slate-400 font-mono text-center">{h}</div>)}
+        {hourLabels.map((h, i) => <div key={i} className="text-[10.5px] text-slate-400 font-mono text-center" style={{ width: '28px' }}>{h}</div>)}
       </div>
       {data.map((row, ri) => (
         <div key={ri} className="flex items-center gap-[3px] mb-[3px]">
@@ -260,8 +260,8 @@ function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: strin
             return (
               <div
                 key={ci}
-                className="flex-1 aspect-square rounded-[3px]"
-                style={{ background: color(v), position: 'relative' }}
+                className="rounded-[3px]"
+                style={{ background: color(v), position: 'relative', width: '28px', height: '28px' }}
                 onMouseEnter={() => setHovered({ ri, ci })}
                 onMouseLeave={() => setHovered(null)}
               >
@@ -400,7 +400,7 @@ export default function AnalyticsPage() {
                 </div>
               }
             />
-            <div className="mt-6"><VolumeChart data={DAILY_VOLUME} height={220} /></div>
+            <div className="mt-6"><VolumeChart data={DAILY_VOLUME} height={160} /></div>
             <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-4 gap-6">
               {[
                 { label: 'Outbound', value: '6,936', delta: '+12%', trend: 'up' as const },
