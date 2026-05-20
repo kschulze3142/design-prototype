@@ -127,6 +127,8 @@ function AttentionCard({ item }: { item: AttentionItem }) {
           position: 'relative',
           overflow: 'hidden',
           transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <div style={{
@@ -165,7 +167,7 @@ function AttentionCard({ item }: { item: AttentionItem }) {
           fontSize: 12,
           fontWeight: 500,
           color: item.accentColor,
-          marginTop: 12,
+          marginTop: 'auto',
         }}>
           {item.actionText}
         </div>
@@ -460,9 +462,10 @@ export default function DashboardPage() {
             </div>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(4, 280px)',
               gap: '16px',
               marginTop: '12px',
+              alignItems: 'stretch',
             }}>
               {attentionItems.map((item, i) => (
                 <AttentionCard key={i} item={item} />
