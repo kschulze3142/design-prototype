@@ -123,13 +123,18 @@ function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
   return (
     <div style={{
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: '28px 24px',
+      justifyContent: 'space-between',
+      padding: '28px 32px',
       borderBottom: isTopRow ? '1px solid var(--color-border)' : undefined,
       borderRight: isLeftCol ? '1px solid var(--color-border)' : undefined,
     }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)' }}>{label}</div>
+        <div style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 600, fontSize: '24px', color: 'var(--color-text-primary)', marginTop: '6px' }}>{used.toLocaleString()} / {total.toLocaleString()}</div>
+        <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '3px' }}>{sub}</div>
+      </div>
       <div style={{ position: 'relative', width: '120px', height: '120px' }}>
         <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
           <circle cx="50" cy="50" r="38" stroke="var(--color-border)" strokeWidth="8" fill="none" />
@@ -141,9 +146,6 @@ function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
           <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '20px', color: 'var(--color-text-primary)', lineHeight: 1 }}>{Math.round(pct * 100)}%</span>
         </div>
       </div>
-      <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginTop: '14px' }}>{label}</div>
-      <div style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 600, fontSize: '18px', color: 'var(--color-text-primary)', marginTop: '4px' }}>{used.toLocaleString()} / {total.toLocaleString()}</div>
-      <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '2px' }}>{sub}</div>
     </div>
   );
 }
