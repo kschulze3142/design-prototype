@@ -125,9 +125,9 @@ function AttentionCard({ item }: { item: AttentionItem }) {
           background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
           ...(item.borderColor ? { borderLeft: `3px solid ${item.borderColor}` } : {}),
           borderRadius: 'var(--radius-lg)',
-          boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+          boxShadow: hovered ? 'var(--shadow-card)' : 'var(--shadow-card)',
           transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
-          transition: `all var(--duration-base) var(--ease-out)`,
+          transition: 'all var(--duration-fast) var(--ease-out)',
           padding: 20,
           display: 'flex',
           alignItems: 'center',
@@ -149,28 +149,54 @@ function AttentionCard({ item }: { item: AttentionItem }) {
 }
 
 function StatusBadge({ status }: { status: QueueItem['status'] }) {
-  const map: Record<QueueItem['status'], { bg: string; color: string }> = {
-    Transmitting: { bg: 'var(--color-processing-bg)', color: 'var(--color-processing)' },
-    Connecting:   { bg: 'var(--color-review-bg)',     color: 'var(--color-review)' },
-    Queued:       { bg: 'var(--color-bg)',             color: 'var(--color-text-tertiary)' },
+  const [tooltipShown, setTooltipShown] = useState(false);
+  const map: Record<QueueItem['status'], { bg: string; color: string; tooltip: string }> = {
+    Transmitting: { bg: 'var(--color-processing-bg)', color: 'var(--color-processing)', tooltip: 'In progress · started 2m ago' },
+    Connecting:   { bg: 'var(--color-review-bg)',     color: 'var(--color-review)',     tooltip: 'Dialing recipient · attempt 1 of 3' },
+    Queued:       { bg: 'var(--color-bg)',             color: 'var(--color-text-tertiary)', tooltip: 'Waiting to send · position 3' },
   };
   const s = map[status];
   return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      padding: '3px 9px',
-      borderRadius: 'var(--radius-xl)',
-      background: s.bg,
-      color: s.color,
-      fontFamily: 'var(--font-body)',
-      fontSize: 11,
-      fontWeight: 600,
-      letterSpacing: '0.03em',
-      whiteSpace: 'nowrap',
-    }}>
-      {status}
-    </span>
+    <div
+      style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={() => setTooltipShown(true)}
+      onMouseLeave={() => setTooltipShown(false)}
+    >
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        padding: '3px 9px',
+        borderRadius: 'var(--radius-xl)',
+        background: s.bg,
+        color: s.color,
+        fontFamily: 'var(--font-body)',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.03em',
+        whiteSpace: 'nowrap',
+      }}>
+        {status}
+      </span>
+      {tooltipShown && (
+        <div style={{
+          position: 'absolute',
+          bottom: 'calc(100% + 6px)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'var(--color-surface-dark)',
+          color: 'white',
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          padding: '4px 10px',
+          borderRadius: 'var(--radius-sm)',
+          whiteSpace: 'nowrap',
+          zIndex: 20,
+          pointerEvents: 'none',
+        }}>
+          {s.tooltip}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -183,9 +209,13 @@ function RecentRecipientRow({ recipient, isLast }: { recipient: RecentRecipient;
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '10px 0',
+        padding: '10px 8px',
+        margin: '0 -8px',
         cursor: 'pointer',
         borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
+        background: hovered ? 'var(--color-primary-subtle)' : 'transparent',
+        borderRadius: hovered ? 'var(--radius-md)' : 0,
+        transition: 'background var(--duration-fast), border-radius var(--duration-fast)',
       }}
     >
       <div style={{ flexShrink: 0, marginRight: 10 }}>
@@ -204,7 +234,7 @@ function RecentRecipientRow({ recipient, isLast }: { recipient: RecentRecipient;
         display: 'flex',
         alignItems: 'center',
         color: hovered ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-        transition: `color var(--duration-fast)`,
+        transition: 'color var(--duration-fast)',
       }}>
         <I.Send size={16} />
       </div>
@@ -217,6 +247,8 @@ function RecentRecipientRow({ recipient, isLast }: { recipient: RecentRecipient;
 export default function DashboardPage() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [hoveredInboxRow, setHoveredInboxRow] = useState<number | null>(null);
+  const [hoveredQueueRow, setHoveredQueueRow] = useState<number | null>(null);
+  const [openLinkHovered, setOpenLinkHovered] = useState(false);
 
   const attentionItems: AttentionItem[] = [
     {
@@ -329,6 +361,7 @@ export default function DashboardPage() {
           boxShadow: 'var(--shadow-card)',
           padding: '16px 20px',
           marginBottom: 24,
+          maxWidth: '860px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -390,7 +423,7 @@ export default function DashboardPage() {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 320px',
+        gridTemplateColumns: '1fr 360px',
         gap: 24,
         alignItems: 'start',
       }}>
@@ -399,7 +432,7 @@ export default function DashboardPage() {
         <div>
 
           {/* Section 1 — Attention Queue */}
-          <div>
+          <div style={{ maxWidth: '860px' }}>
             <div style={{ marginBottom: 12 }}>
               <div className="text-title">Needs attention</div>
               <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>
@@ -412,7 +445,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 2 — Live Queue */}
-          <div style={{ marginTop: 24 }}>
+          <div style={{ marginTop: 24, maxWidth: '860px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
                 <div className="text-title">Live queue</div>
@@ -433,15 +466,22 @@ export default function DashboardPage() {
 
             <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
               {QUEUE_ITEMS.map((item, i) => (
-                <div key={item.id} style={{
-                  padding: '16px 20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  background: 'var(--color-surface)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-card)',
-                }}>
+                <div
+                  key={item.id}
+                  onMouseEnter={() => setHoveredQueueRow(i)}
+                  onMouseLeave={() => setHoveredQueueRow(null)}
+                  style={{
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    background: hoveredQueueRow === i ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: 'var(--shadow-card)',
+                    transform: hoveredQueueRow === i ? 'translateY(-1px)' : 'translateY(0)',
+                    transition: 'all var(--duration-fast) var(--ease-out)',
+                    cursor: 'pointer',
+                  }}>
                   <span style={{ color: 'var(--color-text-tertiary)', display: 'flex', flexShrink: 0 }}>
                     <I.Send size={16} />
                   </span>
@@ -481,7 +521,7 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
 
           {/* Card 1 — Quick Send */}
-          <Card>
+          <Card padding="20px">
             <div className="text-title">Quick send</div>
             <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2, marginBottom: 12 }}>
               Start a new fax or pick a recent recipient.
@@ -500,7 +540,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Card 2 — Inbox Preview */}
-          <Card>
+          <Card padding="20px">
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span className="text-title">Inbox</span>
               <span style={{
@@ -517,13 +557,19 @@ export default function DashboardPage() {
               }}>
                 4 unread
               </span>
-              <Link href="/app/inbox" style={{
-                marginLeft: 'auto',
-                fontSize: 13,
-                color: 'var(--color-primary)',
-                textDecoration: 'none',
-                fontFamily: 'var(--font-body)',
-              }}>
+              <Link
+                href="/app/inbox"
+                onMouseEnter={() => setOpenLinkHovered(true)}
+                onMouseLeave={() => setOpenLinkHovered(false)}
+                style={{
+                  marginLeft: 'auto',
+                  fontSize: 13,
+                  color: openLinkHovered ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'color var(--duration-fast)',
+                }}
+              >
                 Open →
               </Link>
             </div>
@@ -536,15 +582,13 @@ export default function DashboardPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 10,
-                    padding: '12px 0',
+                    padding: '12px 8px',
                     borderBottom: i < INBOX_ITEMS.length - 1 ? '1px solid var(--color-border)' : 'none',
                     cursor: 'pointer',
                     background: hoveredInboxRow === i ? 'var(--color-primary-subtle)' : 'transparent',
-                    transition: `background var(--duration-fast)`,
-                    borderRadius: 'var(--radius-sm)',
-                    margin: '0 -4px',
-                    paddingLeft: 4,
-                    paddingRight: 4,
+                    transition: 'background var(--duration-fast), border-radius var(--duration-fast)',
+                    borderRadius: hoveredInboxRow === i ? 'var(--radius-md)' : 0,
+                    margin: '0 -8px',
                   }}>
                   <Avatar initials={item.initials} size={28} />
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -573,7 +617,7 @@ export default function DashboardPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
                     <span className="text-label" style={{ color: 'var(--color-text-tertiary)' }}>{item.time}</span>
                     {item.unread && (
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-primary)', display: 'block' }} />
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)', display: 'block' }} />
                     )}
                   </div>
                 </div>
