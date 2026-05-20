@@ -261,7 +261,7 @@ function Heatmap({ rows, hourLabels, data }: { rows: string[]; hourLabels: strin
               <div
                 key={ci}
                 className="rounded-[3px]"
-                style={{ background: color(v), position: 'relative', width: '28px', height: '28px' }}
+                style={{ background: color(v), position: 'relative', width: '28px', height: '28px', minWidth: '28px', minHeight: '28px', maxWidth: '28px', maxHeight: '28px' }}
                 onMouseEnter={() => setHovered({ ri, ci })}
                 onMouseLeave={() => setHovered(null)}
               >
@@ -354,8 +354,8 @@ export default function AnalyticsPage() {
           return (
             <div
               key={i}
-              className={`rounded-[28px] bg-white/85 backdrop-blur-[14px] border border-white/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}
-              style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)', width: '220px', minWidth: '220px', flexShrink: 0 }}
+              className={`rounded-[28px] bg-white/85 backdrop-blur-[14px] border border-white/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}
+              style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)', width: '260px', minWidth: '260px', maxWidth: '260px', flexShrink: 0, padding: '20px 24px' }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
                 e.currentTarget.style.boxShadow = 'var(--shadow-panel)';
@@ -387,7 +387,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6 min-w-0">
 
           {/* Volume trend */}
-          <Card className="p-6">
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
             <SectionHeader
               title="Volume trend"
               tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
@@ -421,7 +421,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Heatmap */}
-          <Card className="p-6">
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
             <SectionHeader
               title="When you fax"
               tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
