@@ -460,7 +460,7 @@ export default function DashboardPage() {
             </div>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 300px))',
+              gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '16px',
               marginTop: '12px',
             }}>
