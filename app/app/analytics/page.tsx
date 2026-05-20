@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
   const [scope, setScope] = useState('All numbers');
 
   return (
-    <div>
+    <div style={{ paddingBottom: '80px' }}>
       {/* Header */}
       <div className="px-7 py-6 mb-6">
         <div className="flex items-start gap-6">
@@ -348,14 +348,14 @@ export default function AnalyticsPage() {
       </div>
 
       {/* KPI strip */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div className="mb-6" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {ANALYTICS_KPIS.map((s, i) => {
           const Ico = I[s.icon as keyof typeof I];
           return (
             <div
               key={i}
               className={`rounded-[28px] bg-white/85 backdrop-blur-[14px] border border-white/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.18)] p-5 flex flex-col gap-3 ${i === 0 ? 'ring-1 ring-[var(--color-border-strong)]' : ''}`}
-              style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)' }}
+              style={{ transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)', width: '220px', minWidth: '220px', flexShrink: 0 }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
                 e.currentTarget.style.boxShadow = 'var(--shadow-panel)';
@@ -382,9 +382,9 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
         {/* Left column */}
-        <div className="col-span-12 lg:col-span-8 space-y-6">
+        <div className="space-y-6 min-w-0">
 
           {/* Volume trend */}
           <Card className="p-6">
@@ -446,7 +446,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Top destinations */}
-          <Card className="p-6">
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
             <SectionHeader
               title="Top destinations"
               tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
@@ -465,9 +465,12 @@ export default function AnalyticsPage() {
               <table className="w-full text-[13px]">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/70">
-                    {['Recipient','Number','Faxes','Pages','Delivery',''].map((h, i) => (
-                      <th key={i} className={`px-4 py-3 font-semibold ${['Faxes','Pages','Delivery'].includes(h) ? 'text-right' : ''}`}>{h}</th>
-                    ))}
+                    <th className="px-4 py-3 font-semibold">Recipient</th>
+                    <th className="px-4 py-3 font-semibold">Number</th>
+                    <th className="pl-4 pr-8 py-3 font-semibold text-right" style={{ minWidth: '120px' }}>Faxes</th>
+                    <th className="pl-8 pr-4 py-3 font-semibold text-right">Pages</th>
+                    <th className="px-4 py-3 font-semibold text-right">Delivery</th>
+                    <th className="px-4 py-3 font-semibold"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -483,7 +486,7 @@ export default function AnalyticsPage() {
                       >
                         <td className="px-4 py-3 font-medium text-slate-900">{d.org}</td>
                         <td className="px-4 py-3 text-slate-500 font-mono text-[12px]">{d.number}</td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="pl-4 pr-8 py-3 text-right" style={{ minWidth: '120px' }}>
                           <div className="inline-flex items-center gap-2 justify-end">
                             <div className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden">
                               <div className="h-full" style={{ width: `${(d.count / maxCount) * 100}%`, background: 'var(--color-primary)' }} />
@@ -491,7 +494,7 @@ export default function AnalyticsPage() {
                             <span className="text-slate-900 font-semibold font-mono">{d.count}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-right text-slate-700 font-mono">{d.pages.toLocaleString()}</td>
+                        <td className="pl-8 pr-4 py-3 text-right text-slate-700 font-mono">{d.pages.toLocaleString()}</td>
                         <td className="px-4 py-3 text-right">
                           <span className={`font-mono font-semibold ${d.rate >= 99.5 ? 'text-emerald-700' : d.rate >= 99 ? 'text-slate-900' : 'text-amber-700'}`}>
                             {d.rate}%
@@ -512,7 +515,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Right rail */}
-        <div className="col-span-12 lg:col-span-4 space-y-6">
+        <div className="space-y-6">
 
           {/* Status donut */}
           <Card className="p-6">
@@ -670,13 +673,13 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Compliance footer */}
-          <Card className="p-5 flex items-center gap-3" style={{ background: 'linear-gradient(135deg, var(--color-primary-subtle), white)' }}>
+          <Card className="flex items-center gap-3" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border-strong)', padding: '14px 16px' }}>
             <span className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 ring-1 ring-white shadow-sm"
               style={{ color: 'var(--color-primary)' }}>
               <I.Shield size={16} />
             </span>
             <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-semibold text-slate-900">Reports are HIPAA-safe</div>
+              <div style={{ fontFamily: 'var(--font-heading), sans-serif', fontWeight: 600, fontSize: '13px', color: 'var(--color-text-primary)' }}>Reports are HIPAA-safe</div>
               <div className="text-[11.5px] text-slate-500 mt-0.5">Aggregate counts only · no PHI · BAA on file.</div>
             </div>
             <AppButton
