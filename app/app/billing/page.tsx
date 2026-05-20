@@ -111,41 +111,51 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
   );
 }
 
-function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
-  used: number; total: number; label: string; sub: string; tone?: 'teal' | 'emerald' | 'amber' | 'red';
-  index: 0 | 1 | 2 | 3;
+function GaugeCard({ used, total, label, sub, color }: {
+  used: number; total: number; label: string; sub: string; color: string;
 }) {
+  const [hover, setHover] = useState(false);
   const pct = Math.min(1, used / total);
+  const pctNum = Math.round(pct * 100);
   const C = 2 * Math.PI * 38;
-  const colors: Record<string, string> = { teal: 'var(--color-primary)', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444' };
-  const isTopRow = index < 2;
-  const isLeftCol = index % 2 === 0;
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '20px',
-      padding: '20px 24px',
-      borderBottom: isTopRow ? '1px solid var(--color-border)' : undefined,
-      borderRight: isLeftCol ? '1px solid var(--color-border)' : undefined,
-    }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-        <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)' }}>{label}</div>
-        <div style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 600, fontSize: '24px', color: 'var(--color-text-primary)', marginTop: '6px' }}>{used.toLocaleString()} / {total.toLocaleString()}</div>
-        <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '3px' }}>{sub}</div>
-      </div>
-      <div style={{ position: 'relative', width: '80px', height: '80px' }}>
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
-          <circle cx="50" cy="50" r="38" stroke="var(--color-border)" strokeWidth="8" fill="none" />
-          <circle cx="50" cy="50" r="38" stroke={colors[tone]} strokeWidth="8" strokeLinecap="round" fill="none"
-            strokeDasharray={`${C}`} strokeDashoffset={`${C * (1 - pct)}`}
-            style={{ transition: 'stroke-dashoffset 800ms ease' }} />
-        </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '20px', color: 'var(--color-text-primary)', lineHeight: 1 }}>{Math.round(pct * 100)}%</span>
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: 'var(--color-surface)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: hover ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+        padding: '20px',
+        width: '220px',
+        minWidth: '220px',
+        display: 'flex',
+        flexDirection: 'column',
+        transform: hover ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)',
+      }}
+    >
+      <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginBottom: '8px' }}>{label}</div>
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '14px' }}>
+        <div style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0 }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+            <circle cx="50" cy="50" r="38" stroke="var(--color-border)" strokeWidth="8" fill="none" />
+            <circle cx="50" cy="50" r="38" stroke={color} strokeWidth="8" strokeLinecap="round" fill="none"
+              strokeDasharray={`${C}`} strokeDashoffset={`${C * (1 - pct)}`}
+              style={{ transition: 'stroke-dashoffset 800ms ease' }} />
+          </svg>
         </div>
+        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '22px', color: 'var(--color-text-primary)', lineHeight: 1.1 }}>{used.toLocaleString()}</span>
+            <span style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '13px', color: 'var(--color-text-tertiary)', marginLeft: '4px' }}>/ {total.toLocaleString()}</span>
+          </div>
+          <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '11px', color: 'var(--color-text-tertiary)', marginTop: '3px' }}>{sub}</div>
+        </div>
+      </div>
+      <div style={{ height: '1px', background: 'var(--color-border)', margin: '14px 0' }} />
+      <div style={{ height: '4px', borderRadius: '999px', background: 'var(--color-border)', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${pctNum}%`, background: color, borderRadius: '999px' }} />
       </div>
     </div>
   );
@@ -200,22 +210,18 @@ export default function BillingPage() {
         <div className="space-y-6">
           {/* Plan + cost estimate */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="pt-7 px-7 lg:col-span-2">
-              <div className="flex items-start justify-between gap-6 flex-wrap">
-                <div className="flex items-center gap-4">
-                  <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
-                    style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))' }}>
-                    <I.Star size={20} />
+            <div className="lg:col-span-2">
+              {/* Plan header row — floats on bg, no surface */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                  <span style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))', flexShrink: 0 }}>
+                    <I.Star size={16} />
                   </span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[20px] font-semibold text-slate-900">{PLAN.name}</span>
-                      <Pill tone="teal">Active</Pill>
-                    </div>
-                    <div className="text-[13px] text-slate-500 mt-0.5">{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</div>
-                  </div>
+                  <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)' }}>{PLAN.name}</span>
+                  <Pill tone="teal">Active</Pill>
+                  <span style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '13px', color: 'var(--color-text-secondary)' }}>{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <AppButton
                     variant="secondary"
                     icon={<I.Refresh size={14} />}
@@ -243,13 +249,14 @@ export default function BillingPage() {
                   </AppButton>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', marginTop: '28px', borderTop: '1px solid var(--color-border)' }}>
-                <UsageRing index={0} used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
-                <UsageRing index={1} used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
-                <UsageRing index={2} used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
-                <UsageRing index={3} used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} tone="amber" />
+              {/* Four individual gauge cards */}
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <GaugeCard used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              color="var(--color-primary)" />
+                <GaugeCard used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         color="#10b981" />
+                <GaugeCard used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       color="var(--color-primary)" />
+                <GaugeCard used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} color="#f59e0b" />
               </div>
-            </Card>
+            </div>
 
             <Card className="p-7 flex flex-col">
               <SectionTitle title="This cycle" subtitle="Mar 1 – Mar 31, 2026" />
