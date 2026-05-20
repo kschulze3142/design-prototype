@@ -307,7 +307,7 @@ export default function AuditPage() {
       </div>
 
       {/* Activity bar chart */}
-      <Card className="p-6 mb-6">
+      <Card className="p-6 mb-6" style={{ maxWidth: '860px' }}>
         <SectionTitle
           title="Activity — last 24 hours"
           subtitle="Hourly volume across all categories. Spikes around 9 AM and 3 PM are typical handoff windows."
