@@ -60,14 +60,68 @@ function SoftCard({ children, className = '' }: { children: React.ReactNode; cla
 function SettingRow({ label, helper, children, danger = false }: {
   label: string; helper?: string; children: React.ReactNode; danger?: boolean;
 }) {
+  const [hover, setHover] = useState(false);
   return (
-    <div className="flex items-start justify-between gap-6 py-4 border-b border-slate-100 last:border-0">
+    <div
+      className="flex items-start justify-between gap-6 py-4 px-3 border-b border-slate-100 last:border-0"
+      style={{
+        background: hover ? 'var(--color-primary-subtle)' : undefined,
+        borderRadius: 'var(--radius-md)',
+        transition: 'var(--duration-fast)',
+        cursor: 'pointer',
+      }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
       <div className="flex-1 min-w-0 pt-1">
         <div className={`text-[14px] font-semibold ${danger ? 'text-red-700' : 'text-slate-900'}`}>{label}</div>
         {helper && <div className="text-[12.5px] text-slate-500 mt-0.5 leading-relaxed max-w-md">{helper}</div>}
       </div>
       <div className="shrink-0 min-w-[260px] flex justify-end">{children}</div>
     </div>
+  );
+}
+
+function FocusSelect({ children, style, ...rest }: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  const [hover, setHover] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const active = hover || focused;
+  return (
+    <select
+      {...rest}
+      className={inputCls}
+      style={{
+        ...style,
+        borderColor: active ? 'var(--color-primary)' : undefined,
+        boxShadow: active ? '0 0 0 3px rgba(61,80,128,0.12)' : undefined,
+        transition: 'var(--duration-fast)',
+      }}
+      onMouseEnter={(e) => { setHover(true); rest.onMouseEnter?.(e); }}
+      onMouseLeave={(e) => { setHover(false); rest.onMouseLeave?.(e); }}
+      onFocus={(e) => { setFocused(true); rest.onFocus?.(e); }}
+      onBlur={(e) => { setFocused(false); rest.onBlur?.(e); }}
+    >
+      {children}
+    </select>
+  );
+}
+
+function ReplaceButton() {
+  const [hover, setHover] = useState(false);
+  return (
+    <AppButton
+      variant="secondary"
+      size="sm"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: hover ? 'var(--color-primary)' : undefined,
+        color: hover ? '#fff' : undefined,
+        transition: 'var(--duration-fast)',
+      }}
+    >
+      Replace
+    </AppButton>
   );
 }
 
@@ -122,27 +176,27 @@ function WorkspaceSection() {
             >
               <I.Document size={18} strokeWidth={1.8} />
             </div>
-            <AppButton variant="secondary" size="sm">Replace</AppButton>
+            <ReplaceButton />
           </div>
         </SettingRow>
         <SettingRow label="Billing email" helper="Invoices and payment receipts are sent here.">
           <input className={inputCls} style={{ width: 280 }} defaultValue="billing@northwindhealth.example" />
         </SettingRow>
         <SettingRow label="Time zone" helper="Used for scheduling and office hours.">
-          <select className={inputCls} style={{ width: 280 }}>
+          <FocusSelect style={{ width: 280 }}>
             <option>Pacific Time (PT)</option>
             <option>Mountain Time (MT)</option>
             <option>Central Time (CT)</option>
             <option>Eastern Time (ET)</option>
-          </select>
+          </FocusSelect>
         </SettingRow>
         <SettingRow label="Language" helper="Affects UI copy. Faxes are sent as-uploaded.">
-          <select className={inputCls} style={{ width: 280 }}>
+          <FocusSelect style={{ width: 280 }}>
             <option>English (US)</option>
             <option>English (UK)</option>
             <option>Español</option>
             <option>Français</option>
-          </select>
+          </FocusSelect>
         </SettingRow>
       </Card>
     </>
@@ -471,33 +525,97 @@ function DangerSection() {
   );
 }
 
+function SidebarItem({ item, active, onClick }: {
+  item: SettingsItem;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const [hover, setHover] = useState(false);
+  const Ico = I[item.icon];
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl ${active ? 'bg-slate-900 text-white' : item.danger ? 'text-red-600' : 'text-slate-700'}`}
+      style={{
+        background: !active && hover ? 'var(--color-primary-subtle)' : undefined,
+        borderRadius: !active && hover ? 'var(--radius-md)' : undefined,
+        transition: 'var(--duration-fast)',
+        cursor: 'pointer',
+      }}
+    >
+      <Ico size={15} />
+      <span className="flex-1 min-w-0">
+        <span className="block text-[13px] font-semibold leading-tight">{item.label}</span>
+        <span className={`block text-[11.5px] leading-tight mt-0.5 truncate ${active ? 'text-white/60' : item.danger ? 'text-red-500/70' : 'text-slate-500'}`}>{item.desc}</span>
+      </span>
+    </button>
+  );
+}
+
+function DiscardButton() {
+  const [hover, setHover] = useState(false);
+  return (
+    <AppButton
+      variant="ghost"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: hover ? 'var(--color-primary-subtle)' : undefined,
+        color: hover ? 'var(--color-primary)' : undefined,
+        transition: 'var(--duration-fast)',
+      }}
+    >
+      Discard
+    </AppButton>
+  );
+}
+
+function SaveChangesButton() {
+  const [hover, setHover] = useState(false);
+  return (
+    <AppButton
+      icon={<I.Check size={14} strokeWidth={2.4} />}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: 'var(--color-primary)',
+        transform: hover ? 'translateY(-1px)' : undefined,
+        boxShadow: hover ? 'var(--shadow-panel)' : undefined,
+        transition: 'var(--duration-fast)',
+      }}
+    >
+      Save changes
+    </AppButton>
+  );
+}
+
 export default function SettingsPage() {
   const [section, setSection] = useState('workspace');
   const allItems = SETTINGS_SECTIONS.flatMap(g => g.items);
   const current = allItems.find(i => i.id === section) || allItems[0];
 
   return (
-    <div>
+    <div style={{ paddingBottom: '80px' }}>
       {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Settings</div>
-            <h1
-              className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}
-            >
-              {current.id === 'profile' ? 'Make it yours.' : 'Workspace controls.'}
-            </h1>
-            <p className="text-[14px] text-slate-500 mt-2">Tune defaults, security, and integrations for Northwind Health · Cardiology.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Help size={14} />}>Docs</AppButton>
-          </div>
+      <div className="px-7 py-6 mb-6 flex items-start gap-6">
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Settings</div>
+          <h1
+            className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
+            style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}
+          >
+            {current.id === 'profile' ? 'Make it yours.' : 'Workspace controls.'}
+          </h1>
+          <p className="text-[14px] text-slate-500 mt-2">Tune defaults, security, and integrations for Northwind Health · Cardiology.</p>
         </div>
-      </Card>
+        <div className="flex items-center gap-2 shrink-0 pt-1">
+          <AppButton variant="secondary" icon={<I.Help size={14} />}>Docs</AppButton>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6" style={{ minHeight: 'calc(100vh - 120px)' }}>
         {/* Left rail */}
         <aside className="col-span-12 lg:col-span-3">
           <Card className="p-3 sticky top-6">
@@ -505,23 +623,14 @@ export default function SettingsPage() {
               <div key={g.group} className="mb-2 last:mb-0">
                 <div className="text-[10.5px] uppercase tracking-wider text-slate-500 font-semibold px-3 mt-3 mb-1.5">{g.group}</div>
                 <div className="space-y-0.5">
-                  {g.items.map(item => {
-                    const Ico = I[item.icon];
-                    const active = section === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => setSection(item.id)}
-                        className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${active ? 'bg-slate-900 text-white' : item.danger ? 'text-red-600 hover:bg-red-50' : 'text-slate-700 hover:bg-slate-50'}`}
-                      >
-                        <Ico size={15} />
-                        <span className="flex-1 min-w-0">
-                          <span className="block text-[13px] font-semibold leading-tight">{item.label}</span>
-                          <span className={`block text-[11.5px] leading-tight mt-0.5 truncate ${active ? 'text-white/60' : item.danger ? 'text-red-500/70' : 'text-slate-500'}`}>{item.desc}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
+                  {g.items.map(item => (
+                    <SidebarItem
+                      key={item.id}
+                      item={item}
+                      active={section === item.id}
+                      onClick={() => setSection(item.id)}
+                    />
+                  ))}
                 </div>
               </div>
             ))}
@@ -542,8 +651,8 @@ export default function SettingsPage() {
 
           {!['danger', 'integrations'].includes(section) && (
             <div className="mt-6 flex items-center justify-end gap-2">
-              <AppButton variant="ghost">Discard</AppButton>
-              <AppButton icon={<I.Check size={14} strokeWidth={2.4} />}>Save changes</AppButton>
+              <DiscardButton />
+              <SaveChangesButton />
             </div>
           )}
         </div>
