@@ -264,6 +264,10 @@ export default function AuditPage() {
   const [open, setOpen] = useState<AuditEvent | null>(null);
   const [live, setLive] = useState(true);
   const [search, setSearch] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+  const [actorsHover, setActorsHover] = useState(false);
 
   const filtered = AUDIT_EVENTS.filter(e => {
     if (cat !== 'All' && e.category !== cat) return false;
@@ -274,26 +278,32 @@ export default function AuditPage() {
   return (
     <div>
       {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Audit log</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Every action, on the record.</h1>
-            <p className="text-[14px] text-slate-500 mt-2">Tamper-evident trail of access, transmission, and configuration events. Exportable for HIPAA and SOC 2 audits.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton variant="secondary" icon={<I.Calendar size={14} />}>Last 30 days</AppButton>
-            <AppButton variant="secondary" icon={<I.Download size={14} />}>Export CSV</AppButton>
-          </div>
+      <div className="px-7 py-6 mb-6 flex items-start gap-6">
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Audit log</div>
+          <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5" style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>Every action, on the record.</h1>
+          <p className="text-[14px] text-slate-500 mt-2">Tamper-evident trail of access, transmission, and configuration events. Exportable for HIPAA and SOC 2 audits.</p>
         </div>
-      </Card>
+        <div className="flex items-center gap-2 shrink-0 pt-1">
+          <AppButton variant="secondary" icon={<I.Calendar size={14} />}>Last 30 days</AppButton>
+          <AppButton variant="secondary" icon={<I.Download size={14} />}>Export CSV</AppButton>
+        </div>
+      </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Events today" value="284" helper="+12 vs yesterday" trend="up" icon={<I.Audit size={15} />} />
-        <StatCard label="PHI accesses" value="47" helper="all within policy" icon={<I.Shield size={15} />} />
-        <StatCard label="Failed sign-ins" value="3" helper="2 blocked by 2FA" icon={<I.Lock size={15} />} />
-        <StatCard label="Config changes" value="6" helper="last 7 days" icon={<I.Cog size={15} />} />
+      <div className="mb-6" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+        <div style={{ width: '220px', minWidth: '220px', maxWidth: '220px', flexShrink: 0 }}>
+          <StatCard label="Events today" value="284" helper="+12 vs yesterday" trend="up" icon={<I.Audit size={15} />} />
+        </div>
+        <div style={{ width: '220px', minWidth: '220px', maxWidth: '220px', flexShrink: 0 }}>
+          <StatCard label="PHI accesses" value="47" helper="all within policy" icon={<I.Shield size={15} />} />
+        </div>
+        <div style={{ width: '220px', minWidth: '220px', maxWidth: '220px', flexShrink: 0 }}>
+          <StatCard label="Failed sign-ins" value="3" helper="2 blocked by 2FA" icon={<I.Lock size={15} />} />
+        </div>
+        <div style={{ width: '220px', minWidth: '220px', maxWidth: '220px', flexShrink: 0 }}>
+          <StatCard label="Config changes" value="6" helper="last 7 days" icon={<I.Cog size={15} />} />
+        </div>
       </div>
 
       {/* Activity bar chart */}
@@ -311,28 +321,94 @@ export default function AuditPage() {
             </div>
           }
         />
-        <div className="mt-6"><BarChart data={ACTIVITY_BY_HOUR} height={140} /></div>
+        <div className="mt-6"><BarChart data={ACTIVITY_BY_HOUR} height={120} /></div>
       </Card>
 
-      {/* Filter row */}
-      <Card className="p-4 mb-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-[260px] max-w-md">
-            <I.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white border border-slate-200 text-[14px] focus:outline-none focus:border-[var(--color-primary)] placeholder:text-slate-400"
-              placeholder="Search actor, action, target…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center gap-1 overflow-x-auto">
-            {CATEGORIES.map(c => <Tab key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Tab>)}
-          </div>
-          <div className="flex-1" />
-          <AppButton variant="secondary" size="sm" icon={<I.Filter size={13} />}>All actors</AppButton>
+      {/* Search bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        height: '42px',
+        background: 'var(--color-surface)',
+        border: `1px solid ${searchFocused ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
+        borderRadius: 'var(--radius-pill)',
+        boxShadow: searchFocused ? '0 0 0 3px rgba(61,80,128,0.12)' : 'var(--shadow-card)',
+        padding: '0 16px',
+        maxWidth: '320px',
+        marginBottom: '12px',
+        transition: 'border-color var(--duration-fast), box-shadow var(--duration-fast)',
+      }}>
+        <I.Search size={14} style={{ color: 'var(--color-text-secondary)' }} />
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          placeholder="Search actor, action, target..."
+          style={{
+            border: 'none',
+            outline: 'none',
+            background: 'transparent',
+            fontFamily: 'Sora, system-ui, sans-serif',
+            fontSize: '14px',
+            flex: 1,
+            width: '100%',
+          }}
+        />
+      </div>
+
+      {/* Filter tabs row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+          {CATEGORIES.map(c => {
+            const isActive = cat === c;
+            const isHover = hoveredTab === c && !isActive;
+            return (
+              <button
+                key={c}
+                onClick={() => setCat(c)}
+                onMouseEnter={() => setHoveredTab(c)}
+                onMouseLeave={() => setHoveredTab(null)}
+                style={{
+                  background: isActive ? 'var(--color-primary)' : isHover ? 'var(--color-primary-subtle)' : 'transparent',
+                  color: isActive ? 'white' : 'var(--color-text-secondary)',
+                  borderRadius: 'var(--radius-pill)',
+                  padding: '6px 14px',
+                  fontFamily: 'Sora, system-ui, sans-serif',
+                  fontSize: '13px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background var(--duration-fast), color var(--duration-fast)',
+                }}
+              >
+                {c}
+              </button>
+            );
+          })}
         </div>
-      </Card>
+        <button
+          onMouseEnter={() => setActorsHover(true)}
+          onMouseLeave={() => setActorsHover(false)}
+          style={{
+            fontFamily: 'Sora, system-ui, sans-serif',
+            fontSize: '13px',
+            color: 'var(--color-text-secondary)',
+            border: `1px solid ${actorsHover ? 'var(--color-primary)' : 'var(--color-border-strong)'}`,
+            borderRadius: 'var(--radius-pill)',
+            padding: '6px 12px',
+            background: actorsHover ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'background var(--duration-fast), border-color var(--duration-fast)',
+          }}
+        >
+          <I.Filter size={13} />
+          All actors
+        </button>
+      </div>
 
       {/* Events table */}
       <Card className="overflow-hidden">
@@ -348,8 +424,21 @@ export default function AuditPage() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr><td colSpan={7} className="text-center py-12 text-slate-500 text-[13.5px]">No events match those filters.</td></tr>
-              ) : filtered.map((e, i) => (
-                <tr key={i} onClick={() => setOpen(e)} className="hover:bg-slate-50/70 cursor-pointer transition border-b border-slate-100 last:border-0">
+              ) : filtered.map((e, i) => {
+                const isHover = hoveredRow === i;
+                return (
+                <tr
+                  key={i}
+                  onClick={() => setOpen(e)}
+                  onMouseEnter={() => setHoveredRow(i)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                  className="border-b border-slate-100 last:border-0"
+                  style={{
+                    background: isHover ? 'var(--color-primary-subtle)' : 'transparent',
+                    transition: 'background var(--duration-fast)',
+                    cursor: 'pointer',
+                  }}
+                >
                   <td className="px-4 py-4 text-slate-500 text-[12.5px] font-mono whitespace-nowrap">{e.ts}</td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2.5">
@@ -365,9 +454,18 @@ export default function AuditPage() {
                   <td className="px-4 py-4 text-[13px] text-slate-500 font-mono max-w-[260px] truncate">{e.target}</td>
                   <td className="px-4 py-4"><Pill tone={e.tone}>{e.category}</Pill></td>
                   <td className="px-4 py-4 text-[12.5px] font-mono text-slate-500 whitespace-nowrap">{e.ip}</td>
-                  <td className="px-4 py-4 text-right text-slate-400"><I.Chevron size={14} /></td>
+                  <td
+                    className="px-4 py-4 text-right"
+                    style={{
+                      color: isHover ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                      transition: 'color var(--duration-fast)',
+                    }}
+                  >
+                    <I.Chevron size={14} />
+                  </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
