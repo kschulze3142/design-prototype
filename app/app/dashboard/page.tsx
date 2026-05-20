@@ -361,7 +361,6 @@ export default function DashboardPage() {
           boxShadow: 'var(--shadow-card)',
           padding: '16px 20px',
           marginBottom: 24,
-          maxWidth: '860px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -432,7 +431,7 @@ export default function DashboardPage() {
         <div>
 
           {/* Section 1 — Attention Queue */}
-          <div style={{ maxWidth: '860px' }}>
+          <div>
             <div style={{ marginBottom: 12 }}>
               <div className="text-title">Needs attention</div>
               <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>
@@ -445,7 +444,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 2 — Live Queue */}
-          <div style={{ marginTop: 24, maxWidth: '860px' }}>
+          <div style={{ marginTop: 24 }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
                 <div className="text-title">Live queue</div>
@@ -520,7 +519,54 @@ export default function DashboardPage() {
         {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
 
-          {/* Card 1 — Quick Send */}
+          {/* Card 1 — Compliance Pulse */}
+          <div style={{
+            background: 'var(--color-surface-dark)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 24,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center' }}>
+                  <I.Shield size={16} />
+                </span>
+                <span className="text-body-strong" style={{ color: 'white' }}>Compliance pulse</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-delivered)', display: 'block', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: '#86efac' }}>All systems green</span>
+              </div>
+            </div>
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {COMPLIANCE_ITEMS.map((text, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: 'var(--color-delivered)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                    <I.Check size={12} />
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{text}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, display: 'flex', gap: 6 }}>
+              {['HIPAA', 'BAA'].map(tag => (
+                <span key={tag} style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.7)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '2px 8px',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.07em',
+                  textTransform: 'uppercase' as const,
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 2 — Quick Send */}
           <Card padding="20px">
             <div className="text-title">Quick send</div>
             <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2, marginBottom: 12 }}>
@@ -539,7 +585,7 @@ export default function DashboardPage() {
             ))}
           </Card>
 
-          {/* Card 2 — Inbox Preview */}
+          {/* Card 3 — Inbox Preview */}
           <Card padding="20px">
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span className="text-title">Inbox</span>
@@ -624,53 +670,6 @@ export default function DashboardPage() {
               ))}
             </div>
           </Card>
-
-          {/* Card 3 — Compliance Pulse */}
-          <div style={{
-            background: 'var(--color-surface-dark)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 24,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center' }}>
-                  <I.Shield size={16} />
-                </span>
-                <span className="text-body-strong" style={{ color: 'white' }}>Compliance pulse</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-delivered)', display: 'block', flexShrink: 0 }} />
-                <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: '#86efac' }}>All systems green</span>
-              </div>
-            </div>
-            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {COMPLIANCE_ITEMS.map((text, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ color: 'var(--color-delivered)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                    <I.Check size={12} />
-                  </span>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{text}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 12, display: 'flex', gap: 6 }}>
-              {['HIPAA', 'BAA'].map(tag => (
-                <span key={tag} style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  color: 'rgba(255,255,255,0.7)',
-                  borderRadius: 'var(--radius-sm)',
-                  padding: '2px 8px',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: '0.07em',
-                  textTransform: 'uppercase' as const,
-                }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
 
         </div>
       </div>
