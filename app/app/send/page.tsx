@@ -203,7 +203,7 @@ function StepCompose({ form, setForm, onNext }: {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
 
       {/* ── Left: unified canvas card ── */}
-      <Card noPadding style={{ borderRadius: 'var(--radius-lg)', maxWidth: '780px', margin: '0 auto' }}>
+      <Card noPadding style={{ borderRadius: 'var(--radius-lg)', maxWidth: '860px', margin: '0 auto' }}>
 
         {/* Section: Recipient */}
         <div style={{ padding: 28 }}>
@@ -263,7 +263,7 @@ function StepCompose({ form, setForm, onNext }: {
               <span className="text-label" style={{ color: 'var(--color-text-tertiary)' }}>Recent</span>
               <div style={{ flex: 1, height: 1, background: 'var(--color-border)' }} />
             </div>
-            <div style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', scrollbarWidth: 'none', gap: 8 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {RECENT_RECIPIENTS.map(r => {
                 const active = form.recipientNumber === r.number && form.recipientName === r.name;
                 return (
