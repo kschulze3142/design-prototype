@@ -186,88 +186,56 @@ export default function BillingPage() {
       {/* Overview tab */}
       {tab === 'overview' && (
         <div className="space-y-6">
-          {/* Plan summary card */}
-          <Card className="p-7" style={{ maxWidth: '860px' }}>
-            <div className="flex items-start justify-between gap-6 flex-wrap">
-              <div className="flex items-center gap-4">
-                <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
-                  style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))' }}>
-                  <I.Star size={20} />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[20px] font-semibold text-slate-900">{PLAN.name}</span>
-                    <Pill tone="teal">Active</Pill>
-                  </div>
-                  <div className="text-[13px] text-slate-500 mt-0.5">{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <AppButton
-                  variant="secondary"
-                  icon={<I.Refresh size={14} />}
-                  onMouseEnter={() => setSwitchHover(true)}
-                  onMouseLeave={() => setSwitchHover(false)}
-                  style={{
-                    color: switchHover ? 'var(--color-primary)' : undefined,
-                    transition: 'color var(--duration-fast)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Switch to annual
-                </AppButton>
-                <AppButton
-                  variant="ghost"
-                  onMouseEnter={() => setCancelHover(true)}
-                  onMouseLeave={() => setCancelHover(false)}
-                  style={{
-                    color: cancelHover ? 'var(--color-failed)' : undefined,
-                    transition: 'color var(--duration-fast)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Cancel plan
-                </AppButton>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 pt-7 border-t border-slate-100">
-              <UsageRing used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
-              <UsageRing used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
-              <UsageRing used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
-              <UsageRing used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} tone="amber" />
-            </div>
-          </Card>
-
-          {/* Volume + cost estimate */}
+          {/* Plan + cost estimate */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="p-7 lg:col-span-2">
-              <SectionTitle
-                title="Page volume — last 7 days"
-                subtitle="Pages sent and received across all numbers."
-                action={
-                  <div className="flex items-center gap-2 text-[12.5px]">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Sent</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-slate-200" /> Received</span>
+              <div className="flex items-start justify-between gap-6 flex-wrap">
+                <div className="flex items-center gap-4">
+                  <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
+                    style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))' }}>
+                    <I.Star size={20} />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[20px] font-semibold text-slate-900">{PLAN.name}</span>
+                      <Pill tone="teal">Active</Pill>
+                    </div>
+                    <div className="text-[13px] text-slate-500 mt-0.5">{PLAN.cycle} · Next charge ${PLAN.amount.toFixed(2)} on Apr 1</div>
                   </div>
-                }
-              />
-              <div className="mt-6"><BarChart data={USAGE_DAYS} height={180} /></div>
-              <div className="mt-6 grid grid-cols-3 gap-4 pt-5 border-t border-slate-100">
-                <div>
-                  <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Total this week</div>
-                  <div className="text-[28px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'Georgia, serif' }}>901</div>
-                  <div className="text-[12px] text-emerald-600 flex items-center gap-1 mt-0.5"><I.ArrowUp size={11} strokeWidth={2.4} /> 12.4% vs last week</div>
                 </div>
-                <div>
-                  <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Avg pages / day</div>
-                  <div className="text-[28px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'Georgia, serif' }}>128.7</div>
-                  <div className="text-[12px] text-slate-500 mt-0.5">Peak Thu · 211 pages</div>
+                <div className="flex items-center gap-2">
+                  <AppButton
+                    variant="secondary"
+                    icon={<I.Refresh size={14} />}
+                    onMouseEnter={() => setSwitchHover(true)}
+                    onMouseLeave={() => setSwitchHover(false)}
+                    style={{
+                      color: switchHover ? 'var(--color-primary)' : undefined,
+                      transition: 'color var(--duration-fast)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Switch to annual
+                  </AppButton>
+                  <AppButton
+                    variant="ghost"
+                    onMouseEnter={() => setCancelHover(true)}
+                    onMouseLeave={() => setCancelHover(false)}
+                    style={{
+                      color: cancelHover ? 'var(--color-failed)' : undefined,
+                      transition: 'color var(--duration-fast)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Cancel plan
+                  </AppButton>
                 </div>
-                <div>
-                  <div className="text-[12px] uppercase tracking-wider text-slate-500 font-semibold">Delivery rate</div>
-                  <div className="text-[28px] font-semibold text-slate-900 mt-1" style={{ fontFamily: 'Georgia, serif' }}>99.2%</div>
-                  <div className="text-[12px] text-slate-500 mt-0.5">7 retries this week</div>
-                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 pt-7 border-t border-slate-100">
+                <UsageRing used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
+                <UsageRing used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
+                <UsageRing used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
+                <UsageRing used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} tone="amber" />
               </div>
             </Card>
 
