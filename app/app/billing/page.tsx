@@ -4,7 +4,7 @@ import { I } from '@/components/app/icons';
 import { Card, Pill, AppButton, Avatar, StatCard, SectionTitle } from '@/components/app/primitives';
 
 const PLAN = {
-  name: 'FaxGrid Pro', cycle: 'Monthly · billed Mar 1',
+  name: 'Blue Lark Pro', cycle: 'Monthly · billed Mar 1',
   seats: 12, seatsUsed: 9, pages: 5000, pagesUsed: 3127,
   numbers: 8, numbersUsed: 6, storage: 100, storageUsed: 38.4, amount: 348.00,
 };
@@ -29,8 +29,24 @@ const USAGE_DAYS = [
 ];
 
 function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  const [hover, setHover] = useState(false);
   return (
-    <button onClick={onClick} className={`px-3.5 py-1.5 text-[13px] rounded-full font-medium transition ${active ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: active ? 'var(--color-primary)' : hover ? 'var(--color-primary-subtle)' : 'transparent',
+        color: active ? 'white' : 'var(--color-text-secondary)',
+        borderRadius: 'var(--radius-pill)',
+        padding: '6px 14px',
+        fontFamily: 'Sora, system-ui, sans-serif',
+        fontSize: '13px',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'background var(--duration-fast), color var(--duration-fast)',
+      }}
+    >
       {children}
     </button>
   );
@@ -126,31 +142,32 @@ function UsageRing({ used, total, label, sub, tone = 'teal' }: {
 export default function BillingPage() {
   const [tab, setTab] = useState('overview');
   const [openInvoice, setOpenInvoice] = useState<Invoice | null>(null);
+  const [switchHover, setSwitchHover] = useState(false);
+  const [cancelHover, setCancelHover] = useState(false);
+  const [hoveredInvoice, setHoveredInvoice] = useState<string | null>(null);
 
   const invoiceTone = (s: string) =>
     s === 'Paid' ? 'emerald' : s === 'Refunded' ? 'slate' : s === 'Failed' ? 'red' : 'amber';
 
   return (
-    <div>
+    <div style={{ paddingBottom: '80px' }}>
       {/* Header */}
-      <Card className="px-7 py-6 mb-6">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Billing & usage</div>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
-              style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
-              You're in good standing.
-            </h1>
-            <p className="text-[14px] text-slate-500 mt-2">Track plan limits, page volume, invoices, and your billing settings — all in one place.</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <AppButton icon={<I.ArrowUp size={15} />}>Upgrade plan</AppButton>
-          </div>
+      <div className="px-7 py-6 mb-6 flex items-start gap-6">
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Billing & usage</div>
+          <h1 className="text-[40px] leading-[1.05] font-semibold tracking-tight text-slate-900 mt-1.5"
+            style={{ fontFamily: 'var(--font-heading), system-ui', letterSpacing: '-0.025em' }}>
+            You're in good standing.
+          </h1>
+          <p className="text-[14px] text-slate-500 mt-2">Track plan limits, page volume, invoices, and your billing settings — all in one place.</p>
         </div>
-      </Card>
+        <div className="flex items-center gap-2 shrink-0 pt-1">
+          <AppButton icon={<I.ArrowUp size={15} />}>Upgrade plan</AppButton>
+        </div>
+      </div>
 
       {/* Tab bar */}
-      <div className="flex items-center gap-1 mb-6 flex-wrap">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap', marginBottom: '20px' }}>
         {[
           { id: 'overview',  label: 'Overview' },
           { id: 'invoices',  label: 'Invoices', count: INVOICES.length },
@@ -170,7 +187,7 @@ export default function BillingPage() {
       {tab === 'overview' && (
         <div className="space-y-6">
           {/* Plan summary card */}
-          <Card className="p-7">
+          <Card className="p-7" style={{ maxWidth: '860px' }}>
             <div className="flex items-start justify-between gap-6 flex-wrap">
               <div className="flex items-center gap-4">
                 <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
@@ -186,8 +203,31 @@ export default function BillingPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <AppButton variant="secondary" icon={<I.Refresh size={14} />}>Switch to annual</AppButton>
-                <AppButton variant="ghost">Cancel plan</AppButton>
+                <AppButton
+                  variant="secondary"
+                  icon={<I.Refresh size={14} />}
+                  onMouseEnter={() => setSwitchHover(true)}
+                  onMouseLeave={() => setSwitchHover(false)}
+                  style={{
+                    color: switchHover ? 'var(--color-primary)' : undefined,
+                    transition: 'color var(--duration-fast)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Switch to annual
+                </AppButton>
+                <AppButton
+                  variant="ghost"
+                  onMouseEnter={() => setCancelHover(true)}
+                  onMouseLeave={() => setCancelHover(false)}
+                  style={{
+                    color: cancelHover ? 'var(--color-failed)' : undefined,
+                    transition: 'color var(--duration-fast)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel plan
+                </AppButton>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 pt-7 border-t border-slate-100">
@@ -235,7 +275,7 @@ export default function BillingPage() {
               <SectionTitle title="This cycle" subtitle="Mar 1 – Mar 31, 2026" />
               <div className="mt-5 flex-1 space-y-3.5">
                 {[
-                  ['Plan (FaxGrid Pro)',         '$298.00'],
+                  ['Plan (Blue Lark Pro)',         '$298.00'],
                   ['Additional numbers (2 × $5)', '$10.00'],
                   ['Toll-free routing',            '$15.00'],
                   ['Archive storage',              '$25.00'],
@@ -275,19 +315,44 @@ export default function BillingPage() {
                   ))}</tr>
                 </thead>
                 <tbody>
-                  {INVOICES.slice(0, 3).map(inv => (
-                    <tr key={inv.id} onClick={() => setOpenInvoice(inv)} className="hover:bg-slate-50/70 cursor-pointer transition border-b border-slate-100 last:border-0">
-                      <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
-                      <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
-                      <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
-                      <td className="px-4 py-4 text-[14px] font-medium text-slate-900">
-                        ${inv.amount.toFixed(2)}
-                        {'note' in inv && inv.note && <span className="text-[11px] text-amber-600 ml-1">{inv.note}</span>}
-                      </td>
-                      <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
-                      <td className="px-4 py-4 text-right"><button className="text-slate-400 hover:text-slate-700" onClick={e => e.stopPropagation()}><I.Download size={15} /></button></td>
-                    </tr>
-                  ))}
+                  {INVOICES.slice(0, 3).map(inv => {
+                    const isHover = hoveredInvoice === `o-${inv.id}`;
+                    return (
+                      <tr
+                        key={inv.id}
+                        onClick={() => setOpenInvoice(inv)}
+                        onMouseEnter={() => setHoveredInvoice(`o-${inv.id}`)}
+                        onMouseLeave={() => setHoveredInvoice(null)}
+                        className="border-b border-slate-100 last:border-0"
+                        style={{
+                          background: isHover ? 'var(--color-primary-subtle)' : 'transparent',
+                          cursor: 'pointer',
+                          transition: 'background var(--duration-fast)',
+                        }}
+                      >
+                        <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
+                        <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
+                        <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
+                        <td className="px-4 py-4 text-[14px] font-medium text-slate-900">
+                          ${inv.amount.toFixed(2)}
+                          {'note' in inv && inv.note && <span className="text-[11px] text-amber-600 ml-1">{inv.note}</span>}
+                        </td>
+                        <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
+                        <td className="px-4 py-4 text-right">
+                          <button
+                            onClick={e => e.stopPropagation()}
+                            style={{
+                              color: isHover ? 'var(--color-primary)' : 'rgb(148 163 184)',
+                              transition: 'color var(--duration-fast)',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <I.Download size={15} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -318,23 +383,47 @@ export default function BillingPage() {
                   ))}</tr>
                 </thead>
                 <tbody>
-                  {INVOICES.map(inv => (
-                    <tr key={inv.id} onClick={() => setOpenInvoice(inv)} className="hover:bg-slate-50/70 cursor-pointer transition border-b border-slate-100 last:border-0">
-                      <td className="px-4 py-4"><input type="checkbox" onClick={e => e.stopPropagation()} style={{ accentColor: 'var(--color-primary)' }} /></td>
-                      <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
-                      <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
-                      <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
-                      <td className="px-4 py-4 text-[13px] text-slate-600">{inv.method}</td>
-                      <td className="px-4 py-4 text-[14px] font-medium text-slate-900">${inv.amount.toFixed(2)}</td>
-                      <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
-                      <td className="px-4 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700" onClick={e => { e.stopPropagation(); setOpenInvoice(inv); }}><I.Eye size={15} /></button>
-                          <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700" onClick={e => e.stopPropagation()}><I.Download size={15} /></button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {INVOICES.map(inv => {
+                    const isHover = hoveredInvoice === `i-${inv.id}`;
+                    return (
+                      <tr
+                        key={inv.id}
+                        onClick={() => setOpenInvoice(inv)}
+                        onMouseEnter={() => setHoveredInvoice(`i-${inv.id}`)}
+                        onMouseLeave={() => setHoveredInvoice(null)}
+                        className="border-b border-slate-100 last:border-0"
+                        style={{
+                          background: isHover ? 'var(--color-primary-subtle)' : 'transparent',
+                          cursor: 'pointer',
+                          transition: 'background var(--duration-fast)',
+                        }}
+                      >
+                        <td className="px-4 py-4"><input type="checkbox" onClick={e => e.stopPropagation()} style={{ accentColor: 'var(--color-primary)' }} /></td>
+                        <td className="px-4 py-4 font-mono text-[13px] text-slate-700">{inv.id}</td>
+                        <td className="px-4 py-4 text-[14px] text-slate-600">{inv.date}</td>
+                        <td className="px-4 py-4 text-[14px] text-slate-500">{inv.period}</td>
+                        <td className="px-4 py-4 text-[13px] text-slate-600">{inv.method}</td>
+                        <td className="px-4 py-4 text-[14px] font-medium text-slate-900">${inv.amount.toFixed(2)}</td>
+                        <td className="px-4 py-4"><Pill tone={invoiceTone(inv.status)}>{inv.status}</Pill></td>
+                        <td className="px-4 py-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700" onClick={e => { e.stopPropagation(); setOpenInvoice(inv); }}><I.Eye size={15} /></button>
+                            <button
+                              className="p-1.5 rounded-lg hover:bg-slate-100"
+                              onClick={e => e.stopPropagation()}
+                              style={{
+                                color: isHover ? 'var(--color-primary)' : 'rgb(148 163 184)',
+                                transition: 'color var(--duration-fast)',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <I.Download size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -397,7 +486,7 @@ export default function BillingPage() {
       {tab === 'limits' && (
         <div className="space-y-6">
           <Card className="p-7">
-            <SectionTitle title="Plan limits" subtitle="What's included in FaxGrid Pro and how overage is billed." />
+            <SectionTitle title="Plan limits" subtitle="What's included in Blue Lark Pro and how overage is billed." />
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5">
               {[
                 { label: 'Pages per cycle',   val: '5,000',    over: '$0.04 / page after limit' },
@@ -452,13 +541,13 @@ export default function BillingPage() {
             </div>
             <div className="flex-1 overflow-auto scrollbar-thin grid grid-cols-12 gap-6 p-7">
               <div className="col-span-12 md:col-span-7">
-                <DocPreview title={`Invoice ${openInvoice.id}`} from="FaxGrid, Inc." to="Northwind Health · Finance" pages={1} />
+                <DocPreview title={`Invoice ${openInvoice.id}`} from="Blue Lark, Inc." to="Northwind Health · Finance" pages={1} />
               </div>
               <div className="col-span-12 md:col-span-5 space-y-4">
                 <div>
                   <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-3">Summary</div>
                   <SoftCard className="p-4 space-y-2.5 text-[13px]">
-                    {[['Plan','FaxGrid Pro'],['Period',openInvoice.period],['Method',openInvoice.method],['Tax','$0.00']].map(([k,v]) => (
+                    {[['Plan','Blue Lark Pro'],['Period',openInvoice.period],['Method',openInvoice.method],['Tax','$0.00']].map(([k,v]) => (
                       <div key={k} className="flex justify-between"><span className="text-slate-500">{k}</span><span className="text-slate-900">{v}</span></div>
                     ))}
                     <div className="h-px bg-slate-100 my-1" />
