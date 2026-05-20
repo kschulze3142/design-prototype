@@ -119,7 +119,7 @@ function UsageRing({ used, total, label, sub, tone = 'teal' }: {
   const colors: Record<string, string> = { teal: 'var(--color-primary)', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444' };
   return (
     <div className="flex items-center gap-4">
-      <div className="relative w-24 h-24 shrink-0">
+      <div className="relative shrink-0" style={{ width: '80px', height: '80px' }}>
         <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
           <circle cx="50" cy="50" r="38" stroke="#eef2f6" strokeWidth="8" fill="none" />
           <circle cx="50" cy="50" r="38" stroke={colors[tone]} strokeWidth="8" strokeLinecap="round" fill="none"
@@ -127,12 +127,12 @@ function UsageRing({ used, total, label, sub, tone = 'teal' }: {
             style={{ transition: 'stroke-dashoffset 800ms ease' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[22px] leading-none font-semibold text-slate-900" style={{ fontFamily: 'Georgia, serif' }}>{Math.round(pct * 100)}%</span>
+          <span className="leading-none text-slate-900" style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '20px' }}>{Math.round(pct * 100)}%</span>
         </div>
       </div>
       <div className="min-w-0">
-        <div className="text-[12.5px] uppercase tracking-wider text-slate-500 font-semibold">{label}</div>
-        <div className="text-[15px] font-semibold text-slate-900 mt-1">{used.toLocaleString()} <span className="text-slate-400 font-normal">/ {total.toLocaleString()}</span></div>
+        <div className="text-[13px] uppercase tracking-wider text-slate-500 font-semibold">{label}</div>
+        <div className="text-[18px] font-semibold text-slate-900 mt-1">{used.toLocaleString()} <span className="text-slate-400 font-normal">/ {total.toLocaleString()}</span></div>
         <div className="text-[12px] text-slate-500 mt-0.5">{sub}</div>
       </div>
     </div>
@@ -231,7 +231,7 @@ export default function BillingPage() {
                   </AppButton>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 pt-7 border-t border-slate-100">
+              <div className="pt-7 border-t border-slate-100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
                 <UsageRing used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
                 <UsageRing used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
                 <UsageRing used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
