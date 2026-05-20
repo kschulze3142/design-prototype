@@ -382,315 +382,317 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      {/* Masonry layout */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gridAutoRows: 'masonry',
-        gap: '20px',
-        alignItems: 'start',
-      }}>
+      {/* Two-column layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px', alignItems: 'flex-start', marginTop: '20px' }}>
 
-        {/* Volume trend */}
-        <Card className="p-6" style={{ maxWidth: '860px', gridColumn: 'span 2', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Volume trend"
-            tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
-            subtitle="Daily outbound (solid) and inbound (soft). Weekends visible at glance."
-            action={
-              <div className="flex items-center gap-1">
-                {['7 days','30 days','90 days','YTD'].map(r => (
-                  <Tab key={r} active={range === r} onClick={() => setRange(r)}>{r}</Tab>
-                ))}
-              </div>
-            }
-          />
-          <div className="mt-6"><VolumeChart data={DAILY_VOLUME} height={160} /></div>
-          <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-4 gap-6">
-            {[
-              { label: 'Outbound', value: '6,936', delta: '+12%', trend: 'up' as const },
-              { label: 'Inbound',  value: '1,476', delta: '+6%',  trend: 'up' as const },
-              { label: 'Busiest day', value: 'Apr 30', sub: '· 372' },
-              { label: 'Quietest',    value: 'Apr 06', sub: '· 80' },
-            ].map((item, i) => (
-              <div key={i}>
-                <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">{item.label}</div>
-                <div className="text-[20px] font-semibold text-slate-900 mt-1 flex items-baseline gap-2">
-                  {item.value}
-                  {'delta' in item && item.delta ? <Delta trend={item.trend}>{item.delta}</Delta> : null}
-                  {'sub' in item && item.sub ? <span className="text-slate-400 font-normal text-[14px]">{item.sub}</span> : null}
+        {/* Left column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Volume trend */}
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
+            <SectionHeader
+              title="Volume trend"
+              tip="Daily fax volume. Solid bars are outbound, lighter bars are inbound. Weekends shown in muted color."
+              subtitle="Daily outbound (solid) and inbound (soft). Weekends visible at glance."
+              action={
+                <div className="flex items-center gap-1">
+                  {['7 days','30 days','90 days','YTD'].map(r => (
+                    <Tab key={r} active={range === r} onClick={() => setRange(r)}>{r}</Tab>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Delivery breakdown */}
-        <Card className="p-6" style={{ gridColumn: 'span 1', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Delivery breakdown"
-            tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
-            subtitle="Last 30 days · all numbers."
-          />
-          <div className="mt-5 flex justify-center">
-            <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
-          </div>
-          <div className="mt-5 space-y-2">
-            {STATUS_MIX.map(s => (
-              <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
-                <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
-                <span className="flex-1 text-slate-700">{s.label}</span>
-                <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
-                <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Heatmap */}
-        <Card className="p-6" style={{ width: 'fit-content', gridColumn: 'span 1', alignSelf: 'start' }}>
-          <SectionHeader
-            title="When you fax"
-            tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
-            subtitle="Outbound activity by hour and weekday. Useful for staffing the queue."
-            action={<Pill tone="teal">Pacific Time</Pill>}
-          />
-          <div className="mt-6"><Heatmap {...HEATMAP} /></div>
-          <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-6">
-            <div>
-              <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">Peak hour</div>
-              <div className="text-[18px] font-semibold text-slate-900 mt-1">Tue 11a <span className="text-slate-400 font-normal text-[13px]">· 47/wk</span></div>
-            </div>
-            <div>
-              <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">Weekend share</div>
-              <div className="text-[18px] font-semibold text-slate-900 mt-1">8.4%</div>
-            </div>
-            <div>
-              <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">After-hours sends</div>
-              <div className="text-[18px] font-semibold text-slate-900 mt-1">112 <span className="text-slate-400 font-normal text-[13px]">· auto-queued</span></div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Failure reasons */}
-        <Card className="p-6" style={{ gridColumn: 'span 1', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Why faxes failed"
-            tip="Root causes for faxes that failed permanently after all retries were exhausted."
-            subtitle="51 failures · 0.6% of volume. Most resolved on retry."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >Audit</AppButton>
-            }
-          />
-          <div className="mt-5 space-y-3.5">
-            {FAILURE_REASONS.map((f, i) => (
-              <div key={i}>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[13.5px] font-medium text-slate-900 flex-1">{f.reason}</span>
-                  <span className="text-[13px] font-mono font-semibold text-slate-900">{f.count}</span>
-                  <span className="text-[11.5px] font-mono text-slate-400 w-10 text-right">{Math.round(f.share * 100)}%</span>
+              }
+            />
+            <div className="mt-6"><VolumeChart data={DAILY_VOLUME} height={160} /></div>
+            <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-4 gap-6">
+              {[
+                { label: 'Outbound', value: '6,936', delta: '+12%', trend: 'up' as const },
+                { label: 'Inbound',  value: '1,476', delta: '+6%',  trend: 'up' as const },
+                { label: 'Busiest day', value: 'Apr 30', sub: '· 372' },
+                { label: 'Quietest',    value: 'Apr 06', sub: '· 80' },
+              ].map((item, i) => (
+                <div key={i}>
+                  <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">{item.label}</div>
+                  <div className="text-[20px] font-semibold text-slate-900 mt-1 flex items-baseline gap-2">
+                    {item.value}
+                    {'delta' in item && item.delta ? <Delta trend={item.trend}>{item.delta}</Delta> : null}
+                    {'sub' in item && item.sub ? <span className="text-slate-400 font-normal text-[14px]">{item.sub}</span> : null}
+                  </div>
                 </div>
-                <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                  <div className="h-full rounded-full" style={{
-                    width: `${f.share * 100}%`,
-                    background: f.tone === 'rose' ? '#f87171' : f.tone === 'amber' ? '#f59e0b' : '#94a3b8',
-                  }} />
-                </div>
-                <div className="text-[11.5px] text-slate-500 mt-1">{f.note}</div>
-              </div>
-            ))}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
 
-        {/* Top destinations */}
-        <Card className="p-6" style={{ maxWidth: '860px', gridColumn: 'span 2', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Top destinations"
-            tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
-            subtitle="Where your outbound traffic is going."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >View all 84</AppButton>
-            }
-          />
-          <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100">
-            <table className="w-full text-[13px]">
-              <thead>
-                <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/70">
-                  <th className="px-4 py-3 font-semibold">Recipient</th>
-                  <th className="px-4 py-3 font-semibold">Number</th>
-                  <th className="pl-4 pr-8 py-3 font-semibold text-right" style={{ minWidth: '120px' }}>Faxes</th>
-                  <th className="pl-8 pr-4 py-3 font-semibold text-right">Pages</th>
-                  <th className="px-4 py-3 font-semibold text-right">Delivery</th>
-                  <th className="px-4 py-3 font-semibold"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {TOP_DESTINATIONS.map((d, i) => {
-                  const maxCount = TOP_DESTINATIONS[0].count;
-                  return (
-                    <tr
-                      key={i}
-                      className="border-t border-slate-100 group transition"
-                      style={{ transition: 'background var(--duration-fast)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                    >
-                      <td className="px-4 py-3 font-medium text-slate-900">{d.org}</td>
-                      <td className="px-4 py-3 text-slate-500 font-mono text-[12px]">{d.number}</td>
-                      <td className="pl-4 pr-8 py-3 text-right" style={{ minWidth: '120px' }}>
-                        <div className="inline-flex items-center gap-2 justify-end">
-                          <div className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full" style={{ width: `${(d.count / maxCount) * 100}%`, background: 'var(--color-primary)' }} />
+          {/* Heatmap */}
+          <Card className="p-6" style={{ width: 'fit-content' }}>
+            <SectionHeader
+              title="When you fax"
+              tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
+              subtitle="Outbound activity by hour and weekday. Useful for staffing the queue."
+              action={<Pill tone="teal">Pacific Time</Pill>}
+            />
+            <div className="mt-6"><Heatmap {...HEATMAP} /></div>
+            <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-6">
+              <div>
+                <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">Peak hour</div>
+                <div className="text-[18px] font-semibold text-slate-900 mt-1">Tue 11a <span className="text-slate-400 font-normal text-[13px]">· 47/wk</span></div>
+              </div>
+              <div>
+                <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">Weekend share</div>
+                <div className="text-[18px] font-semibold text-slate-900 mt-1">8.4%</div>
+              </div>
+              <div>
+                <div className="text-[11.5px] uppercase tracking-wider text-slate-500 font-semibold">After-hours sends</div>
+                <div className="text-[18px] font-semibold text-slate-900 mt-1">112 <span className="text-slate-400 font-normal text-[13px]">· auto-queued</span></div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Top destinations */}
+          <Card className="p-6" style={{ maxWidth: '860px' }}>
+            <SectionHeader
+              title="Top destinations"
+              tip="The recipients your workspace faxes most frequently, ranked by volume over the selected period."
+              subtitle="Where your outbound traffic is going."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >View all 84</AppButton>
+              }
+            />
+            <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100">
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/70">
+                    <th className="px-4 py-3 font-semibold">Recipient</th>
+                    <th className="px-4 py-3 font-semibold">Number</th>
+                    <th className="pl-4 pr-8 py-3 font-semibold text-right" style={{ minWidth: '120px' }}>Faxes</th>
+                    <th className="pl-8 pr-4 py-3 font-semibold text-right">Pages</th>
+                    <th className="px-4 py-3 font-semibold text-right">Delivery</th>
+                    <th className="px-4 py-3 font-semibold"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {TOP_DESTINATIONS.map((d, i) => {
+                    const maxCount = TOP_DESTINATIONS[0].count;
+                    return (
+                      <tr
+                        key={i}
+                        className="border-t border-slate-100 group transition"
+                        style={{ transition: 'background var(--duration-fast)' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                      >
+                        <td className="px-4 py-3 font-medium text-slate-900">{d.org}</td>
+                        <td className="px-4 py-3 text-slate-500 font-mono text-[12px]">{d.number}</td>
+                        <td className="pl-4 pr-8 py-3 text-right" style={{ minWidth: '120px' }}>
+                          <div className="inline-flex items-center gap-2 justify-end">
+                            <div className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                              <div className="h-full" style={{ width: `${(d.count / maxCount) * 100}%`, background: 'var(--color-primary)' }} />
+                            </div>
+                            <span className="text-slate-900 font-semibold font-mono">{d.count}</span>
                           </div>
-                          <span className="text-slate-900 font-semibold font-mono">{d.count}</span>
-                        </div>
-                      </td>
-                      <td className="pl-8 pr-4 py-3 text-right text-slate-700 font-mono">{d.pages.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-right">
-                        <span className={`font-mono font-semibold ${d.rate >= 99.5 ? 'text-emerald-700' : d.rate >= 99 ? 'text-slate-900' : 'text-amber-700'}`}>
-                          {d.rate}%
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <button className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-900 transition">
-                          <I.Chevron size={14} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                        </td>
+                        <td className="pl-8 pr-4 py-3 text-right text-slate-700 font-mono">{d.pages.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-right">
+                          <span className={`font-mono font-semibold ${d.rate >= 99.5 ? 'text-emerald-700' : d.rate >= 99 ? 'text-slate-900' : 'text-amber-700'}`}>
+                            {d.rate}%
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-900 transition">
+                            <I.Chevron size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
 
-        {/* Team leaderboard */}
-        <Card className="p-6" style={{ gridColumn: 'span 1', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Sender leaderboard"
-            tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
-            subtitle="Top 6 senders · last 30 days."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >Team</AppButton>
-            }
-          />
-          <div className="mt-4 space-y-1">
-            {TEAM_LEADERBOARD.map((m, i) => {
-              const maxSent = TEAM_LEADERBOARD[0].sent;
-              return (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
-                  style={{ transition: 'background var(--duration-fast)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                >
-                  <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
-                  <Avatar name={m.who} size={32} tone={m.tone} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
-                      {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
-                    </div>
-                    <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
-                    <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
-                    </div>
-                  </div>
-                  <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
+        {/* Right column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Delivery breakdown */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Delivery breakdown"
+              tip="Outcome distribution for all outbound faxes. Retried & sent means it failed once but succeeded on retry."
+              subtitle="Last 30 days · all numbers."
+            />
+            <div className="mt-5 flex justify-center">
+              <Donut data={STATUS_MIX} centerLabel="Delivered" centerValue="99.1%" />
+            </div>
+            <div className="mt-5 space-y-2">
+              {STATUS_MIX.map(s => (
+                <div key={s.label} className="flex items-center gap-3 text-[12.5px]">
+                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
+                  <span className="flex-1 text-slate-700">{s.label}</span>
+                  <span className="text-slate-900 font-mono font-semibold">{s.value.toLocaleString()}</span>
+                  <span className="text-slate-400 font-mono w-12 text-right">{s.pct}%</span>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
 
-        {/* Numbers performance */}
-        <Card className="p-6" style={{ gridColumn: 'span 1', alignSelf: 'start' }}>
-          <SectionHeader
-            title="Numbers"
-            tip="Inbound and outbound volume breakdown per owned fax number."
-            subtitle="In/out volume per owned number."
-            action={
-              <AppButton
-                variant="ghost"
-                size="sm"
-                style={{ transition: 'color var(--duration-fast)' }}
-                onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-                onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-              >Manage</AppButton>
-            }
-          />
-          <div className="mt-4 space-y-2">
-            {NUMBER_PERF.map((n, i) => {
-              const total = n.in + n.out;
-              const outPct = total ? (n.out / total) * 100 : 0;
-              return (
-                <div
-                  key={i}
-                  className="rounded-xl px-2 py-2 -mx-2"
-                  style={{ transition: 'background var(--duration-fast)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
-                >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-[13px] font-medium text-slate-900">{n.label}</span>
-                    <span className="text-[11px] font-mono text-slate-400">{n.number}</span>
-                    <span className="ml-auto text-[12px] font-mono font-semibold text-slate-900">{n.rate}%</span>
+          {/* Failure reasons */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Why faxes failed"
+              tip="Root causes for faxes that failed permanently after all retries were exhausted."
+              subtitle="51 failures · 0.6% of volume. Most resolved on retry."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Audit</AppButton>
+              }
+            />
+            <div className="mt-5 space-y-3.5">
+              {FAILURE_REASONS.map((f, i) => (
+                <div key={i}>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-[13.5px] font-medium text-slate-900 flex-1">{f.reason}</span>
+                    <span className="text-[13px] font-mono font-semibold text-slate-900">{f.count}</span>
+                    <span className="text-[11.5px] font-mono text-slate-400 w-10 text-right">{Math.round(f.share * 100)}%</span>
                   </div>
-                  <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
-                    <div style={{ width: `${outPct}%`, background: 'var(--color-primary)' }} />
-                    <div style={{ width: `${100 - outPct}%`, background: 'var(--color-accent)' }} />
+                  <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-full" style={{
+                      width: `${f.share * 100}%`,
+                      background: f.tone === 'rose' ? '#f87171' : f.tone === 'amber' ? '#f59e0b' : '#94a3b8',
+                    }} />
                   </div>
-                  <div className="flex items-center gap-3 mt-1.5 text-[11.5px] text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Out {n.out.toLocaleString()}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-accent)' }} /> In {n.in.toLocaleString()}
-                    </span>
-                  </div>
+                  <div className="text-[11.5px] text-slate-500 mt-1">{f.note}</div>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
 
-        {/* Compliance footer */}
-        <Card className="flex items-center gap-3" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border-strong)', padding: '14px 16px', gridColumn: 'span 1', alignSelf: 'start' }}>
-          <span className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 ring-1 ring-white shadow-sm"
-            style={{ color: 'var(--color-primary)' }}>
-            <I.Shield size={16} />
-          </span>
-          <div className="flex-1 min-w-0">
-            <div style={{ fontFamily: 'var(--font-heading), sans-serif', fontWeight: 600, fontSize: '13px', color: 'var(--color-text-primary)' }}>Reports are HIPAA-safe</div>
-            <div className="text-[11.5px] text-slate-500 mt-0.5">Aggregate counts only · no PHI · BAA on file.</div>
-          </div>
-          <AppButton
-            variant="ghost"
-            size="sm"
-            style={{ transition: 'color var(--duration-fast)' }}
-            onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
-            onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
-          >Audit</AppButton>
-        </Card>
+          {/* Team leaderboard */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Sender leaderboard"
+              tip="Team members ranked by outbound fax volume. Delivery rate shown per sender."
+              subtitle="Top 6 senders · last 30 days."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Team</AppButton>
+              }
+            />
+            <div className="mt-4 space-y-1">
+              {TEAM_LEADERBOARD.map((m, i) => {
+                const maxSent = TEAM_LEADERBOARD[0].sent;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-xl px-2 py-1.5 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
+                    <span className="text-[11px] font-mono text-slate-400 w-4 text-right">{i + 1}</span>
+                    <Avatar name={m.who} size={32} tone={m.tone} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13.5px] font-semibold text-slate-900 truncate">{m.who}</span>
+                        {m.fastest && <Pill tone="teal" dot={false}>Fastest</Pill>}
+                      </div>
+                      <div className="text-[11.5px] text-slate-500">{m.role} · {m.pages.toLocaleString()} pages · {m.rate}%</div>
+                      <div className="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full" style={{ width: `${(m.sent / maxSent) * 100}%`, background: 'var(--color-primary)' }} />
+                      </div>
+                    </div>
+                    <span className="text-[13px] font-mono font-semibold text-slate-900 shrink-0">{m.sent}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Numbers performance */}
+          <Card className="p-6">
+            <SectionHeader
+              title="Numbers"
+              tip="Inbound and outbound volume breakdown per owned fax number."
+              subtitle="In/out volume per owned number."
+              action={
+                <AppButton
+                  variant="ghost"
+                  size="sm"
+                  style={{ transition: 'color var(--duration-fast)' }}
+                  onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                  onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+                >Manage</AppButton>
+              }
+            />
+            <div className="mt-4 space-y-2">
+              {NUMBER_PERF.map((n, i) => {
+                const total = n.in + n.out;
+                const outPct = total ? (n.out / total) * 100 : 0;
+                return (
+                  <div
+                    key={i}
+                    className="rounded-xl px-2 py-2 -mx-2"
+                    style={{ transition: 'background var(--duration-fast)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--color-primary-subtle)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-[13px] font-medium text-slate-900">{n.label}</span>
+                      <span className="text-[11px] font-mono text-slate-400">{n.number}</span>
+                      <span className="ml-auto text-[12px] font-mono font-semibold text-slate-900">{n.rate}%</span>
+                    </div>
+                    <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
+                      <div style={{ width: `${outPct}%`, background: 'var(--color-primary)' }} />
+                      <div style={{ width: `${100 - outPct}%`, background: 'var(--color-accent)' }} />
+                    </div>
+                    <div className="flex items-center gap-3 mt-1.5 text-[11.5px] text-slate-500">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-primary)' }} /> Out {n.out.toLocaleString()}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-sm" style={{ background: 'var(--color-accent)' }} /> In {n.in.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Compliance footer */}
+          <Card className="flex items-center gap-3" style={{ background: 'var(--color-primary-subtle)', border: '1px solid var(--color-border-strong)', padding: '14px 16px' }}>
+            <span className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 ring-1 ring-white shadow-sm"
+              style={{ color: 'var(--color-primary)' }}>
+              <I.Shield size={16} />
+            </span>
+            <div className="flex-1 min-w-0">
+              <div style={{ fontFamily: 'var(--font-heading), sans-serif', fontWeight: 600, fontSize: '13px', color: 'var(--color-text-primary)' }}>Reports are HIPAA-safe</div>
+              <div className="text-[11.5px] text-slate-500 mt-0.5">Aggregate counts only · no PHI · BAA on file.</div>
+            </div>
+            <AppButton
+              variant="ghost"
+              size="sm"
+              style={{ transition: 'color var(--duration-fast)' }}
+              onMouseEnter={(e: any) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+              onMouseLeave={(e: any) => { e.currentTarget.style.color = ''; }}
+            >Audit</AppButton>
+          </Card>
+        </div>
       </div>
     </div>
   );
