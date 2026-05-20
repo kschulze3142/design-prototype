@@ -111,30 +111,39 @@ function DocPreview({ title, from, to, pages }: { title: string; from: string; t
   );
 }
 
-function UsageRing({ used, total, label, sub, tone = 'teal' }: {
+function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
   used: number; total: number; label: string; sub: string; tone?: 'teal' | 'emerald' | 'amber' | 'red';
+  index: 0 | 1 | 2 | 3;
 }) {
   const pct = Math.min(1, used / total);
   const C = 2 * Math.PI * 38;
   const colors: Record<string, string> = { teal: 'var(--color-primary)', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444' };
+  const isTopRow = index < 2;
+  const isLeftCol = index % 2 === 0;
   return (
-    <div className="flex items-center gap-4">
-      <div className="relative shrink-0" style={{ width: '80px', height: '80px' }}>
-        <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-          <circle cx="50" cy="50" r="38" stroke="#eef2f6" strokeWidth="8" fill="none" />
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '28px 24px',
+      borderBottom: isTopRow ? '1px solid var(--color-border)' : undefined,
+      borderRight: isLeftCol ? '1px solid var(--color-border)' : undefined,
+    }}>
+      <div style={{ position: 'relative', width: '120px', height: '120px' }}>
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+          <circle cx="50" cy="50" r="38" stroke="var(--color-border)" strokeWidth="8" fill="none" />
           <circle cx="50" cy="50" r="38" stroke={colors[tone]} strokeWidth="8" strokeLinecap="round" fill="none"
             strokeDasharray={`${C}`} strokeDashoffset={`${C * (1 - pct)}`}
             style={{ transition: 'stroke-dashoffset 800ms ease' }} />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="leading-none text-slate-900" style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '20px' }}>{Math.round(pct * 100)}%</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 700, fontSize: '20px', color: 'var(--color-text-primary)', lineHeight: 1 }}>{Math.round(pct * 100)}%</span>
         </div>
       </div>
-      <div className="min-w-0">
-        <div className="text-[13px] uppercase tracking-wider text-slate-500 font-semibold">{label}</div>
-        <div className="text-[18px] font-semibold text-slate-900 mt-1">{used.toLocaleString()} <span className="text-slate-400 font-normal">/ {total.toLocaleString()}</span></div>
-        <div className="text-[12px] text-slate-500 mt-0.5">{sub}</div>
-      </div>
+      <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-tertiary)', marginTop: '14px' }}>{label}</div>
+      <div style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 600, fontSize: '18px', color: 'var(--color-text-primary)', marginTop: '4px' }}>{used.toLocaleString()} / {total.toLocaleString()}</div>
+      <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '2px' }}>{sub}</div>
     </div>
   );
 }
@@ -188,7 +197,7 @@ export default function BillingPage() {
         <div className="space-y-6">
           {/* Plan + cost estimate */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="p-7 lg:col-span-2">
+            <Card className="pt-7 px-7 lg:col-span-2">
               <div className="flex items-start justify-between gap-6 flex-wrap">
                 <div className="flex items-center gap-4">
                   <span className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0"
@@ -231,11 +240,11 @@ export default function BillingPage() {
                   </AppButton>
                 </div>
               </div>
-              <div className="pt-7 border-t border-slate-100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
-                <UsageRing used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
-                <UsageRing used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
-                <UsageRing used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
-                <UsageRing used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} tone="amber" />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', marginTop: '28px', borderTop: '1px solid var(--color-border)' }}>
+                <UsageRing index={0} used={PLAN.pagesUsed}   total={PLAN.pages}   label="Pages this cycle" sub="Resets Apr 1"                              tone="teal" />
+                <UsageRing index={1} used={PLAN.seatsUsed}   total={PLAN.seats}   label="Team seats"       sub="3 seats available"                         tone="emerald" />
+                <UsageRing index={2} used={PLAN.numbersUsed} total={PLAN.numbers} label="Fax numbers"      sub="2 numbers available"                       tone="teal" />
+                <UsageRing index={3} used={PLAN.storageUsed} total={PLAN.storage} label="Archive storage"  sub={`${PLAN.storageUsed} GB of ${PLAN.storage} GB`} tone="amber" />
               </div>
             </Card>
 
