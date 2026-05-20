@@ -10,14 +10,12 @@ import { I } from '@/components/app/icons';
 
 interface AttentionItem {
   icon: React.ReactNode;
-  iconBg: string;
-  iconColor: string;
+  accentColor: string;
   title: string;
   titleColor: string;
   sub: string;
-  arrowColor: string;
+  actionText: string;
   href: string;
-  borderColor?: string;
 }
 
 interface QueueItem {
@@ -115,34 +113,62 @@ function IconCircle({ bg, color, children }: { bg: string; color: string; childr
 function AttentionCard({ item }: { item: AttentionItem }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <Link href={item.href} style={{ textDecoration: 'none', display: 'block', marginBottom: 8 }}>
+    <Link href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onMouseDown={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}
-        onMouseUp={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'; }}
         style={{
-          background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
-          ...(item.borderColor ? { borderLeft: `3px solid ${item.borderColor}` } : {}),
+          background: 'var(--color-surface)',
           borderRadius: 'var(--radius-lg)',
-          boxShadow: hovered ? 'var(--shadow-card)' : 'var(--shadow-card)',
-          transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
-          transition: 'all var(--duration-fast) var(--ease-out)',
-          padding: 20,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
+          boxShadow: hovered ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+          padding: '16px 20px',
           cursor: 'pointer',
+          transition: 'transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out)',
+          position: 'relative',
+          overflow: 'hidden',
+          transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
         }}
       >
-        <IconCircle bg={item.iconBg} color={item.iconColor}>
-          {item.icon}
-        </IconCircle>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="text-body-strong" style={{ color: item.titleColor }}>{item.title}</div>
-          <div className="text-body" style={{ color: 'var(--color-text-tertiary)', marginTop: 2 }}>{item.sub}</div>
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 3,
+          background: item.accentColor,
+        }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ color: item.accentColor, display: 'flex', alignItems: 'center' }}>
+            {item.icon}
+          </span>
+          <span style={{ color: 'var(--color-text-tertiary)', fontSize: 16, lineHeight: 1 }}>→</span>
         </div>
-        <span style={{ color: item.arrowColor, fontSize: 16, lineHeight: 1, flexShrink: 0 }}>→</span>
+        <div style={{
+          fontFamily: 'var(--font-heading)',
+          fontWeight: 600,
+          fontSize: 14,
+          color: item.titleColor,
+          marginTop: 10,
+        }}>
+          {item.title}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--color-text-secondary)',
+          marginTop: 4,
+        }}>
+          {item.sub}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          fontWeight: 500,
+          color: item.accentColor,
+          marginTop: 12,
+        }}>
+          {item.actionText}
+        </div>
       </div>
     </Link>
   );
@@ -253,46 +279,39 @@ export default function DashboardPage() {
   const attentionItems: AttentionItem[] = [
     {
       icon: <I.Inbox size={20} />,
-      iconBg: 'var(--color-primary-subtle)',
-      iconColor: 'var(--color-primary)',
+      accentColor: 'var(--color-primary)',
       title: '4 unread faxes',
       titleColor: 'var(--color-text-primary)',
       sub: 'Routed to your queue · oldest from 11:14 AM',
-      arrowColor: 'var(--color-text-tertiary)',
+      actionText: 'View inbox →',
       href: '/app/inbox?number=all&filter=unread',
     },
     {
       icon: <I.Forward size={20} />,
-      iconBg: 'var(--color-review-bg)',
-      iconColor: 'var(--color-review)',
+      accentColor: 'var(--color-review)',
       title: '1 fax needs routing',
       titleColor: 'var(--color-review)',
       sub: "Dr. Rivera's Office · Patient transfer summary",
-      arrowColor: 'var(--color-review)',
+      actionText: 'Route now →',
       href: '/app/inbox?number=all&filter=needs-routing',
-      borderColor: 'var(--color-review)',
     },
     {
       icon: <I.Zap size={20} />,
-      iconBg: 'var(--color-failed-bg)',
-      iconColor: 'var(--color-failed)',
+      accentColor: 'var(--color-failed)',
       title: '1 fax failed to send',
       titleColor: 'var(--color-failed)',
       sub: 'Group Health · Referrals · 5 attempts · Resend now',
-      arrowColor: 'var(--color-failed)',
+      actionText: 'Resend now →',
       href: '/app/sent?filter=failed',
-      borderColor: 'var(--color-failed)',
     },
     {
       icon: <I.Shield size={20} />,
-      iconBg: 'var(--color-phi-bg)',
-      iconColor: 'var(--color-phi)',
+      accentColor: 'var(--color-phi)',
       title: '3 PHI faxes unreviewed',
       titleColor: 'var(--color-phi)',
       sub: 'Review within 24h per compliance policy',
-      arrowColor: 'var(--color-phi)',
+      actionText: 'Review →',
       href: '/app/inbox?number=all&filter=phi',
-      borderColor: 'var(--color-phi)',
     },
   ];
 
@@ -361,6 +380,7 @@ export default function DashboardPage() {
           boxShadow: 'var(--shadow-card)',
           padding: '16px 20px',
           marginBottom: 24,
+          maxWidth: '860px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -438,9 +458,16 @@ export default function DashboardPage() {
                 Items that need your action right now.
               </div>
             </div>
-            {attentionItems.map((item, i) => (
-              <AttentionCard key={i} item={item} />
-            ))}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 300px))',
+              gap: '16px',
+              marginTop: '12px',
+            }}>
+              {attentionItems.map((item, i) => (
+                <AttentionCard key={i} item={item} />
+              ))}
+            </div>
           </div>
 
           {/* Section 2 — Live Queue */}
