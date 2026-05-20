@@ -125,8 +125,9 @@ function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '28px 32px',
+      justifyContent: 'center',
+      gap: '20px',
+      padding: '20px 24px',
       borderBottom: isTopRow ? '1px solid var(--color-border)' : undefined,
       borderRight: isLeftCol ? '1px solid var(--color-border)' : undefined,
     }}>
@@ -135,7 +136,7 @@ function UsageRing({ used, total, label, sub, tone = 'teal', index }: {
         <div style={{ fontFamily: 'Outfit, system-ui, sans-serif', fontWeight: 600, fontSize: '24px', color: 'var(--color-text-primary)', marginTop: '6px' }}>{used.toLocaleString()} / {total.toLocaleString()}</div>
         <div style={{ fontFamily: 'Sora, system-ui, sans-serif', fontSize: '12px', color: 'var(--color-text-tertiary)', marginTop: '3px' }}>{sub}</div>
       </div>
-      <div style={{ position: 'relative', width: '120px', height: '120px' }}>
+      <div style={{ position: 'relative', width: '80px', height: '80px' }}>
         <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
           <circle cx="50" cy="50" r="38" stroke="var(--color-border)" strokeWidth="8" fill="none" />
           <circle cx="50" cy="50" r="38" stroke={colors[tone]} strokeWidth="8" strokeLinecap="round" fill="none"
