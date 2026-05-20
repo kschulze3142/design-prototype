@@ -446,7 +446,7 @@ export default function AnalyticsPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', alignItems: 'flex-start', marginBottom: '20px' }}>
 
         {/* Heatmap */}
-        <Card className="p-6" style={{ width: '100%' }}>
+        <Card className="p-6" style={{ width: 'fit-content' }}>
             <SectionHeader
               title="When you fax"
               tip="Outbound send activity by hour and day of week. Darker cells = higher volume. Useful for staffing decisions."
