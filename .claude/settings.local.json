@@ -30,7 +30,9 @@
       "Bash(grep -oE \"Referral Thread[^<]{0,40}\" /tmp/thread-resp.html)",
       "Bash(kill 93740)",
       "Bash(npm run *)",
-      "Bash(lsof -i :3000 -sTCP:LISTEN -t)"
+      "Bash(lsof -i :3000 -sTCP:LISTEN -t)",
+      "Bash(pnpm add *)",
+      "Bash(lsof -nP -iTCP:3000 -sTCP:LISTEN)"
     ]
   }
 }

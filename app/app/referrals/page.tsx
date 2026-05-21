@@ -1,7 +1,15 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  type DraggableProvided,
+  type DropResult,
+} from '@hello-pangea/dnd';
 import { I } from '@/components/app/icons';
 import {
   COLUMNS,
@@ -14,6 +22,13 @@ import {
   type ReferralStatus,
 } from './mockData';
 import DeclineModal from './components/DeclineModal';
+import SequentialAdvanceModal, { type PendingDrop } from './components/SequentialAdvanceModal';
+
+const STAGE_ORDER: ReferralStatus[] = COLUMNS.map(c => c.key);
+const STAGE_LABELS: Record<ReferralStatus, string> = COLUMNS.reduce(
+  (acc, c) => ({ ...acc, [c.key]: c.label }),
+  {} as Record<ReferralStatus, string>,
+);
 
 type TabKey = 'active' | 'declined';
 type ViewKey = 'pipeline' | 'table' | 'calendar';
@@ -420,43 +435,78 @@ function getNextActionHint(referral: Referral): string | null {
   }
 }
 
-function ReferralCard({ referral, onDecline }: {
+function ReferralCard({
+  referral,
+  onDecline,
+  draggableProvided,
+  isDragging = false,
+}: {
   referral: Referral;
   onDecline?: (r: Referral) => void;
+  draggableProvided?: DraggableProvided;
+  isDragging?: boolean;
 }) {
+  const router = useRouter();
   const [hover, setHover] = useState(false);
   const [closeHover, setCloseHover] = useState(false);
   const urgent = referral.slaBreached;
   const declinable = !!onDecline;
 
+  const baseTransform = draggableProvided?.draggableProps?.style?.transform;
+  const dragTransform = isDragging
+    ? `${baseTransform ?? ''} rotate(1.5deg)`
+    : baseTransform;
+
   return (
-    <Link
-      href={`/app/referrals/${referral.id}/thread`}
-      className="group"
+    <div
+      ref={draggableProvided?.innerRef}
+      {...(draggableProvided?.draggableProps ?? {})}
+      {...(draggableProvided?.dragHandleProps ?? {})}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={(e) => {
+        if (isDragging) return;
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-decline-btn]')) return;
+        router.push(`/app/referrals/${referral.id}/thread`);
+      }}
       style={{
+        ...(draggableProvided?.draggableProps?.style ?? {}),
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
         background: 'var(--color-surface)',
         borderRadius: 'var(--radius-md)',
-        boxShadow: hover ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+        boxShadow: isDragging
+          ? 'var(--shadow-modal)'
+          : hover
+          ? 'var(--shadow-panel)'
+          : 'var(--shadow-card)',
         padding: 14,
         textDecoration: 'none',
         color: 'inherit',
+        cursor: isDragging ? 'grabbing' : 'pointer',
         border: urgent ? `2px solid ${ROSE_300}` : '2px solid transparent',
-        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
-        transition: 'transform var(--duration-fast), box-shadow var(--duration-fast)',
+        transform: isDragging
+          ? dragTransform
+          : hover
+          ? 'translateY(-1px)'
+          : (draggableProvided?.draggableProps?.style?.transform ?? 'translateY(0)'),
+        opacity: isDragging ? 0.95 : 1,
+        transition: isDragging
+          ? 'none'
+          : 'transform var(--duration-fast), box-shadow var(--duration-fast)',
       }}
     >
       {declinable && (
         <button
           type="button"
           aria-label="Decline referral"
+          data-decline-btn
           onMouseEnter={() => setCloseHover(true)}
           onMouseLeave={() => setCloseHover(false)}
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -645,7 +695,7 @@ function ReferralCard({ referral, onDecline }: {
           </span>
         )}
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -713,40 +763,62 @@ function PipelineColumn({ column, cards, onDecline }: {
 
       {transitionActions && <TransitionBar actions={transitionActions} />}
 
-      {/* Cards */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-        padding: 12,
-        overflowY: 'auto',
-      }}>
-        {cards.map(c => (
-          <ReferralCard
-            key={c.id}
-            referral={c}
-            onDecline={canDecline ? onDecline : undefined}
-          />
-        ))}
-        {cards.length === 0 && (
-          <div style={{
-            padding: '20px 12px',
-            textAlign: 'center',
-            fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-            fontSize: 12,
-            color: 'var(--color-text-tertiary)',
-          }}>
-            No referrals
+      {/* Cards (droppable) */}
+      <Droppable droppableId={column.key}>
+        {(droppableProvided, droppableSnapshot) => (
+          <div
+            ref={droppableProvided.innerRef}
+            {...droppableProvided.droppableProps}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              padding: 12,
+              overflowY: 'auto',
+              flex: 1,
+              minHeight: 80,
+              background: droppableSnapshot.isDraggingOver
+                ? 'var(--color-primary-subtle)'
+                : 'transparent',
+              borderRadius: droppableSnapshot.isDraggingOver ? 'var(--radius-md)' : undefined,
+              transition: 'background var(--duration-fast)',
+            }}
+          >
+            {cards.map((c, index) => (
+              <Draggable draggableId={c.id} index={index} key={c.id}>
+                {(draggableProvided, draggableSnapshot) => (
+                  <ReferralCard
+                    referral={c}
+                    onDecline={canDecline ? onDecline : undefined}
+                    draggableProvided={draggableProvided}
+                    isDragging={draggableSnapshot.isDragging}
+                  />
+                )}
+              </Draggable>
+            ))}
+            {droppableProvided.placeholder}
+            {cards.length === 0 && !droppableSnapshot.isDraggingOver && (
+              <div style={{
+                padding: '20px 12px',
+                textAlign: 'center',
+                fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+                fontSize: 12,
+                color: 'var(--color-text-tertiary)',
+              }}>
+                No referrals
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </Droppable>
     </div>
   );
 }
 
-function PipelineBoard({ referrals, onDecline }: {
+function PipelineBoard({ referrals, onDecline, onDragEnd }: {
   referrals: Referral[];
   onDecline: (r: Referral) => void;
+  onDragEnd: (result: DropResult) => void;
 }) {
   const grouped = useMemo(() => {
     const map: Record<ReferralStatus, Referral[]> = {
@@ -757,22 +829,24 @@ function PipelineBoard({ referrals, onDecline }: {
   }, [referrals]);
 
   return (
-    <div style={{
-      display: 'flex',
-      gap: 14,
-      overflowX: 'auto',
-      paddingBottom: 8,
-      alignItems: 'flex-start',
-    }}>
-      {COLUMNS.map(col => (
-        <PipelineColumn
-          key={col.key}
-          column={col}
-          cards={grouped[col.key]}
-          onDecline={onDecline}
-        />
-      ))}
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div style={{
+        display: 'flex',
+        gap: 14,
+        overflowX: 'auto',
+        paddingBottom: 8,
+        alignItems: 'flex-start',
+      }}>
+        {COLUMNS.map(col => (
+          <PipelineColumn
+            key={col.key}
+            column={col}
+            cards={grouped[col.key]}
+            onDecline={onDecline}
+          />
+        ))}
+      </div>
+    </DragDropContext>
   );
 }
 
@@ -1028,7 +1102,68 @@ export default function ReferralsPage() {
   const [referrals, setReferrals] = useState<Referral[]>(mockReferrals);
   const [declined, setDeclined] = useState<DeclinedReferral[]>(mockDeclinedReferrals);
   const [declineTarget, setDeclineTarget] = useState<Referral | null>(null);
+  const [pendingDrop, setPendingDrop] = useState<PendingDrop | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const commitStatusChange = (referralId: string, toStatus: ReferralStatus) => {
+    setReferrals(prev =>
+      prev.map(r => (r.id === referralId ? { ...r, status: toStatus } : r)),
+    );
+  };
+
+  const handleDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+
+    const fromStatus = source.droppableId as ReferralStatus;
+    const toStatus = destination.droppableId as ReferralStatus;
+
+    // Same column → reorder locally (grouped rendering reads encounter order)
+    if (fromStatus === toStatus) {
+      if (source.index === destination.index) return;
+      setReferrals(prev => {
+        const columnIds = prev.filter(r => r.status === fromStatus).map(r => r.id);
+        const [movedId] = columnIds.splice(source.index, 1);
+        columnIds.splice(destination.index, 0, movedId);
+
+        const byId = new Map(prev.map(r => [r.id, r]));
+        const reorderedColumn = columnIds.map(id => byId.get(id)!);
+
+        let i = 0;
+        return prev.map(r => (r.status === fromStatus ? reorderedColumn[i++] : r));
+      });
+      return;
+    }
+
+    const fromIndex = STAGE_ORDER.indexOf(fromStatus);
+    const toIndex = STAGE_ORDER.indexOf(toStatus);
+
+    // Backward moves: allow without confirmation
+    if (toIndex < fromIndex) {
+      commitStatusChange(draggableId, toStatus);
+      return;
+    }
+
+    // Adjacent forward: allow without confirmation
+    if (toIndex === fromIndex + 1) {
+      commitStatusChange(draggableId, toStatus);
+      return;
+    }
+
+    // Skipping forward: intercept with confirmation
+    const skippedStages = STAGE_ORDER
+      .slice(fromIndex + 1, toIndex)
+      .map(s => STAGE_LABELS[s]);
+
+    setPendingDrop({
+      referralId: draggableId,
+      fromStatus,
+      toStatus,
+      fromLabel: STAGE_LABELS[fromStatus],
+      toLabel: STAGE_LABELS[toStatus],
+      skippedStages,
+    });
+  };
 
   const handleDeclineConfirm = (reason: string, _notes: string) => {
     if (!declineTarget) return;
@@ -1064,7 +1199,7 @@ export default function ReferralsPage() {
         setActiveView={setActiveView}
       />
       {activeTab === 'active'
-        ? <PipelineBoard referrals={referrals} onDecline={setDeclineTarget} />
+        ? <PipelineBoard referrals={referrals} onDecline={setDeclineTarget} onDragEnd={handleDragEnd} />
         : <DeclinedArchive declined={declined} />}
       <AutomationStrip />
 
@@ -1073,6 +1208,18 @@ export default function ReferralsPage() {
           referral={declineTarget}
           onConfirm={handleDeclineConfirm}
           onClose={() => setDeclineTarget(null)}
+        />
+      )}
+
+      {pendingDrop && (
+        <SequentialAdvanceModal
+          pendingDrop={pendingDrop}
+          onCancel={() => setPendingDrop(null)}
+          onConfirm={() => {
+            commitStatusChange(pendingDrop.referralId, pendingDrop.toStatus);
+            setToastMessage(`Advanced to ${pendingDrop.toLabel} · ${pendingDrop.skippedStages.length} stage${pendingDrop.skippedStages.length === 1 ? '' : 's'} skipped`);
+            setPendingDrop(null);
+          }}
         />
       )}
 
