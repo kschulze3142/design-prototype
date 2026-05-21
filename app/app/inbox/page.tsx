@@ -1,799 +1,756 @@
 'use client';
 
-import Link from 'next/link';
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { I } from '@/components/app/icons';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import {
+  mockIntakeFaxes,
+  mockActivityFeed,
+  type IntakeFax,
+  type UrgencyLevel,
+} from './mockData';
 
-// ─── TYPES ────────────────────────────────────────────────────────────────────
+// ─── INLINE ICONS (HeroIcons outline-style) ────────────────────────────────────
 
-interface Tag { label: string; bg: string; color: string }
+type IconProps = { size?: number; color?: string; strokeWidth?: number };
 
-interface FaxItem {
-  id: string;
-  initials: string;
-  sender: string;
-  subject: string;
-  routing: { type: 'auto'; to: string; team: string } | { type: 'needs' };
-  tags: Tag[];
-  time: string;
-  pages: number;
-  unread: boolean;
-  starred: boolean;
+const Svg = ({ size = 16, color = 'currentColor', strokeWidth = 1.6, children }: IconProps & { children: React.ReactNode }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
+    strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {children}
+  </svg>
+);
+
+const PrinterIcon = (p: IconProps) => <Svg {...p}><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></Svg>;
+const ArrowDownTrayIcon = (p: IconProps) => <Svg {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></Svg>;
+const ArrowUturnRightIcon = (p: IconProps) => <Svg {...p}><path d="M21 11V7a2 2 0 0 0-2-2H6" /><path d="m9 8-3-3 3-3" /><path d="M3 13v4a2 2 0 0 0 2 2h16" /></Svg>;
+const CheckCircleIcon = (p: IconProps) => <Svg {...p}><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></Svg>;
+const DocumentTextIcon = (p: IconProps) => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6" /><path d="M9 13h6" /><path d="M9 17h4" /></Svg>;
+const ClipboardDocumentCheckIcon = (p: IconProps) => <Svg {...p}><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="m9 14 2 2 4-4" /></Svg>;
+const UserIcon = (p: IconProps) => <Svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Svg>;
+const ArrowTopRightOnSquareIcon = (p: IconProps) => <Svg {...p}><path d="M14 3h7v7" /><path d="M10 14 21 3" /><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" /></Svg>;
+const ClockIcon = (p: IconProps) => <Svg {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></Svg>;
+const InboxArrowDownIcon = (p: IconProps) => <Svg {...p}><path d="M22 13h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" /><path d="M12 4v6" /><path d="m9 7 3 3 3-3" /></Svg>;
+const EyeIcon = (p: IconProps) => <Svg {...p}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></Svg>;
+const PaperAirplaneIcon = (p: IconProps) => <Svg {...p}><path d="M22 2 11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7Z" /></Svg>;
+const ChatBubbleLeftIcon = (p: IconProps) => <Svg {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></Svg>;
+const BoltIcon = (p: IconProps) => <Svg {...p}><path d="M13 2 3 14h7l-1 8 10-12h-7Z" /></Svg>;
+const DocIcon = (p: IconProps) => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6" /></Svg>;
+
+// ─── DESIGN TOKENS (a couple of literals used inline) ──────────────────────────
+
+const URGENCY_DOT: Record<UrgencyLevel, string> = {
+  overdue: '#fb7185', // rose-400
+  soon: '#fbbf24',    // amber-400
+  normal: 'var(--color-border-strong)',
+};
+
+const SLA_BADGE: Record<UrgencyLevel, { bg: string; color: string } | null> = {
+  overdue: { bg: '#ffe4e6', color: '#e11d48' }, // rose-100 / rose-600
+  soon:    { bg: '#fef3c7', color: '#b45309' }, // amber-100 / amber-700
+  normal:  null,
+};
+
+const ACTIVITY_ICON: Record<string, { Icon: (p: IconProps) => React.ReactElement; color: string }> = {
+  received: { Icon: InboxArrowDownIcon, color: '#0d9488' },               // teal-600
+  assigned: { Icon: UserIcon,           color: 'var(--color-primary)' },
+  viewed:   { Icon: EyeIcon,            color: 'var(--color-text-tertiary)' },
+  template: { Icon: PaperAirplaneIcon,  color: '#7c3aed' },               // violet
+  note:     { Icon: ChatBubbleLeftIcon, color: '#d97706' },               // amber
+};
+
+// ─── LEFT PANEL ────────────────────────────────────────────────────────────────
+
+type TabId = 'all' | 'mine' | 'team' | 'waiting';
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'all',     label: 'All'     },
+  { id: 'mine',    label: 'Mine'    },
+  { id: 'team',    label: 'Team'    },
+  { id: 'waiting', label: 'Waiting' },
+];
+
+function FilterChip({ label }: { label: string }) {
+  return (
+    <button style={{
+      height: 28,
+      padding: '0 10px',
+      border: '1px solid var(--color-border)',
+      borderRadius: 'var(--radius-pill)',
+      background: 'white',
+      color: 'var(--color-text-secondary)',
+      fontFamily: 'var(--font-body)',
+      fontSize: 12,
+      fontWeight: 500,
+      cursor: 'pointer',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 4,
+    }}>
+      {label}
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </button>
+  );
 }
 
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-
-const inboxNumbers = [
-  { label: 'All inboxes', number: 'all', badge: 4 },
-  { label: 'Cardiology · 0142', number: '0142', badge: 2, full: '+1 (206) 555-0142' },
-  { label: 'Front desk · 0319', number: '0319', badge: 1, full: '+1 (206) 555-0319' },
-  { label: 'Toll-free · 0903',  number: '0903', badge: 1, full: '+1 (888) 555-0903' },
-];
-
-const faxes: FaxItem[] = [
-  {
-    id: 'FX-IN-3382',
-    initials: 'PL',
-    sender: 'Pacific Lab Diagnostics',
-    subject: 'Lab results · Patient A24189',
-    routing: { type: 'auto', to: 'Dr. M. Greaves', team: 'Cardiology' },
-    tags: [
-      { label: 'PHI',  bg: 'var(--color-phi-bg)',        color: 'var(--color-phi)' },
-      { label: 'LABS', bg: 'var(--color-processing-bg)', color: 'var(--color-processing)' },
-    ],
-    time: '11:14 AM', pages: 4, unread: true, starred: true,
-  },
-  {
-    id: 'FX-IN-3380',
-    initials: 'GH',
-    sender: 'Group Health · Referrals',
-    subject: 'Referral acknowledgement — Cardiology',
-    routing: { type: 'auto', to: 'Dr. M. Greaves', team: 'Cardiology' },
-    tags: [
-      { label: 'REFERRAL', bg: '#f0fdf4', color: '#16a34a' },
-    ],
-    time: '10:47 AM', pages: 2, unread: true, starred: false,
-  },
-  {
-    id: 'FX-IN-3379',
-    initials: 'AC',
-    sender: 'Aetna Claims',
-    subject: 'EOB · claim 882-31',
-    routing: { type: 'auto', to: 'Billing team', team: '' },
-    tags: [
-      { label: 'BILLING', bg: '#fffbeb', color: '#92400e' },
-      { label: 'EOB',     bg: '#fffbeb', color: '#92400e' },
-    ],
-    time: '9:32 AM', pages: 6, unread: true, starred: false,
-  },
-  {
-    id: 'FX-IN-3378',
-    initials: 'DR',
-    sender: "Dr. Rivera's Office",
-    subject: 'Patient transfer summary',
-    routing: { type: 'needs' },
-    tags: [
-      { label: 'PHI',      bg: 'var(--color-phi-bg)',      color: 'var(--color-phi)' },
-      { label: 'TRANSFER', bg: 'var(--color-archived-bg)', color: 'var(--color-archived)' },
-    ],
-    time: '8:14 AM', pages: 9, unread: true, starred: false,
-  },
-  {
-    id: 'FX-IN-3376',
-    initials: 'SM',
-    sender: 'Swedish Medical · ROI',
-    subject: 'Records request response',
-    routing: { type: 'auto', to: 'Records team', team: '' },
-    tags: [
-      { label: 'PHI', bg: 'var(--color-phi-bg)',      color: 'var(--color-phi)' },
-      { label: 'ROI', bg: 'var(--color-archived-bg)', color: 'var(--color-archived)' },
-    ],
-    time: 'Yesterday', pages: 84, unread: false, starred: true,
-  },
-  {
-    id: 'FX-IN-3374',
-    initials: 'QD',
-    sender: 'Quest Diagnostics',
-    subject: 'Pathology · A23104',
-    routing: { type: 'auto', to: 'Dr. M. Greaves', team: 'Cardiology' },
-    tags: [
-      { label: 'PHI',       bg: 'var(--color-phi-bg)',        color: 'var(--color-phi)' },
-      { label: 'PATHOLOGY', bg: '#faf5ff',                    color: '#7c3aed' },
-    ],
-    time: 'Yesterday', pages: 5, unread: false, starred: false,
-  },
-  {
-    id: 'FX-IN-3371',
-    initials: 'BP',
-    sender: 'BlueShield Prior Auth',
-    subject: 'Auth approved — #A24189',
-    routing: { type: 'auto', to: 'Dr. M. Greaves', team: 'Cardiology' },
-    tags: [
-      { label: 'AUTH', bg: 'var(--color-primary-subtle)', color: 'var(--color-primary)' },
-    ],
-    time: 'Mon', pages: 1, unread: false, starred: false,
-  },
-  {
-    id: 'FX-IN-3369',
-    initials: 'NI',
-    sender: 'Northwest Imaging',
-    subject: 'Echo report — A24189',
-    routing: { type: 'auto', to: 'Dr. M. Greaves', team: 'Cardiology' },
-    tags: [
-      { label: 'PHI',     bg: 'var(--color-phi-bg)',        color: 'var(--color-phi)' },
-      { label: 'IMAGING', bg: 'var(--color-processing-bg)', color: 'var(--color-processing)' },
-    ],
-    time: 'Mon', pages: 3, unread: false, starred: false,
-  },
-];
-
-const TABS = [
-  { id: 'all',      label: 'All',      count: 8 },
-  { id: 'unread',   label: 'Unread',   count: 4 },
-  { id: 'flagged',  label: 'Flagged',  count: 2 },
-  { id: 'phi',      label: 'PHI only', count: 7 },
-  { id: 'archived', label: 'Archived', count: 0 },
-];
-
-// ─── AUTOSUGGEST DATA ─────────────────────────────────────────────────────────
-
-const recentSearches = [
-  'Pacific Lab Diagnostics',
-  'Prior auth A24189',
-  'PHI unread',
-  'BlueShield',
-  'Lab results',
-];
-
-const frequentContacts = [
-  { initials: 'PL', name: 'Pacific Lab',     count: 24 },
-  { initials: 'BP', name: 'BlueShield',      count: 18 },
-  { initials: 'AC', name: 'Aetna Claims',    count: 12 },
-  { initials: 'SM', name: 'Swedish Medical', count: 9  },
-  { initials: 'GH', name: 'Group Health',    count: 7  },
-];
-
-// ─── CONTACT CHIP ─────────────────────────────────────────────────────────────
-
-function ContactChip({ contact, onSelect }: { contact: typeof frequentContacts[0]; onSelect: (name: string) => void }) {
+function FaxRow({ fax, selected, onSelect }: { fax: IntakeFax; selected: boolean; onSelect: () => void }) {
   const [hovered, setHovered] = useState(false);
+  const slaBadge = SLA_BADGE[fax.slaLevel];
+
   return (
     <div
-      onMouseDown={() => onSelect(contact.name)}
+      onClick={onSelect}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        height: 30,
-        padding: '0 10px 0 6px',
-        border: `1px solid ${hovered ? 'var(--color-primary)' : 'var(--color-border)'}`,
-        borderRadius: 'var(--radius-xl)',
-        background: hovered ? 'var(--color-primary-subtle)' : 'white',
+        position: 'relative',
+        padding: '12px 12px 12px 18px',
         cursor: 'pointer',
-        fontFamily: 'var(--font-body)',
-        fontSize: 12,
-        fontWeight: 500,
-        color: 'var(--color-text-primary)',
-        transition: 'all var(--duration-fast)',
+        background: selected ? 'var(--color-primary-subtle)' : (hovered ? 'var(--color-primary-subtle)' : 'transparent'),
+        borderLeft: selected ? '3px solid var(--color-primary)' : '3px solid transparent',
+        borderBottom: '1px solid var(--color-border)',
+        display: 'flex',
+        gap: 10,
+        alignItems: 'flex-start',
       }}
     >
-      <div style={{
-        width: 22,
-        height: 22,
-        borderRadius: '50%',
-        background: 'var(--color-primary-subtle)',
-        color: 'var(--color-primary)',
-        fontSize: 9,
-        fontWeight: 700,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: 'var(--font-body)',
-      }}>
-        {contact.initials}
+      {/* Urgency dot */}
+      <span style={{
+        width: 8, height: 8, borderRadius: '50%',
+        background: URGENCY_DOT[fax.slaLevel],
+        flexShrink: 0,
+        marginTop: 6,
+      }} />
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Row 1: sender + time */}
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--color-text-primary)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {fax.senderName}
+          </span>
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: 'var(--color-text-tertiary)',
+            flexShrink: 0,
+          }}>
+            {fax.receivedAt}
+          </span>
+        </div>
+
+        {/* Row 2: subject */}
+        <div style={{
+          marginTop: 2,
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--color-text-secondary)',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}>
+          {fax.subject}
+        </div>
+
+        {/* Row 3: type tag · owner · SLA badge */}
+        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            height: 18,
+            padding: '0 6px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--color-primary-subtle)',
+            color: 'var(--color-primary)',
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            fontWeight: 600,
+          }}>
+            {fax.type}
+          </span>
+
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+            <span style={{
+              width: 20, height: 20, borderRadius: '50%',
+              background: 'var(--color-surface-dark)',
+              color: 'white',
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {fax.owner.initials}
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: 'var(--color-text-tertiary)',
+            }}>
+              {fax.owner.name}
+            </span>
+          </div>
+
+          {slaBadge && (
+            <span style={{
+              marginLeft: 'auto',
+              display: 'inline-flex',
+              alignItems: 'center',
+              height: 18,
+              padding: '0 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: slaBadge.bg,
+              color: slaBadge.color,
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              fontWeight: 700,
+            }}>
+              {fax.slaDueLabel}
+            </span>
+          )}
+        </div>
       </div>
-      {contact.name}
     </div>
   );
 }
 
-// ─── FAX ROW ──────────────────────────────────────────────────────────────────
-
-function FaxRow({ fax, isLast }: { fax: FaxItem; isLast?: boolean }) {
-  const [hovered, setHovered] = useState(false);
-
+function LeftPanel({
+  faxes, selectedId, onSelect, activeTab, setActiveTab,
+}: {
+  faxes: IntakeFax[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+  activeTab: TabId;
+  setActiveTab: (t: TabId) => void;
+}) {
   return (
-    <Link
-      href={`/app/inbox/${fax.id}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 14,
-        padding: '16px 20px',
-        borderBottom: isLast ? 'none' : '1px solid var(--color-border)',
-        borderLeft: fax.unread ? '3px solid var(--color-primary)' : '3px solid transparent',
-        cursor: 'pointer',
-        transition: 'background var(--duration-fast) var(--ease-out)',
-        position: 'relative',
-        textDecoration: 'none',
-        background: hovered ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
-      }}
-    >
-      {/* Checkbox */}
-      <input
-        type="checkbox"
-        onClick={e => e.stopPropagation()}
-        style={{ width: 16, height: 16, flexShrink: 0, accentColor: 'var(--color-primary)', cursor: 'pointer' }}
-      />
-
-      {/* Avatar */}
-      <div style={{
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        background: 'var(--color-primary-subtle)',
-        color: 'var(--color-primary)',
-        fontFamily: 'var(--font-body)',
-        fontSize: 12,
-        fontWeight: 700,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        {fax.initials}
+    <div style={{
+      width: 360,
+      flexShrink: 0,
+      background: 'white',
+      borderRight: '1px solid var(--color-border)',
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+      {/* Header */}
+      <div style={{ padding: '20px 20px 12px' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: 20,
+          fontWeight: 700,
+          color: 'var(--color-text-primary)',
+          margin: 0,
+          lineHeight: 1.15,
+        }}>
+          Intake
+        </h1>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--color-text-secondary)',
+          margin: '2px 0 0',
+        }}>
+          Incoming fax queue
+        </p>
       </div>
 
-      {/* Main content */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        {/* Row 1: sender · subject */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: fax.unread ? 700 : 500,
-            color: 'var(--color-text-primary)',
-            whiteSpace: 'nowrap',
-          }}>
-            {fax.sender}
-          </span>
-          <span style={{ color: 'var(--color-text-tertiary)', fontSize: 14, flexShrink: 0 }}> · </span>
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: 400,
-            color: 'var(--color-text-secondary)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            flex: 1,
-          }}>
-            {fax.subject}
-          </span>
-        </div>
-
-        {/* Row 2: routing + tags */}
-        <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 10 }}>
-          {fax.routing.type === 'auto' ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-              <span style={{
-                width: 6, height: 6, borderRadius: '50%',
-                background: 'var(--color-delivered)', flexShrink: 0,
-              }} />
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
-                → {fax.routing.to}{fax.routing.team ? ` · ${fax.routing.team}` : ''}
-              </span>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-              <span style={{
-                width: 6, height: 6, borderRadius: '50%',
-                background: 'var(--color-review)', flexShrink: 0,
-              }} />
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-review)' }}>
-                Needs routing
-              </span>
-            </div>
-          )}
-
-          <div style={{ marginLeft: 'auto', display: 'flex' }}>
-            {fax.tags.map(tag => (
-              <span key={tag.label} style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                height: 18,
-                padding: '0 6px',
-                borderRadius: 'var(--radius-sm)',
+      {/* View tabs */}
+      <div style={{ padding: '0 20px 12px', display: 'flex', gap: 4 }}>
+        {TABS.map(tab => {
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                background: active ? 'var(--color-primary)' : 'transparent',
+                color: active ? 'white' : 'var(--color-text-secondary)',
                 fontFamily: 'var(--font-body)',
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: 600,
-                letterSpacing: '0.03em',
-                marginLeft: 4,
-                background: tag.bg,
-                color: tag.color,
-              }}>
-                {tag.label}
-              </span>
-            ))}
-          </div>
-        </div>
+                cursor: 'pointer',
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Right metadata */}
-      <div style={{
-        flexShrink: 0,
-        textAlign: 'right',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        gap: 4,
-      }}>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
-          {fax.time}
-        </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
-            {fax.pages}p
-          </span>
-          <button
-            onClick={e => e.stopPropagation()}
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24"
-              fill={fax.starred ? 'var(--color-review)' : 'none'}
-              stroke={fax.starred ? 'var(--color-review)' : 'var(--color-text-tertiary)'}
-              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 3l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L12 17l-5.6 3.2 1.4-6.3L3 9.5l6.4-.6Z" />
-            </svg>
-          </button>
-        </div>
+      {/* Filter chips */}
+      <div style={{ padding: '0 20px 14px', display: 'flex', gap: 6 }}>
+        <FilterChip label="Type" />
+        <FilterChip label="Status" />
       </div>
-    </Link>
+
+      {/* List */}
+      <div style={{ borderTop: '1px solid var(--color-border)' }}>
+        {faxes.map(fax => (
+          <FaxRow
+            key={fax.id}
+            fax={fax}
+            selected={fax.id === selectedId}
+            onSelect={() => onSelect(fax.id)}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
+// ─── RIGHT PANEL ───────────────────────────────────────────────────────────────
 
-function InboxContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const activeNumber = searchParams.get('number');
+function ToolbarIconButton({ children }: { children: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 'var(--radius-md)',
+        border: 'none',
+        background: 'transparent',
+        color: hovered ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+        cursor: 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
-  useEffect(() => {
-    if (!activeNumber) {
-      router.replace(`/app/inbox?number=all`);
-    }
-  }, [activeNumber, router]);
+function DocPreviewPlaceholder({ fax }: { fax: IntakeFax }) {
+  const [activePage, setActivePage] = useState(0);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      <div style={{
+        width: '100%',
+        maxWidth: 560,
+        aspectRatio: '8.5 / 11',
+        background: 'var(--color-border)',
+        borderRadius: 'var(--radius-lg)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
+        color: 'var(--color-text-tertiary)',
+      }}>
+        <DocIcon size={56} color="var(--color-text-tertiary)" strokeWidth={1.4} />
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-secondary)' }}>
+          {fax.pages}-page fax · {fax.type}
+        </div>
+      </div>
 
-  const activeInbox = inboxNumbers.find(n => n.number === activeNumber);
-  const headline = activeNumber === 'all' || !activeNumber
-    ? 'Your inbound faxes · All inboxes'
-    : `Your inbound faxes · ${activeInbox?.label}`;
-  const unreadCount = activeNumber === 'all' || !activeNumber ? 4 : (activeInbox?.badge ?? 0);
-  const overline = `INTAKE · ${unreadCount} UNREAD`;
+      {/* Page dots */}
+      <div style={{ display: 'flex', gap: 8 }}>
+        {Array.from({ length: fax.pages }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActivePage(i)}
+            aria-label={`Page ${i + 1}`}
+            style={{
+              width: 10, height: 10, borderRadius: '50%',
+              border: 'none',
+              cursor: 'pointer',
+              background: i === activePage ? 'var(--color-primary)' : 'var(--color-border-strong)',
+              padding: 0,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
-  const [activeTab, setActiveTab]       = useState('all');
-  const [hoveredTab, setHoveredTab]     = useState<string | null>(null);
-  const [searchValue, setSearchValue]   = useState('');
-  const [searchFocused, setSearchFocused] = useState(false);
+function PropertyRow({ label, value, options }: { label: string; value: string; options: string[] }) {
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '8px 0',
+    }}>
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        color: 'var(--color-text-tertiary)',
+      }}>
+        {label}
+      </span>
+      <select
+        defaultValue={value}
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--color-text-primary)',
+          background: 'transparent',
+          border: 'none',
+          textAlign: 'right',
+          cursor: 'pointer',
+          outline: 'none',
+          appearance: 'none',
+          paddingRight: 14,
+          backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238896aa' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right center',
+          backgroundSize: '10px',
+          maxWidth: 180,
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+      </select>
+    </div>
+  );
+}
 
-  const q = searchValue.toLowerCase();
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 11,
+      fontWeight: 700,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+      color: 'var(--color-text-tertiary)',
+      marginBottom: 10,
+    }}>
+      {children}
+    </div>
+  );
+}
 
-  const filtered = faxes.filter(f => {
-    if (activeTab === 'unread'   && !f.unread)                              return false;
-    if (activeTab === 'flagged'  && !f.starred)                             return false;
-    if (activeTab === 'phi'      && !f.tags.some(t => t.label === 'PHI'))   return false;
-    if (activeTab === 'archived')                                            return false;
-    if (q && !`${f.sender} ${f.subject}`.toLowerCase().includes(q))         return false;
-    return true;
-  });
+function TemplateRow({ Icon, label }: { Icon: (p: IconProps) => React.ReactElement; label: string }) {
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '6px 0',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ color: 'var(--color-text-secondary)', display: 'inline-flex' }}>
+          <Icon size={16} />
+        </span>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-primary)' }}>
+          {label}
+        </span>
+      </div>
+      <Button variant="primary" size="sm" style={{ height: 26, padding: '0 12px', fontSize: 12 }}>
+        Send
+      </Button>
+    </div>
+  );
+}
 
-  const filteredRecent   = recentSearches.filter(s => s.toLowerCase().includes(q));
-  const filteredContacts = frequentContacts.filter(c => c.name.toLowerCase().includes(q));
+function OtherActionRow({ Icon, label }: { Icon: (p: IconProps) => React.ReactElement; label: string }) {
+  return (
+    <a href="#" onClick={e => e.preventDefault()} style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      padding: '6px 0',
+      fontFamily: 'var(--font-body)',
+      fontSize: 13,
+      color: 'var(--color-primary)',
+      textDecoration: 'none',
+      fontWeight: 600,
+    }}>
+      <Icon size={16} />
+      {label}
+    </a>
+  );
+}
 
-  const showDropdown = searchFocused;
+function ActivityFeed() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {mockActivityFeed.map((event, i) => {
+        const { Icon, color } = ACTIVITY_ICON[event.icon];
+        const isLast = i === mockActivityFeed.length - 1;
+        return (
+          <div key={event.id} style={{ display: 'flex', gap: 10, position: 'relative' }}>
+            {/* Left column: icon + connector */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flexShrink: 0,
+              position: 'relative',
+            }}>
+              <div style={{
+                width: 22,
+                height: 22,
+                borderRadius: '50%',
+                background: 'white',
+                border: `1.5px solid ${color}`,
+                color,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1,
+              }}>
+                <Icon size={12} />
+              </div>
+              {!isLast && (
+                <div style={{
+                  flex: 1,
+                  width: 1.5,
+                  background: 'var(--color-border)',
+                  marginTop: 2,
+                  marginBottom: 2,
+                }} />
+              )}
+            </div>
+
+            {/* Right column: label + time */}
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: 8,
+              paddingBottom: isLast ? 0 : 14,
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--color-text-primary)',
+                lineHeight: 1.35,
+              }}>
+                {event.label}
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: 'var(--color-text-tertiary)',
+                flexShrink: 0,
+              }}>
+                {event.time}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Inspector({ fax }: { fax: IntakeFax }) {
+  const SECTION_DIVIDER = (
+    <div style={{ height: 1, background: 'var(--color-border)', margin: '16px 0' }} />
+  );
+
+  const STATUS_LABELS: Record<IntakeFax['status'], string> = {
+    unread: 'Unread', in_review: 'In review', resolved: 'Resolved', waiting: 'Waiting',
+  };
+
+  return (
+    <div style={{
+      width: 320,
+      flexShrink: 0,
+      borderLeft: '1px solid var(--color-border)',
+      padding: '16px 20px',
+      overflowY: 'auto',
+      background: 'white',
+    }}>
+      {/* Section 1 — Properties */}
+      <div>
+        <PropertyRow label="Document type" value={fax.type} options={['Referral Rx', 'Lab Results', 'Insurance Card', 'H&P', 'Prior Auth', 'Other']} />
+        <PropertyRow label="Patient" value={fax.patientName ?? '—'} options={[fax.patientName ?? '—', 'Eleanor Vance', 'Henry Tobias', 'Marcus Whitfield']} />
+        <PropertyRow label="Owner" value={fax.owner.name} options={['Amelia Park', 'Jordan Reyes', 'Sam Levin']} />
+        <PropertyRow label="Status" value={STATUS_LABELS[fax.status]} options={['Unread', 'In review', 'Waiting', 'Resolved']} />
+        <PropertyRow label="Due" value={fax.slaDueLabel || '—'} options={[fax.slaDueLabel || '—', 'Overdue', '1h 20m', '4h remaining']} />
+      </div>
+
+      {SECTION_DIVIDER}
+
+      {/* Section 2 — Reply with template */}
+      <div>
+        <SectionHeading>Reply with template</SectionHeading>
+        <TemplateRow Icon={CheckCircleIcon} label="Send acknowledgment" />
+        <TemplateRow Icon={DocumentTextIcon} label="Request records" />
+        <TemplateRow Icon={ClipboardDocumentCheckIcon} label="Prior auth cover sheet" />
+      </div>
+
+      {SECTION_DIVIDER}
+
+      {/* Section 3 — Other actions */}
+      <div>
+        <SectionHeading>Other actions</SectionHeading>
+        <OtherActionRow Icon={UserIcon} label="Reassign" />
+        <OtherActionRow Icon={ArrowTopRightOnSquareIcon} label="Forward to provider" />
+        <OtherActionRow Icon={ClockIcon} label="Snooze" />
+      </div>
+
+      {SECTION_DIVIDER}
+
+      {/* Section 4 — Inline rule prompt */}
+      <div style={{
+        background: 'var(--color-primary-subtle)',
+        borderRadius: 'var(--radius-md)',
+        padding: 12,
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          fontWeight: 700,
+          color: 'var(--color-text-primary)',
+        }}>
+          <BoltIcon size={14} color="var(--color-primary)" />
+          Repeat sender detected
+        </div>
+        <p style={{
+          margin: '4px 0 10px',
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--color-text-secondary)',
+          lineHeight: 1.4,
+        }}>
+          {fax.senderName} sends {fax.type.toLowerCase()}s regularly.
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Button variant="primary" size="sm" style={{ height: 26, padding: '0 12px', fontSize: 12 }}>
+            Create rule
+          </Button>
+          <a href="#" onClick={e => e.preventDefault()} style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
+            color: 'var(--color-text-tertiary)',
+            textDecoration: 'none',
+            fontWeight: 600,
+          }}>
+            Dismiss
+          </a>
+        </div>
+      </div>
+
+      {SECTION_DIVIDER}
+
+      {/* Section 5 — Activity feed */}
+      <div>
+        <SectionHeading>Activity</SectionHeading>
+        <ActivityFeed />
+      </div>
+    </div>
+  );
+}
+
+function RightPanel({ fax }: { fax: IntakeFax | undefined }) {
+  if (!fax) {
+    return (
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'var(--color-text-tertiary)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 14,
+      }}>
+        Select a fax to view details
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: 0,
+      overflow: 'hidden',
+    }}>
+      {/* Top toolbar */}
+      <div style={{
+        background: 'white',
+        borderBottom: '1px solid var(--color-border)',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexShrink: 0,
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--color-text-tertiary)',
+        }}>
+          From {fax.senderFax}  ·  {fax.pages} pages  ·  Received {fax.receivedAt}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <ToolbarIconButton><PrinterIcon size={18} /></ToolbarIconButton>
+          <ToolbarIconButton><ArrowDownTrayIcon size={18} /></ToolbarIconButton>
+          <ToolbarIconButton><ArrowUturnRightIcon size={18} /></ToolbarIconButton>
+        </div>
+
+        <Button variant="primary">Mark resolved</Button>
+      </div>
+
+      {/* Content area: doc preview + inspector */}
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        {/* Doc preview */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '32px 32px 48px',
+          background: 'var(--color-bg)',
+        }}>
+          <DocPreviewPlaceholder fax={fax} />
+        </div>
+
+        {/* Inspector */}
+        <Inspector fax={fax} />
+      </div>
+    </div>
+  );
+}
+
+// ─── PAGE ──────────────────────────────────────────────────────────────────────
+
+export default function InboxPage() {
+  const [selectedId, setSelectedId] = useState<string>('f1');
+  const [activeTab, setActiveTab] = useState<TabId>('all');
+
+  const selectedFax = mockIntakeFaxes.find(f => f.id === selectedId);
 
   return (
     <div style={{
       display: 'flex',
-      flexDirection: 'column',
+      height: '100vh',
+      margin: '0 -32px',
+      background: 'var(--color-bg)',
     }}>
-
-      {/* Page header */}
-      <div style={{
-        padding: '32px 0 24px',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        flexShrink: 0,
-      }}>
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 4,
-          }}>
-            {overline}
-          </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 26,
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            margin: 0,
-            lineHeight: 1.15,
-          }}>
-            {headline}
-          </h1>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: 400,
-            color: 'var(--color-text-secondary)',
-            margin: 0,
-            marginTop: 4,
-          }}>
-            Review, route, and act on every incoming fax.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', alignSelf: 'center' }}>
-          <button style={{
-            position: 'relative',
-            width: 36,
-            height: 36,
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--color-border)',
-            background: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--color-text-secondary)',
-            cursor: 'pointer',
-          }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-            <span style={{
-              position: 'absolute',
-              top: 7,
-              right: 8,
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: 'var(--color-failed)',
-            }} />
-          </button>
-          <Button variant="primary">
-            <I.Plus size={14} strokeWidth={2.4} /> New fax
-          </Button>
-        </div>
-      </div>
-
-      {/* Search bar — sits on page background */}
-      <div style={{ position: 'relative', maxWidth: 480, marginBottom: 16 }}>
-        <svg
-          style={{
-            position: 'absolute',
-            left: '14px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '16px',
-            height: '16px',
-            color: searchFocused ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-            pointerEvents: 'none',
-            zIndex: 1,
-            transition: 'color var(--duration-fast) var(--ease-out)',
-          }}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-
-        <input
-          type="text"
-          placeholder="Search inbox..."
-          value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
-          style={{
-            width: '100%',
-            height: '42px',
-            border: searchFocused ? '1px solid var(--color-primary)' : '1px solid var(--color-border-strong)',
-            borderRadius: 'var(--radius-pill)',
-            padding: '0 16px 0 40px',
-            fontSize: '14px',
-            fontFamily: 'var(--font-body)',
-            color: 'var(--color-text-primary)',
-            background: 'var(--color-surface)',
-            outline: 'none',
-            boxSizing: 'border-box',
-            boxShadow: searchFocused ? '0 0 0 3px rgba(61, 80, 128, 0.12), var(--shadow-card)' : 'var(--shadow-card)',
-            transition: 'all var(--duration-fast) var(--ease-out)',
-          }}
-        />
-
-        {showDropdown && (
-          <div style={{
-            position: 'absolute',
-            top: 'calc(100% + 4px)',
-            left: 0,
-            width: 480,
-            background: 'white',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-panel)',
-            zIndex: 100,
-            overflow: 'hidden',
-          }}>
-            {q === '' ? (
-              <>
-                {recentSearches.map(item => (
-                  <div
-                    key={item}
-                    onMouseDown={() => { setSearchValue(item); setSearchFocused(false); }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: '10px 16px',
-                      cursor: 'pointer',
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 13,
-                      color: 'var(--color-text-secondary)',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    {item}
-                  </div>
-                ))}
-
-                <div style={{ height: 1, background: 'var(--color-border)', margin: 0 }} />
-
-                <div style={{ padding: '6px 16px', fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', color: 'var(--color-text-tertiary)', textTransform: 'uppercase' }}>
-                  Frequent Contacts
-                </div>
-
-                <div style={{ padding: '8px 16px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {frequentContacts.map(c => (
-                    <ContactChip key={c.initials} contact={c} onSelect={name => { setSearchValue(name); setSearchFocused(false); }} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                {filteredRecent.map(item => (
-                  <div
-                    key={item}
-                    onMouseDown={() => { setSearchValue(item); setSearchFocused(false); }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: '10px 16px',
-                      cursor: 'pointer',
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 13,
-                      color: 'var(--color-text-secondary)',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }}>
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    {item}
-                  </div>
-                ))}
-
-                {filteredContacts.map(c => (
-                  <div
-                    key={c.initials}
-                    onMouseDown={() => { setSearchValue(c.name); setSearchFocused(false); }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: '10px 16px',
-                      cursor: 'pointer',
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 13,
-                      color: 'var(--color-text-secondary)',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <div style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: '50%',
-                      background: 'var(--color-primary-subtle)',
-                      color: 'var(--color-primary)',
-                      fontSize: 9,
-                      fontWeight: 700,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      fontFamily: 'var(--font-body)',
-                    }}>
-                      {c.initials}
-                    </div>
-                    {c.name}
-                  </div>
-                ))}
-
-                {filteredRecent.length === 0 && filteredContacts.length === 0 && (
-                  <div style={{ padding: '12px 16px', fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-tertiary)' }}>
-                    No suggestions
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Main list card */}
-      <div style={{
-        background: 'var(--color-surface)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-card)',
-        overflow: 'hidden',
-      }}>
-
-        {/* Filter tabs row */}
-        <div style={{
-          padding: '16px 20px',
-          borderBottom: '1px solid var(--color-border)',
-          background: 'var(--color-surface)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-        }}>
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              onMouseEnter={() => setHoveredTab(tab.id)}
-              onMouseLeave={() => setHoveredTab(null)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                padding: '4px 12px',
-                borderRadius: 'var(--radius-pill)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 13,
-                fontWeight: activeTab === tab.id ? 600 : 500,
-                cursor: 'pointer',
-                border: 'none',
-                background: activeTab === tab.id ? 'var(--color-primary)' : (hoveredTab === tab.id ? 'var(--color-primary-subtle)' : 'transparent'),
-                color: activeTab === tab.id ? 'white' : 'var(--color-text-secondary)',
-                whiteSpace: 'nowrap',
-                transition: `background var(--duration-fast)`,
-              }}
-            >
-              {tab.label}
-              {tab.count > 0 && (
-                <span style={{
-                  fontSize: 13,
-                  color: activeTab === tab.id ? 'rgba(255,255,255,0.7)' : 'var(--color-text-tertiary)',
-                }}>
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          ))}
-
-          <div style={{
-            borderLeft: '1px solid var(--color-border)',
-            paddingLeft: 16,
-            marginLeft: 8,
-            display: 'flex',
-            gap: 8,
-          }}>
-            {['Routing', 'Sender'].map(label => (
-              <button key={label} style={{
-                height: 30,
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '0 10px',
-                fontFamily: 'var(--font-body)',
-                fontSize: 13,
-                color: 'var(--color-text-secondary)',
-                background: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                cursor: 'pointer',
-              }}>
-                {label}
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Column header row */}
-        <div style={{
-          background: 'var(--color-bg)',
-          borderBottom: '1px solid var(--color-border)',
-          padding: '10px 20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-        }}>
-          <input
-            type="checkbox"
-            style={{ width: 16, height: 16, accentColor: 'var(--color-primary)', cursor: 'pointer' }}
-          />
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-tertiary)' }}>
-            {filtered.length} faxes
-          </span>
-          <button style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--color-text-secondary)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-          }}>
-            Newest ↓
-          </button>
-        </div>
-
-        {/* Rows */}
-        {filtered.length === 0 ? (
-          <div style={{
-            padding: '64px 20px',
-            textAlign: 'center',
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            color: 'var(--color-text-tertiary)',
-          }}>
-            Nothing here. Try another filter.
-          </div>
-        ) : (
-          filtered.map((fax, i) => <FaxRow key={fax.id} fax={fax} isLast={i === filtered.length - 1} />)
-        )}
-      </div>
+      <LeftPanel
+        faxes={mockIntakeFaxes}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <RightPanel fax={selectedFax} />
     </div>
-  );
-}
-
-export default function InboxPage() {
-  return (
-    <Suspense fallback={null}>
-      <InboxContent />
-    </Suspense>
   );
 }
