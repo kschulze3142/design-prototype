@@ -115,13 +115,24 @@ export const mockThreadEvents: ThreadEvent[] = [
     timestamp: 'Jun 13, 2:11 PM', delivered: true,
     classificationNote: 'Auto-classified as F2F documentation',
   },
+  {
+    id: 'e8', eventType: 'pipeline_transition', direction: 'system',
+    senderLabel: 'Amelia Park',
+    bodyText: 'Insurance not accepted. Medicaid not contracted in this region.',
+    documentName: null, documentPages: null,
+    pipelineFromStatus: 'in_review', pipelineToStatus: 'declined',
+    transitionActions: ['Courtesy fax sent to Foothill Clinic'],
+    tags: [],
+    timestamp: 'Jun 14, 3:45 PM', delivered: true,
+    classificationNote: null,
+  },
 ]
 
 export const PIPELINE_STAGES = ['new', 'in_review', 'accepted', 'scheduled', 'completed']
 
 export const STAGE_LABELS: Record<string, string> = {
   new: 'New', in_review: 'In Review', accepted: 'Accepted',
-  scheduled: 'Scheduled', completed: 'Completed',
+  scheduled: 'Scheduled', completed: 'Completed', declined: 'Declined',
 }
 
 export const NEXT_ACTION_HINTS: Partial<Record<string, { label: string; actions: string[] }>> = {

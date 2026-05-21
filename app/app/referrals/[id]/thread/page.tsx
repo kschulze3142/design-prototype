@@ -22,6 +22,9 @@ const VIOLET_SUBTLE = '#ede9fe';
 const VIOLET_50 = '#f5f3ff';
 const AMBER = '#d97706';
 const AMBER_50 = '#fffbeb';
+const ROSE = '#e11d48';
+const ROSE_300 = '#fda4af';
+const ROSE_50 = '#fff1f2';
 
 const EVENT_TYPE_LABEL: Record<EventType, string> = {
   fax_inbound: 'Inbound Fax',
@@ -31,11 +34,23 @@ const EVENT_TYPE_LABEL: Record<EventType, string> = {
   note: 'Note',
 };
 
+function eventListLabel(event: ThreadEvent): string {
+  if (event.eventType === 'pipeline_transition' && event.pipelineToStatus === 'declined') {
+    return 'Referral Declined';
+  }
+  return EVENT_TYPE_LABEL[event.eventType];
+}
+
 function directionColor(direction: Direction): string {
   if (direction === 'inbound') return TEAL;
   if (direction === 'outbound') return VIOLET;
   if (direction === 'auto') return AMBER;
   return 'var(--color-text-tertiary)';
+}
+
+function eventIconColor(event: ThreadEvent): string {
+  if (event.pipelineToStatus === 'declined') return ROSE;
+  return directionColor(event.direction);
 }
 
 function dateKey(timestamp: string): string {
@@ -60,7 +75,16 @@ function initials(name: string): string {
 // ─── ICONS ────────────────────────────────────────────────────────────────────
 
 function IconForEvent({ event, size = 14 }: { event: ThreadEvent; size?: number }) {
-  const color = directionColor(event.direction);
+  const color = eventIconColor(event);
+  if (event.pipelineToStatus === 'declined') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
+        strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    );
+  }
   if (event.eventType === 'fax_inbound') {
     return (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
@@ -219,7 +243,7 @@ function ThreadListItem({
   showConnector: boolean;
   onClick: () => void;
 }) {
-  const color = directionColor(event.direction);
+  const color = eventIconColor(event);
   return (
     <button
       onClick={onClick}
@@ -274,7 +298,7 @@ function ThreadListItem({
           fontWeight: 500,
           color: 'var(--color-text-primary)',
         }}>
-          {EVENT_TYPE_LABEL[event.eventType]}
+          {eventListLabel(event)}
         </p>
         <p style={{
           margin: 0,
@@ -814,9 +838,82 @@ function PipelineTransitionCard({ event, active, onClick }: {
   );
 }
 
+function DeclineBubble({ event, active, onClick }: {
+  event: ThreadEvent; active: boolean; onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        border: `2px dashed ${ROSE_300}`,
+        borderRadius: 'var(--radius-lg)',
+        background: ROSE_50,
+        padding: '14px 16px',
+        margin: '8px 8px',
+        cursor: 'pointer',
+        boxShadow: active ? 'var(--shadow-panel)' : 'none',
+        transition: 'box-shadow var(--duration-fast)',
+      }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{ color: ROSE, display: 'inline-flex' }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </span>
+        <span style={{
+          fontFamily: 'Outfit, var(--font-heading), system-ui, sans-serif',
+          fontWeight: 600,
+          fontSize: 13,
+          color: ROSE,
+        }}>
+          Referral Declined
+        </span>
+        <span style={{
+          marginLeft: 'auto',
+          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+          fontSize: 11,
+          color: 'var(--color-text-tertiary)',
+        }}>
+          {event.timestamp}
+        </span>
+      </div>
+      {event.bodyText && (
+        <p style={{
+          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+          fontSize: 13,
+          color: 'var(--color-text-secondary)',
+          margin: '0 0 6px',
+        }}>
+          {event.bodyText}
+        </p>
+      )}
+      <div style={{
+        display: 'flex',
+        gap: 16,
+        fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+        fontSize: 12,
+        color: 'var(--color-text-tertiary)',
+      }}>
+        <span>
+          Declined by{' '}
+          <strong style={{ color: 'var(--color-text-primary)' }}>{event.senderLabel}</strong>
+        </span>
+        {event.transitionActions?.[0] && (
+          <span style={{ color: '#059669' }}>✓ {event.transitionActions[0]}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function EventBubble({ event, active, onClick }: {
   event: ThreadEvent; active: boolean; onClick: () => void;
 }) {
+  if (event.eventType === 'pipeline_transition' && event.pipelineToStatus === 'declined') {
+    return <DeclineBubble event={event} active={active} onClick={onClick} />;
+  }
   if (event.direction === 'inbound') return <InboundBubble event={event} active={active} onClick={onClick} />;
   if (event.direction === 'outbound') return <OutboundBubble event={event} active={active} onClick={onClick} />;
   if (event.direction === 'auto') return <AutoBubble event={event} active={active} onClick={onClick} />;
