@@ -376,7 +376,7 @@ export default function OnboardingPage() {
             <SectionTitle title="What's an empty workspace?" subtitle="A few things you'll see here once you're set up:" />
             <div className="mt-5 space-y-4">
               {[
-                { icon: 'Inbox' as const,  title: 'Inbox',     desc: 'Inbound faxes routed to the right person.' },
+                { icon: 'Inbox' as const,  title: 'Intake',    desc: 'Inbound faxes routed to the right person.' },
                 { icon: 'Sent' as const,   title: 'Sent',      desc: 'Every fax with delivery receipt and audit trail.' },
                 { icon: 'Audit' as const,  title: 'Audit log', desc: 'Tamper-evident record of every PHI access.' },
               ].map((it, i) => {

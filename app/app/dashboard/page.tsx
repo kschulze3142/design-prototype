@@ -618,7 +618,7 @@ export default function DashboardPage() {
           {/* Card 3 — Inbox Preview */}
           <Card padding="20px">
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span className="text-title">Inbox</span>
+              <span className="text-title">Intake</span>
               <span style={{
                 marginLeft: 8,
                 background: 'var(--color-primary-subtle)',

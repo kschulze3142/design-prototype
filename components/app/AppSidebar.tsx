@@ -198,7 +198,7 @@ const CORE: NavItem[] = [
   { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
   { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
   {
-    href: '/app/inbox', label: 'Inbox', icon: 'Inbox', badge: 4,
+    href: '/app/inbox', label: 'Intake', icon: 'Inbox', badge: 4,
     subItems: inboxNumbers.map(n => ({
       href: `/app/inbox?number=${n.number}`,
       label: n.label,

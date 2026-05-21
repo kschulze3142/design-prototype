@@ -551,7 +551,7 @@ export default function InboxDetailPage() {
       }}>
 
         {/* Back button — own row */}
-        <Link href="/app/inbox" className="inbox-back-link">← Inbox</Link>
+        <Link href="/app/inbox" className="inbox-back-link">← Intake</Link>
 
         {/* Sender info + actions */}
         <div style={{ marginTop: 8 }}>

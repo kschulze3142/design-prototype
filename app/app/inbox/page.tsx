@@ -376,7 +376,7 @@ function InboxContent() {
     ? 'Your inbound faxes · All inboxes'
     : `Your inbound faxes · ${activeInbox?.label}`;
   const unreadCount = activeNumber === 'all' || !activeNumber ? 4 : (activeInbox?.badge ?? 0);
-  const overline = `INBOX · ${unreadCount} UNREAD`;
+  const overline = `INTAKE · ${unreadCount} UNREAD`;
 
   const [activeTab, setActiveTab]       = useState('all');
   const [hoveredTab, setHoveredTab]     = useState<string | null>(null);

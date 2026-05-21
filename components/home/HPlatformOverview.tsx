@@ -56,7 +56,7 @@ function ReviewPreview() {
   return (
     <div className="sol-preview">
       <div className="sol-preview-head">
-        <span className="sol-preview-title">Inbox</span>
+        <span className="sol-preview-title">Intake</span>
         <span className="sol-preview-sub">3 unread</span>
       </div>
       <div className="space-y-1.5 flex-1">
@@ -142,7 +142,7 @@ const cards: SolCard[] = [
     eyebrow: 'Inbound',
     title: 'Review',
     desc: 'Open inbound faxes, preview pages, assign owners, add notes, and move documents through review.',
-    previewTitle: 'Inbox',
+    previewTitle: 'Intake',
     previewSub: '3 unread',
     preview: <ReviewPreview />,
   },
