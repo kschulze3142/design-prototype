@@ -492,11 +492,8 @@ function ReferralCard({
           ? dragTransform
           : hover
           ? 'translateY(-1px)'
-          : (draggableProvided?.draggableProps?.style?.transform ?? 'translateY(0)'),
+          : (draggableProvided?.draggableProps?.style?.transform ?? 'none'),
         opacity: isDragging ? 0.95 : 1,
-        transition: isDragging
-          ? 'none'
-          : 'transform var(--duration-fast), box-shadow var(--duration-fast)',
       }}
     >
       {declinable && (
@@ -796,7 +793,6 @@ function PipelineColumn({ column, cards, onDecline }: {
                 )}
               </Draggable>
             ))}
-            {droppableProvided.placeholder}
             {cards.length === 0 && !droppableSnapshot.isDraggingOver && (
               <div style={{
                 padding: '20px 12px',
@@ -808,6 +804,7 @@ function PipelineColumn({ column, cards, onDecline }: {
                 No referrals
               </div>
             )}
+            {droppableProvided.placeholder}
           </div>
         )}
       </Droppable>
@@ -1150,10 +1147,12 @@ export default function ReferralsPage() {
       return;
     }
 
-    // Skipping forward: intercept with confirmation
+    // Skipping forward: optimistically move, then intercept with confirmation
     const skippedStages = STAGE_ORDER
       .slice(fromIndex + 1, toIndex)
       .map(s => STAGE_LABELS[s]);
+
+    commitStatusChange(draggableId, toStatus);
 
     setPendingDrop({
       referralId: draggableId,
@@ -1214,9 +1213,11 @@ export default function ReferralsPage() {
       {pendingDrop && (
         <SequentialAdvanceModal
           pendingDrop={pendingDrop}
-          onCancel={() => setPendingDrop(null)}
+          onCancel={() => {
+            commitStatusChange(pendingDrop.referralId, pendingDrop.fromStatus);
+            setPendingDrop(null);
+          }}
           onConfirm={() => {
-            commitStatusChange(pendingDrop.referralId, pendingDrop.toStatus);
             setToastMessage(`Advanced to ${pendingDrop.toLabel} · ${pendingDrop.skippedStages.length} stage${pendingDrop.skippedStages.length === 1 ? '' : 's'} skipped`);
             setPendingDrop(null);
           }}
