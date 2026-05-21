@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { I } from '@/components/app/icons';
 import {
   COLUMNS,
@@ -9,9 +9,11 @@ import {
   TRANSITION_BARS,
   mockDeclinedReferrals,
   mockReferrals,
+  type DeclinedReferral,
   type Referral,
   type ReferralStatus,
 } from './mockData';
+import DeclineModal from './components/DeclineModal';
 
 type TabKey = 'active' | 'declined';
 type ViewKey = 'pipeline' | 'table' | 'calendar';
@@ -405,16 +407,23 @@ function TransitionBar({ actions }: { actions: string[] }) {
   );
 }
 
-function ReferralCard({ referral }: { referral: Referral }) {
+function ReferralCard({ referral, onDecline }: {
+  referral: Referral;
+  onDecline?: (r: Referral) => void;
+}) {
   const [hover, setHover] = useState(false);
+  const [closeHover, setCloseHover] = useState(false);
   const urgent = referral.slaBreached;
+  const declinable = !!onDecline;
 
   return (
     <Link
       href={`/app/referrals/${referral.id}/thread`}
+      className="group"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
@@ -429,6 +438,44 @@ function ReferralCard({ referral }: { referral: Referral }) {
         transition: 'transform var(--duration-fast), box-shadow var(--duration-fast)',
       }}
     >
+      {declinable && (
+        <button
+          type="button"
+          aria-label="Decline referral"
+          onMouseEnter={() => setCloseHover(true)}
+          onMouseLeave={() => setCloseHover(false)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDecline?.(referral);
+          }}
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            width: 20,
+            height: 20,
+            borderRadius: 'var(--radius-sm)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: closeHover ? ROSE_50 : 'var(--color-border)',
+            color: closeHover ? ROSE_700 : 'var(--color-text-secondary)',
+            border: 'none',
+            cursor: 'pointer',
+            opacity: hover ? 1 : 0,
+            transition: 'opacity var(--duration-fast), background var(--duration-fast), color var(--duration-fast)',
+            zIndex: 2,
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      )}
+
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         <div style={{
@@ -576,10 +623,14 @@ function ReferralCard({ referral }: { referral: Referral }) {
   );
 }
 
-function PipelineColumn({ column, cards }: {
+const DECLINABLE_STATUSES: ReferralStatus[] = ['new', 'in_review', 'accepted'];
+
+function PipelineColumn({ column, cards, onDecline }: {
   column: { key: ReferralStatus; label: string; dotColor: string };
   cards: Referral[];
+  onDecline: (r: Referral) => void;
 }) {
+  const canDecline = DECLINABLE_STATUSES.includes(column.key);
   const transitionActions = TRANSITION_BARS[column.key];
   return (
     <div style={{
@@ -644,7 +695,13 @@ function PipelineColumn({ column, cards }: {
         padding: 12,
         overflowY: 'auto',
       }}>
-        {cards.map(c => <ReferralCard key={c.id} referral={c} />)}
+        {cards.map(c => (
+          <ReferralCard
+            key={c.id}
+            referral={c}
+            onDecline={canDecline ? onDecline : undefined}
+          />
+        ))}
         {cards.length === 0 && (
           <div style={{
             padding: '20px 12px',
@@ -661,14 +718,17 @@ function PipelineColumn({ column, cards }: {
   );
 }
 
-function PipelineBoard() {
+function PipelineBoard({ referrals, onDecline }: {
+  referrals: Referral[];
+  onDecline: (r: Referral) => void;
+}) {
   const grouped = useMemo(() => {
     const map: Record<ReferralStatus, Referral[]> = {
       new: [], in_review: [], accepted: [], scheduled: [], completed: [],
     };
-    mockReferrals.forEach(r => map[r.status].push(r));
+    referrals.forEach(r => map[r.status].push(r));
     return map;
-  }, []);
+  }, [referrals]);
 
   return (
     <div style={{
@@ -679,7 +739,12 @@ function PipelineBoard() {
       alignItems: 'flex-start',
     }}>
       {COLUMNS.map(col => (
-        <PipelineColumn key={col.key} column={col} cards={grouped[col.key]} />
+        <PipelineColumn
+          key={col.key}
+          column={col}
+          cards={grouped[col.key]}
+          onDecline={onDecline}
+        />
       ))}
     </div>
   );
@@ -687,7 +752,7 @@ function PipelineBoard() {
 
 // ─── DECLINED ARCHIVE ─────────────────────────────────────────────────────────
 
-function DeclinedArchive() {
+function DeclinedArchive({ declined }: { declined: DeclinedReferral[] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* Stats bar */}
@@ -757,7 +822,7 @@ function DeclinedArchive() {
           <span>Date</span>
           <span>Courtesy Fax</span>
         </div>
-        {mockDeclinedReferrals.map((r, idx) => (
+        {declined.map((r, idx) => (
           <div
             key={r.id}
             style={{
@@ -884,9 +949,80 @@ function AutomationStrip() {
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
+function Toast({ message, onDismiss }: { message: string; onDismiss: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onDismiss, 3200);
+    return () => clearTimeout(t);
+  }, [onDismiss]);
+
+  return (
+    <div
+      role="status"
+      style={{
+        position: 'fixed',
+        bottom: 24,
+        right: 24,
+        zIndex: 60,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        background: 'var(--color-text-primary)',
+        color: 'white',
+        padding: '12px 18px',
+        borderRadius: 'var(--radius-pill)',
+        boxShadow: 'var(--shadow-modal)',
+        fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+        fontSize: 13,
+        fontWeight: 600,
+      }}
+    >
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 18,
+        height: 18,
+        borderRadius: '50%',
+        background: 'rgba(255,255,255,0.15)',
+        color: 'white',
+      }}>
+        <I.Check size={11} strokeWidth={3} />
+      </span>
+      {message}
+    </div>
+  );
+}
+
 export default function ReferralsPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('active');
   const [activeView, setActiveView] = useState<ViewKey>('pipeline');
+  const [referrals, setReferrals] = useState<Referral[]>(mockReferrals);
+  const [declined, setDeclined] = useState<DeclinedReferral[]>(mockDeclinedReferrals);
+  const [declineTarget, setDeclineTarget] = useState<Referral | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleDeclineConfirm = (reason: string, _notes: string) => {
+    if (!declineTarget) return;
+
+    setReferrals(prev => prev.filter(r => r.id !== declineTarget.id));
+
+    setDeclined(prev => [{
+      id: declineTarget.id,
+      patientName: declineTarget.patientName,
+      mrn: declineTarget.mrn,
+      age: declineTarget.age,
+      sex: declineTarget.sex,
+      referringOrg: declineTarget.referringOrg,
+      referringPhysician: declineTarget.referringPhysician,
+      declineReason: reason,
+      declinedBy: 'Amelia Park',
+      declinedAt: 'Just now',
+      courtesyFaxSent: true,
+    }, ...prev]);
+
+    setDeclineTarget(null);
+    setToastMessage('Referral declined · Courtesy fax sent');
+  };
 
   return (
     <div style={{ paddingBottom: 32 }}>
@@ -898,8 +1034,22 @@ export default function ReferralsPage() {
         activeView={activeView}
         setActiveView={setActiveView}
       />
-      {activeTab === 'active' ? <PipelineBoard /> : <DeclinedArchive />}
+      {activeTab === 'active'
+        ? <PipelineBoard referrals={referrals} onDecline={setDeclineTarget} />
+        : <DeclinedArchive declined={declined} />}
       <AutomationStrip />
+
+      {declineTarget && (
+        <DeclineModal
+          referral={declineTarget}
+          onConfirm={handleDeclineConfirm}
+          onClose={() => setDeclineTarget(null)}
+        />
+      )}
+
+      {toastMessage && (
+        <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+      )}
     </div>
   );
 }

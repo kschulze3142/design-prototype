@@ -21,7 +21,10 @@
       "Bash(curl -s -o /tmp/referrals.html -w \"%{http_code}\\\\n\" http://localhost:3737/app/referrals)",
       "Read(//tmp/**)",
       "Bash(kill %1)",
-      "Bash(pkill -f \"next dev --port 3737\")"
+      "Bash(pkill -f \"next dev --port 3737\")",
+      "Bash(curl -s -o /tmp/referrals-page.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/app/referrals)",
+      "Read(//private/tmp/**)",
+      "Bash(pkill -f \"next dev\")"
     ]
   }
 }
