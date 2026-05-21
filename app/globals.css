@@ -370,3 +370,8 @@ textarea:focus {
   outline: none !important;
   transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
+
+/* @hello-pangea/dnd drop animation — flatten the library's settle transition */
+[data-rbd-drag-handle-context-id] * {
+  transition-duration: 0.001ms !important;
+}
