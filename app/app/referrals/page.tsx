@@ -407,6 +407,19 @@ function TransitionBar({ actions }: { actions: string[] }) {
   );
 }
 
+function getNextActionHint(referral: Referral): string | null {
+  switch (referral.status) {
+    case 'new':
+      return `On move to In Review: send acknowledgment fax to ${referral.referringOrg}`;
+    case 'in_review':
+      return `On accept: auto-request F2F from ${referral.referringPhysician}`;
+    case 'accepted':
+      return 'On schedule: send POC for signature · request prior auth';
+    default:
+      return null;
+  }
+}
+
 function ReferralCard({ referral, onDecline }: {
   referral: Referral;
   onDecline?: (r: Referral) => void;
@@ -565,19 +578,30 @@ function ReferralCard({ referral, onDecline }: {
       )}
 
       {/* Next action hint */}
-      {referral.nextAction !== null && (
-        <div style={{
-          border: '1px dashed var(--color-border-strong)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '6px 10px',
-          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-          fontSize: 12,
-          fontStyle: 'italic',
-          color: 'var(--color-text-tertiary)',
-        }}>
-          {referral.nextAction}
-        </div>
-      )}
+      {(() => {
+        const hint = getNextActionHint(referral);
+        if (!hint) return null;
+        const accent = referral.slaBreached ? '#d97706' : '#0d9488';
+        return (
+          <div style={{
+            border: `1.5px dashed ${accent}`,
+            borderRadius: 'var(--radius-sm)',
+            padding: '5px 8px',
+            marginTop: 6,
+          }}>
+            <p style={{
+              fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+              fontSize: 11,
+              fontStyle: 'italic',
+              color: accent,
+              margin: 0,
+              lineHeight: 1.4,
+            }}>
+              {hint}
+            </p>
+          </div>
+        );
+      })()}
 
       {/* Footer row */}
       <div style={{
