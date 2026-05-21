@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { I } from '@/components/app/icons';
 import { Card, Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
+import { AutomationsSection } from './automations/AutomationsSection';
 
 type SettingsItem = {
   id: string;
@@ -21,6 +22,7 @@ const SETTINGS_SECTIONS: SettingsSection[] = [
     { id: 'workspace',     label: 'Workspace',     icon: 'Building',  desc: 'Name, logo, identity',    danger: false },
     { id: 'defaults',      label: 'Defaults',      icon: 'Cog',       desc: 'Sender + cover defaults', danger: false },
     { id: 'notifications', label: 'Notifications', icon: 'Bell',      desc: 'Email, Slack, SMS',       danger: false },
+    { id: 'automations',   label: 'Automations',   icon: 'Zap',       desc: 'Rules and triggers',      danger: false },
     { id: 'integrations',  label: 'Integrations',  icon: 'Sparkle',   desc: 'EHR, SSO, webhooks',      danger: false },
   ]},
   { group: 'Security & Compliance', items: [
@@ -642,6 +644,7 @@ export default function SettingsPage() {
           {section === 'workspace'     && <WorkspaceSection />}
           {section === 'defaults'      && <DefaultsSection />}
           {section === 'notifications' && <NotificationsSection />}
+          {section === 'automations'   && <AutomationsSection />}
           {section === 'integrations'  && <IntegrationsSection />}
           {section === 'security'      && <SecuritySection />}
           {section === 'compliance'    && <ComplianceSection />}
@@ -649,7 +652,7 @@ export default function SettingsPage() {
           {section === 'profile'       && <ProfileSection />}
           {section === 'danger'        && <DangerSection />}
 
-          {!['danger', 'integrations'].includes(section) && (
+          {!['danger', 'integrations', 'automations'].includes(section) && (
             <div className="mt-6 flex items-center justify-end gap-2">
               <DiscardButton />
               <SaveChangesButton />

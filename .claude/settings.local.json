@@ -28,7 +28,8 @@
       "Bash(echo \"started, pid=$!\")",
       "Bash(curl *)",
       "Bash(grep -oE \"Referral Thread[^<]{0,40}\" /tmp/thread-resp.html)",
-      "Bash(kill 93740)"
+      "Bash(kill 93740)",
+      "Bash(npm run *)"
     ]
   }
 }
