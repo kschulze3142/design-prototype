@@ -14,7 +14,14 @@
       "Bash(git -C \"C:\\\\Users\\\\kai\\\\wirefax\\\\design-prototype\" status)",
       "Bash(git *)",
       "Bash(pnpm run *)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npx eslint *)",
+      "Bash(npx next *)",
+      "Bash(curl -s -f -o /dev/null http://localhost:3737/app/referrals)",
+      "Bash(curl -s -o /tmp/referrals.html -w \"%{http_code}\\\\n\" http://localhost:3737/app/referrals)",
+      "Read(//tmp/**)",
+      "Bash(kill %1)",
+      "Bash(pkill -f \"next dev --port 3737\")"
     ]
   }
 }
