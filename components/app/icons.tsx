@@ -57,4 +57,5 @@ export const I = {
   Sparkle: (p: any) => <Icon {...p}><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="M18.4 5.6-.7.7"/><path d="M6.3 17.7l-.7.7"/><path d="M5.6 5.6l.7.7"/><path d="M17.7 17.7l.7.7"/><circle cx="12" cy="12" r="4"/></Icon>,
   Wand: (p: any) => <Icon {...p}><path d="m15 5 4 4"/><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2 2"/><path d="m2 22 5.5-5.5"/><path d="M13.4 15.9 15 22l6-6-6.1-1.6"/><path d="m13 13 4.5 4.5"/></Icon>,
   Globe: (p: any) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></Icon>,
+  FolderOpen: (p: any) => <Icon {...p}><path d="M6 14 4 20a2 2 0 0 0 1.9 2H19a2 2 0 0 0 2-1.5l1.5-6a1 1 0 0 0-1-1.3H6.4a2 2 0 0 0-1.9 1.3Z"/><path d="M2 10V6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v2"/></Icon>,
 };

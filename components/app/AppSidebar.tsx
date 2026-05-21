@@ -205,6 +205,7 @@ const CORE: NavItem[] = [
       badge: n.badge,
     })),
   },
+  { href: '/app/referrals', label: 'Referrals', icon: 'FolderOpen', badge: 0 },
   { href: '/app/sent', label: 'Sent', icon: 'Sent' },
 ];
 const DIRECTORY: NavItem[] = [
@@ -247,7 +248,7 @@ function NavGroup({ items, separator, pushDown, pathname }: {
                 <Ico size={16} />
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
-              {item.badge && item.badge > 0 && (
+              {item.badge !== undefined && (
                 <span style={{
                   background: 'var(--sidebar-badge-bg)',
                   color: 'var(--sidebar-text-active)',
