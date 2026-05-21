@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { I } from '@/components/app/icons';
 import {
   mockPatient,
@@ -147,7 +147,7 @@ function DocChip({ name, pages }: { name: string; pages: number | null }) {
 
 // ─── LEFT SIDEBAR ─────────────────────────────────────────────────────────────
 
-function PatientCard() {
+function PatientCard({ currentStatus }: { currentStatus: string }) {
   return (
     <div style={{
       background: 'var(--color-surface)',
@@ -202,7 +202,7 @@ function PatientCard() {
         letterSpacing: '0.06em',
         textTransform: 'uppercase',
       }}>
-        {mockPatient.currentStatus}
+        {currentStatus}
       </span>
     </div>
   );
@@ -318,9 +318,13 @@ function ThreadListItem({
 }
 
 function LeftSidebar({
+  events,
+  currentStatus,
   activeEventId,
   setActiveEventId,
 }: {
+  events: ThreadEvent[];
+  currentStatus: string;
   activeEventId: string;
   setActiveEventId: (id: string) => void;
 }) {
@@ -357,15 +361,15 @@ function LeftSidebar({
         Back to pipeline
       </Link>
 
-      <PatientCard />
+      <PatientCard currentStatus={currentStatus} />
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {mockThreadEvents.map((evt, idx) => (
+        {events.map((evt, idx) => (
           <ThreadListItem
             key={evt.id}
             event={evt}
             active={evt.id === activeEventId}
-            showConnector={idx < mockThreadEvents.length - 1}
+            showConnector={idx < events.length - 1}
             onClick={() => setActiveEventId(evt.id)}
           />
         ))}
@@ -376,8 +380,7 @@ function LeftSidebar({
 
 // ─── CENTER COLUMN ────────────────────────────────────────────────────────────
 
-function CenterHeader() {
-  const eventCount = mockThreadEvents.length;
+function CenterHeader({ eventCount }: { eventCount: number }) {
   return (
     <div style={{
       background: 'var(--color-surface)',
@@ -894,22 +897,29 @@ function ComposeBar() {
 }
 
 function CenterColumn({
+  events,
   activeEventId,
   setActiveEventId,
 }: {
+  events: ThreadEvent[];
   activeEventId: string;
   setActiveEventId: (id: string) => void;
 }) {
   const groups = useMemo(() => {
     const out: { date: string; events: ThreadEvent[] }[] = [];
-    mockThreadEvents.forEach(evt => {
+    events.forEach(evt => {
       const d = dateKey(evt.timestamp);
       const last = out[out.length - 1];
       if (last && last.date === d) last.events.push(evt);
       else out.push({ date: d, events: [evt] });
     });
     return out;
-  }, []);
+  }, [events]);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [events.length]);
 
   return (
     <section style={{
@@ -920,7 +930,7 @@ function CenterColumn({
       background: 'var(--color-bg)',
       overflow: 'hidden',
     }}>
-      <CenterHeader />
+      <CenterHeader eventCount={events.length} />
       <div style={{
         flex: 1,
         overflowY: 'auto',
@@ -942,6 +952,7 @@ function CenterColumn({
             ))}
           </div>
         ))}
+        <div ref={bottomRef} />
       </div>
       <ComposeBar />
     </section>
@@ -1022,9 +1033,21 @@ function LifecycleStepper({ currentStatus }: { currentStatus: string }) {
   );
 }
 
-function NextActionHint({ currentStatus }: { currentStatus: string }) {
+function NextActionHint({
+  currentStatus,
+  onAdvance,
+}: {
+  currentStatus: string;
+  onAdvance: () => void;
+}) {
   const hint = NEXT_ACTION_HINTS[currentStatus];
   if (!hint) return null;
+
+  const currentIndex = PIPELINE_STAGES.indexOf(currentStatus);
+  const nextStage = PIPELINE_STAGES[currentIndex + 1];
+  const buttonLabel = nextStage
+    ? `Advance to ${STAGE_LABELS[nextStage] ?? nextStage}`
+    : hint.label;
 
   return (
     <div style={{
@@ -1053,20 +1076,23 @@ function NextActionHint({ currentStatus }: { currentStatus: string }) {
           </div>
         ))}
       </div>
-      <button style={{
-        width: '100%',
-        marginTop: 12,
-        height: 38,
-        borderRadius: 'var(--radius-pill)',
-        background: 'var(--color-primary)',
-        color: 'white',
-        border: 'none',
-        fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-        fontSize: 13,
-        fontWeight: 600,
-        cursor: 'pointer',
-      }}>
-        {hint.label}
+      <button
+        type="button"
+        onClick={onAdvance}
+        style={{
+          width: '100%',
+          marginTop: 12,
+          height: 38,
+          borderRadius: 'var(--radius-pill)',
+          background: 'var(--color-primary)',
+          color: 'white',
+          border: 'none',
+          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+          fontSize: 13,
+          fontWeight: 600,
+          cursor: 'pointer',
+        }}>
+        {buttonLabel}
       </button>
     </div>
   );
@@ -1108,7 +1134,13 @@ function StakeholderField({ label, value, subValue }: {
   );
 }
 
-function RightColumn() {
+function RightColumn({
+  currentStatus,
+  onAdvance,
+}: {
+  currentStatus: string;
+  onAdvance: () => void;
+}) {
   return (
     <aside style={{
       width: 320,
@@ -1128,8 +1160,8 @@ function RightColumn() {
       }}>
         Referral Lifecycle
       </h2>
-      <LifecycleStepper currentStatus={mockPatient.currentStatus} />
-      <NextActionHint currentStatus={mockPatient.currentStatus} />
+      <LifecycleStepper currentStatus={currentStatus} />
+      <NextActionHint currentStatus={currentStatus} onAdvance={onAdvance} />
 
       <h2 style={{
         fontFamily: 'Outfit, var(--font-heading), system-ui, sans-serif',
@@ -1165,6 +1197,41 @@ function RightColumn() {
 
 export default function ReferralThreadPage() {
   const [activeEventId, setActiveEventId] = useState<string>('e1');
+  const [currentStatus, setCurrentStatus] = useState<string>(mockPatient.currentStatus);
+  const [events, setEvents] = useState<ThreadEvent[]>(mockThreadEvents);
+
+  function handleAdvance() {
+    const currentIndex = PIPELINE_STAGES.indexOf(currentStatus);
+    if (currentIndex === -1 || currentIndex === PIPELINE_STAGES.length - 1) return;
+
+    const fromStatus = currentStatus;
+    const toStatus = PIPELINE_STAGES[currentIndex + 1];
+    const hint = NEXT_ACTION_HINTS[fromStatus];
+
+    const newEvent: ThreadEvent = {
+      id: `transition-${Date.now()}`,
+      eventType: 'pipeline_transition',
+      direction: 'system',
+      senderLabel: 'Amelia Park',
+      bodyText: null,
+      documentName: null,
+      documentPages: null,
+      pipelineFromStatus: fromStatus,
+      pipelineToStatus: toStatus,
+      transitionActions: hint?.actions ?? [],
+      tags: [],
+      timestamp: new Date().toLocaleString('en-US', {
+        month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit',
+      }),
+      delivered: true,
+      classificationNote: null,
+    };
+
+    setEvents(prev => [...prev, newEvent]);
+    setCurrentStatus(toStatus);
+    setActiveEventId(newEvent.id);
+  }
 
   return (
     <div style={{
@@ -1176,14 +1243,20 @@ export default function ReferralThreadPage() {
       marginRight: -32,
     }}>
       <LeftSidebar
+        events={events}
+        currentStatus={currentStatus}
         activeEventId={activeEventId}
         setActiveEventId={setActiveEventId}
       />
       <CenterColumn
+        events={events}
         activeEventId={activeEventId}
         setActiveEventId={setActiveEventId}
       />
-      <RightColumn />
+      <RightColumn
+        currentStatus={currentStatus}
+        onAdvance={handleAdvance}
+      />
     </div>
   );
 }

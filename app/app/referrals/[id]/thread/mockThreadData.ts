@@ -137,6 +137,10 @@ export const NEXT_ACTION_HINTS: Partial<Record<string, { label: string; actions:
     label: 'Advance to In Review',
     actions: ['Send acknowledgment fax', 'Start 4h SLA', 'Notify patient'],
   },
+  scheduled: {
+    label: 'Advance to Completed',
+    actions: ['Send completion notice', 'Finalize episode billing', 'Close referral thread'],
+  },
 }
 
 export const TEMPLATE_CHIPS = [
