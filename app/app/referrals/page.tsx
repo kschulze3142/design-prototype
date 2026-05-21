@@ -440,11 +440,13 @@ function ReferralCard({
   onDecline,
   draggableProvided,
   isDragging = false,
+  isDropAnimating = false,
 }: {
   referral: Referral;
   onDecline?: (r: Referral) => void;
   draggableProvided?: DraggableProvided;
   isDragging?: boolean;
+  isDropAnimating?: boolean;
 }) {
   const router = useRouter();
   const [hover, setHover] = useState(false);
@@ -494,6 +496,7 @@ function ReferralCard({
           ? 'translateY(-1px)'
           : (draggableProvided?.draggableProps?.style?.transform ?? 'none'),
         opacity: isDragging ? 0.95 : 1,
+        transitionDuration: isDropAnimating ? '0.001s' : undefined,
       }}
     >
       {declinable && (
@@ -789,6 +792,7 @@ function PipelineColumn({ column, cards, onDecline }: {
                     onDecline={canDecline ? onDecline : undefined}
                     draggableProvided={draggableProvided}
                     isDragging={draggableSnapshot.isDragging}
+                    isDropAnimating={draggableSnapshot.isDropAnimating}
                   />
                 )}
               </Draggable>
