@@ -471,8 +471,8 @@ function ReferralCard({
         router.push(`/app/referrals/${referral.id}/thread`);
       }}
       style={{
-        ...(draggableProvided?.draggableProps?.style ?? {}),
         position: 'relative',
+        ...(draggableProvided?.draggableProps?.style ?? {}),
         display: 'flex',
         flexDirection: 'column',
         gap: 10,

@@ -32,7 +32,10 @@
       "Bash(npm run *)",
       "Bash(lsof -i :3000 -sTCP:LISTEN -t)",
       "Bash(pnpm add *)",
-      "Bash(lsof -nP -iTCP:3000 -sTCP:LISTEN)"
+      "Bash(lsof -nP -iTCP:3000 -sTCP:LISTEN)",
+      "Bash(lsof -iTCP:3000 -sTCP:LISTEN)",
+      "Bash(mkdir -p /tmp/cc-shots)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --no-sandbox --hide-scrollbars --window-size=1440,900 --screenshot=/tmp/cc-shots/referrals.png http://localhost:3000/app/referrals)"
     ]
   }
 }
