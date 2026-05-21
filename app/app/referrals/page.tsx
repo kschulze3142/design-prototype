@@ -907,68 +907,71 @@ function DeclinedArchive({ declined }: { declined: DeclinedReferral[] }) {
 // ─── AUTOMATION STRIP ─────────────────────────────────────────────────────────
 
 function AutomationStrip() {
+  const activeAutomations = MOCK_AUTOMATIONS.filter(a => a.isActive);
   return (
     <div style={{
-      marginTop: 24,
-      background: 'var(--color-primary-subtle)',
-      borderRadius: 'var(--radius-lg)',
-      padding: '14px 20px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
       gap: 12,
+      padding: '12px 16px',
+      background: 'var(--color-primary-subtle)',
+      borderRadius: 'var(--radius-lg)',
+      marginTop: 16,
       flexWrap: 'wrap',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        <span style={{
-          fontFamily: 'var(--font-mono), monospace',
-          fontSize: 10,
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          color: 'var(--color-primary)',
-          fontWeight: 700,
-          marginRight: 4,
-        }}>
-          Automations
-        </span>
-        {MOCK_AUTOMATIONS.map(a => (
-          <span
-            key={a.id}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '5px 10px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'white',
-              color: 'var(--color-primary)',
-              fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-              fontSize: 12,
-              fontWeight: 600,
-              boxShadow: '0 1px 2px rgba(26,34,54,0.04)',
-            }}
-          >
-            <Bolt size={11} />
-            {a.label}
-          </span>
-        ))}
-      </div>
-      <a
-        href="#"
-        onClick={e => e.preventDefault()}
-        style={{
-          color: 'var(--color-primary)',
-          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-          fontSize: 13,
-          fontWeight: 600,
-          textDecoration: 'none',
-          display: 'inline-flex',
+      <span style={{
+        fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+        fontSize: 12,
+        color: 'var(--color-text-tertiary)',
+        whiteSpace: 'nowrap',
+      }}>
+        Active on this board:
+      </span>
+
+      {activeAutomations.map(automation => (
+        <div key={automation.id} style={{
+          display: 'flex',
           alignItems: 'center',
-          gap: 4,
+          gap: 6,
+          background: 'white',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-sm)',
+          padding: '3px 10px',
+        }}>
+          <span
+            className="animate-pulse"
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: '50%',
+              background: '#0d9488',
+              display: 'inline-block',
+              flexShrink: 0,
+            }}
+          />
+          <span style={{
+            fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+            fontSize: 12,
+            color: 'var(--color-text-primary)',
+          }}>
+            {automation.label}
+          </span>
+        </div>
+      ))}
+
+      <Link
+        href="/app/settings?section=automations"
+        style={{
+          marginLeft: 'auto',
+          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+          fontSize: 12,
+          color: 'var(--color-primary)',
+          textDecoration: 'none',
+          whiteSpace: 'nowrap',
         }}
       >
         Manage automations →
-      </a>
+      </Link>
     </div>
   );
 }

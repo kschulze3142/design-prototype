@@ -153,7 +153,7 @@ export const TRANSITION_BARS: Partial<Record<ReferralStatus, string[]>> = {
 };
 
 export const MOCK_AUTOMATIONS = [
-  { id: 'a1', label: 'Auto-acknowledge new referrals' },
-  { id: 'a2', label: 'SLA breach alert → assignee' },
-  { id: 'a3', label: 'Accepted → send POC fax' },
+  { id: 'a1', label: 'Auto-acknowledge new referrals', isActive: true },
+  { id: 'a2', label: 'SLA breach alert → assignee',   isActive: true },
+  { id: 'a3', label: 'Accepted → send POC fax',       isActive: false },
 ];
