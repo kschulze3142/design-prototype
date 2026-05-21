@@ -1,5 +1,6 @@
 'use client';
 import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { I } from '@/components/app/icons';
 import { AppButton } from '@/components/app/primitives';
 import {
@@ -266,20 +267,25 @@ const builderInputStyle: React.CSSProperties = {
   outline: 'none',
 };
 
-function blankDraft(): Partial<Automation> {
+function blankDraft(prefillFax?: string | null): Partial<Automation> {
+  const conditions: Condition[] = prefillFax
+    ? [{ id: 'prefill-1', field: 'Fax number', operator: 'is', value: prefillFax }]
+    : [];
   return {
     name: '',
     description: '',
-    triggerType: undefined,
+    triggerType: prefillFax ? 'fax_received' : undefined,
     isActive: true,
-    conditions: [],
+    conditions,
     actions: [],
   };
 }
 
 export function AutomationsSection() {
+  const searchParams = useSearchParams();
+  const prefillFax = searchParams.get('prefill_fax');
   const [automations, setAutomations] = useState<Automation[]>(mockAutomations);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(prefillFax ? 'new' : null);
 
   if (editingId !== null) {
     return (
@@ -288,7 +294,7 @@ export function AutomationsSection() {
         editingId={editingId}
         seed={
           editingId === 'new'
-            ? blankDraft()
+            ? blankDraft(prefillFax)
             : automations.find((a) => a.id === editingId) ?? blankDraft()
         }
         onCancel={() => setEditingId(null)}

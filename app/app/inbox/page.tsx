@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import {
   mockIntakeFaxes,
@@ -33,7 +34,6 @@ const InboxArrowDownIcon = (p: IconProps) => <Svg {...p}><path d="M22 13h-6l-2 3
 const EyeIcon = (p: IconProps) => <Svg {...p}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></Svg>;
 const PaperAirplaneIcon = (p: IconProps) => <Svg {...p}><path d="M22 2 11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7Z" /></Svg>;
 const ChatBubbleLeftIcon = (p: IconProps) => <Svg {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></Svg>;
-const BoltIcon = (p: IconProps) => <Svg {...p}><path d="M13 2 3 14h7l-1 8 10-12h-7Z" /></Svg>;
 const DocIcon = (p: IconProps) => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6" /></Svg>;
 
 // ─── DESIGN TOKENS (a couple of literals used inline) ──────────────────────────
@@ -48,6 +48,12 @@ const SLA_BADGE: Record<UrgencyLevel, { bg: string; color: string } | null> = {
   overdue: { bg: '#ffe4e6', color: '#e11d48' }, // rose-100 / rose-600
   soon:    { bg: '#fef3c7', color: '#b45309' }, // amber-100 / amber-700
   normal:  null,
+};
+
+const REPEAT_SENDER = {
+  name: 'Foothill Clinic',
+  faxNumber: '8015550177',
+  countThisWeek: 4,
 };
 
 const ACTIVITY_ICON: Record<string, { Icon: (p: IconProps) => React.ReactElement; color: string }> = {
@@ -555,6 +561,8 @@ function ActivityFeed() {
 }
 
 function Inspector({ fax }: { fax: IntakeFax }) {
+  const [suggestionDismissed, setSuggestionDismissed] = useState(false);
+
   const SECTION_DIVIDER = (
     <div style={{ height: 1, background: 'var(--color-border)', margin: '16px 0' }} />
   );
@@ -601,50 +609,69 @@ function Inspector({ fax }: { fax: IntakeFax }) {
         <OtherActionRow Icon={ClockIcon} label="Snooze" />
       </div>
 
-      {SECTION_DIVIDER}
+      {!suggestionDismissed && SECTION_DIVIDER}
 
-      {/* Section 4 — Inline rule prompt */}
-      <div style={{
-        background: 'var(--color-primary-subtle)',
-        borderRadius: 'var(--radius-md)',
-        padding: 12,
-      }}>
+      {/* Section 4 — Inline rule suggestion chip */}
+      {!suggestionDismissed && (
         <div style={{
+          border: '2px solid #0d9488',
+          borderRadius: 'var(--radius-md)',
+          background: '#f0fdfa',
+          padding: '12px 14px',
           display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          fontWeight: 700,
-          color: 'var(--color-text-primary)',
+          flexDirection: 'column',
+          gap: 8,
         }}>
-          <BoltIcon size={14} color="var(--color-primary)" />
-          Repeat sender detected
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 16, lineHeight: 1.4 }}>⚡</span>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              color: 'var(--color-text-primary)',
+              lineHeight: 1.5,
+              margin: 0,
+            }}>
+              <strong>Repeat sender detected.</strong> This is the {REPEAT_SENDER.countThisWeek}th fax from{' '}
+              <strong>{REPEAT_SENDER.name}</strong> this week — would you like all future faxes from this
+              number to auto-assign to the Intake team with a 4-hour SLA?
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button
+              onClick={() => setSuggestionDismissed(true)}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'var(--color-text-tertiary)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px 8px',
+              }}
+            >
+              Dismiss
+            </button>
+            <Link
+              href={`/app/settings?section=automations&prefill_fax=${REPEAT_SENDER.faxNumber}`}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#0d9488',
+                background: '#ccfbf1',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                padding: '4px 10px',
+                textDecoration: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Create rule →
+            </Link>
+          </div>
         </div>
-        <p style={{
-          margin: '4px 0 10px',
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          color: 'var(--color-text-secondary)',
-          lineHeight: 1.4,
-        }}>
-          {fax.senderName} sends {fax.type.toLowerCase()}s regularly.
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button variant="primary" size="sm" style={{ height: 26, padding: '0 12px', fontSize: 12 }}>
-            Create rule
-          </Button>
-          <a href="#" onClick={e => e.preventDefault()} style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--color-text-tertiary)',
-            textDecoration: 'none',
-            fontWeight: 600,
-          }}>
-            Dismiss
-          </a>
-        </div>
-      </div>
+      )}
 
       {SECTION_DIVIDER}
 

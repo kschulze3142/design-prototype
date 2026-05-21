@@ -83,7 +83,7 @@ export const TRIGGER_OPTIONS: { type: TriggerType; label: string; description: s
 ]
 
 export const FIELD_OPTIONS = [
-  'Fax type', 'Referring org', 'SLA status', 'Time remaining',
+  'Fax type', 'Fax number', 'Referring org', 'SLA status', 'Time remaining',
   'Referral status', 'Insurance', 'Assigned to',
 ]
 

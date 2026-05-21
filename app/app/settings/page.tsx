@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { I } from '@/components/app/icons';
 import { Card, Pill, AppButton, Avatar, SectionTitle } from '@/components/app/primitives';
 import { AutomationsSection } from './automations/AutomationsSection';
@@ -594,8 +595,20 @@ function SaveChangesButton() {
 }
 
 export default function SettingsPage() {
-  const [section, setSection] = useState('workspace');
+  return (
+    <Suspense fallback={null}>
+      <SettingsPageInner />
+    </Suspense>
+  );
+}
+
+function SettingsPageInner() {
+  const searchParams = useSearchParams();
+  const sectionParam = searchParams.get('section');
   const allItems = SETTINGS_SECTIONS.flatMap(g => g.items);
+  const validSectionIds = new Set(allItems.map(i => i.id));
+  const initialSection = sectionParam && validSectionIds.has(sectionParam) ? sectionParam : 'workspace';
+  const [section, setSection] = useState(initialSection);
   const current = allItems.find(i => i.id === section) || allItems[0];
 
   return (
