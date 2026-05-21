@@ -24,7 +24,11 @@
       "Bash(pkill -f \"next dev --port 3737\")",
       "Bash(curl -s -o /tmp/referrals-page.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/app/referrals)",
       "Read(//private/tmp/**)",
-      "Bash(pkill -f \"next dev\")"
+      "Bash(pkill -f \"next dev\")",
+      "Bash(echo \"started, pid=$!\")",
+      "Bash(curl *)",
+      "Bash(grep -oE \"Referral Thread[^<]{0,40}\" /tmp/thread-resp.html)",
+      "Bash(kill 93740)"
     ]
   }
 }
