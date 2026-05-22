@@ -77,7 +77,15 @@
       "Bash(kill bshn0gzge *)",
       "Bash(lsof -nP -iTCP:3001 -sTCP:LISTEN)",
       "Bash(npx --no-install playwright --version)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(grep -oE \"Advance[^<]{0,30}\" pa-marcus-mri.html)",
+      "Bash(grep -oE \"Advance[^<]{0,30}\" pa-reginald-cath.html)",
+      "Bash(grep -oE \"Expires.{0,200}\" pa-marcus-mri.html)",
+      "Bash(grep -oE \"cr-reginald-stress[^\\\\\"]{0,80}\" pa-reginald-cath.html)",
+      "Bash(grep -oE \"Auth #.{0,250}\" pa-cordelia-rehab.html)",
+      "Bash(grep -oE \".{120}aria-label=\\\\\"Copy Auth #.{0,200}\" pa-cordelia-rehab.html)",
+      "Bash(grep -oE \"Linked items.{0,800}\" pa-reginald-cath.html)"
     ]
   }
 }

@@ -35,6 +35,16 @@ export function ComposeBar({ workItem, template, customActions }: Props) {
       ? template.lifecycleStages[currentIdx + 1]
       : null;
 
+  // Recovery affordance for the current status — typically present only on
+  // terminal statuses (e.g. PA 'denied' → "Submit appeal"). When defined it
+  // displaces the Advance button, since a terminal status has no nextStage.
+  const terminalAction = template.terminalActions?.[workItem.status] ?? null;
+
+  // Declining a terminal item is structurally nonsensical — once approved,
+  // denied, expired, declined, etc., there's nothing left to decline.
+  const showDecline =
+    template.supportsDecline && !template.terminalStatuses.includes(workItem.status);
+
   const handleAddNote = () => {
     inputRef.current?.focus();
     // TODO: wire createNote() from MockSystemProvider when note flow ships (FE-053)
@@ -72,12 +82,16 @@ export function ComposeBar({ workItem, template, customActions }: Props) {
         <ActionButton onClick={handleAddNote} icon={<I.Note size={14} strokeWidth={1.8} />}>
           Add Note
         </ActionButton>
-        {nextStage && (
+        {terminalAction ? (
+          <ActionButton onClick={() => { /* visual only — onClick lands with workflow ticket */ }} icon={<I.Refresh size={14} strokeWidth={1.8} />} primary>
+            {terminalAction.label}
+          </ActionButton>
+        ) : nextStage && (
           <ActionButton onClick={handleAdvance} icon={<I.Arrow size={14} strokeWidth={1.8} />} primary>
             Advance to {titleCaseStatus(nextStage)}
           </ActionButton>
         )}
-        {template.supportsDecline && (
+        {showDecline && (
           <ActionButton onClick={handleDecline} icon={<I.X size={14} strokeWidth={2} />} danger>
             Decline
           </ActionButton>

@@ -6,9 +6,16 @@
 // card and the rail agree on currency, date, and pill formatting.
 // =============================================================================
 
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react';
 import type { MetadataFieldDescriptor, UrgencyLevel } from '@/lib/mockSystem/types';
 import { Pill } from '@/components/app/primitives';
+import { I } from '@/components/app/icons';
+
+// Surface hint passed in by callers that need richer rendering. 'rail' opts
+// in to featured-field treatment (larger value + copy button) used by
+// ThreadView's right rail. 'card' (or omitted) keeps the compact card-row
+// rendering used by WorkItemCard's pipeline variant.
+export type FieldRowContext = 'rail' | 'card';
 
 export type { UrgencyLevel };
 
@@ -103,7 +110,15 @@ const fieldLabelStyle: CSSProperties = {
   minWidth: 88,
 };
 
-export function FieldRow({ descriptor, value }: { descriptor: MetadataFieldDescriptor; value: unknown }) {
+export function FieldRow({
+  descriptor,
+  value,
+  context,
+}: {
+  descriptor: MetadataFieldDescriptor;
+  value: unknown;
+  context?: FieldRowContext;
+}) {
   const formatted = formatValue(value, descriptor.format);
   const urgency = normalizeUrgency(descriptor.urgentWhen?.(value));
   const { color, fontWeight } = urgencyStyle(urgency);
@@ -126,6 +141,10 @@ export function FieldRow({ descriptor, value }: { descriptor: MetadataFieldDescr
     );
   }
 
+  if (context === 'rail' && descriptor.featured && !isEmpty(value)) {
+    return <FeaturedFieldRow label={descriptor.label} value={formatted} />;
+  }
+
   // Non-urgent text in FieldRow uses text-primary historically; only the
   // urgent/warning tiers consult urgencyStyle. Keeps the pipeline-card
   // baseline crisp while letting the tracker's list variant share the
@@ -146,6 +165,75 @@ export function FieldRow({ descriptor, value }: { descriptor: MetadataFieldDescr
       }}>
         {formatted}
       </span>
+    </div>
+  );
+}
+
+// Featured field — label above, larger value with inline copy button.
+// Only used when context='rail' AND descriptor.featured AND value present.
+function FeaturedFieldRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  // Cancel the revert-to-clipboard-icon timer if the row unmounts mid-window
+  // (route change while the checkmark is still showing).
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(t);
+  }, [copied]);
+
+  const handleCopy = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(value).then(
+        () => setCopied(true),
+        () => { /* clipboard refused — silent per Decision D */ },
+      );
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+      <span style={fieldLabelStyle}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+        <span style={{
+          fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
+          fontSize: 16,
+          fontWeight: 600,
+          color: 'var(--color-text-primary)',
+          letterSpacing: '0.01em',
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}>
+          {value}
+        </span>
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label={copied ? 'Copied' : `Copy ${label}`}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 24,
+            height: 24,
+            borderRadius: 'var(--radius-sm)',
+            background: 'transparent',
+            border: 'none',
+            color: copied ? 'var(--color-success, #0d9488)' : 'var(--color-text-tertiary)',
+            cursor: 'pointer',
+            flexShrink: 0,
+            padding: 0,
+            transition: 'color var(--duration-fast)',
+          }}
+        >
+          {copied
+            ? <I.Check size={14} strokeWidth={2.2} />
+            : <I.Copy size={14} strokeWidth={1.8} />}
+        </button>
+      </div>
     </div>
   );
 }

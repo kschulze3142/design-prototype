@@ -375,7 +375,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(2), updatedAt: hoursAgo(6),
     metadata: {
       payer: 'Humana',
-      serviceRequested: 'Cardiac MRI — embolic source evaluation',
+      servicesRequested: ['Cardiac MRI for embolic source'],
       cptCodes: ['75561', '75565'],
       submittedAt: hoursAgo(28),
       expiresAt: inDays(2),
@@ -390,7 +390,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(5), updatedAt: daysAgo(1),
     metadata: {
       payer: 'UnitedHealthcare',
-      serviceRequested: 'Pulmonary rehabilitation program (12 sessions)',
+      servicesRequested: ['Pulmonary rehabilitation program (12 sessions)'],
       cptCodes: ['94625', '94626'],
       authNumber: 'UHC-2026-447128',
       submittedAt: daysAgo(5),
@@ -406,7 +406,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: hoursAgo(20), updatedAt: hoursAgo(20),
     metadata: {
       payer: 'Medicare Advantage',
-      serviceRequested: 'Cardiology consult — HFpEF evaluation in CKD stage 3',
+      servicesRequested: ['Cardiology consult — HFpEF evaluation in CKD stage 3'],
       cptCodes: ['99244'],
       submittedAt: hoursAgo(20),
       expiresAt: inDays(7),
@@ -421,7 +421,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: hoursAgo(4), updatedAt: hoursAgo(2),
     metadata: {
       payer: 'UnitedHealthcare',
-      serviceRequested: 'Electrophysiology study, ?ablation for paroxysmal AF',
+      servicesRequested: ['Electrophysiology study, ?ablation for paroxysmal AF'],
       cptCodes: ['93653'],
       submittedAt: hoursAgo(2),
       expiresAt: inDays(5),
@@ -436,7 +436,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(3), updatedAt: daysAgo(1),
     metadata: {
       payer: 'Medicare Advantage',
-      serviceRequested: 'Diagnostic coronary angiography (post-PCI surveillance)',
+      servicesRequested: ['Diagnostic coronary angiography (post-PCI surveillance)'],
       cptCodes: ['93454'],
       authNumber: 'MAPD-2026-008812',
       submittedAt: daysAgo(3),
@@ -452,7 +452,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(8), updatedAt: daysAgo(4),
     metadata: {
       payer: 'Humana',
-      serviceRequested: 'Radiofrequency ablation — atrial flutter',
+      servicesRequested: ['Radiofrequency ablation — atrial flutter'],
       cptCodes: ['93656'],
       authNumber: 'HUM-2026-119003',
       submittedAt: daysAgo(8),
@@ -468,7 +468,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: hoursAgo(48), updatedAt: hoursAgo(10),
     metadata: {
       payer: 'Aetna',
-      serviceRequested: 'Cardiac MRI — nonischemic cardiomyopathy workup',
+      servicesRequested: ['Cardiac MRI — nonischemic cardiomyopathy workup'],
       cptCodes: ['75561'],
       submittedAt: hoursAgo(48),
       expiresAt: inDays(2),
@@ -483,7 +483,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: hoursAgo(36), updatedAt: hoursAgo(4),
     metadata: {
       payer: 'Blue Cross',
-      serviceRequested: 'Diagnostic cardiac catheterization — post-stress-echo wall-motion abnormality',
+      servicesRequested: ['Diagnostic cardiac cath', 'IVUS if indicated'],
       cptCodes: ['93454', '93458'],
       // Not yet submitted — awaiting clinical note from Dr. Quintero before payer submission.
     },
@@ -497,7 +497,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(6), updatedAt: daysAgo(2),
     metadata: {
       payer: 'Blue Cross',
-      serviceRequested: 'CT angiography for TAVR planning',
+      servicesRequested: ['Cardiac CT with contrast', 'TAVR planning protocol'],
       cptCodes: ['75574'],
       submittedAt: daysAgo(6),
       deniedReason: 'Service not covered by plan',
@@ -515,7 +515,7 @@ export const mockWorkItems: WorkItem[] = [
     createdAt: daysAgo(45), updatedAt: daysAgo(5),
     metadata: {
       payer: 'Aetna',
-      serviceRequested: 'Lumbar MRI without contrast',
+      servicesRequested: ['Lumbar MRI without contrast'],
       cptCodes: ['72148'],
       authNumber: 'AET-2025-330451',
       submittedAt: daysAgo(45),

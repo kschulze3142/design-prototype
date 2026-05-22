@@ -289,7 +289,10 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
         {visibleFields.map(descriptor => {
           const value = getMetadataValue(workItem, descriptor.key);
           if (isEmpty(value)) return null;
-          return <FieldRow key={descriptor.key} descriptor={descriptor} value={value} />;
+          // Explicit context='card' — card-density variants never opt in to
+          // featured rendering, even if a future template flags an early
+          // field as featured.
+          return <FieldRow key={descriptor.key} descriptor={descriptor} value={value} context="card" />;
         })}
       </div>
 

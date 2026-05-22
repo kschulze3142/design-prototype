@@ -119,9 +119,9 @@ export const priorAuthTemplate: DepartmentTemplate = {
         return null
       },
     },
-    { key: 'serviceRequested', label: 'Service',          format: 'text' },
+    { key: 'servicesRequested', label: 'Services',        format: 'text' },
     { key: 'cptCodes',         label: 'CPT',              format: 'pill' },
-    { key: 'authNumber',       label: 'Auth #',           format: 'text' },
+    { key: 'authNumber',       label: 'Auth #',           format: 'text', featured: true },
     { key: 'submittedAt',      label: 'Submitted',        format: 'date' },
     { key: 'deniedReason',     label: 'Denied reason',    format: 'text' },
   ],
@@ -133,6 +133,9 @@ export const priorAuthTemplate: DepartmentTemplate = {
     'Patient not eligible',
     'Out of network provider',
   ],
+  terminalActions: {
+    denied: { label: 'Submit appeal' },
+  },
   automationDefaults: [
     'auto-pa-acknowledge-submission',
     'auto-pa-expiring',

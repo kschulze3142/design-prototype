@@ -69,7 +69,7 @@ export function RightRail({ workItem, template }: Props) {
         {template.metadataFields.map(descriptor => {
           const value = (workItem.metadata as Record<string, unknown>)[descriptor.key];
           if (isEmpty(value)) return null;
-          return <FieldRow key={descriptor.key} descriptor={descriptor} value={value} />;
+          return <FieldRow key={descriptor.key} descriptor={descriptor} value={value} context="rail" />;
         })}
       </div>
 

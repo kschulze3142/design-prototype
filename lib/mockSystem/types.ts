@@ -58,6 +58,11 @@ export type MetadataFieldDescriptor<T = unknown> = {
   label: string
   format?: 'text' | 'date' | 'currency' | 'pill'
   urgentWhen?: (value: T) => UrgencyLevel | boolean
+  // When true and the consuming surface passes context='rail', the field
+  // renders with emphasis (larger value + inline copy button). Card-density
+  // surfaces ignore this flag. Used by PA's auth number; available to any
+  // department whose identifying value deserves the same treatment.
+  featured?: boolean
 }
 
 // Vocabulary supported by the Pill primitive (components/app/primitives.tsx).
@@ -100,7 +105,17 @@ export type DepartmentTemplate = {
   metadataFields: MetadataFieldDescriptor[]
   supportsDecline: boolean
   declineReasons?: string[]
+  // Optional per-status action shown in ComposeBar when the item is in that
+  // status — typically a recovery affordance for terminal statuses (e.g.
+  // 'Submit appeal' on denied, 'Re-refer' on declined). Visual only in
+  // Phase 9; onClick wiring lands with the workflow ticket that owns the
+  // action. Keys are status strings; absence means no action for that status.
+  terminalActions?: Partial<Record<string, TerminalAction>>
   automationDefaults: string[]
+}
+
+export type TerminalAction = {
+  label: string
 }
 
 // Department is an *instance* — a template applied to a workspace.
@@ -155,7 +170,7 @@ export type ReferralMetadata = {
 export type PriorAuthMetadata = {
   payer: string
   authNumber?: string                  // null until approved
-  serviceRequested: string
+  servicesRequested: string[]          // one or more service descriptions
   cptCodes?: string[]
   submittedAt?: string                 // ISO
   expiresAt?: string                   // ISO; urgency rule reads this
