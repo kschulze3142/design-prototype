@@ -35,6 +35,8 @@ const daysUntil = (iso: string | undefined | null): number => {
 export const referralsTemplate: DepartmentTemplate = {
   type: 'referrals',
   name: 'Referrals',
+  category: 'Workflow',
+  description: 'Track referrals from intake to scheduling',
   displayOrder: 1,
   queueLayout: 'pipeline',
   statuses: ['new', 'in_review', 'accepted', 'scheduled', 'completed', 'declined'],
@@ -70,6 +72,8 @@ export const referralsTemplate: DepartmentTemplate = {
 export const priorAuthTemplate: DepartmentTemplate = {
   type: 'prior_auth',
   name: 'Prior Auth',
+  category: 'Workflow',
+  description: 'Manage authorization requests and approvals',
   displayOrder: 2,
   queueLayout: 'tracker',
   statuses: ['pending', 'submitted', 'approved', 'denied', 'expired'],
@@ -102,6 +106,8 @@ export const priorAuthTemplate: DepartmentTemplate = {
 export const clinicalResultsTemplate: DepartmentTemplate = {
   type: 'clinical_results',
   name: 'Clinical Results',
+  category: 'Clinical',
+  description: 'Review and acknowledge incoming lab and imaging results',
   displayOrder: 3,
   queueLayout: 'inbox',
   statuses: ['new', 'reviewed', 'acknowledged', 'action_required', 'closed'],
@@ -133,6 +139,8 @@ export const clinicalResultsTemplate: DepartmentTemplate = {
 export const ordersTemplate: DepartmentTemplate = {
   type: 'orders',
   name: 'Orders',
+  category: 'Operations',
+  description: 'Process and fulfill DME, home health, and lab orders',
   displayOrder: 4,
   queueLayout: 'queue',
   statuses: ['pending', 'in_progress', 'fulfilled', 'cancelled'],
@@ -158,6 +166,8 @@ export const ordersTemplate: DepartmentTemplate = {
 export const adminTemplate: DepartmentTemplate = {
   type: 'admin',
   name: 'Admin',
+  category: 'Operations',
+  description: 'Handle insurance updates, records requests, and other paperwork',
   displayOrder: 5,
   queueLayout: 'inbox',
   statuses: ['open', 'in_progress', 'completed', 'archived'],

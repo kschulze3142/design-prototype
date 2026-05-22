@@ -56,6 +56,13 @@ export type MetadataFieldDescriptor<T = unknown> = {
 export type DepartmentTemplate = {
   type: DepartmentType
   name: string
+  // Overline shown above the department name in the page header — a coarse
+  // grouping like "Workflow", "Clinical", "Operations". Required so every
+  // template author picks one explicitly.
+  category: string
+  // One-line purpose, rendered below the headline. Required for the same
+  // reason as `category` — keeps department headers from shipping blank.
+  description: string
   displayOrder: number
   queueLayout: QueueLayout
   statuses: string[]

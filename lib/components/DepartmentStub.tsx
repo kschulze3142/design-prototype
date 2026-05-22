@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { Card } from '@/components/app/primitives';
+import { DepartmentHeader } from './DepartmentHeader';
 import {
   usePatients,
   useTemplate,
@@ -17,34 +18,6 @@ type Props = {
 
 const MAX_ROWS = 5;
 
-const overlineStyle: React.CSSProperties = {
-  fontFamily: 'JetBrains Mono, var(--font-mono), monospace',
-  fontSize: 11,
-  color: 'var(--color-text-tertiary)',
-  letterSpacing: '0.08em',
-  textTransform: 'uppercase',
-  fontWeight: 600,
-  margin: 0,
-  marginBottom: 6,
-};
-
-const headlineStyle: React.CSSProperties = {
-  fontFamily: 'Outfit, var(--font-heading), system-ui, sans-serif',
-  fontWeight: 700,
-  fontSize: 30,
-  color: 'var(--color-text-primary)',
-  margin: 0,
-  lineHeight: 1.15,
-};
-
-const sublineStyle: React.CSSProperties = {
-  fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-  fontSize: 14,
-  color: 'var(--color-text-secondary)',
-  margin: 0,
-  marginTop: 6,
-};
-
 export function DepartmentStub({ type, layoutName, ticketId }: Props) {
   const template = useTemplate(type);
   const items = useWorkItemsByDepartment(type);
@@ -56,24 +29,17 @@ export function DepartmentStub({ type, layoutName, ticketId }: Props) {
     return m;
   }, [patients]);
 
-  const { openCount, sortedItems } = useMemo(() => {
-    const open = items.filter(i => !template.terminalStatuses.includes(i.status));
-    const sorted = [...items].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-    return { openCount: open.length, sortedItems: sorted };
-  }, [items, template.terminalStatuses]);
+  const sortedItems = useMemo(
+    () => [...items].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+    [items],
+  );
 
   const visibleItems = sortedItems.slice(0, MAX_ROWS);
   const hiddenCount = Math.max(0, sortedItems.length - MAX_ROWS);
 
   return (
     <div style={{ paddingTop: 32, paddingBottom: 32 }}>
-      <header style={{ marginBottom: 20 }}>
-        <p style={overlineStyle}>DEPARTMENT</p>
-        <h1 style={headlineStyle}>{template.name}</h1>
-        <p style={sublineStyle}>
-          {openCount} open · {items.length} total
-        </p>
-      </header>
+      <DepartmentHeader type={type} />
 
       <Card className="p-6">
         <div style={{

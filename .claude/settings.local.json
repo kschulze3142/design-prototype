@@ -46,7 +46,14 @@
       "Bash(awk '/id: '\"'\"'ref-13'\"'\"'/,/^  },/' lib/mockSystem/mockData.ts)",
       "Bash(echo \"EXIT: $?\")",
       "Bash(node *)",
-      "Bash(tee /tmp/dev.log)"
+      "Bash(tee /tmp/dev.log)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(echo \"pid=$!\")",
+      "Bash(chromium-cli --help)",
+      "Bash(npx -y -p playwright@latest playwright install chromium)",
+      "Bash(npx -y -p playwright@latest node smoke.mjs)",
+      "Bash(npm install *)",
+      "Bash(kill 16511)"
     ]
   }
 }
