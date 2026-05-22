@@ -53,7 +53,17 @@
       "Bash(npx -y -p playwright@latest playwright install chromium)",
       "Bash(npx -y -p playwright@latest node smoke.mjs)",
       "Bash(npm install *)",
-      "Bash(kill 16511)"
+      "Bash(kill 16511)",
+      "Bash(command -v curl)",
+      "Read(//usr/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(command -v wget)",
+      "Bash(command -v python3)",
+      "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/referrals/items/ref-5/thread\")",
+      "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/prior_auth/items/pa-marcus-mri/thread\")",
+      "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/clinical_results/items/cr-marcus-echo/thread\")",
+      "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/orders/items/o-meilin-epo/thread\")",
+      "Bash(grep -cE 'workItemId: '\\\\''__TRACKED_VAR__'\\\\''' lib/mockSystem/mockData.ts)"
     ]
   }
 }

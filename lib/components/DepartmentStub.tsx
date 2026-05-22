@@ -69,7 +69,7 @@ export function DepartmentStub({ type, layoutName, ticketId }: Props) {
                 href={
                   type === 'referrals'
                     ? `/app/referrals/${item.id}/thread`
-                    : `/app/departments/${type}/${item.id}/thread`
+                    : `/app/departments/${type}/items/${item.id}/thread`
                 }
               />
             ))}

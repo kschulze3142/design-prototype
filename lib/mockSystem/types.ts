@@ -80,6 +80,11 @@ export type DepartmentTemplate = {
   // every template author picks tones explicitly; an unknown status at render
   // time falls back to 'slate'.
   statusTones: Record<string, PillTone>
+  // Ordered list of statuses the lifecycle tracker renders. Excludes
+  // terminal-failure statuses (declined, denied, expired, cancelled,
+  // action_required, archived). Items in an off-pipeline status render
+  // the tracker with all stages incomplete plus an off-pipeline caption.
+  lifecycleStages: string[]
   docTags: string[]
   metadataFields: MetadataFieldDescriptor[]
   supportsDecline: boolean

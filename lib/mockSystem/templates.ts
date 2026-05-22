@@ -49,6 +49,7 @@ export const referralsTemplate: DepartmentTemplate = {
     completed: 'emerald',
     declined: 'red',
   },
+  lifecycleStages: ['new', 'in_review', 'accepted', 'scheduled', 'completed'],
   docTags: [
     'Referral Rx', 'H&P', 'Insurance Card', 'Lab Results', 'Labs',
     'Discharge Summary', 'Op Report', 'F2F Request', 'F2F Docs',
@@ -93,6 +94,7 @@ export const priorAuthTemplate: DepartmentTemplate = {
     denied: 'red',
     expired: 'red',
   },
+  lifecycleStages: ['pending', 'submitted', 'approved'],
   docTags: [
     'Auth Request', 'Auth Decision', 'Clinical Notes', 'F2F Docs',
     'Peer-to-Peer', 'Appeal', 'Auth Approval', 'Auth Denial',
@@ -134,6 +136,7 @@ export const clinicalResultsTemplate: DepartmentTemplate = {
     action_required: 'red',
     closed: 'slate',
   },
+  lifecycleStages: ['new', 'reviewed', 'acknowledged'],
   docTags: [
     'Lab', 'Imaging', 'Pathology', 'STAT', 'Abnormal', 'Critical',
     'Routine', 'Follow-up',
@@ -173,6 +176,7 @@ export const ordersTemplate: DepartmentTemplate = {
     fulfilled: 'emerald',
     cancelled: 'slate',
   },
+  lifecycleStages: ['pending', 'in_progress', 'fulfilled'],
   docTags: [
     'DME', 'Lab', 'Imaging', 'Procedure', 'Pharmacy', 'Home Health',
     'Routine', 'Urgent',
@@ -206,6 +210,7 @@ export const adminTemplate: DepartmentTemplate = {
     completed: 'emerald',
     archived: 'slate',
   },
+  lifecycleStages: ['open', 'in_progress', 'completed'],
   docTags: [
     'Insurance Card', 'Records Request', 'ROI', 'Address Change',
     'POA', 'Payer Correspondence', 'Routine',

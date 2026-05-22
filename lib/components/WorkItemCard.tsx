@@ -27,10 +27,10 @@ import {
   useUser,
 } from '@/lib/mockSystem/hooks';
 import type {
-  MetadataFieldDescriptor,
   PillTone,
   WorkItem,
 } from '@/lib/mockSystem/types';
+import { FieldRow, formatRelative, formatValue, isEmpty } from './formatters';
 
 type Variant = 'pipeline' | 'list' | 'compact';
 
@@ -50,45 +50,6 @@ const ROSE_50 = '#fff1f2';
 
 function getMetadataValue(item: WorkItem, key: string): unknown {
   return (item.metadata as Record<string, unknown>)[key];
-}
-
-function isEmpty(value: unknown): boolean {
-  if (value === null || value === undefined) return true;
-  if (typeof value === 'string' && value.length === 0) return true;
-  if (Array.isArray(value) && value.length === 0) return true;
-  return false;
-}
-
-function formatCurrencyCents(cents: number): string {
-  const dollars = Math.round(cents / 100);
-  return `$${dollars.toLocaleString('en-US')}`;
-}
-
-function formatRelative(iso: string): string {
-  const ms = new Date(iso).getTime() - Date.now();
-  const abs = Math.abs(ms);
-  const minutes = Math.round(abs / 60_000);
-  const hours = Math.round(abs / 3_600_000);
-  const days = Math.round(abs / 86_400_000);
-  const past = ms < 0;
-  let body: string;
-  if (minutes < 60) body = `${minutes}m`;
-  else if (hours < 48) body = `${hours}h`;
-  else body = `${days}d`;
-  return past ? `${body} ago` : `in ${body}`;
-}
-
-function formatValue(value: unknown, format: MetadataFieldDescriptor['format']): string {
-  if (format === 'currency' && typeof value === 'number') {
-    return formatCurrencyCents(value);
-  }
-  if (format === 'date' && typeof value === 'string') {
-    return formatRelative(value);
-  }
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  if (Array.isArray(value)) return value.join(', ');
-  if (value === null || value === undefined) return '';
-  return String(value);
 }
 
 function resolveTone(tone: PillTone | undefined): PillTone {
@@ -113,69 +74,6 @@ function UrgencyDot() {
     }} />
   );
 }
-
-// -----------------------------------------------------------------------------
-// Field row (label · value), with urgent styling when descriptor.urgentWhen fires.
-// -----------------------------------------------------------------------------
-
-function FieldRow({ descriptor, value }: { descriptor: MetadataFieldDescriptor; value: unknown }) {
-  const formatted = formatValue(value, descriptor.format);
-  const urgent = descriptor.urgentWhen?.(value) ?? false;
-
-  if (descriptor.format === 'pill') {
-    const tokens = Array.isArray(value) ? value : [value];
-    const visible = tokens.filter(t => !isEmpty(t));
-    if (visible.length === 0) return null;
-    return (
-      <div style={fieldRowStyle}>
-        <span style={fieldLabelStyle}>{descriptor.label}</span>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-          {visible.map((t, i) => (
-            <Pill key={i} tone="slate" dot={false}>
-              {String(t)}
-            </Pill>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={fieldRowStyle}>
-      <span style={fieldLabelStyle}>{descriptor.label}</span>
-      <span style={{
-        fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
-        fontSize: 12.5,
-        color: urgent ? 'var(--color-failed)' : 'var(--color-text-primary)',
-        fontWeight: urgent ? 600 : 500,
-        minWidth: 0,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-      }}>
-        {formatted}
-      </span>
-    </div>
-  );
-}
-
-const fieldRowStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'baseline',
-  gap: 8,
-  minWidth: 0,
-};
-
-const fieldLabelStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-mono), monospace',
-  fontSize: 10,
-  textTransform: 'uppercase',
-  letterSpacing: '0.06em',
-  color: 'var(--color-text-tertiary)',
-  fontWeight: 600,
-  flexShrink: 0,
-  minWidth: 88,
-};
 
 // -----------------------------------------------------------------------------
 // Main component
