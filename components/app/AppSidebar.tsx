@@ -1,282 +1,138 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { I } from './icons';
-import { useState, Suspense } from 'react';
+import {
+  useDepartments,
+  useWorkItemsByDepartment,
+} from '@/lib/mockSystem/hooks';
+import { useMockSystem } from '@/lib/mockSystem/MockSystemProvider';
+import type { Department, DepartmentType } from '@/lib/mockSystem/types';
 
-type SubNavItem = { href: string; label: string; badge?: number };
-type NavItem = { href: string; label: string; icon: keyof typeof I; badge?: number; subItems?: SubNavItem[] };
+type NavItem = { href: string; label: string; icon: keyof typeof I };
 
-const inboxNumbers = [
-  { label: 'All inboxes',       number: 'all',  badge: 4 },
-  { label: 'Cardiology · 0142', number: '0142', badge: 2 },
-  { label: 'Front desk · 0319', number: '0319', badge: 1 },
-  { label: 'Toll-free · 0903',  number: '0903', badge: 1 },
-];
+// Icon assignments for the dynamic Departments section. Defined alongside the
+// DepartmentType union so a new department added in types.ts surfaces a tsc
+// error here until an icon is chosen.
+const DEPARTMENT_ICON: Record<DepartmentType, keyof typeof I> = {
+  referrals:        'FolderOpen',
+  prior_auth:       'PriorAuth',
+  clinical_results: 'Results',
+  orders:           'Orders',
+  admin:            'Admin',
+};
 
-function InboxSubItems() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const activeNumber = searchParams.get('number');
-
-  const [orderedNumbers, setOrderedNumbers] = useState(
-    inboxNumbers.filter(n => n.number !== 'all')
-  );
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [dropIndex, setDropIndex] = useState<number | null>(null);
-
-  if (!pathname.startsWith('/app/inbox')) return null;
-
-  const allItem = inboxNumbers.find(n => n.number === 'all')!;
-  const allActive = activeNumber === 'all';
-
-  const handleDragStart = (index: number) => {
-    setDragIndex(index);
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    setDropIndex(index);
-  };
-
-  const handleDrop = (index: number) => {
-    if (dragIndex === null || dragIndex === index) {
-      setDragIndex(null);
-      setDropIndex(null);
-      return;
-    }
-    const updated = [...orderedNumbers];
-    const [moved] = updated.splice(dragIndex, 1);
-    updated.splice(index, 0, moved);
-    setOrderedNumbers(updated);
-    setDragIndex(null);
-    setDropIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDragIndex(null);
-    setDropIndex(null);
-  };
-
-  const badgeStyle: React.CSSProperties = {
-    height: 16,
-    minWidth: 16,
-    fontSize: 10,
-    fontWeight: 700,
-    fontFamily: 'var(--font-body)',
-    background: 'var(--sidebar-badge-bg)',
-    color: 'var(--sidebar-text-active)',
-    borderRadius: 8,
-    padding: '0 4px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  };
-
-  return (
-    <div>
-      {/* All inboxes — fixed, not draggable */}
-      <Link
-        href="/app/inbox?number=all"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingLeft: 28,
-          paddingRight: 10,
-          paddingTop: 10,
-          paddingBottom: 10,
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          fontWeight: allActive ? 600 : 500,
-          color: allActive ? 'var(--sidebar-text-active)' : 'var(--sidebar-text-sub)',
-          textDecoration: 'none',
-          borderRadius: 'var(--radius-sm)',
-          background: allActive ? 'var(--sidebar-item-active)' : 'transparent',
-          marginBottom: 1,
-          cursor: 'pointer',
-          transition: 'color var(--duration-fast)',
-        }}
-      >
-        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {allItem.label}
-        </span>
-        {allItem.badge > 0 && <span style={badgeStyle}>{allItem.badge}</span>}
-      </Link>
-
-      {/* Draggable number items */}
-      {orderedNumbers.map((item, index) => {
-        const subActive = activeNumber === item.number;
-        const isBeingDragged = dragIndex === index;
-        const showDropLine = dropIndex === index && dragIndex !== index && dragIndex !== index - 1;
-
-        return (
-          <div
-            key={item.number}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={() => handleDrop(index)}
-            onDragEnd={handleDragEnd}
-            style={{ position: 'relative', marginBottom: 1 }}
-          >
-            {showDropLine && (
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 28,
-                right: 10,
-                height: 2,
-                background: 'var(--sidebar-text-active)',
-                borderRadius: 1,
-                zIndex: 10,
-              }} />
-            )}
-
-            <Link
-              href={`/app/inbox?number=${item.number}`}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingLeft: 28,
-                paddingRight: 10,
-                paddingTop: 10,
-                paddingBottom: 10,
-                fontSize: 12,
-                fontFamily: 'var(--font-body)',
-                fontWeight: subActive ? 600 : 500,
-                color: subActive ? 'var(--sidebar-text-active)' : 'var(--sidebar-text-sub)',
-                textDecoration: 'none',
-                borderRadius: 'var(--radius-sm)',
-                background: subActive
-                  ? 'var(--sidebar-item-active)'
-                  : isBeingDragged
-                    ? 'var(--sidebar-item-hover)'
-                    : 'transparent',
-                opacity: isBeingDragged ? 0.4 : 1,
-                cursor: 'grab',
-                transition: 'opacity var(--duration-fast), background var(--duration-fast)',
-                userSelect: 'none',
-              }}
-            >
-              {/* Drag handle — 3 dots */}
-              <span style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                marginRight: 6,
-                opacity: 0.3,
-                flexShrink: 0,
-              }}>
-                {[0, 1, 2].map(i => (
-                  <span key={i} style={{
-                    width: 3,
-                    height: 3,
-                    borderRadius: '50%',
-                    background: 'currentColor',
-                    display: 'block',
-                  }} />
-                ))}
-              </span>
-
-              <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {item.label}
-              </span>
-
-              {item.badge > 0 && <span style={badgeStyle}>{item.badge}</span>}
-            </Link>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-const CORE: NavItem[] = [
+const TOP: NavItem[] = [
   { href: '/app/dashboard', label: 'Dashboard', icon: 'Dashboard' },
   { href: '/app/send',      label: 'Send Fax',  icon: 'Send' },
-  {
-    href: '/app/inbox', label: 'Intake', icon: 'Inbox', badge: 4,
-    subItems: inboxNumbers.map(n => ({
-      href: `/app/inbox?number=${n.number}`,
-      label: n.label,
-      badge: n.badge,
-    })),
-  },
-  { href: '/app/referrals', label: 'Referrals', icon: 'FolderOpen', badge: 0 },
-  { href: '/app/sent', label: 'Sent', icon: 'Sent' },
 ];
-const DIRECTORY: NavItem[] = [
+
+const BOTTOM_PRIMARY: NavItem[] = [
+  { href: '/app/patients', label: 'Patients', icon: 'Patients' },
+];
+
+const BOTTOM_COMPLIANCE: NavItem[] = [
+  { href: '/app/analytics',  label: 'Analytics',  icon: 'Analytics' },
+  { href: '/app/audit',      label: 'Audit',      icon: 'Audit' },
+  { href: '/app/compliance', label: 'Compliance', icon: 'Shield' },
+];
+
+const BOTTOM_DIRECTORY: NavItem[] = [
   { href: '/app/numbers',   label: 'Numbers',   icon: 'Numbers' },
   { href: '/app/team',      label: 'Team',      icon: 'Team' },
   { href: '/app/contacts',  label: 'Contacts',  icon: 'Contacts' },
   { href: '/app/templates', label: 'Templates', icon: 'Templates' },
 ];
-const COMPLIANCE: NavItem[] = [
-  { href: '/app/analytics', label: 'Analytics',  icon: 'Analytics' },
-  { href: '/app/audit',     label: 'Audit Log',  icon: 'Audit' },
-  { href: '/app/compliance',label: 'Compliance', icon: 'Shield' },
-];
-const SYSTEM: NavItem[] = [
+
+const BOTTOM_SYSTEM: NavItem[] = [
   { href: '/app/billing',  label: 'Billing',  icon: 'Billing' },
   { href: '/app/settings', label: 'Settings', icon: 'Settings' },
 ];
 
-function NavGroup({ items, separator, pushDown, pathname }: {
+const badgeStyle: React.CSSProperties = {
+  background: 'var(--sidebar-badge-bg)',
+  color: 'var(--sidebar-text-active)',
+  fontSize: 10,
+  fontWeight: 700,
+  fontFamily: 'var(--font-body)',
+  height: 18,
+  minWidth: 18,
+  borderRadius: 9,
+  padding: '0 5px',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginLeft: 'auto',
+};
+
+function isActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(href + '/');
+}
+
+function NavItemRow({ item, active, badge }: { item: NavItem; active: boolean; badge?: number }) {
+  const Ico = I[item.icon];
+  return (
+    <Link href={item.href} className={`nav-item${active ? ' active' : ''}`}>
+      <span className="nav-icon" style={{ width: 16, height: 16, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+        <Ico size={16} />
+      </span>
+      <span style={{ flex: 1 }}>{item.label}</span>
+      {badge !== undefined && badge > 0 && <span style={badgeStyle}>{badge}</span>}
+    </Link>
+  );
+}
+
+function StaticNavGroup({ items, pathname, separator, pushDown }: {
   items: NavItem[];
+  pathname: string;
   separator?: boolean;
   pushDown?: boolean;
-  pathname: string;
 }) {
   return (
     <div style={{
       ...(separator ? { marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--sidebar-separator)' } : {}),
-      ...(pushDown   ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--sidebar-separator)' } : {}),
+      ...(pushDown  ? { marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--sidebar-separator)' } : {}),
     }}>
-      {items.map(item => {
-        const Ico = I[item.icon];
-        const inInbox = item.href === '/app/inbox' && pathname.startsWith('/app/inbox');
-        const active = inInbox || pathname === item.href ||
-          (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
+      {items.map(item => (
+        <NavItemRow key={item.href} item={item} active={isActive(pathname, item.href)} />
+      ))}
+    </div>
+  );
+}
 
-        return (
-          <div key={item.href}>
-            <Link href={item.href} className={`nav-item${active ? ' active' : ''}`}>
-              <span className="nav-icon" style={{ width: 16, height: 16, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-                <Ico size={16} />
-              </span>
-              <span style={{ flex: 1 }}>{item.label}</span>
-              {item.badge !== undefined && (
-                <span style={{
-                  background: 'var(--sidebar-badge-bg)',
-                  color: 'var(--sidebar-text-active)',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-body)',
-                  height: 18,
-                  minWidth: 18,
-                  borderRadius: 9,
-                  padding: '0 5px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginLeft: 'auto',
-                }}>
-                  {item.badge}
-                </span>
-              )}
-            </Link>
+function DepartmentNavRow({ department, pathname }: { department: Department; pathname: string }) {
+  const template = useMockSystem().templates[department.type];
+  const items = useWorkItemsByDepartment(department.type);
+  const openCount = useMemo(
+    () => items.filter(i => !template.terminalStatuses.includes(i.status)).length,
+    [items, template.terminalStatuses],
+  );
+  const href = `/app/${department.type}`;
+  return (
+    <NavItemRow
+      item={{ href, label: template.name, icon: DEPARTMENT_ICON[department.type] }}
+      active={isActive(pathname, href)}
+      badge={openCount}
+    />
+  );
+}
 
-            {item.subItems && (
-              <Suspense fallback={null}>
-                <InboxSubItems />
-              </Suspense>
-            )}
-          </div>
-        );
-      })}
+function DepartmentsSection({ pathname }: { pathname: string }) {
+  const departments = useDepartments();
+  const { templates } = useMockSystem();
+  const sorted = useMemo(
+    () => [...departments].sort(
+      (a, b) => templates[a.type].displayOrder - templates[b.type].displayOrder,
+    ),
+    [departments, templates],
+  );
+  return (
+    <div style={{ marginTop: 8 }}>
+      <div className="nav-section-label" style={{ color: 'var(--sidebar-text-faint)' }}>Departments</div>
+      {sorted.map(d => (
+        <DepartmentNavRow key={d.id} department={d} pathname={pathname} />
+      ))}
     </div>
   );
 }
@@ -325,7 +181,7 @@ export function AppSidebar() {
           <div style={{
             fontFamily: 'var(--font-body)',
             fontSize: 12,
-            color: 'var(--sidebar-text-active)',
+            color: 'var(--sidebar-text-faint)',
             lineHeight: 1.3,
           }}>
             Northwind Health
@@ -341,10 +197,12 @@ export function AppSidebar() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        <NavGroup items={CORE}       pathname={pathname} />
-        <NavGroup items={DIRECTORY}  pathname={pathname} separator />
-        <NavGroup items={COMPLIANCE} pathname={pathname} separator />
-        <NavGroup items={SYSTEM}     pathname={pathname} pushDown />
+        <StaticNavGroup items={TOP} pathname={pathname} />
+        <DepartmentsSection pathname={pathname} />
+        <StaticNavGroup items={BOTTOM_PRIMARY}    pathname={pathname} separator />
+        <StaticNavGroup items={BOTTOM_COMPLIANCE} pathname={pathname} />
+        <StaticNavGroup items={BOTTOM_DIRECTORY}  pathname={pathname} />
+        <StaticNavGroup items={BOTTOM_SYSTEM}     pathname={pathname} pushDown />
       </nav>
 
       {/* User area */}

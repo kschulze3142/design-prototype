@@ -59,6 +59,11 @@ export type DepartmentTemplate = {
   displayOrder: number
   queueLayout: QueueLayout
   statuses: string[]
+  // Subset of `statuses` considered "done" — items in these statuses are
+  // excluded from open-work counts (sidebar badges, dashboard tiles). Required
+  // (not optional) so every template author makes an explicit choice; a
+  // department with no terminal states ships `[]`.
+  terminalStatuses: string[]
   docTags: string[]
   metadataFields: MetadataFieldDescriptor[]
   supportsDecline: boolean

@@ -38,6 +38,7 @@ export const referralsTemplate: DepartmentTemplate = {
   displayOrder: 1,
   queueLayout: 'pipeline',
   statuses: ['new', 'in_review', 'accepted', 'scheduled', 'completed', 'declined'],
+  terminalStatuses: ['accepted', 'scheduled', 'completed', 'declined'],
   docTags: [
     'Referral Rx', 'H&P', 'Insurance Card', 'Lab Results', 'Labs',
     'Discharge Summary', 'Op Report', 'F2F Request', 'F2F Docs',
@@ -72,6 +73,7 @@ export const priorAuthTemplate: DepartmentTemplate = {
   displayOrder: 2,
   queueLayout: 'tracker',
   statuses: ['pending', 'submitted', 'approved', 'denied', 'expired'],
+  terminalStatuses: ['approved', 'denied', 'expired'],
   docTags: [
     'Auth Request', 'Auth Decision', 'Clinical Notes', 'F2F Docs',
     'Peer-to-Peer', 'Appeal', 'Auth Approval', 'Auth Denial',
@@ -103,6 +105,7 @@ export const clinicalResultsTemplate: DepartmentTemplate = {
   displayOrder: 3,
   queueLayout: 'inbox',
   statuses: ['new', 'reviewed', 'acknowledged', 'action_required', 'closed'],
+  terminalStatuses: ['acknowledged', 'closed'],
   docTags: [
     'Lab', 'Imaging', 'Pathology', 'STAT', 'Abnormal', 'Critical',
     'Routine', 'Follow-up',
@@ -133,6 +136,7 @@ export const ordersTemplate: DepartmentTemplate = {
   displayOrder: 4,
   queueLayout: 'queue',
   statuses: ['pending', 'in_progress', 'fulfilled', 'cancelled'],
+  terminalStatuses: ['fulfilled', 'cancelled'],
   docTags: [
     'DME', 'Lab', 'Imaging', 'Procedure', 'Pharmacy', 'Home Health',
     'Routine', 'Urgent',
@@ -157,6 +161,7 @@ export const adminTemplate: DepartmentTemplate = {
   displayOrder: 5,
   queueLayout: 'inbox',
   statuses: ['open', 'in_progress', 'completed', 'archived'],
+  terminalStatuses: ['completed', 'archived'],
   docTags: [
     'Insurance Card', 'Records Request', 'ROI', 'Address Change',
     'POA', 'Payer Correspondence', 'Routine',
