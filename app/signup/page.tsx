@@ -41,7 +41,7 @@ export default function SignupPage() {
   const handleContinue = () => {
     if (!selectedType) return;
     setPracticeType(selectedType);
-    router.push('/app/dashboard');
+    router.push('/welcome');
   };
 
   return (
