@@ -45,7 +45,8 @@
       "Bash(awk '/id: '\"'\"'cr-marcus-echo'\"'\"'/,/^  },/' lib/mockSystem/mockData.ts)",
       "Bash(awk '/id: '\"'\"'ref-13'\"'\"'/,/^  },/' lib/mockSystem/mockData.ts)",
       "Bash(echo \"EXIT: $?\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(tee /tmp/dev.log)"
     ]
   }
 }

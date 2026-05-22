@@ -108,7 +108,7 @@ function DepartmentNavRow({ department, pathname }: { department: Department; pa
     () => items.filter(i => !template.terminalStatuses.includes(i.status)).length,
     [items, template.terminalStatuses],
   );
-  const href = `/app/${department.type}`;
+  const href = `/app/departments/${department.type}`;
   return (
     <NavItemRow
       item={{ href, label: template.name, icon: DEPARTMENT_ICON[department.type] }}
