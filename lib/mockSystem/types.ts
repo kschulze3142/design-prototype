@@ -53,6 +53,11 @@ export type MetadataFieldDescriptor<T = unknown> = {
   urgentWhen?: (value: T) => boolean
 }
 
+// Vocabulary supported by the Pill primitive (components/app/primitives.tsx).
+// Unknown values fall back to 'slate' at render time; the type enforces the
+// supported set at template-author time so a typo doesn't silently degrade.
+export type PillTone = 'emerald' | 'teal' | 'amber' | 'red' | 'slate' | 'violet'
+
 export type DepartmentTemplate = {
   type: DepartmentType
   name: string
@@ -71,6 +76,10 @@ export type DepartmentTemplate = {
   // (not optional) so every template author makes an explicit choice; a
   // department with no terminal states ships `[]`.
   terminalStatuses: string[]
+  // Pill tone per status — read by WorkItemCard. Required (not optional) so
+  // every template author picks tones explicitly; an unknown status at render
+  // time falls back to 'slate'.
+  statusTones: Record<string, PillTone>
   docTags: string[]
   metadataFields: MetadataFieldDescriptor[]
   supportsDecline: boolean

@@ -41,6 +41,14 @@ export const referralsTemplate: DepartmentTemplate = {
   queueLayout: 'pipeline',
   statuses: ['new', 'in_review', 'accepted', 'scheduled', 'completed', 'declined'],
   terminalStatuses: ['accepted', 'scheduled', 'completed', 'declined'],
+  statusTones: {
+    new: 'teal',
+    in_review: 'amber',
+    accepted: 'emerald',
+    scheduled: 'emerald',
+    completed: 'emerald',
+    declined: 'red',
+  },
   docTags: [
     'Referral Rx', 'H&P', 'Insurance Card', 'Lab Results', 'Labs',
     'Discharge Summary', 'Op Report', 'F2F Request', 'F2F Docs',
@@ -78,6 +86,13 @@ export const priorAuthTemplate: DepartmentTemplate = {
   queueLayout: 'tracker',
   statuses: ['pending', 'submitted', 'approved', 'denied', 'expired'],
   terminalStatuses: ['approved', 'denied', 'expired'],
+  statusTones: {
+    pending: 'amber',
+    submitted: 'teal',
+    approved: 'emerald',
+    denied: 'red',
+    expired: 'red',
+  },
   docTags: [
     'Auth Request', 'Auth Decision', 'Clinical Notes', 'F2F Docs',
     'Peer-to-Peer', 'Appeal', 'Auth Approval', 'Auth Denial',
@@ -112,13 +127,20 @@ export const clinicalResultsTemplate: DepartmentTemplate = {
   queueLayout: 'inbox',
   statuses: ['new', 'reviewed', 'acknowledged', 'action_required', 'closed'],
   terminalStatuses: ['acknowledged', 'closed'],
+  statusTones: {
+    new: 'teal',
+    reviewed: 'amber',
+    acknowledged: 'emerald',
+    action_required: 'red',
+    closed: 'slate',
+  },
   docTags: [
     'Lab', 'Imaging', 'Pathology', 'STAT', 'Abnormal', 'Critical',
     'Routine', 'Follow-up',
   ],
   metadataFields: [
-    { key: 'resultType',       label: 'Type',             format: 'pill' },
     { key: 'headline',         label: 'Headline',         format: 'text' },
+    { key: 'resultType',       label: 'Type',             format: 'pill' },
     { key: 'orderingProvider', label: 'Ordering provider', format: 'text' },
     { key: 'receivedAt',       label: 'Received',         format: 'date' },
     {
@@ -145,6 +167,12 @@ export const ordersTemplate: DepartmentTemplate = {
   queueLayout: 'queue',
   statuses: ['pending', 'in_progress', 'fulfilled', 'cancelled'],
   terminalStatuses: ['fulfilled', 'cancelled'],
+  statusTones: {
+    pending: 'amber',
+    in_progress: 'teal',
+    fulfilled: 'emerald',
+    cancelled: 'slate',
+  },
   docTags: [
     'DME', 'Lab', 'Imaging', 'Procedure', 'Pharmacy', 'Home Health',
     'Routine', 'Urgent',
@@ -172,6 +200,12 @@ export const adminTemplate: DepartmentTemplate = {
   queueLayout: 'inbox',
   statuses: ['open', 'in_progress', 'completed', 'archived'],
   terminalStatuses: ['completed', 'archived'],
+  statusTones: {
+    open: 'amber',
+    in_progress: 'teal',
+    completed: 'emerald',
+    archived: 'slate',
+  },
   docTags: [
     'Insurance Card', 'Records Request', 'ROI', 'Address Change',
     'POA', 'Payer Correspondence', 'Routine',
