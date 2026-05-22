@@ -63,7 +63,9 @@
       "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/prior_auth/items/pa-marcus-mri/thread\")",
       "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/clinical_results/items/cr-marcus-echo/thread\")",
       "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/orders/items/o-meilin-epo/thread\")",
-      "Bash(grep -cE 'workItemId: '\\\\''__TRACKED_VAR__'\\\\''' lib/mockSystem/mockData.ts)"
+      "Bash(grep -cE 'workItemId: '\\\\''__TRACKED_VAR__'\\\\''' lib/mockSystem/mockData.ts)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(awk '{print $2}')"
     ]
   }
 }

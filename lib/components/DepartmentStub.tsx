@@ -66,11 +66,7 @@ export function DepartmentStub({ type, layoutName, ticketId }: Props) {
                 key={item.id}
                 workItem={item}
                 variant="compact"
-                href={
-                  type === 'referrals'
-                    ? `/app/referrals/${item.id}/thread`
-                    : `/app/departments/${type}/items/${item.id}/thread`
-                }
+                href={`/app/departments/${type}/items/${item.id}/thread`}
               />
             ))}
             {hiddenCount > 0 && (

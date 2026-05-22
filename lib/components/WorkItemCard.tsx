@@ -101,7 +101,8 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
 
   const handleClaim = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    // TODO: wire claimItem() from MockSystemProvider when claim flow ships (likely FE-054)
+    // Claim wiring deferred to a later ticket. FE-054 took the dedicated-
+    // card path (Decision G-prime/α) and does not exercise this branch.
   };
 
   if (variant === 'compact') {

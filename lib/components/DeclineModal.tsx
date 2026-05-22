@@ -16,7 +16,7 @@
 //   - Escape-key dismisses; backdrop click dismisses.
 // =============================================================================
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { usePatient } from '@/lib/mockSystem/hooks';
 import type {
   DepartmentTemplate,
@@ -43,6 +43,11 @@ type Props = {
   template: DepartmentTemplate;
   onConfirm: (reason: string, notes: string) => void;
   onClose: () => void;
+  // Optional reactive preview rendered between the notes textarea and the
+  // footer. Receives the current selectedReason (null until a chip is
+  // picked). Used by the referrals pipeline (FE-054) to surface the
+  // courtesy fax preview; other departments leave this undefined.
+  previewSlot?: (selectedReason: string | null) => ReactNode;
 };
 
 function XCircleIcon({ size = 22 }: { size?: number }) {
@@ -84,7 +89,7 @@ function ReasonChip({ label, selected, onClick }: {
   );
 }
 
-export function DeclineModal({ workItem, template, onConfirm, onClose }: Props) {
+export function DeclineModal({ workItem, template, onConfirm, onClose, previewSlot }: Props) {
   const patient = usePatient(workItem.patientId);
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [notes, setNotes] = useState('');
@@ -202,6 +207,8 @@ export function DeclineModal({ workItem, template, onConfirm, onClose }: Props) 
               }}
             />
           </div>
+
+          {previewSlot && previewSlot(selectedReason || null)}
         </div>
 
         {/* Footer */}
