@@ -38,6 +38,11 @@ type Props = {
   workItem: WorkItem;
   variant: Variant;
   href: string;
+  // List variant only — when set, click invokes onSelect instead of
+  // navigating, and `selected` drives a primary-ring + panel-shadow
+  // affordance. Inbox layouts use this for in-pane selection.
+  selected?: boolean;
+  onSelect?: () => void;
 };
 
 const ROSE_300 = '#fda4af';
@@ -79,7 +84,7 @@ function UrgencyDot() {
 // Main component
 // -----------------------------------------------------------------------------
 
-export function WorkItemCard({ workItem, variant, href }: Props) {
+export function WorkItemCard({ workItem, variant, href, selected = false, onSelect }: Props) {
   const router = useRouter();
   const template = useTemplate(workItem.departmentType);
   const patient = usePatient(workItem.patientId);
@@ -97,7 +102,7 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
   const patientName = patient?.name ?? 'Unknown patient';
   const timestamp = formatRelative(workItem.updatedAt);
 
-  const handleClick = () => router.push(href);
+  const handleClick = onSelect ?? (() => router.push(href));
 
   const handleClaim = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -156,6 +161,14 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
   }
 
   if (variant === 'list') {
+    // Selection ring wins over urgent ring — inbox in-pane selection is the
+    // strongest signal the user controls. Hover and selected both promote
+    // shadow to panel so the row visually "lifts."
+    const borderColor = selected
+      ? 'var(--color-primary)'
+      : urgent
+        ? ROSE_300
+        : 'transparent';
     return (
       <div
         role="button"
@@ -169,12 +182,12 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
           alignItems: 'center',
           gap: 14,
           padding: '10px 14px',
-          background: 'var(--color-surface)',
+          background: selected ? 'var(--color-primary-subtle)' : 'var(--color-surface)',
           borderRadius: 'var(--radius-md)',
-          boxShadow: hover ? 'var(--shadow-panel)' : 'var(--shadow-card)',
-          border: urgent ? `2px solid ${ROSE_300}` : '2px solid transparent',
+          boxShadow: selected || hover ? 'var(--shadow-panel)' : 'var(--shadow-card)',
+          border: `2px solid ${borderColor}`,
           cursor: 'pointer',
-          transition: 'box-shadow var(--duration-fast)',
+          transition: 'box-shadow var(--duration-fast), background var(--duration-fast)',
         }}
       >
         <span style={{ ...titleStyle, flex: '0 0 auto', minWidth: 140 }}>{patientName}</span>

@@ -7,7 +7,7 @@
 // =============================================================================
 
 import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react';
-import type { MetadataFieldDescriptor, UrgencyLevel } from '@/lib/mockSystem/types';
+import type { MetadataFieldDescriptor, PillTone, UrgencyLevel } from '@/lib/mockSystem/types';
 import { Pill } from '@/components/app/primitives';
 import { I } from '@/components/app/icons';
 
@@ -127,12 +127,20 @@ export function FieldRow({
     const tokens = Array.isArray(value) ? value : [value];
     const visible = tokens.filter(t => !isEmpty(t));
     if (visible.length === 0) return null;
+    // urgentWhen drives pill tone for the descriptor as a whole (e.g.
+    // criticality 'critical'→red, 'borderline'→amber). When urgentWhen is
+    // absent or returns null, every chip stays slate — matches the FE-058
+    // baseline for non-urgent pill descriptors (services, cptCodes, etc.).
+    const tone: PillTone =
+      urgency === 'urgent'  ? 'red'   :
+      urgency === 'warning' ? 'amber' :
+      'slate';
     return (
       <div style={fieldRowStyle}>
         <span style={fieldLabelStyle}>{descriptor.label}</span>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {visible.map((t, i) => (
-            <Pill key={i} tone="slate" dot={false}>
+            <Pill key={i} tone={tone} dot={false}>
               {String(t)}
             </Pill>
           ))}
