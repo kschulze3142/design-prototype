@@ -24,7 +24,7 @@ type Props = {
 };
 
 export function ComposeBar({ workItem, template, customActions }: Props) {
-  const { declineItem } = useMockSystem();
+  const { declineItem, advanceItem } = useMockSystem();
   const [value, setValue] = useState('');
   const [declineOpen, setDeclineOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +41,10 @@ export function ComposeBar({ workItem, template, customActions }: Props) {
   };
 
   const handleAdvance = () => {
-    // TODO: wire advanceStatus() from MockSystemProvider (FE-053/FE-054)
+    // No toStatus passed — provider auto-advances to next status in template.statuses.
+    // For referrals/prior_auth, the first N statuses align with lifecycleStages so
+    // the resulting status matches the button label.
+    advanceItem(workItem.id);
   };
 
   const handleDecline = () => {

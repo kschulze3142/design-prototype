@@ -65,7 +65,14 @@
       "Bash(/usr/bin/curl -s \"http://localhost:3000/app/departments/orders/items/o-meilin-epo/thread\")",
       "Bash(grep -cE 'workItemId: '\\\\''__TRACKED_VAR__'\\\\''' lib/mockSystem/mockData.ts)",
       "Bash(echo \"EXIT_CODE=$?\")",
-      "Bash(awk '{print $2}')"
+      "Bash(awk '{print $2}')",
+      "Bash(grep -oE \"Advance to [A-Za-z ]{1,30}\")",
+      "Bash(grep -oE \"Advance[^<\\\\\"]{0,40}\")",
+      "Bash(grep -oE \"Advance to[^a-z]{1,5}[A-Z][a-z]+ ?[A-Za-z]*\")",
+      "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); m = re.search\\(r'Advance to.{0,200}', html\\); print\\(repr\\(m.group\\(0\\)\\) if m else 'NO MATCH'\\)\")",
+      "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); print\\('Advance present:', 'Advance to' in html\\); print\\('Decline present:', '>Decline<' in html\\); m = re.search\\(r'Off-pipeline[^<]*', html\\); print\\('Lifecycle caption:', repr\\(m.group\\(0\\)\\) if m else 'NOT FOUND'\\)\")",
+      "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); m = re.search\\(r'Off-pipeline.{0,80}', html\\); print\\(repr\\(m.group\\(0\\)\\) if m else 'NO MATCH'\\)\")",
+      "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); m = re.search\\(r'Advance to.{0,80}', html\\); print\\('PA Advance:', repr\\(m.group\\(0\\)\\) if m else 'NO ADVANCE BUTTON'\\)\")"
     ]
   }
 }
