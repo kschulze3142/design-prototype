@@ -85,19 +85,20 @@ export const priorAuthTemplate: DepartmentTemplate = {
   description: 'Manage authorization requests and approvals',
   displayOrder: 2,
   queueLayout: 'tracker',
-  statuses: ['pending', 'submitted', 'approved', 'denied', 'expired'],
+  statuses: ['submitted', 'awaiting_docs', 'pending', 'approved', 'denied', 'expired'],
   terminalStatuses: ['approved', 'denied', 'expired'],
   statusTones: {
-    pending: 'amber',
     submitted: 'teal',
+    awaiting_docs: 'amber',
+    pending: 'amber',
     approved: 'emerald',
     denied: 'red',
     expired: 'red',
   },
-  lifecycleStages: ['pending', 'submitted', 'approved'],
+  lifecycleStages: ['submitted', 'awaiting_docs', 'pending', 'approved'],
   docTags: [
-    'Auth Request', 'Auth Decision', 'Clinical Notes', 'F2F Docs',
-    'Peer-to-Peer', 'Appeal', 'Auth Approval', 'Auth Denial',
+    'PA Request', 'Insurance Card', 'Clinical Notes', 'Appeal',
+    'Auth Decision', 'F2F Docs', 'Peer-to-Peer', 'Auth Approval', 'Auth Denial',
   ],
   metadataFields: [
     { key: 'payer',            label: 'Payer',            format: 'text' },
@@ -111,6 +112,7 @@ export const priorAuthTemplate: DepartmentTemplate = {
       format: 'date',
       urgentWhen: (v: unknown) => typeof v === 'string' && daysUntil(v) < 3,
     },
+    { key: 'deniedReason',     label: 'Denied reason',    format: 'text' },
   ],
   supportsDecline: true,
   declineReasons: [
@@ -120,7 +122,12 @@ export const priorAuthTemplate: DepartmentTemplate = {
     'Patient not eligible',
     'Out of network provider',
   ],
-  automationDefaults: ['auto-pa-expiring', 'auto-pa-approved-notify'],
+  automationDefaults: [
+    'auto-pa-acknowledge-submission',
+    'auto-pa-expiring',
+    'auto-pa-approved-notify',
+    'auto-pa-denied-notify',
+  ],
 }
 
 // -----------------------------------------------------------------------------

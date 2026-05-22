@@ -163,7 +163,7 @@ export const mockWorkItems: WorkItem[] = [
     status: 'in_review', assignedTo: 'u-amelia',
     slaBreached: false, slaDueAt: inHours(8),
     docTags: ['Referral Rx', 'Insurance Card'],
-    linkedItems: [],
+    linkedItems: [{ itemId: 'pa-henry-mri-pa', relationship: 'spawned' }],
     createdAt: hoursAgo(12), updatedAt: hoursAgo(3),
     metadata: {
       referringOrg: 'Mercy Regional',
@@ -302,7 +302,10 @@ export const mockWorkItems: WorkItem[] = [
     status: 'in_review', assignedTo: 'u-daniel',
     slaBreached: false, slaDueAt: inHours(10),
     docTags: ['Referral Rx', 'Echo Report'],
-    linkedItems: [{ itemId: 'cr-quincy-lipid', relationship: 'related' }],
+    linkedItems: [
+      { itemId: 'cr-quincy-lipid', relationship: 'related' },
+      { itemId: 'pa-quincy-tavr-ct', relationship: 'spawned' },
+    ],
     createdAt: hoursAgo(16), updatedAt: hoursAgo(4),
     metadata: {
       referringOrg: 'Mercy Regional',
@@ -355,13 +358,16 @@ export const mockWorkItems: WorkItem[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // PRIOR AUTH (7) — 3 cross-dept (Marcus/Cordelia/Beatrice) + 4 mixed
+  // PRIOR AUTH (10) — 3 cross-dept stars (Marcus/Cordelia/Beatrice) + 7 mixed,
+  // covering all 6 status states (submitted/awaiting_docs/pending/approved/
+  // denied/expired). Reginald/Quincy/Henry PAs added per FE-056 to exercise
+  // the new awaiting_docs status and the previously-missing denied/expired.
   // ---------------------------------------------------------------------------
   {
     id: 'pa-marcus-mri', departmentType: 'prior_auth', patientId: 'pt-marcus',
     status: 'submitted', assignedTo: 'u-amelia',
     slaBreached: false, slaDueAt: inDays(2),
-    docTags: ['Auth Request', 'Clinical Notes'],
+    docTags: ['PA Request', 'Clinical Notes'],
     linkedItems: [
       { itemId: 'ref-5', relationship: 'spawned_from' },
       { itemId: 'cr-marcus-echo', relationship: 'spawned_from' },
@@ -393,9 +399,9 @@ export const mockWorkItems: WorkItem[] = [
   },
   {
     id: 'pa-beatrice-cards', departmentType: 'prior_auth', patientId: 'pt-beatrice',
-    status: 'pending', assignedTo: 'u-sophia',
+    status: 'submitted', assignedTo: 'u-sophia',
     slaBreached: false, slaDueAt: inDays(7),
-    docTags: ['Auth Request'],
+    docTags: ['PA Request'],
     linkedItems: [{ itemId: 'ref-6', relationship: 'spawned_from' }],
     createdAt: hoursAgo(20), updatedAt: hoursAgo(20),
     metadata: {
@@ -410,7 +416,7 @@ export const mockWorkItems: WorkItem[] = [
     id: 'pa-theodore-ep', departmentType: 'prior_auth', patientId: 'pt-theodore',
     status: 'submitted', assignedTo: 'u-daniel',
     slaBreached: false, slaDueAt: inDays(5),
-    docTags: ['Auth Request', 'Clinical Notes'],
+    docTags: ['PA Request', 'Clinical Notes'],
     linkedItems: [{ itemId: 'ref-9', relationship: 'spawned_from' }],
     createdAt: hoursAgo(4), updatedAt: hoursAgo(2),
     metadata: {
@@ -457,7 +463,7 @@ export const mockWorkItems: WorkItem[] = [
     id: 'pa-yvette-mri', departmentType: 'prior_auth', patientId: 'pt-yvette',
     status: 'submitted', assignedTo: 'u-jordan',
     slaBreached: false, slaDueAt: inDays(2),
-    docTags: ['Auth Request', 'Clinical Notes'],
+    docTags: ['PA Request', 'Clinical Notes'],
     linkedItems: [{ itemId: 'cr-yvette-cmr', relationship: 'related' }],
     createdAt: hoursAgo(48), updatedAt: hoursAgo(10),
     metadata: {
@@ -466,6 +472,54 @@ export const mockWorkItems: WorkItem[] = [
       cptCodes: ['75561'],
       submittedAt: hoursAgo(48),
       expiresAt: inDays(2),
+    },
+  },
+  {
+    id: 'pa-reginald-cath', departmentType: 'prior_auth', patientId: 'pt-reginald',
+    status: 'awaiting_docs', assignedTo: 'u-jordan',
+    slaBreached: false, slaDueAt: inDays(2),
+    docTags: ['PA Request', 'F2F Docs'],
+    linkedItems: [{ itemId: 'cr-reginald-stress', relationship: 'related' }],
+    createdAt: hoursAgo(36), updatedAt: hoursAgo(4),
+    metadata: {
+      payer: 'Blue Cross',
+      serviceRequested: 'Diagnostic cardiac catheterization — post-stress-echo wall-motion abnormality',
+      cptCodes: ['93454', '93458'],
+      // Not yet submitted — awaiting clinical note from Dr. Quintero before payer submission.
+    },
+  },
+  {
+    id: 'pa-quincy-tavr-ct', departmentType: 'prior_auth', patientId: 'pt-quincy',
+    status: 'denied', assignedTo: 'u-daniel',
+    slaBreached: false, slaDueAt: null,
+    docTags: ['PA Request', 'Auth Denial', 'Clinical Notes'],
+    linkedItems: [{ itemId: 'ref-11', relationship: 'spawned_from' }],
+    createdAt: daysAgo(6), updatedAt: daysAgo(2),
+    metadata: {
+      payer: 'Blue Cross',
+      serviceRequested: 'CT angiography for TAVR planning',
+      cptCodes: ['75574'],
+      submittedAt: daysAgo(6),
+      deniedReason: 'Service not covered by plan',
+    },
+  },
+  {
+    id: 'pa-henry-mri-pa', departmentType: 'prior_auth', patientId: 'pt-henry',
+    status: 'expired', assignedTo: 'u-daniel',
+    slaBreached: false, slaDueAt: null,
+    docTags: ['PA Request', 'Auth Approval'],
+    linkedItems: [
+      { itemId: 'ref-3', relationship: 'spawned_from' },
+      { itemId: 'o-henry-mri', relationship: 'related' },
+    ],
+    createdAt: daysAgo(45), updatedAt: daysAgo(5),
+    metadata: {
+      payer: 'Aetna',
+      serviceRequested: 'Lumbar MRI without contrast',
+      cptCodes: ['72148'],
+      authNumber: 'AET-2025-330451',
+      submittedAt: daysAgo(45),
+      expiresAt: daysAgo(5),
     },
   },
 
@@ -512,7 +566,10 @@ export const mockWorkItems: WorkItem[] = [
     status: 'action_required', assignedTo: 'u-jordan',
     slaBreached: true, slaDueAt: hoursAgo(4),
     docTags: ['Imaging', 'Abnormal', 'Follow-up'],
-    linkedItems: [{ itemId: 'o-reginald-echo', relationship: 'spawned' }],
+    linkedItems: [
+      { itemId: 'o-reginald-echo', relationship: 'spawned' },
+      { itemId: 'pa-reginald-cath', relationship: 'related' },
+    ],
     createdAt: daysAgo(3), updatedAt: hoursAgo(4),
     metadata: {
       resultType: 'imaging',
@@ -597,7 +654,10 @@ export const mockWorkItems: WorkItem[] = [
     status: 'in_progress', assignedTo: 'u-daniel',
     slaBreached: false, slaDueAt: inDays(5),
     docTags: ['Imaging', 'Routine'],
-    linkedItems: [{ itemId: 'ref-3', relationship: 'related' }],
+    linkedItems: [
+      { itemId: 'ref-3', relationship: 'related' },
+      { itemId: 'pa-henry-mri-pa', relationship: 'related' },
+    ],
     createdAt: daysAgo(1), updatedAt: hoursAgo(2),
     metadata: {
       orderType: 'Imaging',
@@ -866,7 +926,7 @@ export const mockThreadEvents: ThreadEvent[] = [
       documentName: 'PA_Whitfield_CardiacMRI.pdf',
       documentPages: 5,
       bodyText: 'Prior auth submission for cardiac MRI (75561, 75565). Clinical justification: recent cerebral infarction with reduced LVEF on TTE; ruling out cardiac embolic source.',
-      tags: ['Auth Request', 'Clinical Notes'],
+      tags: ['PA Request', 'Clinical Notes'],
       delivered: true,
     },
   },
@@ -958,7 +1018,7 @@ export const mockThreadEvents: ThreadEvent[] = [
       documentName: 'PA_Brennan_PulmRehab.pdf',
       documentPages: 4,
       bodyText: 'Submitting PA for 12-session pulmonary rehab program. Clinical: GOLD stage D COPD with frequent exacerbations.',
-      tags: ['Auth Request', 'Clinical Notes'],
+      tags: ['PA Request', 'Clinical Notes'],
       delivered: true,
     },
   },
@@ -1127,7 +1187,7 @@ export const mockThreadEvents: ThreadEvent[] = [
       documentName: 'PA_Lindgren_CardsConsult.pdf',
       documentPages: 3,
       bodyText: 'Submitting PA for cardiology consult (99244). Clinical: CKD stage 3 with HFpEF symptoms.',
-      tags: ['Auth Request'],
+      tags: ['PA Request'],
       delivered: true,
     },
   },
@@ -1266,7 +1326,7 @@ export const mockThreadEvents: ThreadEvent[] = [
       documentName: 'PA_Ashworth_EP.pdf',
       documentPages: 6,
       bodyText: 'PA for EP study (93653) with possible ablation. Failed rhythm control trial on flecainide.',
-      tags: ['Auth Request', 'Clinical Notes'],
+      tags: ['PA Request', 'Clinical Notes'],
       delivered: true,
     },
   },
@@ -1461,7 +1521,7 @@ export const mockThreadEvents: ThreadEvent[] = [
       documentName: 'PA_Bramwell_CMR.pdf',
       documentPages: 4,
       bodyText: 'PA for cardiac MRI — nonischemic cardiomyopathy workup.',
-      tags: ['Auth Request', 'Clinical Notes'],
+      tags: ['PA Request', 'Clinical Notes'],
       delivered: true,
     },
   },
@@ -1608,6 +1668,128 @@ export const mockThreadEvents: ThreadEvent[] = [
       notes: null,
     },
   },
+
+  // -- Reginald Hoffman: DIAGNOSTIC CATH PA (awaiting docs) ----------------
+  {
+    id: 'te-pa-reginald-1', workItemId: 'pa-reginald-cath', type: 'note',
+    actor: 'u-jordan', timestamp: hoursAgo(36),
+    payload: {
+      bodyText: 'PA initiated for diagnostic cath after stress-echo wall-motion finding (cr-reginald-stress). Holding submission to Blue Cross until Dr. Quintero clinical note + stress-echo addendum arrive — Blue Cross requires both for cath PA.',
+      tags: [],
+    },
+  },
+  {
+    id: 'te-pa-reginald-2', workItemId: 'pa-reginald-cath', type: 'document_sent',
+    actor: 'u-jordan', timestamp: hoursAgo(30),
+    payload: {
+      recipientLabel: 'Dr. Marisol Quintero',
+      documentName: 'Doc_Request_Hoffman_Cath.pdf',
+      documentPages: 1,
+      bodyText: 'Requesting clinical note and stress-echo addendum to support diagnostic cath PA to Blue Cross.',
+      tags: ['F2F Docs'],
+      delivered: true,
+    },
+  },
+  {
+    id: 'te-pa-reginald-3', workItemId: 'pa-reginald-cath', type: 'note',
+    actor: 'u-jordan', timestamp: hoursAgo(4),
+    payload: {
+      bodyText: 'Still awaiting clinical note from Dr. Quintero. Will follow up tomorrow if not received.',
+      tags: [],
+    },
+  },
+
+  // -- Quincy Devereux: TAVR CT PA (denied) --------------------------------
+  {
+    id: 'te-pa-quincy-1', workItemId: 'pa-quincy-tavr-ct', type: 'document_sent',
+    actor: 'u-daniel', timestamp: daysAgo(6),
+    payload: {
+      recipientLabel: 'Blue Cross PA',
+      documentName: 'PA_Devereux_TAVRCT.pdf',
+      documentPages: 5,
+      bodyText: 'PA for CT angiography (75574) for TAVR planning — severe symptomatic AS per echo report.',
+      tags: ['PA Request', 'Clinical Notes'],
+      delivered: true,
+    },
+  },
+  {
+    id: 'te-pa-quincy-2', workItemId: 'pa-quincy-tavr-ct', type: 'document_received',
+    actor: 'system', actorLabel: 'Blue Cross',
+    timestamp: daysAgo(2),
+    payload: {
+      senderLabel: 'Blue Cross',
+      documentName: 'PA_Denial_BCBS_Devereux.pdf',
+      documentPages: 2,
+      bodyText: 'Denial letter — TAVR planning CT not a covered benefit under the patient\'s current plan rider. Coverage requires upgrade to imaging benefit tier, or member appeal with cardiology documentation of medical necessity.',
+      tags: ['Auth Denial'],
+      classificationNote: 'Auto-classified as PA decision',
+      delivered: true,
+    },
+  },
+  {
+    id: 'te-pa-quincy-3', workItemId: 'pa-quincy-tavr-ct', type: 'decline',
+    actor: 'u-daniel', timestamp: daysAgo(2),
+    payload: {
+      reason: 'Service not covered by plan',
+      notes: 'Blue Cross denial: TAVR planning CT not covered under current plan rider. Working with TAVR coordinator on appeal; in parallel exploring TEE as an alternative planning study.',
+      courtesyFaxSent: false,
+    },
+  },
+  {
+    id: 'te-pa-quincy-4', workItemId: 'pa-quincy-tavr-ct', type: 'automation',
+    actor: 'system', timestamp: daysAgo(2),
+    payload: {
+      ruleId: 'auto-pa-denied-notify',
+      ruleName: 'Notify on denial',
+      actionDescription: 'Notified Daniel Reyes — PA denied.',
+      bodyText: null,
+    },
+  },
+
+  // -- Henry Tobias: LUMBAR MRI PA (expired) -------------------------------
+  {
+    id: 'te-pa-henry-1', workItemId: 'pa-henry-mri-pa', type: 'document_sent',
+    actor: 'u-daniel', timestamp: daysAgo(45),
+    payload: {
+      recipientLabel: 'Aetna PA',
+      documentName: 'PA_Tobias_LumbarMRI.pdf',
+      documentPages: 3,
+      bodyText: 'PA for lumbar MRI (72148) — chronic low back pain workup prior to PT trial.',
+      tags: ['PA Request'],
+      delivered: true,
+    },
+  },
+  {
+    id: 'te-pa-henry-2', workItemId: 'pa-henry-mri-pa', type: 'document_received',
+    actor: 'system', actorLabel: 'Aetna',
+    timestamp: daysAgo(43),
+    payload: {
+      senderLabel: 'Aetna',
+      documentName: 'PA_Approval_AET2025330451.pdf',
+      documentPages: 1,
+      bodyText: 'Authorization #AET-2025-330451 approved for lumbar MRI. Valid 38 days.',
+      tags: ['Auth Approval'],
+      classificationNote: 'Auto-classified as PA decision',
+      delivered: true,
+    },
+  },
+  {
+    id: 'te-pa-henry-3', workItemId: 'pa-henry-mri-pa', type: 'note',
+    actor: 'u-daniel', timestamp: daysAgo(20),
+    payload: {
+      bodyText: 'Patient elected PT-first trial per Dr. Vu — deferring imaging. Will re-request PA if PT fails.',
+      tags: [],
+    },
+  },
+  {
+    id: 'te-pa-henry-4', workItemId: 'pa-henry-mri-pa', type: 'status_change',
+    actor: 'system', timestamp: daysAgo(5),
+    payload: {
+      fromStatus: 'approved', toStatus: 'expired',
+      transitionActions: ['Auth window lapsed', 'Notified assignee'],
+      notes: 'Service not rendered within 38-day window. Re-submission required if MRI ordered.',
+    },
+  },
 ]
 
 // =============================================================================
@@ -1670,13 +1852,28 @@ export const mockAutomations: AutomationRule[] = [
 
   // -- Prior Auth -----------------------------------------------------------
   {
+    id: 'auto-pa-acknowledge-submission',
+    departmentType: 'prior_auth',
+    name: 'Auto-acknowledge submission',
+    description: 'Notifies the PA coordinator and starts a 3-day decision SLA timer when a PA is submitted to a payer.',
+    trigger: 'status_changed',
+    conditions: [
+      { field: 'status', operator: 'changes_to', value: 'submitted' },
+    ],
+    actions: [
+      { type: 'notify', userId: 'u-amelia' },
+      { type: 'start_sla_timer', durationMs: 3 * 24 * 3_600_000 },
+    ],
+    enabled: true,
+  },
+  {
     id: 'auto-pa-expiring',
     departmentType: 'prior_auth',
-    name: 'Auth approaching expiry → alert',
-    description: 'Notifies the assignee when a PA auth is within 48h of expiring.',
+    name: 'Alert 7 days before expiration',
+    description: 'Notifies the assignee and tags the item when a PA auth is within 7 days of expiring.',
     trigger: 'sla_approaching',
     conditions: [
-      { field: 'time_until_expiry_hours', operator: 'less_than', value: 48 },
+      { field: 'time_until_expiry_hours', operator: 'less_than', value: 168 },
     ],
     actions: [
       { type: 'notify', userId: 'u-amelia' },
@@ -1695,6 +1892,21 @@ export const mockAutomations: AutomationRule[] = [
     ],
     actions: [
       { type: 'notify', userId: 'u-sophia' },
+    ],
+    enabled: true,
+  },
+  {
+    id: 'auto-pa-denied-notify',
+    departmentType: 'prior_auth',
+    name: 'Notify on denial',
+    description: 'Notifies the PA assignee and tags the item when a payer denies an authorization request.',
+    trigger: 'status_changed',
+    conditions: [
+      { field: 'status', operator: 'changes_to', value: 'denied' },
+    ],
+    actions: [
+      { type: 'notify', userId: 'u-daniel' },
+      { type: 'add_tag', tag: 'Denied — review for appeal' },
     ],
     enabled: true,
   },

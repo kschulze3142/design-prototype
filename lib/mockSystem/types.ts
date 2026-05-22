@@ -148,6 +148,7 @@ export type PriorAuthMetadata = {
   cptCodes?: string[]
   submittedAt?: string                 // ISO
   expiresAt?: string                   // ISO; urgency rule reads this
+  deniedReason?: string                // populated when status === 'denied'
 }
 
 export type ClinicalResultsMetadata = {
