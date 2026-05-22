@@ -7,14 +7,14 @@
 //   - Add Note    : always present.
 //   - Advance to X: shown iff template.lifecycleStages has a status after
 //                   workItem.status (i.e. currentIdx >= 0 and a next exists).
-//   - Decline     : shown iff template.supportsDecline.
-//
-// Click handlers are no-ops with TODOs; FE-053 wires the real flows.
+//   - Decline     : shown iff template.supportsDecline. Opens DeclineModal.
 // =============================================================================
 
 import { useRef, useState, type ReactNode } from 'react';
 import { I } from '@/components/app/icons';
+import { useMockSystem } from '@/lib/mockSystem/MockSystemProvider';
 import type { DepartmentTemplate, WorkItem } from '@/lib/mockSystem/types';
+import { DeclineModal } from '../DeclineModal';
 import { titleCaseStatus } from '../formatters';
 
 type Props = {
@@ -24,7 +24,9 @@ type Props = {
 };
 
 export function ComposeBar({ workItem, template, customActions }: Props) {
+  const { declineItem } = useMockSystem();
   const [value, setValue] = useState('');
+  const [declineOpen, setDeclineOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const currentIdx = template.lifecycleStages.indexOf(workItem.status);
@@ -43,7 +45,12 @@ export function ComposeBar({ workItem, template, customActions }: Props) {
   };
 
   const handleDecline = () => {
-    // TODO: open DeclineModal — FE-053 builds the Phase-9 equivalent
+    setDeclineOpen(true);
+  };
+
+  const handleDeclineConfirm = (reason: string, notes: string) => {
+    declineItem(workItem.id, reason, notes);
+    setDeclineOpen(false);
   };
 
   const handleSend = () => {
@@ -118,6 +125,14 @@ export function ComposeBar({ workItem, template, customActions }: Props) {
           Send
         </button>
       </div>
+      {declineOpen && (
+        <DeclineModal
+          workItem={workItem}
+          template={template}
+          onConfirm={handleDeclineConfirm}
+          onClose={() => setDeclineOpen(false)}
+        />
+      )}
     </div>
   );
 }

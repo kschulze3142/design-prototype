@@ -112,7 +112,14 @@ export const priorAuthTemplate: DepartmentTemplate = {
       urgentWhen: (v: unknown) => typeof v === 'string' && daysUntil(v) < 3,
     },
   ],
-  supportsDecline: false,
+  supportsDecline: true,
+  declineReasons: [
+    'Missing clinical documentation',
+    'Service not covered by plan',
+    'Incorrect CPT or diagnosis codes',
+    'Patient not eligible',
+    'Out of network provider',
+  ],
   automationDefaults: ['auto-pa-expiring', 'auto-pa-approved-notify'],
 }
 
