@@ -74,7 +74,10 @@
       "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); m = re.search\\(r'Off-pipeline.{0,80}', html\\); print\\(repr\\(m.group\\(0\\)\\) if m else 'NO MATCH'\\)\")",
       "Bash(python3 -c \"import sys, re; html = sys.stdin.read\\(\\); m = re.search\\(r'Advance to.{0,80}', html\\); print\\('PA Advance:', repr\\(m.group\\(0\\)\\) if m else 'NO ADVANCE BUTTON'\\)\")",
       "Bash(grep -oE \"Prior Auth.{0,200}\")",
-      "Bash(kill bshn0gzge *)"
+      "Bash(kill bshn0gzge *)",
+      "Bash(lsof -nP -iTCP:3001 -sTCP:LISTEN)",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(python3 *)"
     ]
   }
 }

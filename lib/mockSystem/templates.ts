@@ -21,6 +21,7 @@ import type {
   DepartmentTemplate,
   DepartmentType,
   PracticeType,
+  UrgencyLevel,
 } from './types'
 
 const daysUntil = (iso: string | undefined | null): number => {
@@ -100,18 +101,28 @@ export const priorAuthTemplate: DepartmentTemplate = {
     'PA Request', 'Insurance Card', 'Clinical Notes', 'Appeal',
     'Auth Decision', 'F2F Docs', 'Peer-to-Peer', 'Auth Approval', 'Auth Denial',
   ],
+  // Order is intentional — WorkItemCard.list (tracker cards) surfaces the
+  // first two fields, so Payer (institutional anchor) + Expires (urgency
+  // anchor) lead. "Most-important-first" per the WorkItemCard convention;
+  // for a tracker layout the expiry date is the headline signal.
   metadataFields: [
     { key: 'payer',            label: 'Payer',            format: 'text' },
-    { key: 'serviceRequested', label: 'Service',          format: 'text' },
-    { key: 'cptCodes',         label: 'CPT',              format: 'pill' },
-    { key: 'authNumber',       label: 'Auth #',           format: 'text' },
-    { key: 'submittedAt',      label: 'Submitted',        format: 'date' },
     {
       key: 'expiresAt',
       label: 'Expires',
       format: 'date',
-      urgentWhen: (v: unknown) => typeof v === 'string' && daysUntil(v) < 3,
+      urgentWhen: (v: unknown): UrgencyLevel => {
+        if (typeof v !== 'string') return null
+        const days = daysUntil(v)
+        if (days < 3) return 'urgent'
+        if (days < 7) return 'warning'
+        return null
+      },
     },
+    { key: 'serviceRequested', label: 'Service',          format: 'text' },
+    { key: 'cptCodes',         label: 'CPT',              format: 'pill' },
+    { key: 'authNumber',       label: 'Auth #',           format: 'text' },
+    { key: 'submittedAt',      label: 'Submitted',        format: 'date' },
     { key: 'deniedReason',     label: 'Denied reason',    format: 'text' },
   ],
   supportsDecline: true,

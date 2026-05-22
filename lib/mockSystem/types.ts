@@ -37,6 +37,13 @@ export type DepartmentType =
 
 export type QueueLayout = 'pipeline' | 'tracker' | 'inbox' | 'queue'
 
+// Three-tier urgency signal for metadata fields. `urgent` renders red+600,
+// `warning` renders amber+500, `null` renders normally. Boolean returns are
+// retained on MetadataFieldDescriptor.urgentWhen for back-compat with
+// existing two-state consumers (referrals SLA, clinical-results abnormal):
+// `true` normalizes to `'urgent'`, `false`/`undefined` to `null`.
+export type UrgencyLevel = 'urgent' | 'warning' | null
+
 // Descriptor for one metadata field on a department's work items.
 // `urgentWhen` is evaluated at render time; the consuming component owns
 // the urgency styling (red text, badge, etc.).
@@ -50,7 +57,7 @@ export type MetadataFieldDescriptor<T = unknown> = {
   key: string
   label: string
   format?: 'text' | 'date' | 'currency' | 'pill'
-  urgentWhen?: (value: T) => boolean
+  urgentWhen?: (value: T) => UrgencyLevel | boolean
 }
 
 // Vocabulary supported by the Pill primitive (components/app/primitives.tsx).
@@ -75,6 +82,10 @@ export type DepartmentTemplate = {
   // excluded from open-work counts (sidebar badges, dashboard tiles). Required
   // (not optional) so every template author makes an explicit choice; a
   // department with no terminal states ships `[]`.
+  //
+  // A status may appear in both lifecycleStages and terminalStatuses (e.g.,
+  // PA's 'approved'). When ordering or rendering sections, lifecycle order
+  // takes precedence and the status is treated as part of the active flow.
   terminalStatuses: string[]
   // Pill tone per status — read by WorkItemCard. Required (not optional) so
   // every template author picks tones explicitly; an unknown status at render

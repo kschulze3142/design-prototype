@@ -30,7 +30,7 @@ import type {
   PillTone,
   WorkItem,
 } from '@/lib/mockSystem/types';
-import { FieldRow, formatRelative, formatValue, isEmpty } from './formatters';
+import { FieldRow, formatRelative, formatValue, isEmpty, normalizeUrgency, urgencyStyle } from './formatters';
 
 type Variant = 'pipeline' | 'list' | 'compact';
 
@@ -192,13 +192,16 @@ export function WorkItemCard({ workItem, variant, href }: Props) {
           {visibleFields.map(descriptor => {
             const value = getMetadataValue(workItem, descriptor.key);
             if (isEmpty(value)) return null;
+            const urgency = normalizeUrgency(descriptor.urgentWhen?.(value));
+            const { color, fontWeight } = urgencyStyle(urgency);
             return (
               <span
                 key={descriptor.key}
                 style={{
                   fontFamily: 'Sora, var(--font-body), system-ui, sans-serif',
                   fontSize: 12.5,
-                  color: 'var(--color-text-secondary)',
+                  color,
+                  fontWeight,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
