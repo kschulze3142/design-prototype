@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { MockSystemProvider } from "@/lib/mockSystem";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -35,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className={`${outfit.variable} ${sora.variable} ${jetbrainsMono.variable} min-h-full flex flex-col`}>
-        {children}
+        <MockSystemProvider>{children}</MockSystemProvider>
       </body>
     </html>
   );
