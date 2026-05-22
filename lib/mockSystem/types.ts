@@ -177,13 +177,18 @@ export type PriorAuthMetadata = {
   deniedReason?: string                // populated when status === 'denied'
 }
 
+// FE-059: criticality replaces the old abnormal/acknowledged booleans —
+// it's the source of truth for urgency tier (critical→urgent,
+// borderline→warning, normal→null) read by the template's `criticality`
+// descriptor. abnormalFlags holds short scannable result deltas (e.g.,
+// 'BNP: 1450 (H)') rendered as featured chips in the rail; populated only
+// when criticality is borderline or critical.
 export type ClinicalResultsMetadata = {
   resultType: 'lab' | 'imaging' | 'pathology' | 'other'
   orderingProvider: string
   receivedAt: string                   // ISO
-  abnormal: boolean
-  acknowledged: boolean
-  headline: string                     // display string, e.g. "Echo, EF 35%"
+  criticality: 'normal' | 'borderline' | 'critical'
+  abnormalFlags: string[]
 }
 
 export type OrdersMetadata = {

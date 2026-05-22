@@ -145,42 +145,44 @@ export const priorAuthTemplate: DepartmentTemplate = {
 }
 
 // -----------------------------------------------------------------------------
-// CLINICAL RESULTS — inbox layout. `abnormal` flag renders as a pill and
-// flips urgency on when true.
+// CLINICAL RESULTS — inbox layout. `criticality` drives three-tier urgency
+// (critical→urgent, borderline→warning, normal→null). `abnormalFlags` is
+// featured: short clinical deltas render as chips with rail emphasis.
+// `flagged` is an off-pipeline terminal status (not in lifecycleStages) so
+// the tracker shows it as off-pipeline, matching denied/declined/expired.
 // -----------------------------------------------------------------------------
 export const clinicalResultsTemplate: DepartmentTemplate = {
   type: 'clinical_results',
   name: 'Clinical Results',
   category: 'Clinical',
-  description: 'Review and acknowledge incoming lab and imaging results',
+  description: 'Review and triage incoming lab, imaging, and pathology results',
   displayOrder: 3,
   queueLayout: 'inbox',
-  statuses: ['new', 'reviewed', 'acknowledged', 'action_required', 'closed'],
-  terminalStatuses: ['acknowledged', 'closed'],
+  statuses: ['new', 'reviewing', 'flagged', 'resolved'],
+  terminalStatuses: ['flagged', 'resolved'],
   statusTones: {
-    new: 'teal',
-    reviewed: 'amber',
-    acknowledged: 'emerald',
-    action_required: 'red',
-    closed: 'slate',
+    new:       'teal',
+    reviewing: 'amber',
+    flagged:   'red',
+    resolved:  'emerald',
   },
-  lifecycleStages: ['new', 'reviewed', 'acknowledged'],
-  docTags: [
-    'Lab', 'Imaging', 'Pathology', 'STAT', 'Abnormal', 'Critical',
-    'Routine', 'Follow-up',
-  ],
+  lifecycleStages: ['new', 'reviewing', 'resolved'],
+  docTags: ['Lab Results', 'Imaging', 'Pathology', 'Discharge Summary'],
   metadataFields: [
-    { key: 'headline',         label: 'Headline',         format: 'text' },
-    { key: 'resultType',       label: 'Type',             format: 'pill' },
-    { key: 'orderingProvider', label: 'Ordering provider', format: 'text' },
-    { key: 'receivedAt',       label: 'Received',         format: 'date' },
     {
-      key: 'abnormal',
-      label: 'Abnormal',
+      key: 'criticality',
+      label: 'Criticality',
       format: 'pill',
-      urgentWhen: (v: unknown) => v === true,
+      urgentWhen: (v: unknown): UrgencyLevel => {
+        if (v === 'critical')   return 'urgent'
+        if (v === 'borderline') return 'warning'
+        return null
+      },
     },
-    { key: 'acknowledged',     label: 'Acknowledged',     format: 'pill' },
+    { key: 'abnormalFlags',    label: 'Findings',          format: 'pill', featured: true },
+    { key: 'resultType',       label: 'Type',              format: 'pill' },
+    { key: 'orderingProvider', label: 'Ordering provider', format: 'text' },
+    { key: 'receivedAt',       label: 'Received',          format: 'date' },
   ],
   supportsDecline: false,
   automationDefaults: ['auto-cr-abnormal-flag', 'auto-cr-stat-page', 'auto-cr-unack-escalate'],
