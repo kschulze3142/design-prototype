@@ -12,8 +12,8 @@ export function StackedSurfaces() {
       style={{
         background: 'var(--rd-color-canvas)',
         // Top pad clears the hero workspace surface overlapping the seam.
-        paddingTop: u(20),
-        paddingBottom: u(10),
+        paddingTop: u(18),
+        paddingBottom: u(8),
       }}
     >
       <Container>

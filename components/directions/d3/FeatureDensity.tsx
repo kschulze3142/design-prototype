@@ -10,6 +10,8 @@ import {
   Users,
   History,
   Building2,
+  Search,
+  Bell,
   CheckCircle2,
 } from 'lucide-react';
 import { designMock } from '@/lib/designMock';
@@ -41,12 +43,22 @@ const FEATURES = [
     title: 'Departments & queues',
     body: 'Organize work into shared queues your whole team can see and pick up from.',
   },
+  {
+    Icon: Search,
+    title: 'Search across every fax',
+    body: 'Find any document by sender, patient, keyword, or status — inbound or outbound, in seconds.',
+  },
+  {
+    Icon: Bell,
+    title: 'Alerts that matter',
+    body: 'Get notified the moment a send fails or an urgent referral lands — never the routine noise.',
+  },
 ] as const;
 
 export function FeatureDensity() {
   const { deliverySuccessRate } = designMock.stats;
   return (
-    <section style={{ background: 'var(--rd-color-canvas)', paddingBlock: u(11) }}>
+    <section style={{ background: 'var(--rd-color-canvas)', paddingBlock: u(9) }}>
       <Container>
         <div style={{ maxWidth: 640, marginBottom: u(5) }}>
           <Eyebrow>Capabilities</Eyebrow>

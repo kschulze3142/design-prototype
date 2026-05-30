@@ -1,11 +1,22 @@
 // d3 WorkflowExplainer — how inbound faxes get matched and routed. A left column
-// of three numbered steps (match → link → handle) paired with the RoutingTrace
-// product surface on the right, on white. Step copy is Notion-style placeholder
-// reskinned to Robin Dock's routing mechanics; the surface and the rule names it
-// references come from the shared @/lib/designMock.
+// of three numbered steps (match → link → handle) paired with a right column that
+// stacks the RoutingTrace product surface over a compact "active routing rules"
+// card, on white. Step copy is Notion-style placeholder reskinned to Robin Dock's
+// routing mechanics; the surface, the rule names, and the rules card are all driven
+// by the shared @/lib/designMock so the right column reads as live product (and
+// fills the column height alongside the three steps — no centered float / void).
 import { Route, Sparkles, CheckCircle2 } from 'lucide-react';
-import { Container, Display, Eyebrow, space as u } from './primitives';
+import { designMock } from '@/lib/designMock';
+import type { RoutingRuleMatchKind } from '@/lib/designMock';
+import { Container, Display, Eyebrow, Tag, space as u } from './primitives';
 import { RoutingTraceSurface } from './surfaces';
+
+// Friendly labels for the rule's match condition (Notion-tight, no jargon).
+const MATCH_LABEL: Record<RoutingRuleMatchKind, string> = {
+  'from-number': 'From number',
+  keyword: 'Keyword',
+  'recipient-line': 'Line',
+};
 
 const STEPS = [
   {
@@ -26,8 +37,10 @@ const STEPS = [
 ];
 
 export function WorkflowExplainer() {
+  const rules = designMock.routingRules;
+  const liveCount = rules.filter((r) => r.enabled).length;
   return (
-    <section style={{ background: 'var(--rd-color-bg)', paddingBlock: u(11) }}>
+    <section style={{ background: 'var(--rd-color-bg)', paddingBlock: u(8) }}>
       <Container>
         <div
           className="d3-workflow"
@@ -35,7 +48,7 @@ export function WorkflowExplainer() {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: u(7),
-            alignItems: 'center',
+            alignItems: 'start',
           }}
         >
           {/* Left: steps */}
@@ -102,9 +115,89 @@ export function WorkflowExplainer() {
             </ol>
           </div>
 
-          {/* Right: live routing trace surface */}
-          <div>
+          {/* Right: live routing trace over the active-rules card. Stacking the
+              two fills the column to the height of the three steps on the left,
+              so the surface reads dense instead of floating in empty space. */}
+          <div style={{ display: 'grid', gap: u(3), alignContent: 'start' }}>
             <RoutingTraceSurface />
+
+            {/* Active routing rules — the rule set the trace above matched on. */}
+            <div
+              style={{
+                background: 'var(--rd-color-surface)',
+                border: '1px solid var(--rd-color-border)',
+                borderRadius: 'var(--rd-radius-lg)',
+                boxShadow: 'var(--rd-shadow-md)',
+                padding: u(2.5),
+                display: 'grid',
+                gap: u(1.5),
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.86rem', fontWeight: 600, color: 'var(--rd-color-heading)' }}>
+                  Active routing rules
+                </span>
+                <Tag tint="green">{liveCount} live</Tag>
+              </div>
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: u(1) }}>
+                {rules.map((r) => (
+                  <li
+                    key={r.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: u(1.5),
+                      padding: `${u(1)} ${u(1.5)}`,
+                      borderRadius: 'var(--rd-radius-md)',
+                      border: '1px solid var(--rd-color-border)',
+                      background: 'var(--rd-color-canvas)',
+                      opacity: r.enabled ? 1 : 0.6,
+                    }}
+                  >
+                    <div style={{ minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          color: 'var(--rd-color-heading)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {r.name}
+                      </div>
+                      <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>
+                        {MATCH_LABEL[r.match.kind]} → {r.destination.value}
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        color: r.enabled ? 'var(--rd-tint-green-fg)' : 'var(--rd-color-text-muted)',
+                      }}
+                    >
+                      <span
+                        aria-hidden
+                        style={{
+                          width: 7,
+                          height: 7,
+                          borderRadius: 999,
+                          background: r.enabled ? 'var(--rd-tint-green-fg)' : 'var(--rd-color-border)',
+                        }}
+                      />
+                      {r.enabled ? 'On' : 'Off'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </Container>
