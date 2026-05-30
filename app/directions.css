@@ -49,18 +49,42 @@
   --rd-space-unit: 8px;
 }
 
-/* D2 — Mercury (quiet minimal). Placeholder = defaults. */
+/* D2 — Mercury (quiet minimal). "We're safe and serious."
+ * Light/minimal, soft lavender-tinted neutrals, single restrained accent,
+ * airier spacing. The safe baseline the other directions are measured against.
+ *
+ * Note the two additive d2-only props (--rd-color-accent-soft, --rd-color-bg-tint):
+ * a direction may extend its OWN palette here without adding them to :root or
+ * forcing the other directions to define props they don't use. Convention for
+ * d1/d3/d4 as well.
+ */
 [data-direction='d2'] {
-  --rd-color-bg: #ffffff;
-  --rd-color-surface: #ffffff;
-  --rd-color-text: #111111;
-  --rd-color-text-muted: #6b6b6b;
-  --rd-color-accent: #2563eb;
-  --rd-color-border: #e5e5e5;
-  --rd-radius-sm: 4px;
-  --rd-radius-md: 8px;
+  /* Color */
+  --rd-color-bg: #faf9fc;            /* soft lavender-white */
+  --rd-color-surface: #ffffff;       /* product surfaces sit on plain white */
+  --rd-color-text: #232136;          /* cool ink, not harsh black */
+  --rd-color-text-muted: #6c6a82;    /* lavender-gray */
+  --rd-color-accent: #6c5ce7;        /* single restrained periwinkle-violet */
+  --rd-color-border: #eceef5;        /* faint lavender hairline */
+
+  /* Additive d2-only extensions (not in :root) */
+  --rd-color-accent-soft: #efedfb;   /* active-tab / tint fills */
+  --rd-color-bg-tint: #f4f2fb;       /* hero / CTA wash */
+
+  /* Radius — soft, not pill */
+  --rd-radius-sm: 6px;
+  --rd-radius-md: 10px;
   --rd-radius-lg: 16px;
-  --rd-space-unit: 8px;
+
+  /* Shadow — barely-there, soft lift */
+  --rd-shadow-sm: 0 1px 2px rgba(35, 33, 54, 0.04);
+  --rd-shadow-md: 0 10px 34px rgba(35, 33, 54, 0.07);
+
+  /* Type */
+  --rd-type-scale: 1;
+
+  /* Density — airier than the 8px default for generous whitespace */
+  --rd-space-unit: 9px;
 }
 
 /* D3 — Notion (workflow / surface-dense). Placeholder = defaults. */
