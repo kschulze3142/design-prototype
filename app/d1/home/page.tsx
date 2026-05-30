@@ -13,7 +13,9 @@
 // true now: centered hero with a wide-but-contained dashboard surface below.
 import { MarketingHeader } from '@/components/directions/d1/MarketingHeader';
 import { Hero } from '@/components/directions/d1/Hero';
+import { ProductWall } from '@/components/directions/d1/ProductWall';
 import { FeatureSection } from '@/components/directions/d1/FeatureSection';
+import { GiantStats } from '@/components/directions/d1/GiantStats';
 import { FeatureGrid } from '@/components/directions/d1/FeatureGrid';
 import { StatBand } from '@/components/directions/d1/StatBand';
 import { CtaFooter } from '@/components/directions/d1/CtaFooter';
@@ -34,7 +36,10 @@ export default function Page() {
         {/* 1 — Hero (Robin Dock): centered text over a wide-contained surface */}
         <Hero />
 
-        {/* 2 — Feature split: delivery accountability */}
+        {/* 2 — Product-as-proof wall: 4 staggered dashboard cards on a lavender hatch */}
+        <ProductWall />
+
+        {/* 3 — Feature split: delivery accountability */}
         <FeatureSection
           eyebrow="Delivery confirmation"
           headline="Track every fax to a confirmed receipt."
@@ -43,7 +48,7 @@ export default function Page() {
           surface={<DeliveryReceiptSurface />}
         />
 
-        {/* 3 — Feature split: automated routing */}
+        {/* 4 — Feature split: automated routing */}
         <FeatureSection
           eyebrow="Inbound routing"
           headline="Inbound faxes file themselves."
@@ -54,13 +59,16 @@ export default function Page() {
           tint
         />
 
-        {/* 4 — Feature grid: one platform */}
+        {/* 5 — Data-as-hero: giant numerals + inverted hero-stat card (the climax) */}
+        <GiantStats />
+
+        {/* 6 — Feature grid: one platform */}
         <FeatureGrid />
 
-        {/* 5 — Data-forward proof band */}
+        {/* 7 — Data-forward proof band (compact dark coda) */}
         <StatBand />
 
-        {/* 6 — Closing CTA + footer */}
+        {/* 8 — Closing CTA + footer */}
         <CtaFooter />
       </main>
     </div>

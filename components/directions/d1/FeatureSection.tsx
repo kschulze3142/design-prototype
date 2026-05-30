@@ -23,7 +23,7 @@ export function FeatureSection({
   tint?: boolean;
 }) {
   return (
-    <section style={{ paddingBlock: u(10), background: tint ? 'var(--rd-color-accent-soft)' : 'transparent' }}>
+    <section style={{ paddingBlock: u(7), background: tint ? 'var(--rd-color-accent-soft)' : 'transparent' }}>
       <Container>
         <div
           className="d1-feature-grid"

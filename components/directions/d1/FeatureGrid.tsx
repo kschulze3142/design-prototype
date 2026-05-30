@@ -48,9 +48,9 @@ const FEATURES = [
 
 export function FeatureGrid() {
   return (
-    <section style={{ paddingBlock: u(10) }}>
+    <section style={{ paddingBlock: u(7) }}>
       <Container>
-        <div style={{ display: 'grid', justifyItems: 'center', gap: u(2), textAlign: 'center', marginBottom: u(7) }}>
+        <div style={{ display: 'grid', justifyItems: 'center', gap: u(2), textAlign: 'center', marginBottom: u(5) }}>
           <Eyebrow align="center">One platform</Eyebrow>
           <Display as="h2" size="section" align="center" style={{ maxWidth: 820 }}>
             Everything your fax workflow needs.

@@ -16,7 +16,7 @@ export function StatBand() {
   ];
 
   return (
-    <section style={{ paddingBlock: u(6) }}>
+    <section style={{ paddingBlock: u(5) }}>
       <Container>
         <div
           className="d1-statband"

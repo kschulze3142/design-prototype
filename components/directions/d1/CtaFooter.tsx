@@ -15,7 +15,7 @@ const FOOTER_GROUPS = [
 export function CtaFooter() {
   return (
     <>
-      <section style={{ background: 'var(--rd-color-hero-wash)', paddingBlock: u(11) }}>
+      <section style={{ background: 'var(--rd-color-hero-wash)', paddingBlock: u(8) }}>
         <Container width={820}>
           <div style={{ display: 'grid', justifyItems: 'center', gap: u(3), textAlign: 'center' }}>
             <Display as="h2" size="section" align="center">
