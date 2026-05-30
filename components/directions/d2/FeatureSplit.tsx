@@ -21,12 +21,12 @@ export function FeatureSplit({ eyebrow, headline, body, quote, surface, reverse,
       <h2
         style={{
           fontFamily: 'var(--rd-font-display)',
-          fontSize: 'calc(1.95rem * var(--rd-type-scale))',
-          lineHeight: 1.12,
-          letterSpacing: '-0.024em',
-          fontWeight: 700,
-          margin: `${u(1.4)} 0 ${u(1.2)}`,
-          color: 'var(--rd-color-text)',
+          fontSize: 'clamp(28px, 3.4vw, 38px)',
+          lineHeight: 1.14,
+          letterSpacing: '-0.035em',
+          fontWeight: 400,
+          margin: `${u(1.6)} 0 ${u(1.4)}`,
+          color: 'var(--rd-color-heading)',
         }}
       >
         {headline}

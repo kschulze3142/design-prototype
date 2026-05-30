@@ -67,11 +67,12 @@ export function Pricing() {
         <h2
           style={{
             fontFamily: 'var(--rd-font-display)',
-            fontSize: 'calc(2.2rem * var(--rd-type-scale))',
-            lineHeight: 1.12,
-            letterSpacing: '-0.02em',
+            fontSize: 'clamp(34px, 4.2vw, 50px)',
+            lineHeight: 1.1,
+            letterSpacing: '-0.04em',
+            fontWeight: 400,
             margin: `${u(1.6)} 0 ${u(1.2)}`,
-            color: 'var(--rd-color-text)',
+            color: 'var(--rd-color-heading)',
           }}
         >
           Simple, honest pricing.
@@ -113,7 +114,7 @@ export function Pricing() {
                   fontSize: '0.85rem',
                   fontWeight: 600,
                   fontFamily: 'var(--rd-font-body)',
-                  background: selected ? 'var(--rd-color-accent)' : 'transparent',
+                  background: selected ? 'var(--rd-color-btn)' : 'transparent',
                   color: selected ? '#ffffff' : 'var(--rd-color-text-muted)',
                   transition: 'background 120ms ease, color 120ms ease',
                 }}
@@ -179,11 +180,11 @@ export function Pricing() {
                 Most popular
               </span>
             )}
-            <h3 style={{ fontFamily: 'var(--rd-font-display)', fontSize: '1.15rem', margin: 0 }}>
+            <h3 style={{ fontFamily: 'var(--rd-font-display)', fontWeight: 500, fontSize: '1.2rem', margin: 0, color: 'var(--rd-color-heading)' }}>
               {tier.name}
             </h3>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, margin: `${u(1.4)} 0 ${u(0.6)}` }}>
-              <span style={{ fontFamily: 'var(--rd-font-display)', fontSize: '2.2rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
+              <span style={{ fontFamily: 'var(--rd-font-display)', fontSize: '2.6rem', fontWeight: 500, letterSpacing: '-0.03em', color: 'var(--rd-color-heading)' }}>
                 {priceLabel(tier)}
               </span>
               {tier.monthly !== null && tier.monthly > 0 && (

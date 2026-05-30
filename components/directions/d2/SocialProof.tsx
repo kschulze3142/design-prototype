@@ -1,72 +1,40 @@
-// d2 SocialProof — a quiet customer quote or two plus a stat line drawn from
-// the shared mock stats. No logos wall, no shouting.
-import { Star } from 'lucide-react';
+// d2 SocialProof — Harvest's centered statement band (DR-004h). One quiet serif
+// statement line with a coral-underlined figure, over a calm stat row drawn from
+// the shared mock. No logo wall, no shouting. (The figure is Harvest-style
+// placeholder for now; the stats are real mock data.)
 import { designMock } from '@/lib/designMock';
-import { Eyebrow, Section, space as u } from './primitives';
-
-const QUOTES = [
-  {
-    text: 'We moved three offices off the old fax server in an afternoon. Nothing got lost, and front desk stopped asking me if a referral went through.',
-    author: 'Dana Whitfield',
-    role: 'Practice Manager, Lakeside Family Care',
-  },
-  {
-    text: 'The delivery receipts alone are worth it. I can prove a prior auth was sent, to the minute.',
-    author: 'Marcus Reyes',
-    role: 'Billing Lead, Northgate Orthopedics',
-  },
-];
+import { CoralUnderline, Section, space as u } from './primitives';
 
 export function SocialProof() {
   const { deliverySuccessRate, faxesSentThisMonth, faxesReceivedThisMonth } = designMock.stats;
   const stats = [
     { value: `${(deliverySuccessRate * 100).toFixed(1)}%`, label: 'delivery success rate' },
-    { value: (faxesSentThisMonth + faxesReceivedThisMonth).toLocaleString(), label: 'faxes handled this month' },
+    {
+      value: (faxesSentThisMonth + faxesReceivedThisMonth).toLocaleString(),
+      label: 'faxes handled this month',
+    },
     { value: '< 1 min', label: 'average confirmation time' },
   ];
 
   return (
-    <Section>
-      <div style={{ textAlign: 'center', marginBottom: u(3.5) }}>
-        <Eyebrow>Trusted by practices</Eyebrow>
-      </div>
-
-      <div
+    <Section tint>
+      <p
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: u(2.4),
-          marginBottom: u(3.5),
+          fontFamily: 'var(--rd-font-display)',
+          fontSize: 'clamp(28px, 3.8vw, 44px)',
+          lineHeight: 1.2,
+          letterSpacing: '-0.035em',
+          fontWeight: 400,
+          textAlign: 'center',
+          color: 'var(--rd-color-heading)',
+          maxWidth: 820,
+          marginInline: 'auto',
+          marginBlock: 0,
         }}
       >
-        {QUOTES.map((q) => (
-          <figure
-            key={q.author}
-            style={{
-              margin: 0,
-              padding: u(3),
-              borderRadius: 'var(--rd-radius-lg)',
-              background: 'var(--rd-color-surface)',
-              border: '1px solid var(--rd-color-border)',
-              boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-md)',
-            }}
-          >
-            <div aria-hidden style={{ display: 'flex', gap: 2, marginBottom: u(1.6) }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={15} strokeWidth={0} fill="var(--rd-color-accent)" />
-              ))}
-            </div>
-            <blockquote style={{ margin: 0, fontSize: '1rem', lineHeight: 1.6, color: 'var(--rd-color-text)' }}>
-              “{q.text}”
-            </blockquote>
-            <figcaption style={{ marginTop: u(2), fontSize: '0.85rem', color: 'var(--rd-color-text-muted)' }}>
-              <strong style={{ color: 'var(--rd-color-text)', fontWeight: 600 }}>{q.author}</strong>
-              <br />
-              {q.role}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+        Over <CoralUnderline>1,200 practices</CoralUnderline> use Robin Dock to send faxes
+        they can prove arrived.
+      </p>
 
       {/* Quiet stat line */}
       <div
@@ -74,7 +42,10 @@ export function SocialProof() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
           gap: u(2),
-          paddingTop: u(3),
+          maxWidth: 720,
+          marginInline: 'auto',
+          marginTop: u(6),
+          paddingTop: u(5),
           borderTop: '1px solid var(--rd-color-border)',
           textAlign: 'center',
         }}
@@ -84,15 +55,15 @@ export function SocialProof() {
             <div
               style={{
                 fontFamily: 'var(--rd-font-display)',
-                fontSize: '2rem',
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                color: 'var(--rd-color-text)',
+                fontSize: '2.2rem',
+                fontWeight: 500,
+                letterSpacing: '-0.03em',
+                color: 'var(--rd-color-heading)',
               }}
             >
               {s.value}
             </div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--rd-color-text-muted)', marginTop: 4 }}>
+            <div style={{ fontSize: '0.9rem', color: 'var(--rd-color-text-muted)', marginTop: 4 }}>
               {s.label}
             </div>
           </div>

@@ -1,5 +1,5 @@
 // d2 marketing header — the single, primary top bar for the d2 home page.
-// Mercury-quiet: wordmark + placeholder marketing links + Log in / Start trial.
+// Harvest-quiet: serif wordmark + marketing links + Log in / black pill CTA.
 // The prototype's Home/Inbox/Dashboard screen-switcher is folded in here as a
 // small, muted secondary group so there's ONE header, not two competing bars.
 // This is a d2-local composition piece — it does NOT touch the shared
@@ -27,7 +27,7 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
         gap: u(2),
         maxWidth: 1180,
         marginInline: 'auto',
-        paddingBlock: u(2),
+        paddingBlock: u(2.5),
         paddingInline: u(3),
         fontFamily: 'var(--rd-font-body)',
       }}
@@ -38,10 +38,10 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
           href="/d2/home"
           style={{
             fontFamily: 'var(--rd-font-display)',
-            fontWeight: 700,
-            fontSize: '1.06rem',
-            letterSpacing: '-0.01em',
-            color: 'var(--rd-color-text)',
+            fontWeight: 500,
+            fontSize: '1.4rem',
+            letterSpacing: '-0.02em',
+            color: 'var(--rd-color-heading)',
             textDecoration: 'none',
           }}
         >
@@ -57,7 +57,7 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
             alignItems: 'center',
             gap: 2,
             padding: 2,
-            borderRadius: 999,
+            borderRadius: 'var(--rd-radius-round)',
             background: 'var(--rd-color-accent-soft)',
           }}
         >
@@ -73,7 +73,7 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
                   alignItems: 'center',
                   height: u(3),
                   paddingInline: u(1.4),
-                  borderRadius: 999,
+                  borderRadius: 'var(--rd-radius-round)',
                   fontSize: '0.74rem',
                   fontWeight: 600,
                   textDecoration: 'none',
@@ -97,7 +97,7 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
               key={label}
               href="#"
               style={{
-                fontSize: '0.9rem',
+                fontSize: '0.95rem',
                 fontWeight: 500,
                 color: 'var(--rd-color-text-muted)',
                 textDecoration: 'none',
@@ -111,9 +111,9 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
           href="#"
           className="d2-mkt-login"
           style={{
-            fontSize: '0.9rem',
-            fontWeight: 600,
-            color: 'var(--rd-color-text)',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'var(--rd-color-heading)',
             textDecoration: 'none',
           }}
         >
@@ -124,24 +124,23 @@ export function MarketingHeader({ current = 'home' }: { current?: ScreenId }) {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            height: u(4),
-            paddingInline: u(2),
-            borderRadius: 999,
-            fontSize: '0.9rem',
-            fontWeight: 600,
+            padding: '11px 18px',
+            borderRadius: 'var(--rd-radius-pill)',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            lineHeight: 1,
             color: '#ffffff',
-            background: 'var(--rd-color-accent)',
-            border: '1px solid var(--rd-color-accent)',
+            background: 'var(--rd-color-btn)',
             textDecoration: 'none',
             whiteSpace: 'nowrap',
           }}
         >
-          Start trial
+          Start free trial
         </a>
       </div>
 
       {/* Collapse the secondary clusters on narrow widths so the header stays a
-          single clean row (wordmark + Start trial) with no horizontal scroll. */}
+          single clean row (wordmark + Start free trial) with no horizontal scroll. */}
       <style>{`
         @media (max-width: 860px) {
           .d2-mkt-header .d2-mkt-links { display: none !important; }

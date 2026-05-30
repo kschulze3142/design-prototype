@@ -1,14 +1,14 @@
-// Plain product-surface renderers for d2. Real Robin Dock surfaces shown
-// plainly (no collage, no chaos) from the shared @/lib/designMock.
-// d2-scoped styling; reads mock data only.
+// Plain product-surface renderers for d2. Real Robin Dock surfaces shown plainly
+// (no collage, no chaos) from the shared @/lib/designMock. d2-scoped styling;
+// reads mock data only. Retoned to the Harvest system (DR-004h).
 import {
   CheckCircle2,
   Clock,
   XCircle,
   ArrowDownLeft,
-  ShieldCheck,
   UserRound,
   TrendingUp,
+  FileText,
 } from 'lucide-react';
 import { designMock, type Fax, type FaxStatus } from '@/lib/designMock';
 import { space as u } from './primitives';
@@ -32,13 +32,14 @@ export function formatTime(iso: string): string {
 
 // Exported for d2-local reuse (the inbox draws its failed-row hairline from
 // STATUS_META.failed.color so the pill and hairline can't drift). NOT shared:
-// D1/D3/D4 each define their own status treatment.
+// D1/D3/D4 each define their own status treatment. The status hues are semantic
+// (green/amber/red/blue) and read fine on the warm Harvest surfaces.
 export const STATUS_META: Record<
   FaxStatus,
   { label: string; color: string; bg: string; Icon: typeof CheckCircle2 }
 > = {
   delivered: { label: 'Delivered', color: '#2f7d5b', bg: '#e7f4ee', Icon: CheckCircle2 },
-  received: { label: 'Received', color: '#4b53b8', bg: '#eceefb', Icon: ArrowDownLeft },
+  received: { label: 'Received', color: '#9a5b1f', bg: '#f6ece0', Icon: ArrowDownLeft },
   sending: { label: 'Sending', color: '#9a7b1f', bg: '#fbf3df', Icon: Clock },
   failed: { label: 'Failed', color: '#b4453c', bg: '#fbe9e7', Icon: XCircle },
 };
@@ -54,7 +55,7 @@ export function StatusPill({ status }: { status: FaxStatus }) {
         gap: 5,
         paddingInline: 9,
         height: 24,
-        borderRadius: 999,
+        borderRadius: 'var(--rd-radius-round)',
         fontSize: '0.72rem',
         fontWeight: 600,
         color: m.color,
@@ -128,8 +129,8 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-/** Small lavender initials avatar — reused across the hero composition. */
-function Avatar({ name, size = 26 }: { name: string; size?: number }) {
+/** Small coral-tint initials avatar — reused across the hero composition. */
+function Avatar({ name, size = 28 }: { name: string; size?: number }) {
   return (
     <span
       aria-hidden
@@ -157,8 +158,8 @@ function Avatar({ name, size = 26 }: { name: string; size?: number }) {
  *  Date, so every render (incl. static prerender) draws the identical chart. */
 function Sparkline({
   data,
-  width = 128,
-  height = 38,
+  width = 120,
+  height = 36,
 }: {
   data: readonly number[];
   width?: number;
@@ -206,13 +207,13 @@ function Sparkline({
   );
 }
 
-/** A composed marketing "product moment" for the hero — a layered dashboard
- *  surface with overhanging confirmation/patient chips. Distinct from the plain
- *  FaxListSurface used on app screens; reads only from the shared mock. */
+/** The hero product surface — a plain white Robin Dock fax panel built to sit
+ *  inside the coral frame in the right column of the hero. Fax activity up top,
+ *  a quiet send-volume strip, and a delivery-confirmation callout as the focal
+ *  reassurance moment. Reads only from the shared mock. */
 export function HeroSurface() {
   const { faxesSentThisMonth, deliverySuccessRate, pagesUsed, pagesCap } = designMock.stats;
   const delivered = designMock.faxes.find((f) => f.id === 'fx-001')!;
-  const linked = designMock.faxes.find((f) => f.direction === 'inbound' && f.patientRef)!;
 
   const stats = [
     { value: faxesSentThisMonth.toLocaleString(), label: 'sent' },
@@ -224,304 +225,226 @@ export function HeroSurface() {
   const series = [12, 18, 14, 22, 19, 27, 24, 31, 26, 34, 30, 39] as const;
 
   const rows = [
-    designMock.faxes.find((f) => f.id === 'fx-002')!, // received, Maya
-    designMock.faxes.find((f) => f.id === 'fx-001')!, // delivered, outbound
+    designMock.faxes.find((f) => f.id === 'fx-002')!, // received, patient-linked
     designMock.faxes.find((f) => f.id === 'fx-005')!, // sending, outbound
   ];
 
   return (
-    <div className="d2-hero-surface" style={{ position: 'relative', maxWidth: 900, marginInline: 'auto' }}>
-      {/* Soft lavender wash behind the panel so it doesn't float on bare tint. */}
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: '-12% -8% -16%',
-          borderRadius: 'var(--rd-radius-lg)',
-          background:
-            'radial-gradient(120% 90% at 30% 0%, rgba(108,92,231,0.16), rgba(108,92,231,0) 70%)',
-          zIndex: 0,
-        }}
-      />
+    <div
+      style={{
+        background: 'var(--rd-color-surface)',
+        borderRadius: 'var(--rd-radius-lg)',
+        boxShadow: 'var(--rd-shadow-md)',
+        padding: u(3),
+        width: '100%',
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
+          <span
+            aria-hidden
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 9,
+              background: 'var(--rd-color-accent)',
+              color: '#fff',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <FileText size={16} strokeWidth={2.4} />
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--rd-font-display)',
+              fontWeight: 500,
+              fontSize: '1.05rem',
+              color: 'var(--rd-color-heading)',
+            }}
+          >
+            Fax activity
+          </span>
+        </div>
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            fontSize: '0.74rem',
+            fontWeight: 600,
+            color: 'var(--rd-color-text-muted)',
+          }}
+        >
+          <span aria-hidden style={{ width: 7, height: 7, borderRadius: 999, background: '#2f7d5b' }} />
+          Live
+        </span>
+      </div>
 
-      {/* Primary dashboard-like surface */}
+      {/* Stat readouts */}
       <div
         style={{
-          position: 'relative',
-          zIndex: 1,
-          background: 'var(--rd-color-surface)',
-          border: '1px solid var(--rd-color-border)',
-          borderRadius: 'var(--rd-radius-lg)',
-          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-lg)',
-          padding: u(2.8),
-          // Tall enough that the bottom runs off the hero fold (the Hero section
-          // clips it via overflow:hidden + a negative bottom margin) — reads as a
-          // large surface continuing beyond view, not a contained widget.
-          minHeight: u(54),
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: u(1.4),
+          marginTop: u(2.4),
         }}
       >
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: u(1) }}>
-            <span
-              aria-hidden
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            style={{
+              padding: u(1.6),
+              borderRadius: 'var(--rd-radius-md)',
+              background: 'var(--rd-color-bg)',
+              border: '1px solid var(--rd-color-border)',
+            }}
+          >
+            <div
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                background: 'var(--rd-color-accent)',
-                color: '#fff',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                fontFamily: 'var(--rd-font-display)',
+                fontSize: '1.55rem',
+                fontWeight: 500,
+                letterSpacing: '-0.02em',
+                color: 'var(--rd-color-heading)',
+                lineHeight: 1.1,
               }}
             >
-              <CheckCircle2 size={16} strokeWidth={2.4} />
-            </span>
-            <span style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--rd-color-text)' }}>
-              This month
-            </span>
+              {s.value}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', marginTop: 2 }}>
+              {s.label}
+            </div>
           </div>
-          <span
+        ))}
+      </div>
+
+      {/* Send-volume sparkline strip */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: u(2),
+          marginTop: u(2),
+          padding: `${u(1.6)} ${u(1.8)}`,
+          borderRadius: 'var(--rd-radius-md)',
+          background: 'var(--rd-color-bg-tint)',
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+            Send volume
+          </div>
+          <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
-              fontSize: '0.74rem',
+              gap: 4,
+              marginTop: 4,
+              fontSize: '0.82rem',
               fontWeight: 600,
-              color: 'var(--rd-color-text-muted)',
+              color: 'var(--rd-color-accent)',
             }}
           >
-            <span
-              aria-hidden
-              style={{ width: 7, height: 7, borderRadius: 999, background: '#2f7d5b' }}
-            />
-            Live
-          </span>
-        </div>
-
-        {/* Stat readouts */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: u(1.4),
-            marginTop: u(2.2),
-          }}
-        >
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              style={{
-                padding: `${u(1.4)} ${u(1.4)}`,
-                borderRadius: 'var(--rd-radius-md)',
-                background: 'var(--rd-color-bg)',
-                border: '1px solid var(--rd-color-border)',
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'var(--rd-font-display)',
-                  fontSize: '1.5rem',
-                  fontWeight: 700,
-                  letterSpacing: '-0.02em',
-                  color: 'var(--rd-color-text)',
-                  lineHeight: 1.1,
-                }}
-              >
-                {s.value}
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', marginTop: 2 }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Send-volume sparkline strip */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: u(2),
-            marginTop: u(2),
-            padding: `${u(1.6)} ${u(1.8)}`,
-            borderRadius: 'var(--rd-radius-md)',
-            background: 'var(--rd-color-accent-soft)',
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
-              Send volume
-            </div>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                marginTop: 4,
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                color: 'var(--rd-color-accent)',
-              }}
-            >
-              <TrendingUp size={14} strokeWidth={2.4} />
-              +18% vs. last month
-            </div>
+            <TrendingUp size={14} strokeWidth={2.4} />
+            +18% vs. last month
           </div>
-          <Sparkline data={series} />
         </div>
+        <Sparkline data={series} />
+      </div>
 
-        {/* Mini activity list */}
-        <div style={{ marginTop: u(2), display: 'grid', gap: u(1.2) }}>
-          {rows.map((fax) => {
-            const meta = STATUS_META[fax.status];
-            const name = fax.patientRef?.name;
-            const label = name ?? formatPhone(fax.direction === 'outbound' ? fax.toNumber : fax.fromNumber);
-            const sub = name
-              ? `${fax.patientRef!.mrn} · ${fax.pageCount} pp`
-              : `${fax.pageCount} pp · ${formatTime(fax.timestamp)}`;
-            return (
-              <div key={fax.id} style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
-                {name ? (
-                  <Avatar name={name} />
-                ) : (
-                  <span
-                    aria-hidden
-                    style={{
-                      width: 26,
-                      height: 26,
-                      borderRadius: 999,
-                      flexShrink: 0,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: meta.bg,
-                    }}
-                  >
-                    <span style={{ width: 7, height: 7, borderRadius: 999, background: meta.color }} />
-                  </span>
-                )}
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div
-                    style={{
-                      fontSize: '0.86rem',
-                      fontWeight: 600,
-                      color: 'var(--rd-color-text)',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {label}
-                  </div>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>{sub}</div>
-                </div>
+      {/* Mini activity list */}
+      <div style={{ marginTop: u(2), display: 'grid', gap: u(1.4) }}>
+        {rows.map((fax) => {
+          const meta = STATUS_META[fax.status];
+          const name = fax.patientRef?.name;
+          const label =
+            name ?? formatPhone(fax.direction === 'outbound' ? fax.toNumber : fax.fromNumber);
+          const sub = name
+            ? `${fax.patientRef!.mrn} · ${fax.pageCount} pp`
+            : `${fax.pageCount} pp · ${formatTime(fax.timestamp)}`;
+          return (
+            <div key={fax.id} style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
+              {name ? (
+                <Avatar name={name} />
+              ) : (
                 <span
                   aria-hidden
                   style={{
-                    width: 8,
-                    height: 8,
+                    width: 28,
+                    height: 28,
                     borderRadius: 999,
                     flexShrink: 0,
-                    background: meta.color,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: meta.bg,
                   }}
-                />
+                >
+                  <span style={{ width: 7, height: 7, borderRadius: 999, background: meta.color }} />
+                </span>
+              )}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div
+                  style={{
+                    fontSize: '0.86rem',
+                    fontWeight: 600,
+                    color: 'var(--rd-color-text)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {label}
+                </div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>{sub}</div>
               </div>
-            );
-          })}
-        </div>
+              <StatusPill status={fax.status} />
+            </div>
+          );
+        })}
       </div>
 
-      {/* Patient-linked chip — floats in the LEFT margin, overhanging the panel's
-          outer edge over the gradient. Its inner edge is pinned u(2) (18px) inside
-          the panel — under the u(2.8) padding — so it never covers the stat tiles;
-          the body hangs out over the background. */}
+      {/* Delivery-confirmation callout — the focal reassurance moment. */}
       <div
-        className="d2-hero-chip"
         style={{
-          position: 'absolute',
-          zIndex: 2,
-          top: u(7),
-          right: `calc(100% - ${u(2)})`,
-          left: 'auto',
           display: 'flex',
           alignItems: 'center',
-          gap: u(1),
-          padding: `${u(1)} ${u(1.4)}`,
-          background: 'var(--rd-color-surface)',
-          border: '1px solid var(--rd-color-border)',
+          gap: u(1.4),
+          marginTop: u(2),
+          padding: u(1.8),
           borderRadius: 'var(--rd-radius-md)',
-          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-float)',
-        }}
-      >
-        <Avatar name={linked.patientRef!.name} size={28} />
-        <div>
-          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
-            Linked to {linked.patientRef!.name}
-          </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--rd-color-text-muted)' }}>
-            {linked.patientRef!.mrn} · routed automatically
-          </div>
-        </div>
-      </div>
-
-      {/* Delivery-confirmation chip — floats in the RIGHT margin, overhanging the
-          panel's outer edge over the gradient, level with the activity list. Inner
-          edge pinned u(2) inside the panel (under the padding), clear of content. */}
-      <div
-        className="d2-hero-chip"
-        style={{
-          position: 'absolute',
-          zIndex: 2,
-          top: u(30),
-          left: `calc(100% - ${u(2)})`,
-          right: 'auto',
-          display: 'flex',
-          alignItems: 'center',
-          gap: u(1.2),
-          padding: `${u(1.2)} ${u(1.6)}`,
-          background: 'var(--rd-color-surface)',
-          border: '1px solid var(--rd-color-border)',
-          borderRadius: 'var(--rd-radius-md)',
-          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-float)',
+          background: '#e7f4ee',
         }}
       >
         <span
           aria-hidden
           style={{
-            width: 30,
-            height: 30,
+            width: 34,
+            height: 34,
             borderRadius: 999,
             flexShrink: 0,
-            background: '#e7f4ee',
+            background: '#ffffff',
             color: '#2f7d5b',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <CheckCircle2 size={17} strokeWidth={2.4} />
+          <CheckCircle2 size={19} strokeWidth={2.4} />
         </span>
-        <div>
-          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: '0.86rem', fontWeight: 600, color: 'var(--rd-color-heading)' }}>
             Delivered · receipt #{delivered.id.toUpperCase()}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--rd-color-text-muted)' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>
             {formatPhone(delivered.toNumber)} · {formatTime(delivered.timestamp)}
           </div>
         </div>
       </div>
-
-      {/* Hide the margin chips on narrow viewports — once the side margins
-          collapse the overhang has nowhere to sit (the Hero's overflow:hidden
-          would just clip it), so drop them rather than show a clipped sliver. */}
-      <style>{`
-        @media (max-width: 768px) {
-          .d2-hero-surface .d2-hero-chip { display: none !important; }
-        }
-      `}</style>
     </div>
   );
 }
@@ -535,17 +458,19 @@ export function DeliveryConfirmationSurface() {
     { label: `Delivered to ${formatPhone(fax.toNumber)}`, time: formatTime(fax.timestamp) },
   ];
   return (
-    <div style={{ padding: u(2.5) }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: u(1.2), marginBottom: u(2) }}>
+    <div style={{ padding: u(3) }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: u(1.2), marginBottom: u(2.4) }}>
         <CheckCircle2 size={20} strokeWidth={2.2} color="#2f7d5b" />
         <div>
-          <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Confirmed delivered</div>
+          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--rd-color-heading)' }}>
+            Confirmed delivered
+          </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
             {fax.pageCount} pages · receipt #{fax.id.toUpperCase()}
           </div>
         </div>
       </div>
-      <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: u(1.4) }}>
+      <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: u(1.6) }}>
         {steps.map((s, i) => (
           <li key={s.label} style={{ display: 'flex', gap: u(1.4), alignItems: 'flex-start' }}>
             <span
@@ -556,15 +481,12 @@ export function DeliveryConfirmationSurface() {
                 height: 9,
                 borderRadius: 999,
                 flexShrink: 0,
-                background:
-                  i === steps.length - 1 ? '#2f7d5b' : 'var(--rd-color-accent)',
+                background: i === steps.length - 1 ? '#2f7d5b' : 'var(--rd-color-accent)',
               }}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, gap: u(2) }}>
               <span style={{ fontSize: '0.86rem', color: 'var(--rd-color-text)' }}>{s.label}</span>
-              <span style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
-                {s.time}
-              </span>
+              <span style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>{s.time}</span>
             </div>
           </li>
         ))}
@@ -578,7 +500,7 @@ export function PatientLinkSurface() {
   const fax = designMock.faxes.find((f) => f.direction === 'inbound' && f.patientRef)!;
   const patient = fax.patientRef!;
   return (
-    <div style={{ padding: u(2.5), display: 'grid', gap: u(1.8) }}>
+    <div style={{ padding: u(3), display: 'grid', gap: u(2) }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <StatusPill status="received" />
         <span style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
@@ -611,46 +533,12 @@ export function PatientLinkSurface() {
           <UserRound size={18} strokeWidth={2.2} />
         </span>
         <div>
-          <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Linked to {patient.name}</div>
+          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--rd-color-heading)' }}>
+            Linked to {patient.name}
+          </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
             {patient.mrn} · routed automatically
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** A compact reassurance card used inside the trust tabs. */
-export function AssuranceSurface({
-  heading,
-  detail,
-}: {
-  heading: string;
-  detail: string;
-}) {
-  return (
-    <div style={{ padding: u(2.5), display: 'flex', gap: u(1.4), alignItems: 'flex-start' }}>
-      <span
-        aria-hidden
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 34,
-          height: 34,
-          flexShrink: 0,
-          borderRadius: 999,
-          background: 'var(--rd-color-accent-soft)',
-          color: 'var(--rd-color-accent)',
-        }}
-      >
-        <ShieldCheck size={17} strokeWidth={2.2} />
-      </span>
-      <div>
-        <div style={{ fontWeight: 600, fontSize: '0.92rem', marginBottom: 3 }}>{heading}</div>
-        <div style={{ fontSize: '0.84rem', lineHeight: 1.5, color: 'var(--rd-color-text-muted)' }}>
-          {detail}
         </div>
       </div>
     </div>

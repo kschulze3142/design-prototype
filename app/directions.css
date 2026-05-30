@@ -49,48 +49,58 @@
   --rd-space-unit: 8px;
 }
 
-/* D2 — Mercury (quiet minimal). "We're safe and serious."
- * Light/minimal, soft lavender-tinted neutrals, single restrained accent,
- * airier spacing. The safe baseline the other directions are measured against.
+/* D2 — Harvest (warm editorial-minimal). "Warm, calm, trustworthy."
+ * Faithful reconstruction of Harvest's design system (DR-004h): a warm cream
+ * page, Besley serif display, humanist sans body, and a SINGLE coral accent used
+ * sparingly — the headline underline, the product frame, small accents — never
+ * the primary button (which is black). Soft 20px white cards on one even shadow.
+ * This replaces the prior Mercury lavender direction wholesale; values below are
+ * measured from the live Harvest site, not approximated.
  *
- * Note the two additive d2-only props (--rd-color-accent-soft, --rd-color-bg-tint):
- * a direction may extend its OWN palette here without adding them to :root or
- * forcing the other directions to define props they don't use. Convention for
- * d1/d3/d4 as well.
+ * Additive d2-only props (not in :root), following the same convention as the
+ * other directions — a direction may extend its OWN palette without forcing the
+ * others to define props they don't use:
+ *   --rd-color-heading, --rd-color-accent-soft, --rd-color-bg-tint,
+ *   --rd-color-btn, --rd-radius-pill, --rd-radius-round, --rd-shadow-lg.
+ * (--rd-color-accent-soft / --rd-color-bg-tint are retained — retoned from
+ * lavender to warm/coral — because the d2 inbox & dashboard still consume them;
+ * the prior Mercury-only props --rd-hero-gradient, --rd-shadow-float and
+ * --rd-highlight-inset were genuinely unused after the home rebuild and removed.)
  */
 [data-direction='d2'] {
-  /* Color */
-  --rd-color-bg: #faf9fc;            /* soft lavender-white */
-  --rd-color-surface: #ffffff;       /* product surfaces sit on plain white */
-  --rd-color-text: #232136;          /* cool ink, not harsh black */
-  --rd-color-text-muted: #6c6a82;    /* lavender-gray */
-  --rd-color-accent: #6c5ce7;        /* single restrained periwinkle-violet */
-  --rd-color-border: #eceef5;        /* faint lavender hairline */
+  /* Color — extracted from the live Harvest site */
+  --rd-color-bg: #fbf5f0;            /* warm cream    rgb(251,245,240) */
+  --rd-color-surface: #ffffff;       /* white cards   rgb(255,255,255) */
+  --rd-color-text: #2c222d;          /* body ink      rgb(44,34,45)    */
+  --rd-color-text-muted: #6a696a;    /* muted text    rgb(106,105,106) */
+  --rd-color-accent: #fa5d00;        /* coral  rgb(250,93,0) — accent ONLY, never the button */
+  --rd-color-border: rgba(29, 30, 28, 0.1);
 
   /* Additive d2-only extensions (not in :root) */
-  --rd-color-accent-soft: #efedfb;   /* active-tab / tint fills */
-  --rd-color-bg-tint: #f4f2fb;       /* hero / CTA wash */
-  /* Hero backdrop: warm near-white at top fading into the lavender tint below */
-  --rd-hero-gradient: linear-gradient(180deg, #fdfdff 0%, #fbfaff 28%, var(--rd-color-bg-tint) 100%);
+  --rd-color-heading: #1d1e1c;       /* headings rgb(29,30,28) — darker than body */
+  --rd-color-accent-soft: rgba(250, 93, 0, 0.1);  /* faint coral wash — small accents */
+  --rd-color-bg-tint: #f3ebe4;       /* warm tint  rgb(243,235,228) — alt sections + email pill */
+  --rd-color-btn: #000000;           /* primary CTA is BLACK rgb(0,0,0), not coral */
 
-  /* Radius — soft, not pill */
-  --rd-radius-sm: 6px;
-  --rd-radius-md: 10px;
-  --rd-radius-lg: 16px;
+  /* Radius */
+  --rd-radius-sm: 8px;
+  --rd-radius-md: 14px;
+  --rd-radius-lg: 20px;              /* cards + product frame */
+  --rd-radius-pill: 30px;            /* primary CTA pill */
+  --rd-radius-round: 999px;          /* email-capture shell, status pills */
 
-  /* Shadow — soft, layered lift (ambient + key), never a hard drop */
-  --rd-shadow-sm: 0 1px 2px rgba(35, 33, 54, 0.05), 0 1px 1px rgba(35, 33, 54, 0.03);
-  --rd-shadow-md: 0 2px 6px rgba(35, 33, 54, 0.05), 0 12px 32px rgba(35, 33, 54, 0.08);
-  --rd-shadow-lg: 0 1px 2px rgba(35, 33, 54, 0.04), 0 10px 24px rgba(35, 33, 54, 0.07), 0 30px 60px rgba(35, 33, 54, 0.10);
-  --rd-shadow-float: 0 2px 6px rgba(35, 33, 54, 0.06), 0 16px 36px rgba(35, 33, 54, 0.16);
-  /* Inner top highlight that reads on white surfaces (paired with a soft border) */
-  --rd-highlight-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  /* Shadow — Harvest's single, soft, even card lift */
+  --rd-shadow-sm: 0 0 8px rgba(0, 0, 0, 0.05);
+  --rd-shadow-md: 0 0 14px rgba(0, 0, 0, 0.07);
+  --rd-shadow-lg: 0 0 14px rgba(0, 0, 0, 0.07);
 
-  /* Type */
+  /* Type — Besley serif display, Inter body (wired via next/font in app/d2/layout.tsx) */
+  --rd-font-display: var(--font-besley), Georgia, 'Times New Roman', serif;
+  --rd-font-body: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --rd-type-scale: 1;
 
-  /* Density — airier than the 8px default for generous whitespace */
-  --rd-space-unit: 9px;
+  /* Density */
+  --rd-space-unit: 8px;
 }
 
 /* D3 — Notion (workflow / surface-dense). Placeholder = defaults. */

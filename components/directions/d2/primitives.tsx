@@ -1,16 +1,21 @@
-// d2-local primitives — Mercury "quiet minimal".
-// Direction-scoped by design (DR-004): NOT shared. If a pattern repeats across
-// directions we may lift *structure* into the shared layer later, but not yet.
+// d2-local primitives — Harvest "warm editorial-minimal" (DR-004h).
+// Direction-scoped by design: NOT shared. If a pattern repeats across directions
+// we may lift *structure* into the shared layer later, but not yet.
 import type { CSSProperties, ReactNode } from 'react';
 
 const u = (n: number) => `calc(var(--rd-space-unit) * ${n})`;
 
-/** Centered content column. Mercury stays calm and contained, not full-bleed. */
+/** Centered content column. Harvest runs a generous editorial width. */
 export function Container({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-  return <div style={{ maxWidth: 920, marginInline: 'auto', width: '100%', ...style }}>{children}</div>;
+  return (
+    <div style={{ maxWidth: 1120, marginInline: 'auto', width: '100%', paddingInline: u(3), ...style }}>
+      {children}
+    </div>
+  );
 }
 
-/** One idea per section, generous vertical breathing room. */
+/** One idea per section, generous vertical breathing room. The warm tint gives a
+ *  quiet alternation against the cream page background. */
 export function Section({
   children,
   tint = false,
@@ -26,7 +31,7 @@ export function Section({
     <section
       id={id}
       style={{
-        paddingBlock: u(8),
+        paddingBlock: u(9),
         background: tint ? 'var(--rd-color-bg-tint)' : 'transparent',
         ...style,
       }}
@@ -36,14 +41,14 @@ export function Section({
   );
 }
 
-/** Small uppercase label that sits above a headline. */
+/** Small uppercase coral label that sits above a headline — Harvest's eyebrow. */
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
     <p
       style={{
         margin: 0,
-        fontSize: '0.7rem',
-        letterSpacing: '0.14em',
+        fontSize: '0.78rem',
+        letterSpacing: '0.08em',
         textTransform: 'uppercase',
         fontWeight: 600,
         color: 'var(--rd-color-accent)',
@@ -51,6 +56,29 @@ export function Eyebrow({ children }: { children: ReactNode }) {
     >
       {children}
     </p>
+  );
+}
+
+/** Harvest's signature move: a single accent word in a serif headline carrying a
+ *  coral underline bar. The bar is a positioned element so it reads as a drawn
+ *  underline (thick, rounded, offset below the baseline) rather than text-decoration. */
+export function CoralUnderline({ children }: { children: ReactNode }) {
+  return (
+    <span style={{ position: 'relative', display: 'inline-block', whiteSpace: 'nowrap' }}>
+      {children}
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: '0.04em',
+          height: '0.085em',
+          borderRadius: 999,
+          background: 'var(--rd-color-accent)',
+        }}
+      />
+    </span>
   );
 }
 
@@ -62,33 +90,34 @@ type ButtonProps = {
   style?: CSSProperties;
 };
 
-/** Calm buttons — one restrained accent, soft radius, no loud gradients. */
+/** Buttons — the primary is a BLACK pill (coral is reserved for accents, never
+ *  the button). 30px radius, 14×20 padding, weight 500, 16px, per the spec. */
 export function Button({ children, variant = 'primary', href, type = 'button', style }: ButtonProps) {
   const base: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: u(0.8),
-    paddingInline: u(2.2),
-    height: u(5),
-    borderRadius: 'var(--rd-radius-md)',
-    fontSize: '0.95rem',
-    fontWeight: 600,
+    gap: u(1),
+    padding: '14px 20px',
+    borderRadius: 'var(--rd-radius-pill)',
+    fontSize: '16px',
+    fontWeight: 500,
+    lineHeight: 1,
     fontFamily: 'var(--rd-font-body)',
     textDecoration: 'none',
     cursor: 'pointer',
     whiteSpace: 'nowrap',
-    transition: 'background 120ms ease, border-color 120ms ease',
+    transition: 'background 120ms ease, border-color 120ms ease, opacity 120ms ease',
   };
   const variants: Record<'primary' | 'ghost', CSSProperties> = {
     primary: {
-      background: 'var(--rd-color-accent)',
+      background: 'var(--rd-color-btn)',
       color: '#ffffff',
-      border: '1px solid var(--rd-color-accent)',
+      border: '1px solid var(--rd-color-btn)',
     },
     ghost: {
-      background: 'var(--rd-color-surface)',
-      color: 'var(--rd-color-text)',
+      background: 'transparent',
+      color: 'var(--rd-color-heading)',
       border: '1px solid var(--rd-color-border)',
     },
   };
@@ -107,7 +136,8 @@ export function Button({ children, variant = 'primary', href, type = 'button', s
   );
 }
 
-/** Plain bordered card — the recurring surface chrome across d2. */
+/** White Harvest card — 20px radius, one soft even shadow. The recurring surface
+ *  chrome across d2 (also consumed by the inbox & dashboard). */
 export function Card({
   children,
   style,
@@ -123,7 +153,7 @@ export function Card({
         background: muted ? 'var(--rd-color-bg)' : 'var(--rd-color-surface)',
         border: '1px solid var(--rd-color-border)',
         borderRadius: 'var(--rd-radius-lg)',
-        boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-md)',
+        boxShadow: 'var(--rd-shadow-md)',
         overflow: 'hidden',
         ...style,
       }}

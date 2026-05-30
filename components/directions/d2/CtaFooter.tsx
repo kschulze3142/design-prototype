@@ -10,23 +10,24 @@ const FOOTER_LINKS: { heading: string; items: string[] }[] = [
 export function CtaFooter() {
   return (
     <>
-      {/* Closing CTA */}
-      <section style={{ background: 'var(--rd-color-bg-tint)', paddingBlock: u(8) }}>
-        <div style={{ maxWidth: 620, marginInline: 'auto', textAlign: 'center', paddingInline: u(2) }}>
+      {/* Closing CTA — sits on the cream page, between the tinted social-proof
+          band above and the white footer below. */}
+      <section style={{ paddingBlock: u(10) }}>
+        <div style={{ maxWidth: 640, marginInline: 'auto', textAlign: 'center', paddingInline: u(3) }}>
           <h2
             style={{
               fontFamily: 'var(--rd-font-display)',
-              fontSize: 'calc(2.35rem * var(--rd-type-scale))',
-              lineHeight: 1.08,
-              letterSpacing: '-0.028em',
-              fontWeight: 700,
-              margin: `0 0 ${u(1.2)}`,
-              color: 'var(--rd-color-text)',
+              fontSize: 'clamp(34px, 4.2vw, 50px)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.04em',
+              fontWeight: 400,
+              margin: `0 0 ${u(1.6)}`,
+              color: 'var(--rd-color-heading)',
             }}
           >
             Ready to retire the fax machine?
           </h2>
-          <p style={{ fontSize: '1.05rem', color: 'var(--rd-color-text-muted)', margin: `0 0 ${u(3)}` }}>
+          <p style={{ fontSize: '1.1rem', color: 'var(--rd-color-text-muted)', margin: `0 0 ${u(3.5)}` }}>
             Start a free trial today. Keep your number, cancel in one click.
           </p>
           <div style={{ display: 'flex', gap: u(1.2), justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -56,9 +57,10 @@ export function CtaFooter() {
             <div
               style={{
                 fontFamily: 'var(--rd-font-display)',
-                fontWeight: 600,
-                fontSize: '1.05rem',
-                color: 'var(--rd-color-text)',
+                fontWeight: 500,
+                fontSize: '1.25rem',
+                letterSpacing: '-0.02em',
+                color: 'var(--rd-color-heading)',
               }}
             >
               Robin Dock
