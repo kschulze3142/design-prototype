@@ -35,17 +35,53 @@
   --rd-space-unit: 8px;
 }
 
-/* D1 — Maze (bold editorial). Placeholder = defaults. */
+/* D1 — SEMrush (bold/editorial, data-forward). "Bold, data-forward, confident."
+ * A faithful reconstruction of SEMrush's design system (DR-007): a white page
+ * with a pale sage hero wash, huge tight Space Grotesk display type, green-tinted
+ * near-black ink, and SEMrush's distinctive lavender button carrying DARK text
+ * (not white-on-purple). The hero is CENTERED with a wide-but-contained product
+ * surface below — the deliberate opposite of D2's left-aligned two-column.
+ * Values below are measured from the live SEMrush site, not approximated.
+ *
+ * Additive d1-only props (not in :root), following the same convention as the
+ * other directions — a direction may extend its OWN palette without forcing the
+ * others to define props they don't use:
+ *   --rd-color-heading, --rd-color-btn-dark, --rd-color-hero-wash,
+ *   --rd-color-accent-soft, --rd-radius-pill, --rd-radius-round, --rd-shadow-lg.
+ */
 [data-direction='d1'] {
-  --rd-color-bg: #ffffff;
-  --rd-color-surface: #ffffff;
-  --rd-color-text: #111111;
-  --rd-color-text-muted: #6b6b6b;
-  --rd-color-accent: #2563eb;
-  --rd-color-border: #e5e5e5;
-  --rd-radius-sm: 4px;
-  --rd-radius-md: 8px;
-  --rd-radius-lg: 16px;
+  /* Color — extracted from the live SEMrush site */
+  --rd-color-bg: #ffffff;            /* white            rgb(255,255,255) */
+  --rd-color-surface: #ffffff;       /* white cards      rgb(255,255,255) */
+  --rd-color-text: #333333;          /* body ink         rgb(51,51,51)    */
+  --rd-color-text-muted: #5b6159;    /* green-tinted mid-gray rgb(91,97,89) */
+  --rd-color-accent: #c190ff;        /* lavender/lilac   rgb(193,144,255) */
+  --rd-color-border: rgba(24, 30, 21, 0.12);
+
+  /* Additive d1-only extensions (not in :root) */
+  --rd-color-heading: #181e15;       /* green-black headings rgb(24,30,21) */
+  --rd-color-btn-dark: #181e15;      /* dark/secondary pill CTA bg rgb(24,30,21) */
+  --rd-color-hero-wash: #e1eee8;     /* pale sage hero tint  rgb(225,238,232) */
+  --rd-color-accent-soft: rgba(193, 144, 255, 0.16); /* faint lavender wash */
+
+  /* Radius — SEMrush mixes squared + pill, deliberately */
+  --rd-radius-sm: 8px;               /* lavender button (8px 16px) */
+  --rd-radius-md: 12px;
+  --rd-radius-lg: 16px;              /* cards + product-surface frame */
+  --rd-radius-pill: 100px;           /* dark "Sign Up" full pill */
+  --rd-radius-round: 999px;          /* email-capture shell, status pills */
+
+  /* Shadow — crisp, data-product lift */
+  --rd-shadow-sm: 0 1px 2px rgba(24, 30, 21, 0.06);
+  --rd-shadow-md: 0 8px 24px rgba(24, 30, 21, 0.08);
+  --rd-shadow-lg: 0 24px 60px rgba(24, 30, 21, 0.12);
+
+  /* Type — Space Grotesk display, Inter body (wired in app/d1/layout.tsx) */
+  --rd-font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --rd-font-body: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --rd-type-scale: 1;
+
+  /* Density */
   --rd-space-unit: 8px;
 }
 
