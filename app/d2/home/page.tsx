@@ -1,8 +1,8 @@
 // DR-004 — D2 Mercury "quiet minimal" home page.
-// Composes the shared (unmodified) DirectionNav with d2-scoped full-bleed
-// sections so the tinted section bands reach the viewport edges — the calm
-// Mercury look the centered DirectionShell main would otherwise clip.
-import { DirectionNav } from '@/components/directions/DirectionNav';
+// Composes the shared full-bleed MarketingShell (bare DirectionNav + unclamped
+// main) with d2-scoped sections so the tinted section bands reach the viewport
+// edges — the calm Mercury look the centered DirectionShell main would clip.
+import { MarketingShell } from '@/components/directions/MarketingShell';
 import { Hero } from '@/components/directions/d2/Hero';
 import { FeatureSplit } from '@/components/directions/d2/FeatureSplit';
 import { TrustTabs } from '@/components/directions/d2/TrustTabs';
@@ -13,16 +13,7 @@ import { DeliveryConfirmationSurface, PatientLinkSurface } from '@/components/di
 
 export default function Page() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--rd-color-bg)',
-        color: 'var(--rd-color-text)',
-        fontFamily: 'var(--rd-font-body)',
-      }}
-    >
-      <DirectionNav direction="d2" />
-
+    <MarketingShell direction="d2">
       {/* 1 — Hero */}
       <Hero />
 
@@ -63,6 +54,6 @@ export default function Page() {
 
       {/* 6 — CTA + footer */}
       <CtaFooter />
-    </div>
+    </MarketingShell>
   );
 }
