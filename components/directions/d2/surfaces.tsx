@@ -230,7 +230,7 @@ export function HeroSurface() {
   ];
 
   return (
-    <div className="d2-hero-surface" style={{ position: 'relative', maxWidth: 600, marginInline: 'auto' }}>
+    <div className="d2-hero-surface" style={{ position: 'relative', maxWidth: 900, marginInline: 'auto' }}>
       {/* Soft lavender wash behind the panel so it doesn't float on bare tint. */}
       <div
         aria-hidden
@@ -254,6 +254,10 @@ export function HeroSurface() {
           borderRadius: 'var(--rd-radius-lg)',
           boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-lg)',
           padding: u(2.8),
+          // Tall enough that the bottom runs off the hero fold (the Hero section
+          // clips it via overflow:hidden + a negative bottom margin) — reads as a
+          // large surface continuing beyond view, not a contained widget.
+          minHeight: u(54),
         }}
       >
         {/* Header */}
@@ -430,14 +434,18 @@ export function HeroSurface() {
         </div>
       </div>
 
-      {/* Overhanging patient-linked chip — breaks the top-left bounding box. */}
+      {/* Patient-linked chip — floats in the LEFT margin, overhanging the panel's
+          outer edge over the gradient. Its inner edge is pinned u(2) (18px) inside
+          the panel — under the u(2.8) padding — so it never covers the stat tiles;
+          the body hangs out over the background. */}
       <div
         className="d2-hero-chip"
         style={{
           position: 'absolute',
           zIndex: 2,
           top: u(7),
-          left: u(-3.5),
+          right: `calc(100% - ${u(2)})`,
+          left: 'auto',
           display: 'flex',
           alignItems: 'center',
           gap: u(1),
@@ -459,14 +467,17 @@ export function HeroSurface() {
         </div>
       </div>
 
-      {/* Overhanging delivery-confirmation chip — breaks the bottom-right box. */}
+      {/* Delivery-confirmation chip — floats in the RIGHT margin, overhanging the
+          panel's outer edge over the gradient, level with the activity list. Inner
+          edge pinned u(2) inside the panel (under the padding), clear of content. */}
       <div
         className="d2-hero-chip"
         style={{
           position: 'absolute',
           zIndex: 2,
-          bottom: u(-2.5),
-          right: u(-3.5),
+          top: u(30),
+          left: `calc(100% - ${u(2)})`,
+          right: 'auto',
           display: 'flex',
           alignItems: 'center',
           gap: u(1.2),
@@ -503,10 +514,11 @@ export function HeroSurface() {
         </div>
       </div>
 
-      {/* Tuck the overhanging chips inside on narrow viewports — overhang would
-          otherwise push horizontal scroll on the full-bleed marketing shell. */}
+      {/* Hide the margin chips on narrow viewports — once the side margins
+          collapse the overhang has nowhere to sit (the Hero's overflow:hidden
+          would just clip it), so drop them rather than show a clipped sliver. */}
       <style>{`
-        @media (max-width: 560px) {
+        @media (max-width: 768px) {
           .d2-hero-surface .d2-hero-chip { display: none !important; }
         }
       `}</style>

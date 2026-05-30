@@ -1,8 +1,12 @@
 // DR-004 — D2 Mercury "quiet minimal" home page.
-// Composes the shared full-bleed MarketingShell (bare DirectionNav + unclamped
-// main) with d2-scoped sections so the tinted section bands reach the viewport
-// edges — the calm Mercury look the centered DirectionShell main would clip.
-import { MarketingShell } from '@/components/directions/MarketingShell';
+// Mercury has ONE header. So this page does NOT use the shared MarketingShell
+// (which always stacks the shared DirectionNav on top); it inlines the same
+// full-bleed wrapper and renders the d2 MarketingHeader as the single primary
+// bar, with the prototype's Home/Inbox/Dashboard switcher folded in as small
+// secondary links. This is a page-level composition choice — the shared
+// MarketingShell and DirectionNav are untouched and still serve the other
+// d2 screens (inbox, dashboard) and the rest of the prototype.
+import { MarketingHeader } from '@/components/directions/d2/MarketingHeader';
 import { Hero } from '@/components/directions/d2/Hero';
 import { FeatureSplit } from '@/components/directions/d2/FeatureSplit';
 import { TrustTabs } from '@/components/directions/d2/TrustTabs';
@@ -13,7 +17,16 @@ import { DeliveryConfirmationSurface, PatientLinkSurface } from '@/components/di
 
 export default function Page() {
   return (
-    <MarketingShell direction="d2">
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--rd-color-bg)',
+        color: 'var(--rd-color-text)',
+        fontFamily: 'var(--rd-font-body)',
+      }}
+    >
+      <MarketingHeader current="home" />
+      <main>
       {/* 1 — Hero */}
       <Hero />
 
@@ -54,6 +67,7 @@ export default function Page() {
 
       {/* 6 — CTA + footer */}
       <CtaFooter />
-    </MarketingShell>
+      </main>
+    </div>
   );
 }

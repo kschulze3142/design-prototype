@@ -70,6 +70,8 @@
   /* Additive d2-only extensions (not in :root) */
   --rd-color-accent-soft: #efedfb;   /* active-tab / tint fills */
   --rd-color-bg-tint: #f4f2fb;       /* hero / CTA wash */
+  /* Hero backdrop: warm near-white at top fading into the lavender tint below */
+  --rd-hero-gradient: linear-gradient(180deg, #fdfdff 0%, #fbfaff 28%, var(--rd-color-bg-tint) 100%);
 
   /* Radius — soft, not pill */
   --rd-radius-sm: 6px;
