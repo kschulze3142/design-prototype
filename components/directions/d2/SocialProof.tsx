@@ -27,7 +27,7 @@ export function SocialProof() {
 
   return (
     <Section>
-      <div style={{ textAlign: 'center', marginBottom: u(5) }}>
+      <div style={{ textAlign: 'center', marginBottom: u(3.5) }}>
         <Eyebrow>Trusted by practices</Eyebrow>
       </div>
 
@@ -36,7 +36,7 @@ export function SocialProof() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: u(2.4),
-          marginBottom: u(5),
+          marginBottom: u(3.5),
         }}
       >
         {QUOTES.map((q) => (
@@ -48,7 +48,7 @@ export function SocialProof() {
               borderRadius: 'var(--rd-radius-lg)',
               background: 'var(--rd-color-surface)',
               border: '1px solid var(--rd-color-border)',
-              boxShadow: 'var(--rd-shadow-sm)',
+              boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-md)',
             }}
           >
             <div aria-hidden style={{ display: 'flex', gap: 2, marginBottom: u(1.6) }}>
@@ -74,7 +74,7 @@ export function SocialProof() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
           gap: u(2),
-          paddingTop: u(4),
+          paddingTop: u(3),
           borderTop: '1px solid var(--rd-color-border)',
           textAlign: 'center',
         }}

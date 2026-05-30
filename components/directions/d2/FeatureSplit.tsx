@@ -21,10 +21,11 @@ export function FeatureSplit({ eyebrow, headline, body, quote, surface, reverse,
       <h2
         style={{
           fontFamily: 'var(--rd-font-display)',
-          fontSize: 'calc(1.9rem * var(--rd-type-scale))',
-          lineHeight: 1.15,
-          letterSpacing: '-0.015em',
-          margin: `${u(1.6)} 0 ${u(1.4)}`,
+          fontSize: 'calc(1.95rem * var(--rd-type-scale))',
+          lineHeight: 1.12,
+          letterSpacing: '-0.024em',
+          fontWeight: 700,
+          margin: `${u(1.4)} 0 ${u(1.2)}`,
           color: 'var(--rd-color-text)',
         }}
       >
@@ -35,7 +36,7 @@ export function FeatureSplit({ eyebrow, headline, body, quote, surface, reverse,
       </p>
       <figure
         style={{
-          margin: `${u(3)} 0 0`,
+          margin: `${u(2.5)} 0 0`,
           paddingLeft: u(2),
           borderLeft: '2px solid var(--rd-color-accent)',
         }}
@@ -64,7 +65,7 @@ export function FeatureSplit({ eyebrow, headline, body, quote, surface, reverse,
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: u(5),
+          gap: u(4),
           alignItems: 'center',
         }}
       >

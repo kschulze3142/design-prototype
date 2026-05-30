@@ -11,15 +11,16 @@ export function CtaFooter() {
   return (
     <>
       {/* Closing CTA */}
-      <section style={{ background: 'var(--rd-color-bg-tint)', paddingBlock: u(11) }}>
+      <section style={{ background: 'var(--rd-color-bg-tint)', paddingBlock: u(8) }}>
         <div style={{ maxWidth: 620, marginInline: 'auto', textAlign: 'center', paddingInline: u(2) }}>
           <h2
             style={{
               fontFamily: 'var(--rd-font-display)',
-              fontSize: 'calc(2.3rem * var(--rd-type-scale))',
-              lineHeight: 1.12,
-              letterSpacing: '-0.02em',
-              margin: `0 0 ${u(1.6)}`,
+              fontSize: 'calc(2.35rem * var(--rd-type-scale))',
+              lineHeight: 1.08,
+              letterSpacing: '-0.028em',
+              fontWeight: 700,
+              margin: `0 0 ${u(1.2)}`,
               color: 'var(--rd-color-text)',
             }}
           >

@@ -1,21 +1,22 @@
 // d2 Hero — centered, plain, no collage. Benefit headline + inline email
 // capture, calm product surface below.
 import { Mail } from 'lucide-react';
-import { Button, Card, Eyebrow, space as u } from './primitives';
-import { FaxListSurface } from './surfaces';
+import { Button, Eyebrow, space as u } from './primitives';
+import { HeroSurface } from './surfaces';
 
 export function Hero() {
   return (
-    <section style={{ paddingBlock: u(11), background: 'var(--rd-color-bg-tint)' }}>
+    <section style={{ paddingBlock: u(8), background: 'var(--rd-color-bg-tint)' }}>
       <div style={{ maxWidth: 720, marginInline: 'auto', textAlign: 'center', paddingInline: u(2) }}>
         <Eyebrow>Cloud fax for modern practices</Eyebrow>
         <h1
           style={{
             fontFamily: 'var(--rd-font-display)',
-            fontSize: 'calc(3rem * var(--rd-type-scale))',
-            lineHeight: 1.08,
-            letterSpacing: '-0.02em',
-            margin: `${u(2)} 0 ${u(1.6)}`,
+            fontSize: 'calc(3.1rem * var(--rd-type-scale))',
+            lineHeight: 1.04,
+            letterSpacing: '-0.032em',
+            fontWeight: 700,
+            margin: `${u(1.6)} 0 ${u(1.2)}`,
             color: 'var(--rd-color-text)',
           }}
         >
@@ -26,7 +27,7 @@ export function Hero() {
             fontSize: '1.12rem',
             lineHeight: 1.6,
             color: 'var(--rd-color-text-muted)',
-            margin: `0 auto ${u(3.5)}`,
+            margin: `0 auto ${u(2.8)}`,
             maxWidth: 560,
           }}
         >
@@ -84,16 +85,14 @@ export function Hero() {
             See demo
           </Button>
         </form>
-        <p style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)', marginTop: u(1.4) }}>
+        <p style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)', marginTop: u(1.2) }}>
           14-day free trial · No credit card · Cancel in one click
         </p>
       </div>
 
-      {/* Calm product surface, shown plainly below the fold of the headline. */}
-      <div style={{ maxWidth: 720, marginInline: 'auto', marginTop: u(5), paddingInline: u(2) }} id="demo">
-        <Card>
-          <FaxListSurface limit={5} />
-        </Card>
+      {/* Composed marketing product surface, sitting up close to the CTA. */}
+      <div style={{ maxWidth: 720, marginInline: 'auto', marginTop: u(3.5), paddingInline: u(2) }} id="demo">
+        <HeroSurface />
       </div>
     </section>
   );

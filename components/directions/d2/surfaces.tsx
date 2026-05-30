@@ -8,6 +8,7 @@ import {
   ArrowDownLeft,
   ShieldCheck,
   UserRound,
+  TrendingUp,
 } from 'lucide-react';
 import { designMock, type Fax, type FaxStatus } from '@/lib/designMock';
 import { space as u } from './primitives';
@@ -113,6 +114,402 @@ export function FaxListSurface({ limit = 5 }: { limit?: number }) {
           <StatusPill status={fax.status} />
         </div>
       ))}
+    </div>
+  );
+}
+
+/** Two-letter initials for an avatar chip. */
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+/** Small lavender initials avatar — reused across the hero composition. */
+function Avatar({ name, size = 26 }: { name: string; size?: number }) {
+  return (
+    <span
+      aria-hidden
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: size,
+        height: size,
+        borderRadius: 999,
+        flexShrink: 0,
+        background: 'var(--rd-color-accent-soft)',
+        color: 'var(--rd-color-accent)',
+        fontSize: size * 0.36,
+        fontWeight: 700,
+        letterSpacing: '0.01em',
+      }}
+    >
+      {initials(name)}
+    </span>
+  );
+}
+
+/** Tiny area+line sparkline. Fixed deterministic series only — no Math.random /
+ *  Date, so every render (incl. static prerender) draws the identical chart. */
+function Sparkline({
+  data,
+  width = 128,
+  height = 38,
+}: {
+  data: readonly number[];
+  width?: number;
+  height?: number;
+}) {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const span = max - min || 1;
+  const stepX = width / (data.length - 1);
+  const pts = data.map((d, i) => {
+    const x = i * stepX;
+    const y = height - ((d - min) / span) * (height - 4) - 2; // 2px breathing top/bottom
+    return [x, y] as const;
+  });
+  const line = pts
+    .map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`)
+    .join(' ');
+  const area = `${line} L${width} ${height} L0 ${height} Z`;
+  const last = pts[pts.length - 1];
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      aria-hidden
+      style={{ display: 'block', overflow: 'visible' }}
+    >
+      <defs>
+        <linearGradient id="d2-spark-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--rd-color-accent)" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="var(--rd-color-accent)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#d2-spark-fill)" />
+      <path
+        d={line}
+        fill="none"
+        stroke="var(--rd-color-accent)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx={last[0]} cy={last[1]} r="3" fill="var(--rd-color-accent)" />
+    </svg>
+  );
+}
+
+/** A composed marketing "product moment" for the hero — a layered dashboard
+ *  surface with overhanging confirmation/patient chips. Distinct from the plain
+ *  FaxListSurface used on app screens; reads only from the shared mock. */
+export function HeroSurface() {
+  const { faxesSentThisMonth, deliverySuccessRate, pagesUsed, pagesCap } = designMock.stats;
+  const delivered = designMock.faxes.find((f) => f.id === 'fx-001')!;
+  const linked = designMock.faxes.find((f) => f.direction === 'inbound' && f.patientRef)!;
+
+  const stats = [
+    { value: faxesSentThisMonth.toLocaleString(), label: 'sent' },
+    { value: `${(deliverySuccessRate * 100).toFixed(1)}%`, label: 'delivered' },
+    { value: `${(pagesUsed / 1000).toFixed(1)}k`, label: `of ${(pagesCap / 1000).toFixed(1)}k pages` },
+  ];
+
+  // Fixed, deterministic weekly send volume — never randomized.
+  const series = [12, 18, 14, 22, 19, 27, 24, 31, 26, 34, 30, 39] as const;
+
+  const rows = [
+    designMock.faxes.find((f) => f.id === 'fx-002')!, // received, Maya
+    designMock.faxes.find((f) => f.id === 'fx-001')!, // delivered, outbound
+    designMock.faxes.find((f) => f.id === 'fx-005')!, // sending, outbound
+  ];
+
+  return (
+    <div className="d2-hero-surface" style={{ position: 'relative', maxWidth: 600, marginInline: 'auto' }}>
+      {/* Soft lavender wash behind the panel so it doesn't float on bare tint. */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: '-12% -8% -16%',
+          borderRadius: 'var(--rd-radius-lg)',
+          background:
+            'radial-gradient(120% 90% at 30% 0%, rgba(108,92,231,0.16), rgba(108,92,231,0) 70%)',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Primary dashboard-like surface */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          background: 'var(--rd-color-surface)',
+          border: '1px solid var(--rd-color-border)',
+          borderRadius: 'var(--rd-radius-lg)',
+          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-lg)',
+          padding: u(2.8),
+        }}
+      >
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: u(1) }}>
+            <span
+              aria-hidden
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                background: 'var(--rd-color-accent)',
+                color: '#fff',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <CheckCircle2 size={16} strokeWidth={2.4} />
+            </span>
+            <span style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--rd-color-text)' }}>
+              This month
+            </span>
+          </div>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.74rem',
+              fontWeight: 600,
+              color: 'var(--rd-color-text-muted)',
+            }}
+          >
+            <span
+              aria-hidden
+              style={{ width: 7, height: 7, borderRadius: 999, background: '#2f7d5b' }}
+            />
+            Live
+          </span>
+        </div>
+
+        {/* Stat readouts */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: u(1.4),
+            marginTop: u(2.2),
+          }}
+        >
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              style={{
+                padding: `${u(1.4)} ${u(1.4)}`,
+                borderRadius: 'var(--rd-radius-md)',
+                background: 'var(--rd-color-bg)',
+                border: '1px solid var(--rd-color-border)',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: 'var(--rd-font-display)',
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  letterSpacing: '-0.02em',
+                  color: 'var(--rd-color-text)',
+                  lineHeight: 1.1,
+                }}
+              >
+                {s.value}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', marginTop: 2 }}>
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Send-volume sparkline strip */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: u(2),
+            marginTop: u(2),
+            padding: `${u(1.6)} ${u(1.8)}`,
+            borderRadius: 'var(--rd-radius-md)',
+            background: 'var(--rd-color-accent-soft)',
+          }}
+        >
+          <div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+              Send volume
+            </div>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                marginTop: 4,
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                color: 'var(--rd-color-accent)',
+              }}
+            >
+              <TrendingUp size={14} strokeWidth={2.4} />
+              +18% vs. last month
+            </div>
+          </div>
+          <Sparkline data={series} />
+        </div>
+
+        {/* Mini activity list */}
+        <div style={{ marginTop: u(2), display: 'grid', gap: u(1.2) }}>
+          {rows.map((fax) => {
+            const meta = STATUS_META[fax.status];
+            const name = fax.patientRef?.name;
+            const label = name ?? formatPhone(fax.direction === 'outbound' ? fax.toNumber : fax.fromNumber);
+            const sub = name
+              ? `${fax.patientRef!.mrn} · ${fax.pageCount} pp`
+              : `${fax.pageCount} pp · ${formatTime(fax.timestamp)}`;
+            return (
+              <div key={fax.id} style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
+                {name ? (
+                  <Avatar name={name} />
+                ) : (
+                  <span
+                    aria-hidden
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: 999,
+                      flexShrink: 0,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: meta.bg,
+                    }}
+                  >
+                    <span style={{ width: 7, height: 7, borderRadius: 999, background: meta.color }} />
+                  </span>
+                )}
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: '0.86rem',
+                      fontWeight: 600,
+                      color: 'var(--rd-color-text)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {label}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>{sub}</div>
+                </div>
+                <span
+                  aria-hidden
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 999,
+                    flexShrink: 0,
+                    background: meta.color,
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Overhanging patient-linked chip — breaks the top-left bounding box. */}
+      <div
+        className="d2-hero-chip"
+        style={{
+          position: 'absolute',
+          zIndex: 2,
+          top: u(7),
+          left: u(-3.5),
+          display: 'flex',
+          alignItems: 'center',
+          gap: u(1),
+          padding: `${u(1)} ${u(1.4)}`,
+          background: 'var(--rd-color-surface)',
+          border: '1px solid var(--rd-color-border)',
+          borderRadius: 'var(--rd-radius-md)',
+          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-float)',
+        }}
+      >
+        <Avatar name={linked.patientRef!.name} size={28} />
+        <div>
+          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
+            Linked to {linked.patientRef!.name}
+          </div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--rd-color-text-muted)' }}>
+            {linked.patientRef!.mrn} · routed automatically
+          </div>
+        </div>
+      </div>
+
+      {/* Overhanging delivery-confirmation chip — breaks the bottom-right box. */}
+      <div
+        className="d2-hero-chip"
+        style={{
+          position: 'absolute',
+          zIndex: 2,
+          bottom: u(-2.5),
+          right: u(-3.5),
+          display: 'flex',
+          alignItems: 'center',
+          gap: u(1.2),
+          padding: `${u(1.2)} ${u(1.6)}`,
+          background: 'var(--rd-color-surface)',
+          border: '1px solid var(--rd-color-border)',
+          borderRadius: 'var(--rd-radius-md)',
+          boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-float)',
+        }}
+      >
+        <span
+          aria-hidden
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 999,
+            flexShrink: 0,
+            background: '#e7f4ee',
+            color: '#2f7d5b',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CheckCircle2 size={17} strokeWidth={2.4} />
+        </span>
+        <div>
+          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
+            Delivered · receipt #{delivered.id.toUpperCase()}
+          </div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--rd-color-text-muted)' }}>
+            {formatPhone(delivered.toNumber)} · {formatTime(delivered.timestamp)}
+          </div>
+        </div>
+      </div>
+
+      {/* Tuck the overhanging chips inside on narrow viewports — overhang would
+          otherwise push horizontal scroll on the full-bleed marketing shell. */}
+      <style>{`
+        @media (max-width: 560px) {
+          .d2-hero-surface .d2-hero-chip { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

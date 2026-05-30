@@ -26,7 +26,7 @@ export function Section({
     <section
       id={id}
       style={{
-        paddingBlock: u(11),
+        paddingBlock: u(8),
         background: tint ? 'var(--rd-color-bg-tint)' : 'transparent',
         ...style,
       }}
@@ -123,7 +123,7 @@ export function Card({
         background: muted ? 'var(--rd-color-bg)' : 'var(--rd-color-surface)',
         border: '1px solid var(--rd-color-border)',
         borderRadius: 'var(--rd-radius-lg)',
-        boxShadow: 'var(--rd-shadow-sm)',
+        boxShadow: 'var(--rd-highlight-inset), var(--rd-shadow-md)',
         overflow: 'hidden',
         ...style,
       }}
