@@ -12,14 +12,16 @@ import {
 import { designMock, type Fax, type FaxStatus } from '@/lib/designMock';
 import { space as u } from './primitives';
 
-/** +12125550144 → +1 (212) 555-0144 — calm, human-readable. */
-function formatPhone(e164: string): string {
+/** +12125550144 → +1 (212) 555-0144 — calm, human-readable.
+ *  Exported for d2-local reuse (e.g. the inbox). Intentionally NOT shared:
+ *  D1/D3/D4 each format and treat status their own way. */
+export function formatPhone(e164: string): string {
   const m = /^\+1(\d{3})(\d{3})(\d{4})$/.exec(e164);
   if (!m) return e164;
   return `+1 (${m[1]}) ${m[2]}-${m[3]}`;
 }
 
-function formatTime(iso: string): string {
+export function formatTime(iso: string): string {
   const [, time] = iso.split('T');
   const [h, min] = time.slice(0, 5).split(':').map(Number);
   const ampm = h >= 12 ? 'PM' : 'AM';
@@ -27,7 +29,10 @@ function formatTime(iso: string): string {
   return `${h12}:${String(min).padStart(2, '0')} ${ampm}`;
 }
 
-const STATUS_META: Record<
+// Exported for d2-local reuse (the inbox draws its failed-row hairline from
+// STATUS_META.failed.color so the pill and hairline can't drift). NOT shared:
+// D1/D3/D4 each define their own status treatment.
+export const STATUS_META: Record<
   FaxStatus,
   { label: string; color: string; bg: string; Icon: typeof CheckCircle2 }
 > = {
@@ -37,7 +42,7 @@ const STATUS_META: Record<
   failed: { label: 'Failed', color: '#b4453c', bg: '#fbe9e7', Icon: XCircle },
 };
 
-function StatusPill({ status }: { status: FaxStatus }) {
+export function StatusPill({ status }: { status: FaxStatus }) {
   const m = STATUS_META[status];
   const Icon = m.Icon;
   return (
