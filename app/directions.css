@@ -1,0 +1,92 @@
+/* Per-direction design tokens.
+ *
+ * Surface (DR-000): color, radius, shadow, type, spacing density.
+ * :root holds neutral defaults; each [data-direction='dN'] scope overrides.
+ * Direction tickets (D1–D4) edit only their own block. Shared components
+ * read from var(--rd-*) and contain zero direction-specific code.
+ */
+
+:root {
+  /* Color */
+  --rd-color-bg: #ffffff;
+  --rd-color-surface: #ffffff;
+  --rd-color-text: #111111;
+  --rd-color-text-muted: #6b6b6b;
+  --rd-color-accent: #2563eb;
+  --rd-color-border: #e5e5e5;
+
+  /* Radius */
+  --rd-radius-sm: 4px;
+  --rd-radius-md: 8px;
+  --rd-radius-lg: 16px;
+
+  /* Shadow */
+  --rd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --rd-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  /* Type */
+  --rd-font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --rd-font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --rd-type-scale: 1;
+
+  /* Density — multiplied by component spacing.
+   * <1 = denser (D3), >1 = airier (D4). DR-000 defaults to 1.
+   */
+  --rd-space-unit: 8px;
+}
+
+/* D1 — Maze (bold editorial). Placeholder = defaults. */
+[data-direction='d1'] {
+  --rd-color-bg: #ffffff;
+  --rd-color-surface: #ffffff;
+  --rd-color-text: #111111;
+  --rd-color-text-muted: #6b6b6b;
+  --rd-color-accent: #2563eb;
+  --rd-color-border: #e5e5e5;
+  --rd-radius-sm: 4px;
+  --rd-radius-md: 8px;
+  --rd-radius-lg: 16px;
+  --rd-space-unit: 8px;
+}
+
+/* D2 — Mercury (quiet minimal). Placeholder = defaults. */
+[data-direction='d2'] {
+  --rd-color-bg: #ffffff;
+  --rd-color-surface: #ffffff;
+  --rd-color-text: #111111;
+  --rd-color-text-muted: #6b6b6b;
+  --rd-color-accent: #2563eb;
+  --rd-color-border: #e5e5e5;
+  --rd-radius-sm: 4px;
+  --rd-radius-md: 8px;
+  --rd-radius-lg: 16px;
+  --rd-space-unit: 8px;
+}
+
+/* D3 — Notion (workflow / surface-dense). Placeholder = defaults. */
+[data-direction='d3'] {
+  --rd-color-bg: #ffffff;
+  --rd-color-surface: #ffffff;
+  --rd-color-text: #111111;
+  --rd-color-text-muted: #6b6b6b;
+  --rd-color-accent: #2563eb;
+  --rd-color-border: #e5e5e5;
+  --rd-radius-sm: 4px;
+  --rd-radius-md: 8px;
+  --rd-radius-lg: 16px;
+  --rd-space-unit: 8px;
+}
+
+/* D4 — Airbnb (warm / human). Placeholder = defaults. */
+[data-direction='d4'] {
+  --rd-color-bg: #ffffff;
+  --rd-color-surface: #ffffff;
+  --rd-color-text: #111111;
+  --rd-color-text-muted: #6b6b6b;
+  --rd-color-accent: #2563eb;
+  --rd-color-border: #e5e5e5;
+  --rd-radius-sm: 4px;
+  --rd-radius-md: 8px;
+  --rd-radius-lg: 16px;
+  --rd-space-unit: 8px;
+}
