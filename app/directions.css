@@ -203,16 +203,54 @@
   --rd-space-unit: 8px;
 }
 
-/* D4 — Airbnb (warm / human). Placeholder = defaults. */
+/* D4 — Robin Dock, diverged. Same Harvest/D2 BONES, real Robin Dock SKIN.
+ * D2 is single-coral on cream; D4 is a deliberate TWO-COLOR system on cream:
+ * Forest Teal is the workhorse (buttons, links, product chrome, large surfaces
+ * — the serious/trustworthy base) and Robin Orange is the spark, used sparingly
+ * (the headline accent-underline, eyebrows, small marketing highlights, the bird
+ * in the logo). The role split is enforced by hand in every d4 component: a blind
+ * coral→orange swap would flood the page with orange; structural/large elements
+ * route to teal, small/spark elements to orange.
+ *
+ * Additive d4-only props (not in :root), same convention as the other directions:
+ *   --rd-color-heading, --rd-color-primary, --rd-color-btn,
+ *   --rd-color-primary-soft, --rd-color-accent-soft, --rd-color-bg-tint,
+ *   --rd-radius-pill, --rd-radius-round, --rd-shadow-lg.
+ */
 [data-direction='d4'] {
-  --rd-color-bg: #ffffff;
-  --rd-color-surface: #ffffff;
-  --rd-color-text: #111111;
-  --rd-color-text-muted: #6b6b6b;
-  --rd-color-accent: #2563eb;
-  --rd-color-border: #e5e5e5;
-  --rd-radius-sm: 4px;
-  --rd-radius-md: 8px;
-  --rd-radius-lg: 16px;
+  /* Color — Robin Dock's real brand palette */
+  --rd-color-bg: #fbf6f0;            /* cream         rgb(251,246,240) */
+  --rd-color-surface: #ffffff;       /* white cards   rgb(255,255,255) */
+  --rd-color-text: #3a3537;          /* body ink      rgb(58,53,55)    */
+  --rd-color-text-muted: #6b6560;    /* muted text    rgb(107,101,96)  */
+  --rd-color-accent: #d95f36;        /* Robin Orange  rgb(217,95,54) — SPARK ONLY (underline, eyebrows, small pops) */
+  --rd-color-border: #e8ded3;        /* soft border   rgb(232,222,211) */
+
+  /* Additive d4-only extensions (not in :root) */
+  --rd-color-heading: #1d1e1c;       /* ink headings  rgb(29,30,28) — darker than body */
+  --rd-color-primary: #0d5c4a;       /* Forest Teal   rgb(13,92,74) — the WORKHORSE */
+  --rd-color-btn: #0d5c4a;           /* primary CTA = TEAL, not orange */
+  --rd-color-primary-soft: rgba(13, 92, 74, 0.1);  /* faint teal wash — product chrome / chips */
+  --rd-color-accent-soft: rgba(217, 95, 54, 0.1);  /* faint orange wash — small marketing accents */
+  --rd-color-bg-tint: #f3ebe0;       /* warm tint  rgb(243,235,224) — alt sections + email pill */
+
+  /* Radius — same warm family as d2 */
+  --rd-radius-sm: 8px;
+  --rd-radius-md: 14px;
+  --rd-radius-lg: 20px;              /* cards + product frame */
+  --rd-radius-pill: 30px;           /* primary CTA pill */
+  --rd-radius-round: 999px;          /* email-capture shell, status pills */
+
+  /* Shadow — single soft even card lift, keyed to the ink */
+  --rd-shadow-sm: 0 0 8px rgba(29, 30, 28, 0.05);
+  --rd-shadow-md: 0 0 14px rgba(29, 30, 28, 0.07);
+  --rd-shadow-lg: 0 0 14px rgba(29, 30, 28, 0.07);
+
+  /* Type — Fraunces serif display, Inter body (wired via next/font in app/d4/layout.tsx) */
+  --rd-font-display: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+  --rd-font-body: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --rd-type-scale: 1;
+
+  /* Density */
   --rd-space-unit: 8px;
 }
