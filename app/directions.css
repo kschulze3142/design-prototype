@@ -218,21 +218,27 @@
  *   --rd-radius-pill, --rd-radius-round, --rd-shadow-lg.
  */
 [data-direction='d4'] {
-  /* Color — Robin Dock's real brand palette */
-  --rd-color-bg: #fbf6f0;            /* cream         rgb(251,246,240) */
+  /* Color — Robin Dock's real brand palette. DR-004d-p lightens the base: the
+     dominant page is now a pale cool grey-green (software-product, crisp), with
+     cream demoted to a SUBTLE accent tint (--rd-color-cream / bg-tint) used only
+     on select alternating sections. White surfaces sit cleanly on the grey. */
+  --rd-color-bg: #f6f8f7;            /* pale grey-green base rgb(246,248,247) — the dominant page */
   --rd-color-surface: #ffffff;       /* white cards   rgb(255,255,255) */
   --rd-color-text: #3a3537;          /* body ink      rgb(58,53,55)    */
   --rd-color-text-muted: #6b6560;    /* muted text    rgb(107,101,96)  */
-  --rd-color-accent: #d95f36;        /* Robin Orange  rgb(217,95,54) — SPARK ONLY (underline, eyebrows, small pops) */
-  --rd-color-border: #e8ded3;        /* soft border   rgb(232,222,211) */
+  --rd-color-accent: #d95f36;        /* Robin Orange  rgb(217,95,54) — SPARK ONLY (underline, rare pops) */
+  --rd-color-border: #e4e9e7;        /* cool neutral border rgb(228,233,231) — crisper than the old cream border */
 
   /* Additive d4-only extensions (not in :root) */
   --rd-color-heading: #1d1e1c;       /* ink headings  rgb(29,30,28) — darker than body */
-  --rd-color-primary: #0d5c4a;       /* Forest Teal   rgb(13,92,74) — the WORKHORSE */
+  --rd-color-primary: #0d5c4a;       /* Forest Teal   rgb(13,92,74) — the WORKHORSE / structural brand color */
+  --rd-color-primary-strong: #0a4a3b;/* deeper teal   rgb(10,74,59) — full CTA band, gradients */
   --rd-color-btn: #0d5c4a;           /* primary CTA = TEAL, not orange */
   --rd-color-primary-soft: rgba(13, 92, 74, 0.1);  /* faint teal wash — product chrome / chips */
+  --rd-color-primary-line: rgba(13, 92, 74, 0.28); /* teal hairline — dashed routing connectors */
   --rd-color-accent-soft: rgba(217, 95, 54, 0.1);  /* faint orange wash — small marketing accents */
-  --rd-color-bg-tint: #f3ebe0;       /* warm tint  rgb(243,235,224) — alt sections + email pill */
+  --rd-color-cream: #fbf6f0;         /* cream accent rgb(251,246,240) — subtle warmth, NOT the base */
+  --rd-color-bg-tint: #fbf6f0;       /* alt-section + email-pill tint — now the cream accent */
 
   /* Radius — same warm family as d2 */
   --rd-radius-sm: 8px;

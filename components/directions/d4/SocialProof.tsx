@@ -7,12 +7,12 @@ import { AccentUnderline, Section, space as u } from './primitives';
 export function SocialProof() {
   const { deliverySuccessRate, faxesSentThisMonth, faxesReceivedThisMonth } = designMock.stats;
   const stats = [
-    { value: `${(deliverySuccessRate * 100).toFixed(1)}%`, label: 'delivery success rate' },
+    { value: `${(deliverySuccessRate * 100).toFixed(1)}%`, label: 'auto-filed to the right patient' },
     {
       value: (faxesSentThisMonth + faxesReceivedThisMonth).toLocaleString(),
-      label: 'faxes handled this month',
+      label: 'documents handled this month',
     },
-    { value: '< 1 min', label: 'average confirmation time' },
+    { value: '< 1 min', label: 'average time to filed' },
   ];
 
   return (
@@ -31,8 +31,8 @@ export function SocialProof() {
           marginBlock: 0,
         }}
       >
-        Over <AccentUnderline>1,200 practices</AccentUnderline> use Robin Dock to send faxes
-        they can prove arrived.
+        Over <AccentUnderline>1,200 veterinary practices</AccentUnderline> trust Robin Dock to
+        capture and organize every document they receive.
       </p>
 
       {/* Quiet stat line */}

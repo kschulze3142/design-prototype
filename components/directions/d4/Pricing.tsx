@@ -25,31 +25,31 @@ const TIERS: Tier[] = [
     monthly: 0,
     blurb: 'Everything in Starter for 14 days.',
     cta: 'Start free',
-    features: ['Up to 100 pages', 'Delivery receipts', 'Patient routing', 'No credit card'],
+    features: ['Up to 100 documents', 'Auto-categorize & route', 'Patient routing', 'No credit card'],
   },
   {
     name: 'Starter',
     monthly: 39,
-    blurb: 'For a single practice getting off the fax machine.',
+    blurb: 'For a single clinic getting its documents under control.',
     cta: 'Choose Starter',
     featured: true,
     features: [
-      '1,000 pages / month',
-      'One ported fax number',
-      'Automatic retries',
+      '1,000 documents / month',
+      'Fax, email & portal capture',
+      'Auto-filing & folders',
       'Email + chat support',
     ],
   },
   {
     name: 'Professional',
     monthly: 89,
-    blurb: 'For multi-provider groups and higher volume.',
+    blurb: 'For multi-doctor practices and higher volume.',
     cta: 'Choose Professional',
     features: [
-      '3,000 pages / month',
-      'Up to five fax numbers',
-      'Routing rules & departments',
-      'Priority support & BAA',
+      '3,000 documents / month',
+      'Custom routing rules',
+      'Needs Review queues',
+      'PIMS integration & BAA',
     ],
   },
 ];
@@ -82,7 +82,7 @@ export function Pricing() {
           Simple, honest pricing.
         </h2>
         <p style={{ fontSize: '1.02rem', color: 'var(--rd-color-text-muted)', margin: 0 }}>
-          One number, one price. No per-page surprises, no setup fees.
+          One clinic, one price. No per-document surprises, no setup fees.
         </p>
 
         {/* Annual toggle — selected pill is teal via --rd-color-btn. */}

@@ -1,24 +1,37 @@
-// Plain product-surface renderers for d4. Real Robin Dock surfaces shown plainly
-// from the shared @/lib/designMock. d4-scoped styling; reads mock data only.
+// Product-surface renderers for d4 — "Robin Dock, diverged" (DR-004d-p). Robin
+// Dock is repositioned as the vertical DOCUMENT INBOX for veterinary clinics, so
+// these surfaces render a realistic document-inbox UI driven by the d4-local vet
+// overlay in ./documents (which itself reads the shared @/lib/designMock, kept
+// untouched). The hero centerpiece is a dense three-pane inbox.
 //
 // Two-color discipline: a product UI's chrome is functional, so it routes to the
-// WORKHORSE — Forest Teal (the app's primary). Every place d2 used its coral
-// accent for surface chrome (the brand icon chip, avatars, the sparkline, the
-// trend figure, the patient-link wash, the in-progress timeline dots) is TEAL
-// here. Orange is reserved for the marketing chrome (eyebrows, headline
-// underlines), not the product. Semantic status hues (green/amber/red/blue) are
-// unchanged — they read fine on the warm surfaces.
+// WORKHORSE — Forest Teal (the app's primary): active nav, selection bars, count
+// badges, the Open-Document button, the filing-timeline dots. Orange is reserved
+// for the marketing chrome (the headline underline, one stat figure), never the
+// product. Semantic status hues (green) read fine on the white surfaces.
 import {
   CheckCircle2,
-  Clock,
-  XCircle,
-  ArrowDownLeft,
-  UserRound,
-  TrendingUp,
+  Inbox,
+  Files,
+  Star,
+  ClipboardCheck,
+  Send,
+  Archive,
+  Folder,
+  Search,
+  ChevronRight,
   FileText,
+  Circle,
+  PawPrint,
 } from 'lucide-react';
-import { designMock, type Fax, type FaxStatus } from '@/lib/designMock';
 import { space as u } from './primitives';
+import {
+  vetDocuments,
+  inboxFolders,
+  needsReviewCount,
+  starredCount,
+  type VetDocument,
+} from './documents';
 
 /** +12125550144 → +1 (212) 555-0144. d4-local; not shared. */
 export function formatPhone(e164: string): string {
@@ -35,93 +48,7 @@ export function formatTime(iso: string): string {
   return `${h12}:${String(min).padStart(2, '0')} ${ampm}`;
 }
 
-// d4-local status treatment. Semantic hues, unchanged from the warm system.
-export const STATUS_META: Record<
-  FaxStatus,
-  { label: string; color: string; bg: string; Icon: typeof CheckCircle2 }
-> = {
-  delivered: { label: 'Delivered', color: '#2f7d5b', bg: '#e7f4ee', Icon: CheckCircle2 },
-  received: { label: 'Received', color: '#9a5b1f', bg: '#f6ece0', Icon: ArrowDownLeft },
-  sending: { label: 'Sending', color: '#9a7b1f', bg: '#fbf3df', Icon: Clock },
-  failed: { label: 'Failed', color: '#b4453c', bg: '#fbe9e7', Icon: XCircle },
-};
-
-export function StatusPill({ status }: { status: FaxStatus }) {
-  const m = STATUS_META[status];
-  const Icon = m.Icon;
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 5,
-        paddingInline: 9,
-        height: 24,
-        borderRadius: 'var(--rd-radius-round)',
-        fontSize: '0.72rem',
-        fontWeight: 600,
-        color: m.color,
-        background: m.bg,
-      }}
-    >
-      <Icon size={13} strokeWidth={2.2} />
-      {m.label}
-    </span>
-  );
-}
-
-/** A quiet list of recent faxes — the core inbox surface, shown plainly. */
-export function FaxListSurface({ limit = 5 }: { limit?: number }) {
-  const rows = designMock.faxes.slice(0, limit);
-  return (
-    <div role="table" aria-label="Recent faxes" style={{ width: '100%' }}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: `${u(1.6)} ${u(2)}`,
-          borderBottom: '1px solid var(--rd-color-border)',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          color: 'var(--rd-color-text-muted)',
-        }}
-      >
-        <span>Recent activity</span>
-        <span>{designMock.faxes.length} this view</span>
-      </div>
-      {rows.map((fax: Fax, i) => (
-        <div
-          key={fax.id}
-          role="row"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: u(2),
-            padding: `${u(1.5)} ${u(2)}`,
-            borderBottom: i === rows.length - 1 ? 'none' : '1px solid var(--rd-color-border)',
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
-              {fax.direction === 'outbound'
-                ? formatPhone(fax.toNumber)
-                : formatPhone(fax.fromNumber)}
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
-              {fax.patientRef ? fax.patientRef.name : 'Unassigned'} · {fax.pageCount} pp ·{' '}
-              {formatTime(fax.timestamp)}
-            </div>
-          </div>
-          <StatusPill status={fax.status} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** Two-letter initials for an avatar chip. */
+/** Two-letter initials for a small chip. */
 function initials(name: string): string {
   return name
     .split(' ')
@@ -131,8 +58,8 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-/** Small teal-tint initials avatar — product chrome, so it rides the workhorse. */
-function Avatar({ name, size = 28 }: { name: string; size?: number }) {
+/** Small teal-tint initials chip — product chrome, so it rides the workhorse. */
+function Chip({ name, size = 28 }: { name: string; size?: number }) {
   return (
     <span
       aria-hidden
@@ -156,100 +83,103 @@ function Avatar({ name, size = 28 }: { name: string; size?: number }) {
   );
 }
 
-/** Tiny area+line sparkline in teal. Fixed deterministic series only — no
- *  Math.random / Date, so every render (incl. static prerender) draws identically. */
-function Sparkline({
-  data,
-  width = 120,
-  height = 36,
-}: {
-  data: readonly number[];
-  width?: number;
-  height?: number;
-}) {
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const span = max - min || 1;
-  const stepX = width / (data.length - 1);
-  const pts = data.map((d, i) => {
-    const x = i * stepX;
-    const y = height - ((d - min) / span) * (height - 4) - 2; // 2px breathing top/bottom
-    return [x, y] as const;
-  });
-  const line = pts
-    .map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`)
-    .join(' ');
-  const area = `${line} L${width} ${height} L0 ${height} Z`;
-  const last = pts[pts.length - 1];
+/** A small muted folder tag. */
+function FolderTag({ name }: { name: string }) {
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      aria-hidden
-      style={{ display: 'block', overflow: 'visible' }}
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 4,
+        flexShrink: 0,
+        paddingInline: 8,
+        height: 22,
+        borderRadius: 'var(--rd-radius-round)',
+        fontSize: '0.7rem',
+        fontWeight: 600,
+        color: 'var(--rd-color-text-muted)',
+        background: 'var(--rd-color-bg)',
+        border: '1px solid var(--rd-color-border)',
+      }}
     >
-      <defs>
-        <linearGradient id="d4-spark-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--rd-color-primary)" stopOpacity="0.20" />
-          <stop offset="100%" stopColor="var(--rd-color-primary)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#d4-spark-fill)" />
-      <path
-        d={line}
-        fill="none"
-        stroke="var(--rd-color-primary)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx={last[0]} cy={last[1]} r="3" fill="var(--rd-color-primary)" />
-    </svg>
+      <Folder size={11} strokeWidth={2.2} />
+      {name}
+    </span>
   );
 }
 
-/** The hero product surface — a plain white Robin Dock fax panel built to sit
- *  inside the TEAL frame in the right column of the hero. Fax activity up top, a
- *  quiet send-volume strip, and a delivery-confirmation callout as the focal
- *  reassurance moment. Reads only from the shared mock. */
-export function HeroSurface() {
-  const { faxesSentThisMonth, deliverySuccessRate, pagesUsed, pagesCap } = designMock.stats;
-  const delivered = designMock.faxes.find((f) => f.id === 'fx-001')!;
+// ───────────────────────────────────────────────────────────────────────────
+// HERO CENTERPIECE — the three-pane document inbox
+// ───────────────────────────────────────────────────────────────────────────
 
-  const stats = [
-    { value: faxesSentThisMonth.toLocaleString(), label: 'sent' },
-    { value: `${(deliverySuccessRate * 100).toFixed(1)}%`, label: 'delivered' },
-    { value: `${(pagesUsed / 1000).toFixed(1)}k`, label: `of ${(pagesCap / 1000).toFixed(1)}k pages` },
-  ];
+const NAV_ITEMS = [
+  { id: 'inbox', label: 'Inbox', Icon: Inbox, count: vetDocuments.length, active: true },
+  { id: 'all', label: 'All Documents', Icon: Files },
+  { id: 'starred', label: 'Starred', Icon: Star, count: starredCount },
+  { id: 'review', label: 'Needs Review', Icon: ClipboardCheck, badge: needsReviewCount },
+  { id: 'sent', label: 'Sent', Icon: Send },
+  { id: 'archive', label: 'Archives', Icon: Archive },
+] as const;
 
-  // Fixed, deterministic weekly send volume — never randomized.
-  const series = [12, 18, 14, 22, 19, 27, 24, 31, 26, 34, 30, 39] as const;
+function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '92px 1fr',
+        gap: u(1.2),
+        alignItems: 'start',
+        paddingBlock: u(1),
+        borderBottom: '1px solid var(--rd-color-border)',
+      }}
+    >
+      <span style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 500 }}>
+        {label}
+      </span>
+      <span style={{ fontSize: '0.8rem', color: 'var(--rd-color-text)', fontWeight: 600 }}>
+        {children}
+      </span>
+    </div>
+  );
+}
 
-  const rows = [
-    designMock.faxes.find((f) => f.id === 'fx-002')!, // received, patient-linked
-    designMock.faxes.find((f) => f.id === 'fx-005')!, // sending, outbound
-  ];
+/** The hero centerpiece: a realistic three-pane document inbox — folders sidebar,
+ *  document list, and a detail panel with tabs + metadata. Built full-width to
+ *  read as a real app shot. Static (no hooks) so it prerenders cleanly. */
+export function InboxHeroSurface() {
+  const docs = vetDocuments;
+  const selected = docs[0]; // CBC Results — Bella
 
   return (
     <div
       style={{
         background: 'var(--rd-color-surface)',
         borderRadius: 'var(--rd-radius-lg)',
-        boxShadow: 'var(--rd-shadow-md)',
-        padding: u(3),
+        border: '1px solid var(--rd-color-border)',
+        boxShadow: 'var(--rd-shadow-lg)',
+        overflow: 'hidden',
         width: '100%',
       }}
     >
-      {/* Header — brand icon chip rides the workhorse teal. */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
+      {/* App chrome bar — teal robin mark + title, search, avatar. */}
+      <div
+        className="d4-inbox-chrome"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: u(2),
+          padding: `${u(1.4)} ${u(2)}`,
+          borderBottom: '1px solid var(--rd-color-border)',
+          background: 'var(--rd-color-bg)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: u(1.2), flexShrink: 0 }}>
           <span
             aria-hidden
             style={{
-              width: 30,
-              height: 30,
-              borderRadius: 9,
+              width: 26,
+              height: 26,
+              borderRadius: 7,
               background: 'var(--rd-color-primary)',
               color: '#fff',
               display: 'inline-flex',
@@ -257,209 +187,526 @@ export function HeroSurface() {
               justifyContent: 'center',
             }}
           >
-            <FileText size={16} strokeWidth={2.4} />
+            <FileText size={14} strokeWidth={2.4} />
           </span>
           <span
             style={{
               fontFamily: 'var(--rd-font-display)',
               fontWeight: 500,
-              fontSize: '1.05rem',
+              fontSize: '0.98rem',
               color: 'var(--rd-color-heading)',
             }}
           >
-            Fax activity
+            Document Inbox
           </span>
         </div>
-        <span
+
+        <div
+          className="d4-inbox-search"
           style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: 6,
-            fontSize: '0.74rem',
-            fontWeight: 600,
+            gap: u(1),
+            flex: 1,
+            maxWidth: 320,
+            marginLeft: 'auto',
+            paddingInline: u(1.4),
+            height: 32,
+            borderRadius: 'var(--rd-radius-round)',
+            border: '1px solid var(--rd-color-border)',
+            background: 'var(--rd-color-surface)',
             color: 'var(--rd-color-text-muted)',
+            fontSize: '0.78rem',
           }}
         >
-          <span aria-hidden style={{ width: 7, height: 7, borderRadius: 999, background: '#2f7d5b' }} />
-          Live
-        </span>
+          <Search size={14} strokeWidth={2.2} />
+          Search patients, documents…
+        </div>
+        <Chip name="Front Desk" size={28} />
       </div>
 
-      {/* Stat readouts */}
+      {/* Three panes */}
       <div
+        className="d4-inbox-panes"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: u(1.4),
-          marginTop: u(2.4),
+          gridTemplateColumns: '208px minmax(0, 1fr) 296px',
+          minHeight: 432,
         }}
       >
-        {stats.map((s) => (
+        {/* (a) Left — folders sidebar */}
+        <aside
+          className="d4-inbox-side"
+          style={{
+            borderRight: '1px solid var(--rd-color-border)',
+            padding: u(1.4),
+            background: 'var(--rd-color-bg)',
+          }}
+        >
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 2 }}>
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.Icon;
+              const active = 'active' in item && item.active;
+              return (
+                <li key={item.id}>
+                  <span
+                    style={{
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: u(1.2),
+                      padding: `${u(0.9)} ${u(1.2)}`,
+                      borderRadius: 'var(--rd-radius-sm)',
+                      fontSize: '0.82rem',
+                      fontWeight: active ? 700 : 500,
+                      color: active ? 'var(--rd-color-primary)' : 'var(--rd-color-text)',
+                      background: active ? 'var(--rd-color-primary-soft)' : 'transparent',
+                    }}
+                  >
+                    {active && (
+                      <span
+                        aria-hidden
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 6,
+                          bottom: 6,
+                          width: 3,
+                          borderRadius: 999,
+                          background: 'var(--rd-color-primary)',
+                        }}
+                      />
+                    )}
+                    <Icon size={15} strokeWidth={2.2} />
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {'badge' in item && item.badge ? (
+                      <span
+                        style={{
+                          minWidth: 18,
+                          height: 18,
+                          paddingInline: 5,
+                          borderRadius: 999,
+                          background: 'var(--rd-color-primary)',
+                          color: '#fff',
+                          fontSize: '0.66rem',
+                          fontWeight: 700,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    ) : 'count' in item && item.count ? (
+                      <span style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+                        {item.count}
+                      </span>
+                    ) : null}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
           <div
-            key={s.label}
             style={{
-              padding: u(1.6),
-              borderRadius: 'var(--rd-radius-md)',
-              background: 'var(--rd-color-bg)',
-              border: '1px solid var(--rd-color-border)',
+              fontSize: '0.66rem',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+              color: 'var(--rd-color-text-muted)',
+              margin: `${u(2)} 0 ${u(1)} ${u(1.2)}`,
             }}
           >
-            <div
+            Folders
+          </div>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 2 }}>
+            {inboxFolders.map((f) => (
+              <li key={f.name}>
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: u(1.2),
+                    padding: `${u(0.9)} ${u(1.2)}`,
+                    borderRadius: 'var(--rd-radius-sm)',
+                    fontSize: '0.82rem',
+                    color: 'var(--rd-color-text)',
+                  }}
+                >
+                  <Folder size={15} strokeWidth={2.2} color="var(--rd-color-primary)" />
+                  <span style={{ flex: 1 }}>{f.name}</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+                    {f.count}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        {/* (b) Center — document list */}
+        <div className="d4-inbox-list" style={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: `${u(1.4)} ${u(2)}`,
+              borderBottom: '1px solid var(--rd-color-border)',
+            }}
+          >
+            <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--rd-color-heading)' }}>
+              Inbox
+              <span style={{ color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+                {' '}· {docs.length}
+              </span>
+            </span>
+            <span style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+              Newest first
+            </span>
+          </div>
+
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, overflow: 'hidden' }}>
+            {docs.map((doc, i) => {
+              const isSel = doc.id === selected.id;
+              return (
+                <li
+                  key={doc.id}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: u(1.4),
+                    padding: `${u(1.4)} ${u(2)}`,
+                    borderBottom: i === docs.length - 1 ? 'none' : '1px solid var(--rd-color-border)',
+                    background: isSel ? 'var(--rd-color-primary-soft)' : 'transparent',
+                  }}
+                >
+                  {isSel && (
+                    <span
+                      aria-hidden
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 3,
+                        background: 'var(--rd-color-primary)',
+                      }}
+                    />
+                  )}
+                  <span aria-hidden style={{ flexShrink: 0 }}>
+                    {doc.unread ? (
+                      <Circle size={9} fill="var(--rd-color-primary)" strokeWidth={0} />
+                    ) : (
+                      <Circle size={9} color="var(--rd-color-border)" strokeWidth={2} />
+                    )}
+                  </span>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: '0.86rem',
+                        fontWeight: doc.unread ? 700 : 600,
+                        color: 'var(--rd-color-heading)',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {doc.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.74rem',
+                        color: 'var(--rd-color-text-muted)',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {doc.source} · {doc.time} · {doc.pageCount} pp
+                    </div>
+                  </div>
+                  <FolderTag name={doc.folder} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* (c) Right — detail panel */}
+        <aside
+          className="d4-inbox-detail"
+          style={{
+            borderLeft: '1px solid var(--rd-color-border)',
+            padding: u(2),
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'var(--rd-color-surface)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: u(1) }}>
+            <span
               style={{
-                fontFamily: 'var(--rd-font-display)',
-                fontSize: '1.55rem',
-                fontWeight: 500,
-                letterSpacing: '-0.02em',
-                color: 'var(--rd-color-heading)',
-                lineHeight: 1.1,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                paddingInline: 9,
+                height: 22,
+                borderRadius: 'var(--rd-radius-round)',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                color: 'var(--rd-color-primary)',
+                background: 'var(--rd-color-primary-soft)',
               }}
             >
-              {s.value}
-            </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--rd-color-text-muted)', marginTop: 2 }}>
-              {s.label}
-            </div>
+              <FileText size={12} strokeWidth={2.4} />
+              {selected.type}
+            </span>
+            <Star size={15} strokeWidth={2.2} color="var(--rd-color-text-muted)" />
           </div>
-        ))}
+
+          <h4
+            style={{
+              fontFamily: 'var(--rd-font-display)',
+              fontWeight: 500,
+              fontSize: '1.1rem',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
+              color: 'var(--rd-color-heading)',
+              margin: `${u(1.4)} 0 ${u(1.6)}`,
+            }}
+          >
+            {selected.name}
+          </h4>
+
+          {/* Tabs */}
+          <div
+            role="tablist"
+            aria-label="Document detail"
+            style={{ display: 'flex', gap: u(2), borderBottom: '1px solid var(--rd-color-border)' }}
+          >
+            {['Details', 'Activity'].map((tab, i) => (
+              <span
+                key={tab}
+                role="tab"
+                aria-selected={i === 0}
+                style={{
+                  paddingBottom: u(1),
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  color: i === 0 ? 'var(--rd-color-primary)' : 'var(--rd-color-text-muted)',
+                  boxShadow: i === 0 ? 'inset 0 -2px 0 var(--rd-color-primary)' : 'none',
+                }}
+              >
+                {tab}
+              </span>
+            ))}
+          </div>
+
+          {/* Metadata */}
+          <div style={{ marginTop: u(1.2) }}>
+            <MetaRow label="Type">{selected.type}</MetaRow>
+            <MetaRow label="Patient">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                <PawPrint size={12} strokeWidth={2.2} color="var(--rd-color-primary)" />
+                {selected.owner}
+              </span>
+            </MetaRow>
+            <MetaRow label="Date of Service">{selected.dateOfService}</MetaRow>
+            <MetaRow label="Folder">{selected.folder}</MetaRow>
+            <MetaRow label="Source">{selected.source}</MetaRow>
+            <MetaRow label="Tags">
+              <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 5 }}>
+                {selected.tags.map((t) => (
+                  <span
+                    key={t}
+                    style={{
+                      paddingInline: 7,
+                      height: 19,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      borderRadius: 999,
+                      fontSize: '0.68rem',
+                      fontWeight: 600,
+                      color: 'var(--rd-color-text-muted)',
+                      background: 'var(--rd-color-bg)',
+                      border: '1px solid var(--rd-color-border)',
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </span>
+            </MetaRow>
+          </div>
+
+          <button
+            type="button"
+            style={{
+              marginTop: u(2),
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: u(1),
+              width: '100%',
+              height: 38,
+              borderRadius: 'var(--rd-radius-pill)',
+              border: '1px solid var(--rd-color-btn)',
+              background: 'var(--rd-color-btn)',
+              color: '#fff',
+              fontFamily: 'var(--rd-font-body)',
+              fontSize: '0.86rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <FileText size={15} strokeWidth={2.2} />
+            Open Document
+          </button>
+        </aside>
       </div>
 
-      {/* Send-volume sparkline strip — teal data, teal trend. */}
+      {/* Mobile: stack the three panes into one scrollable column. */}
+      <style>{`
+        @media (max-width: 900px) {
+          .d4-inbox-panes { grid-template-columns: 1fr !important; }
+          .d4-inbox-side { border-right: none !important; border-bottom: 1px solid var(--rd-color-border) !important; }
+          .d4-inbox-detail { border-left: none !important; border-top: 1px solid var(--rd-color-border) !important; }
+        }
+        @media (max-width: 560px) {
+          .d4-inbox-search { display: none !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Secondary surfaces (workflow tabs + feature splits)
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A compact document list — the inbox shown plainly inside a card. */
+export function DocumentListSurface({ limit = 4 }: { limit?: number }) {
+  const rows = vetDocuments.slice(0, limit);
+  return (
+    <div aria-label="Recent documents" style={{ width: '100%' }}>
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: u(2),
-          marginTop: u(2),
-          padding: `${u(1.6)} ${u(1.8)}`,
-          borderRadius: 'var(--rd-radius-md)',
-          background: 'var(--rd-color-bg-tint)',
+          padding: `${u(1.6)} ${u(2)}`,
+          borderBottom: '1px solid var(--rd-color-border)',
+          fontSize: '0.78rem',
+          fontWeight: 600,
+          color: 'var(--rd-color-text-muted)',
         }}
       >
-        <div>
-          <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
-            Send volume
-          </div>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-              marginTop: 4,
-              fontSize: '0.82rem',
-              fontWeight: 600,
-              color: 'var(--rd-color-primary)',
-            }}
-          >
-            <TrendingUp size={14} strokeWidth={2.4} />
-            +18% vs. last month
-          </div>
-        </div>
-        <Sparkline data={series} />
+        <span>Captured today</span>
+        <span>{vetDocuments.length} documents</span>
       </div>
-
-      {/* Mini activity list */}
-      <div style={{ marginTop: u(2), display: 'grid', gap: u(1.4) }}>
-        {rows.map((fax) => {
-          const meta = STATUS_META[fax.status];
-          const name = fax.patientRef?.name;
-          const label =
-            name ?? formatPhone(fax.direction === 'outbound' ? fax.toNumber : fax.fromNumber);
-          const sub = name
-            ? `${fax.patientRef!.mrn} · ${fax.pageCount} pp`
-            : `${fax.pageCount} pp · ${formatTime(fax.timestamp)}`;
-          return (
-            <div key={fax.id} style={{ display: 'flex', alignItems: 'center', gap: u(1.2) }}>
-              {name ? (
-                <Avatar name={name} />
-              ) : (
-                <span
-                  aria-hidden
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 999,
-                    flexShrink: 0,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: meta.bg,
-                  }}
-                >
-                  <span style={{ width: 7, height: 7, borderRadius: 999, background: meta.color }} />
-                </span>
-              )}
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div
-                  style={{
-                    fontSize: '0.86rem',
-                    fontWeight: 600,
-                    color: 'var(--rd-color-text)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {label}
-                </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>{sub}</div>
-              </div>
-              <StatusPill status={fax.status} />
+      {rows.map((doc, i) => (
+        <div
+          key={doc.id}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: u(1.4),
+            padding: `${u(1.5)} ${u(2)}`,
+            borderBottom: i === rows.length - 1 ? 'none' : '1px solid var(--rd-color-border)',
+          }}
+        >
+          <Chip name={doc.patient} />
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                color: 'var(--rd-color-text)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {doc.name}
             </div>
-          );
-        })}
-      </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
+              {doc.source} · {doc.time}
+            </div>
+          </div>
+          <FolderTag name={doc.folder} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
-      {/* Delivery-confirmation callout — the focal reassurance moment (semantic green). */}
+/** Search surface — a query matched to a patient's documents across folders. */
+export function SearchSurface() {
+  const hits = vetDocuments.filter((d) => ['Bella', 'Max', 'Luna'].includes(d.patient)).slice(0, 3);
+  return (
+    <div style={{ padding: u(2.4), display: 'grid', gap: u(1.6) }}>
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: u(1.4),
-          marginTop: u(2),
-          padding: u(1.8),
-          borderRadius: 'var(--rd-radius-md)',
-          background: '#e7f4ee',
+          gap: u(1),
+          paddingInline: u(1.6),
+          height: 40,
+          borderRadius: 'var(--rd-radius-round)',
+          border: '1px solid var(--rd-color-primary)',
+          color: 'var(--rd-color-text)',
+          fontSize: '0.9rem',
         }}
       >
-        <span
-          aria-hidden
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 999,
-            flexShrink: 0,
-            background: '#ffffff',
-            color: '#2f7d5b',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <CheckCircle2 size={19} strokeWidth={2.4} />
+        <Search size={16} strokeWidth={2.2} color="var(--rd-color-primary)" />
+        Bella
+        <span style={{ marginLeft: 'auto', fontSize: '0.74rem', color: 'var(--rd-color-text-muted)', fontWeight: 600 }}>
+          {hits.length} results
         </span>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: '0.86rem', fontWeight: 600, color: 'var(--rd-color-heading)' }}>
-            Delivered · receipt #{delivered.id.toUpperCase()}
+      </div>
+      <div style={{ display: 'grid', gap: u(1) }}>
+        {hits.map((doc) => (
+          <div
+            key={doc.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: u(1.2),
+              padding: u(1.4),
+              borderRadius: 'var(--rd-radius-md)',
+              border: '1px solid var(--rd-color-border)',
+              background: 'var(--rd-color-surface)',
+            }}
+          >
+            <FileText size={16} strokeWidth={2} color="var(--rd-color-primary)" />
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--rd-color-text)' }}>
+                {doc.name}
+              </div>
+              <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>
+                {doc.folder} · {doc.dateOfService}
+              </div>
+            </div>
+            <ChevronRight size={16} strokeWidth={2} color="var(--rd-color-text-muted)" />
           </div>
-          <div style={{ fontSize: '0.74rem', color: 'var(--rd-color-text-muted)' }}>
-            {formatPhone(delivered.toNumber)} · {formatTime(delivered.timestamp)}
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/** Delivery confirmation — a single delivered outbound fax with a plain timeline.
- *  In-progress dots ride the teal workhorse; the final delivered dot stays the
- *  semantic green. */
-export function DeliveryConfirmationSurface() {
-  const fax = designMock.faxes.find((f) => f.status === 'delivered')!;
+/** Filing timeline — a document captured, categorized, and filed automatically.
+ *  In-progress dots ride the teal workhorse; the final filed dot is semantic
+ *  green (the reassurance moment). */
+export function FilingTimelineSurface() {
+  const doc = vetDocuments[0]; // CBC Results — Bella
   const steps = [
-    { label: 'Queued', time: '2:11 PM' },
-    { label: 'Transmitting', time: '2:11 PM' },
-    { label: `Delivered to ${formatPhone(fax.toNumber)}`, time: formatTime(fax.timestamp) },
+    { label: 'Captured from Antech Diagnostics', time: doc.time },
+    { label: `Categorized as ${doc.type}`, time: doc.time },
+    { label: `Filed to ${doc.folder} · ${doc.patient}`, time: doc.time },
   ];
   return (
     <div style={{ padding: u(3) }}>
@@ -467,10 +714,10 @@ export function DeliveryConfirmationSurface() {
         <CheckCircle2 size={20} strokeWidth={2.2} color="#2f7d5b" />
         <div>
           <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--rd-color-heading)' }}>
-            Confirmed delivered
+            Filed automatically
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
-            {fax.pageCount} pages · receipt #{fax.id.toUpperCase()}
+            {doc.name} · {doc.pageCount} pages
           </div>
         </div>
       </div>
@@ -499,17 +746,16 @@ export function DeliveryConfirmationSurface() {
   );
 }
 
-/** Patient-linking surface — an inbound fax matched to a patient record. The
+/** Patient-linking surface — an inbound document matched to a pet's record. The
  *  match callout rides the teal workhorse (product chrome). */
 export function PatientLinkSurface() {
-  const fax = designMock.faxes.find((f) => f.direction === 'inbound' && f.patientRef)!;
-  const patient = fax.patientRef!;
+  const doc = vetDocuments.find((d) => d.folder === 'Referrals') ?? vetDocuments[1];
   return (
     <div style={{ padding: u(3), display: 'grid', gap: u(2) }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <StatusPill status="received" />
+        <FolderTag name={doc.folder} />
         <span style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
-          {fax.pageCount} pages · {formatTime(fax.timestamp)}
+          {doc.pageCount} pages · {doc.time}
         </span>
       </div>
       <div
@@ -535,17 +781,19 @@ export function PatientLinkSurface() {
             color: 'var(--rd-color-primary)',
           }}
         >
-          <UserRound size={18} strokeWidth={2.2} />
+          <PawPrint size={18} strokeWidth={2.2} />
         </span>
         <div>
           <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--rd-color-heading)' }}>
-            Linked to {patient.name}
+            Filed to {doc.owner}
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--rd-color-text-muted)' }}>
-            {patient.mrn} · routed automatically
+            {doc.name} · routed automatically
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export type { VetDocument };

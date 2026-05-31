@@ -1,41 +1,92 @@
-// d4 closing CTA + understated footer. Calm sign-off (teal primary button, ghost
-// secondary), then a quiet footer led by the robin logo + Fraunces wordmark.
-import { Button, space as u } from './primitives';
+// d4 closing CTA + understated footer (DR-004d-p). The closing CTA is now a full
+// FOREST-TEAL band — the structural brand color carrying the final word, with
+// cream/white text, a white pill button (teal text), and a cream-outline ghost.
+// Below it, a quiet footer led by the robin logo + Fraunces wordmark.
+import { space as u } from './primitives';
 
 const FOOTER_LINKS: { heading: string; items: string[] }[] = [
   { heading: 'Product', items: ['Features', 'Pricing', 'Security', 'Status'] },
   { heading: 'Company', items: ['About', 'Customers', 'Careers', 'Contact'] },
-  { heading: 'Resources', items: ['Help center', 'Porting guide', 'BAA', 'Privacy'] },
+  { heading: 'Resources', items: ['Help center', 'Integrations', 'BAA', 'Privacy'] },
 ];
 
 export function CtaFooter() {
   return (
     <>
-      {/* Closing CTA — sits on the cream page, between the tinted social-proof
-          band above and the white footer below. */}
-      <section style={{ paddingBlock: u(10) }}>
-        <div style={{ maxWidth: 640, marginInline: 'auto', textAlign: 'center', paddingInline: u(3) }}>
+      {/* Closing CTA — a full forest-teal band. Cream/white text on deep teal. */}
+      <section
+        style={{
+          marginBlock: u(2),
+          paddingBlock: u(11),
+          background:
+            'linear-gradient(160deg, var(--rd-color-primary) 0%, var(--rd-color-primary-strong) 100%)',
+        }}
+      >
+        <div style={{ maxWidth: 680, marginInline: 'auto', textAlign: 'center', paddingInline: u(3) }}>
           <h2
             style={{
               fontFamily: 'var(--rd-font-display)',
-              fontSize: 'clamp(34px, 4.2vw, 50px)',
-              lineHeight: 1.1,
+              fontSize: 'clamp(34px, 4.2vw, 52px)',
+              lineHeight: 1.08,
               letterSpacing: '-0.035em',
               fontWeight: 400,
               margin: `0 0 ${u(1.6)}`,
-              color: 'var(--rd-color-heading)',
+              color: '#ffffff',
             }}
           >
-            Ready to retire the fax machine?
+            Every document, in its place.
           </h2>
-          <p style={{ fontSize: '1.1rem', color: 'var(--rd-color-text-muted)', margin: `0 0 ${u(3.5)}` }}>
-            Start a free trial today. Keep your number, cancel in one click.
+          <p
+            style={{
+              fontSize: '1.12rem',
+              lineHeight: 1.6,
+              color: 'var(--rd-color-cream)',
+              opacity: 0.9,
+              margin: `0 0 ${u(3.5)}`,
+            }}
+          >
+            Start a free trial today — capture, organize, and deliver every document
+            your clinic receives. No credit card, cancel in one click.
           </p>
           <div style={{ display: 'flex', gap: u(1.2), justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button variant="primary">Start free trial</Button>
-            <Button variant="ghost" href="#demo">
-              Talk to us
-            </Button>
+            <a
+              href="#"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '14px 22px',
+                borderRadius: 'var(--rd-radius-pill)',
+                fontSize: '16px',
+                fontWeight: 600,
+                lineHeight: 1,
+                textDecoration: 'none',
+                background: '#ffffff',
+                color: 'var(--rd-color-primary-strong)',
+                border: '1px solid #ffffff',
+              }}
+            >
+              Start free trial
+            </a>
+            <a
+              href="#demo"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '14px 22px',
+                borderRadius: 'var(--rd-radius-pill)',
+                fontSize: '16px',
+                fontWeight: 500,
+                lineHeight: 1,
+                textDecoration: 'none',
+                background: 'transparent',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.55)',
+              }}
+            >
+              Book a demo
+            </a>
           </div>
         </div>
       </section>
@@ -76,7 +127,7 @@ export function CtaFooter() {
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--rd-color-text-muted)', margin: `${u(1)} 0 0`, maxWidth: 220, lineHeight: 1.5 }}>
-              Cloud fax for practices that care where their documents go.
+              The vertical document inbox for veterinary clinics.
             </p>
           </div>
           {FOOTER_LINKS.map((col) => (
@@ -128,7 +179,7 @@ export function CtaFooter() {
             }}
           >
             <span>© 2026 Robin Dock, Inc.</span>
-            <span>HIPAA-adjacent handling · BAA available · SOC 2 in progress</span>
+            <span>Secure document handling · BAA available · SOC 2 in progress</span>
           </div>
         </div>
         <style>{`

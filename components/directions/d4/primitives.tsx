@@ -42,9 +42,18 @@ export function Section({
   );
 }
 
-/** Small uppercase label above a headline — Robin Orange, the recurring brand
- *  spark that ties each section to the logo. Small by design (orange stays rare). */
-export function Eyebrow({ children }: { children: ReactNode }) {
+/** Small uppercase label above a headline. DR-004d-p makes TEAL the default —
+ *  the structural brand color now carries the section labels (the backbone),
+ *  while Robin Orange is held back as a rare spark (the headline underline, a
+ *  single stat figure). Pass tone="accent" only where an orange pop truly earns
+ *  it; otherwise eyebrows reinforce the teal backbone. */
+export function Eyebrow({
+  children,
+  tone = 'primary',
+}: {
+  children: ReactNode;
+  tone?: 'primary' | 'accent';
+}) {
   return (
     <p
       style={{
@@ -53,7 +62,7 @@ export function Eyebrow({ children }: { children: ReactNode }) {
         letterSpacing: '0.08em',
         textTransform: 'uppercase',
         fontWeight: 600,
-        color: 'var(--rd-color-accent)',
+        color: tone === 'accent' ? 'var(--rd-color-accent)' : 'var(--rd-color-primary)',
       }}
     >
       {children}

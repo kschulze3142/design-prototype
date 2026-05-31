@@ -1,31 +1,32 @@
 'use client';
 
-// d4 WorkflowTabs — "All your workflows in one platform" (DR-004p). A segmented
-// row of ~5 tabs, each revealing a short label + body + "Learn more" alongside a
-// product surface. The active-tab indicator and icon, and the "Learn more" link,
-// ride the TEAL workhorse — they're functional selection + a link, both teal per
-// the two-color discipline. The eyebrow stays Robin Orange (the small spark).
-// Accessible tablist with full keyboard support.
+// d4 WorkflowTabs — "Every document workflow in one place" (DR-004d-p). A
+// segmented row of ~5 tabs, each revealing a short label + body + "Learn more"
+// alongside a product surface. The active-tab indicator and icon, and the "Learn
+// more" link, ride the TEAL workhorse — they're functional selection + a link,
+// both teal per the two-color discipline. The eyebrow is teal too now (the
+// structural backbone). Accessible tablist with full keyboard support.
 import { useId, useRef, useState, type KeyboardEvent } from 'react';
 import {
-  Activity,
-  CheckCircle2,
-  Receipt,
-  FolderClosed,
+  Inbox,
+  FolderInput,
+  ClipboardCheck,
+  Search,
   Settings2,
   ArrowRight,
 } from 'lucide-react';
 import { Card, Eyebrow, Section, space as u } from './primitives';
 import {
-  FaxListSurface,
-  DeliveryConfirmationSurface,
+  DocumentListSurface,
   PatientLinkSurface,
+  FilingTimelineSurface,
+  SearchSurface,
 } from './surfaces';
 
 interface Workflow {
   id: string;
   tab: string;
-  Icon: typeof Activity;
+  Icon: typeof Inbox;
   heading: string;
   body: string;
   surface: () => React.ReactNode;
@@ -33,44 +34,44 @@ interface Workflow {
 
 const WORKFLOWS: Workflow[] = [
   {
-    id: 'track',
-    tab: 'Track',
-    Icon: Activity,
-    heading: 'See every fax the moment it moves.',
-    body: 'One live view of everything sent and received, with status that updates itself — no spreadsheets, no calling the other office to ask if it arrived.',
-    surface: () => <FaxListSurface limit={4} />,
-  },
-  {
-    id: 'review',
-    tab: 'Review',
-    Icon: CheckCircle2,
-    heading: 'Review and confirm in one place.',
-    body: 'Every delivery comes back with a timestamped receipt, so approving and proving what went out is a glance, not an investigation.',
-    surface: () => <DeliveryConfirmationSurface />,
-  },
-  {
-    id: 'bill',
-    tab: 'Bill',
-    Icon: Receipt,
-    heading: 'Turn delivered pages into clean records.',
-    body: 'Page counts and confirmations are captured automatically, ready to hand off to billing without anyone re-keying a thing.',
-    surface: () => <FaxListSurface limit={4} />,
+    id: 'capture',
+    tab: 'Capture',
+    Icon: Inbox,
+    heading: 'Every document, in one inbox.',
+    body: 'Faxes, emailed lab results, referrals, and portal uploads land in a single inbox the moment they arrive — no machine to babysit, no paper to chase.',
+    surface: () => <DocumentListSurface limit={4} />,
   },
   {
     id: 'organize',
     tab: 'Organize',
-    Icon: FolderClosed,
-    heading: 'Keep every document where it belongs.',
-    body: 'Inbound faxes file themselves onto the right patient or department by sender, keyword, or line — your front desk stops sorting paper by hand.',
+    Icon: FolderInput,
+    heading: 'Filed to the right patient, automatically.',
+    body: 'Robin Dock reads each document and routes it to the right folder and the right pet by sender, type, and keyword — your front desk stops sorting by hand.',
     surface: () => <PatientLinkSurface />,
+  },
+  {
+    id: 'review',
+    tab: 'Review',
+    Icon: ClipboardCheck,
+    heading: 'Nothing slips through the cracks.',
+    body: 'Anything that needs a second look lands in a Needs Review queue with a clear count, so referrals and abnormal results never get buried.',
+    surface: () => <FilingTimelineSurface />,
+  },
+  {
+    id: 'search',
+    tab: 'Search',
+    Icon: Search,
+    heading: 'Find any document in seconds.',
+    body: 'Search by patient, document type, or keyword across every folder — pull up a pet’s full history without digging through stacks or shared drives.',
+    surface: () => <SearchSurface />,
   },
   {
     id: 'manage',
     tab: 'Manage',
     Icon: Settings2,
-    heading: 'Run your numbers and your team.',
-    body: 'Add teammates, port numbers, and set routing rules from one calm settings area — everything in the same platform, nothing bolted on.',
-    surface: () => <FaxListSurface limit={4} />,
+    heading: 'Run your team and your folders.',
+    body: 'Add staff, set routing rules, and connect your PIMS from one calm settings area — everything in the same platform, nothing bolted on.',
+    surface: () => <DocumentListSurface limit={4} />,
   },
 ];
 
@@ -109,7 +110,7 @@ export function WorkflowTabs() {
             color: 'var(--rd-color-heading)',
           }}
         >
-          All your workflows in one platform.
+          Every document workflow in one place.
         </h2>
       </div>
 
