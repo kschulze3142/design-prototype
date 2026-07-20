@@ -1,0 +1,114 @@
+
+Robin Dock — OCR / Extraction (Office Tier) — Spec Companion
+Session output for architecture handoff to Fable. Model-agnostic. Companion to robin-dock-ocr-extraction.xlsx.
+
+Governing principle
+Extraction proposes; humans and deterministic rules dispose. AI output is always a reviewable suggestion with visible provenance — never a silent mutation of identity, patient-binding, or the record.
+
+Push thesis: The AI never pushes to PIMS. Completion makes a track eligible. A human push (single or bulk) executes it. Completion authorizes; the push acts; the AI never does either.
+
+Counter-positioning: vs. Documo/Valerie, whose confident branch auto-writes to the record. Robin Dock's confident branch still proposes. Review/confirmation is the design center for anything touching identity, patient-binding, or the record — not merely the exception path.
+
+Two-pass model (load-bearing)
+Pass 1 — Classification. Runs only on cold/untyped docs deterministic routing couldn't type. Drains the Missing Doc Type pile. High-confidence may auto-apply (reversible, low-harm).
+Pass 2 — Field + patient extraction. Runs on every typed doc, regardless of how it was typed. This is the core Office value and the real per-doc cost line.
+
+Two separately-triggered, separately-costed operations. Do not conflate.
+
+Zone A — Extraction scope (LOCKED)
+A1 doc-typing: cold-doc classification; high-confidence auto-applies, else suggested. Only capability allowed to auto-apply day one.
+A2 field extraction: per-doc-type schema on every typed doc; identity fields gated hardest.
+A3 patient match (suggest-only v1): requires ≥2 agreeing corroborating keys for high-confidence eligibility; single key is always low. Hard conflict (e.g. species mismatch) vetoes regardless of score. Ambiguity → ranked candidates, never auto-pick. No match → "create new?" (never auto-create). Preserves Complete without confirmed match.
+A3b contact↔patient tie: confirmed contact↔patient association is a strong corroborating key toward the ≥2-key rule; surfaced bidirectionally on a dedicated tab; inspectable + correctable. The deterministic exchange-history asset makes AI matching safer — a cross-tier value chain.
+A4 multi-type: propose both tags; each is an independent track with its own completion.
+A4b reconciliation loop: at full doc completion, compare proposed vs. confirmed types → calibration signal. Separate lane from the 7-15-20 engine. Manual typing of an extraction-failed doc = highest-value correction.
+A5 confidence: per-field and per-classification; plain-language; must map to measured per-practice accuracy, not raw model score.
+A6 second-pass targeting: classification only on cold docs; field extraction universal.
+A7 junk/spam: AI suggests, human confirms; never auto-applies spam.
+
+Zone B — Trust surface (LOCKED)
+Auto-write eligibility ladder, gated by both a confidence threshold and a deterministic validation check.
+
+Field class
+Above threshold + valid
+Below / invalid
+Doc-type classification
+Auto-apply (confirmed)
+Stays suggested
+Non-identity fields
+Auto-populate
+Left empty, staged
+Patient-binding
+Suggest-only v1 (highest bar + "unambiguous match exists")
+Suggest-only, flagged
+Clinical values / PIMS write
+Staged
+Staged
+
+Below-threshold = leave-empty, never applied. Record is never briefly wrong.
+Two independent thresholds: classification vs. extraction.
+Required-field-missing forces review regardless of confidence.
+Provenance: field-level marker (→ source-region reveal); History logs one extraction event, and one entry per correction (old→new). Append-only / tamper-evident.
+Corrections apply instantly to the doc; influence future extraction only via periodic calibration recompute (no live black-box drift).
+Tuning: conservative shipped defaults; plain-language per-doc-type dial for admins; no per-field numerics in v1. Range spans "stage everything for this type" → "auto-apply eligible classes," never past the identity/clinical carve-out floor.
+
+Zone C — Status model (LOCKED)
+Processing at arrival: classify + extract + match all run before a human opens the doc; the doc lands unread, already processed.
+Review signal = unread. No separate review-flag state reintroduced.
+Suggested vs. confirmed type: an unconfirmed AI type is a distinct suggested object; it creates no completion work until promoted. Promotion writes permanent identity; dismissing a suggestion is not a tag-strip. High-confidence auto-apply writes confirmed directly.
+typed ≠ completed: auto-typing creates a track a human must still complete. Auto-apply speeds setup; completion (and push-eligibility) always has a human.
+Inbox row = 4-state aggregate: In Review → Not Started → In Progress → Complete.
+Folders = filters (Gmail model): a folder can match one or many doc-types; a doc lives once, surfaces in every matching folder, never duplicated.
+Folder status = per-track, scoped to the filter. A row shows a rich status chip for each of the doc's tracks that the folder's filter matches.
+Multi-track display = accordion: parent shows 4-state aggregate; expands to one child per in-folder-matching track with its own rich status. Single-type docs don't expand. Completed tracks grey out. Filter/sort operate on child tracks. Accordion in folders only; inbox stays flat.
+
+Status vocabulary: (greyed/Processing) · In Review · Confirm Match · Confirm to Referrer (Referral) · Schedule (Referral, opt) · Fulfill Request (Records-request; replaces Sync) · Syncing to PIMS · Complete · Failed/Unreadable/Partial·Page-Cap.
+
+Shared spine: Review → Confirm Match → [type-specific insertion] → Sync/Fulfill → Complete. Only Referral and Records-request add type-specific steps.
+
+Doc-Type Grid (Tier 1 = v1 full extraction)
+Doc-type
+Field schema (beyond cross-type core: patient, species/breed, client/owner, doc date)
+Workflow
+Referral
+referring vet, referring clinic, reason, requested service
+Review → Confirm Match → Confirm to Referrer → [Schedule] → Sync → Complete
+Lab result
+test panel/name, result values, collection date, ordering vet
+Review → Confirm Match → Sync → Complete
+Medical records
+date range covered, patient identifiers
+Review → Confirm Match → Sync → Complete
+Records request
+requesting party, date range, identifiers
+Review → Confirm Match → Fulfill Request → Complete
+Vaccine / rabies cert
+vaccine type, lot number, administering vet, expiry/due
+Review → Confirm Match → Sync → Complete
+
+Tier 2 (imaging report, discharge, consult request, Rx/refill, pathology, euthanasia notice): classify-only in v1, field schemas fast-follow. Junk/spam: suggest-only. Tier 3 long tail: out of v1.
+
+Zone D — Output contract (write-back mechanics PARKED)
+D1 one payload per doc-type track, emitted independently when that track confirms.
+D2 payload carries per-field provenance (value + confidence + source region + confirmation-state) for audit only, not as a write-back gate.
+D3 payload becomes eligible at track completion; timing of the actual push is the write-back session's call.
+D4 push = manual, human-triggered, single + bulk; bulk operates only on eligible tracks. Scheduled sync parked.
+D5 completion gate is the safeguard: nothing pushes unless complete, and completion requires a human — so anything pushable is human-reviewed by construction. Even future auto-sync is safe (sweeps only completed tracks).
+D6 envelope: doc identity · confirmed type · patient binding (ref or null; human-confirmed vs auto flag) · extracted fields (per D2) · provenance envelope (model version, extraction ts, calibration snapshot) · completion state · eligibility/push-state.
+
+Zone E — Failure, cost, latency (LOCKED)
+E1 graceful degradation — a garbage fax is never worse than Organize; partial extraction is valid; confidence collapses onto the safe path. Legibility pre-screen gates the expensive call.
+E2 greyed-out async model: doc appears on arrival but greyed / not-yet-actionable until extraction completes or fails; no mid-process work access; no verbose Reading/Extracting vocabulary (greyed is the signal); no per-doc cancel. Usually seconds, so grey flickers by; lingers only on genuinely slow docs. Failure lifts grey → normal workable untyped doc (inherits UNREADABLE/FAILED/PARTIAL·PAGE-CAP).
+E3 run-once at arrival; re-extraction only on explicit human trigger.
+E4 cost: classification bounded (cold docs only); field extraction universal (the $149 justification); pre-screen trims waste; volume/overage flagged to pricing.
+
+Zone F — Upgrade moment (LOCKED)
+F1 same screen, different fill level — pile drains itself; fields arrive pre-populated; no new UI.
+F2 quiet by default — no AI theater on working screens; the magic is absence of work. Users feel it on switching from their old platform. History remains a quiet on-demand audit log; all fields reviewed uniformly regardless of AI-vs-human origin.
+F3 conservative slider defaults at activation + accuracy logging (arithmetic, no model training). More autonomy = the practice moves the slider themselves. Auto-tuning/learning parked.
+F4 speculative-extraction upsell cut; prefer zero-cost deterministic pile-count pitch; a growth question, not extraction scope.
+
+Parked / cross-session
+Parked: PIMS write-back mechanics · bulk partial-failure · per-track-vs-per-doc bulk selection · scheduled auto-sync · auto-tuning/learning · Tier-2 field schemas · Tier-3 types · F4 upsell · volume/overage pricing · source-PDF peek while greyed · Valerie specifics (treat as archetype; verify before asserting).
+
+Feeds: Detail Page (confirm surface, provenance, tie tab) · Inbox List Page (greyed state, 4-state aggregate, on-row patient) · Folder List Page (accordion, filter-on-children) · History (extraction + correction events) · PIMS write-back (D contract) · 7-15-20 engine (separate lane) · Contacts/Patients asset layer (contact↔patient tie).

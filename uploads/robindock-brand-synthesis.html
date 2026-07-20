@@ -1,0 +1,322 @@
+<div id="root"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --gray-950:#191346; --gray-800:#2C2A57; --gray-600:#5A5C77; --gray-500:#838599;
+    --gray-300:#D3D6E2; --gray-200:#E7E9F1; --gray-100:#F4F5FA; --gray-50:#FAFBFD; --white:#FFFFFF;
+    --blue-900:#101A52; --blue-800:#172B7A; --blue-700:#1C3490; --blue-600:#223FAA; --blue-500:#3D5AC7; --blue-300:#8FA1E0; --blue-100:#DEE4F7; --blue-50:#EEF1FB;
+    --violet-600:#7E6BCB; --violet-500:#9A8AD9; --violet-400:#AC9FE2; --violet-200:#D6CFF1; --violet-50:#F1EEFB;
+    --pale-300:#C0CFED; --pale-100:#DDE6F6; --pale-50:#EDF2FB;
+    --aqua-500:#7CCBCB; --aqua-400:#AAE2E2; --aqua-100:#DEF4F4;
+    --indigo:#191346;
+    --wash:linear-gradient(135deg,#DDE6F6 0%,#D6CFF1 50%,#DEF4F4 100%);
+    --wash-soft:linear-gradient(135deg,#EDF2FB 0%,#F1EEFB 100%);
+    --ink:#191346; --ok:#3A8A6F; --warn:#C8902E; --bad:#C2503A;
+    --radius:14px; --radius-lg:20px;
+    --sh-sm:0 1px 3px rgba(25,19,70,.05),0 1px 2px rgba(25,19,70,.04);
+    --sh-md:0 6px 22px rgba(25,19,70,.09);
+    --sh-lg:0 22px 54px rgba(34,63,170,.16);
+    --f-display:'Inter',-apple-system,system-ui,sans-serif; --f-body:'Inter',-apple-system,system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--white);color:var(--ink);font-family:var(--f-body);-webkit-font-smoothing:antialiased;line-height:1.47;letter-spacing:-.01em}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+
+  header.hero{background:var(--wash);padding:84px 0 70px;position:relative;overflow:hidden;text-align:center}
+  header.hero::before{content:"";position:absolute;inset:0;opacity:.5;background-image:linear-gradient(90deg,rgba(34,63,170,.06) 1px,transparent 1px);background-size:9px 100%;mask-image:linear-gradient(to top,#000,transparent 55%);-webkit-mask-image:linear-gradient(to top,#000,transparent 55%)}
+  .hero .wrap{position:relative;z-index:1}
+  .kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--blue-700);background:rgba(255,255,255,.7);border:1px solid rgba(34,63,170,.18);padding:7px 15px;border-radius:100px;margin-bottom:24px}
+  .hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,7vw,74px);line-height:.99;letter-spacing:-.04em;color:var(--gray-950);max-width:16ch;margin:0 auto}
+  .hero .sub{font-size:20px;font-weight:500;color:var(--gray-600);margin-top:18px;letter-spacing:-.01em;max-width:540px;margin-left:auto;margin-right:auto}
+  .hero .badge{display:inline-block;margin-top:24px;font-size:12px;font-weight:600;background:rgba(255,255,255,.6);border:1px solid var(--gray-300);padding:8px 15px;border-radius:100px;color:var(--gray-600)}
+
+  section{padding:60px 0}
+  section + section{border-top:1px solid var(--gray-200)}
+  .sec-label{font-size:13px;font-weight:700;color:var(--violet-600);margin-bottom:8px}
+  .sec-title{font-family:var(--f-display);font-weight:800;font-size:33px;letter-spacing:-.025em;color:var(--gray-950);margin-bottom:6px}
+  .sec-sub{color:var(--gray-600);max-width:660px;margin-bottom:30px;font-size:16px}
+
+  .group-title{font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em;margin:0 0 14px}
+  .swatch-row{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-bottom:26px}
+  .swatch{border-radius:14px;overflow:hidden;box-shadow:var(--sh-sm);background:#fff;border:1px solid var(--gray-200)}
+  .swatch .chip{height:78px;display:flex;align-items:flex-end;padding:10px}
+  .swatch .role{font-size:11px;font-weight:600;color:rgba(255,255,255,.95)}
+  .swatch .meta{padding:9px 12px}
+  .swatch .name{font-size:13px;font-weight:600}
+  .swatch .hex{font-family:var(--f-mono);font-size:12px;color:var(--gray-500);margin-top:2px}
+
+  /* two-register explainer */
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .mode{border-radius:18px;overflow:hidden;border:1px solid var(--gray-200);box-shadow:var(--sh-sm)}
+  .mode.calm .top{background:var(--wash);padding:28px 24px}
+  .mode.bold .top{background:var(--indigo);padding:28px 24px;position:relative;overflow:hidden}
+  .mode.bold .top::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(172,159,226,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(172,159,226,.07) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(220px 160px at 80% 0,#000,transparent 72%);-webkit-mask-image:radial-gradient(220px 160px at 80% 0,#000,transparent 72%)}
+  .mode .top .lbl{position:relative;z-index:1;font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+  .mode.calm .top .lbl{color:var(--blue-700)}
+  .mode.bold .top .lbl{color:var(--aqua-400)}
+  .mode .top .ht{position:relative;z-index:1;font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.03em}
+  .mode.calm .top .ht{color:var(--gray-950)}
+  .mode.bold .top .ht{color:#fff}
+  .mode.bold .top .ht .pop{color:var(--aqua-400)}
+  .mode .bd{padding:20px 22px;background:#fff}
+  .mode .bd h4{font-size:14px;font-weight:700;margin-bottom:8px}
+  .mode .bd p{font-size:13px;color:var(--gray-600);line-height:1.55}
+  .mode .bd .use{font-size:12px;color:var(--gray-500);margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-100)}
+  .mode .bd .use b{color:var(--gray-950)}
+
+  .specimen{background:var(--white);border:1px solid var(--gray-200);border-radius:18px;padding:32px;box-shadow:var(--sh-sm);margin-bottom:16px}
+  .specimen.wash{background:var(--wash);border-color:transparent}
+  .specimen.block{background:var(--indigo);border-color:transparent;color:#fff;position:relative;overflow:hidden}
+  .specimen.block::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(172,159,226,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(172,159,226,.06) 1px,transparent 1px);background-size:36px 36px;mask-image:radial-gradient(400px 240px at 82% 0,#000,transparent 72%);-webkit-mask-image:radial-gradient(400px 240px at 82% 0,#000,transparent 72%)}
+  .specimen > *{position:relative;z-index:1}
+  .specimen .tag{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--f-mono);font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:18px;border-bottom:1px solid var(--gray-200);padding-bottom:12px}
+  .specimen.wash .tag{border-color:rgba(25,19,70,.12)}
+  .specimen.block .tag{border-color:rgba(255,255,255,.16);color:#9A9DC0}
+  .t-display{font-family:var(--f-display);font-weight:800;font-size:50px;line-height:1.0;letter-spacing:-.04em;color:var(--gray-950)}
+  .t-h3{font-family:var(--f-body);font-weight:600;font-size:21px;letter-spacing:-.01em}
+  .t-body{font-family:var(--f-body);font-weight:400;font-size:16px;color:var(--gray-600);max-width:62ch}
+  .specimen.block .t-body{color:#B7BBD6}
+  .t-mono{font-family:var(--f-mono);font-size:14px;color:var(--blue-600)}
+  .pair-tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--violet-600);text-transform:uppercase}
+
+  .scale-table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--sh-sm);border:1px solid var(--gray-200)}
+  .scale-table td{padding:13px 16px;border-bottom:1px solid var(--gray-200);font-size:14px;vertical-align:middle}
+  .scale-table tr:last-child td{border-bottom:none}
+  .scale-table .tok{font-family:var(--f-mono);font-size:12px;color:var(--violet-600);width:130px}
+  .scale-table .px{font-family:var(--f-mono);font-size:12px;color:var(--gray-500);width:130px}
+
+  .preview{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:20px;padding:28px;box-shadow:var(--sh-sm)}
+  .preview.white{background:#fff}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+  .btn{font-family:var(--f-body);font-weight:600;font-size:14px;border:none;border-radius:11px;padding:11px 20px;cursor:pointer;transition:.15s;letter-spacing:-.01em}
+  .btn-blue{background:var(--blue-600);color:#fff} .btn-blue:hover{background:var(--blue-700)}
+  .btn-violet{background:var(--violet-400);color:var(--gray-950)} .btn-violet:hover{background:var(--violet-500);color:#fff}
+  .btn-light{background:var(--white);color:var(--gray-950);border:1px solid var(--gray-300)} .btn-light:hover{border-color:var(--gray-950)}
+  .btn-text{background:transparent;color:var(--blue-600);padding:11px 8px} .btn-text:hover{text-decoration:underline}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 12px;border-radius:100px}
+  .pill .d{width:7px;height:7px;border-radius:50%}
+  .searchbar{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);border-radius:100px;padding:7px 7px 7px 22px;box-shadow:var(--sh-lg);max-width:520px}
+  .searchbar input{flex:1;border:none;outline:none;background:transparent;font-family:var(--f-body);font-size:15px;color:var(--gray-950);font-weight:500}
+  .searchbar input::placeholder{color:var(--gray-500);font-weight:400}
+  .cloudcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cc{background:#fff;border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;box-shadow:var(--sh-sm)}
+  .cc .bar{height:5px}
+  .cc .in{padding:18px}
+  .cc h4{font-size:14px;font-weight:700;margin-bottom:5px}
+  .cc p{font-size:12.5px;color:var(--gray-500);line-height:1.5}
+  .logo-lockup{display:flex;align-items:center;gap:11px}
+  .logo-mark{width:40px;height:40px;border-radius:11px;background:var(--blue-600);display:flex;align-items:center;justify-content:center;position:relative}
+  .logo-mark .breast{width:12px;height:12px;border-radius:50% 50% 50% 2px;background:var(--aqua-400);transform:rotate(-10deg)}
+  .logo-word{font-family:var(--f-display);font-weight:700;font-size:23px;letter-spacing:-.02em;color:var(--gray-950)}
+  .note{font-size:13px;color:var(--gray-600);background:var(--blue-50);border:1px solid var(--blue-100);border-radius:14px;padding:14px 16px;margin-top:18px}
+  .grid2{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .vs{font-family:var(--f-mono);font-size:12px;color:var(--gray-600);background:var(--gray-100);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;margin-top:18px;line-height:1.9}
+  .vs b{color:var(--ink)}
+  .stats{display:flex;flex-wrap:wrap;gap:0;background:var(--wash-soft);border:1px solid var(--gray-200);border-radius:20px;overflow:hidden;margin-top:6px}
+  .stats .s{flex:1;min-width:140px;padding:24px;border-left:1px solid rgba(25,19,70,.08)}
+  .stats .s:first-child{border-left:none}
+  .stats .s .n{font-family:var(--f-display);font-weight:800;font-size:36px;letter-spacing:-.03em;color:var(--gray-950);line-height:1}
+  .stats .s .n .u{color:var(--blue-600)}
+  .stats .s .l{font-size:12px;color:var(--gray-600);margin-top:8px}
+  /* do / don't */
+  .dd{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .dd .col{border-radius:14px;padding:18px 20px;border:1px solid var(--gray-200);background:#fff}
+  .dd .col h5{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .dd .col.do h5{color:var(--ok)} .dd .col.dont h5{color:var(--bad)}
+  .dd .col li{font-size:13px;color:var(--gray-600);line-height:1.5;list-style:none;padding:6px 0 6px 20px;position:relative}
+  .dd .col.do li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:700}
+  .dd .col.dont li::before{content:"✕";position:absolute;left:0;color:var(--bad);font-weight:700}
+  @media(max-width:760px){.modes,.dd{grid-template-columns:1fr}.cloudcards{grid-template-columns:1fr}}
+  footer{padding:38px 0 56px;text-align:center;color:var(--gray-500);font-size:13px}
+</style>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Brand Foundation · The RobinDock System</div>
+  <h1>Calm to work in. Confident when it counts.</h1>
+  <div class="sub">One brand, two registers — an airy, trustworthy core for everyday use, with confident platform moments where it matters.</div>
+  <span class="badge">Apple clarity × platform confidence · Indigo · royal · violet · aqua</span>
+</div></header>
+
+<section><div class="wrap">
+  <div class="sec-label">01 — The Idea</div>
+  <div class="sec-title">Two registers, one system</div>
+  <p class="sec-sub">RobinDock is a document platform that two very different people rely on: the <b>owner or office manager</b> who has to trust it with patient records, and the <b>tech or front-desk staffer</b> who lives in it all shift. The brand serves both by running in two modes built from the same palette, type, and shapes — so it always reads as one product.</p>
+
+  <div class="modes">
+    <div class="mode calm">
+      <div class="top"><div class="lbl">Mode A — default</div><div class="ht">Calm</div></div>
+      <div class="bd">
+        <h4>Light, airy, legible</h4>
+        <p>Pale gradient washes, white surfaces, hairlines, big calm headlines, generous space. Apple-clean. Nothing competes with the content.</p>
+        <div class="use"><b>Use for:</b> the entire product UI, most of the marketing page, anything read or worked in for long stretches.</div>
+      </div>
+    </div>
+    <div class="mode bold">
+      <div class="top"><div class="lbl">Mode B — accent</div><div class="ht">Confident <span class="pop">·</span></div></div>
+      <div class="bd">
+        <h4>Bold color blocks, platform presence</h4>
+        <p>Deep indigo or royal blocks, the "three clouds" framing, bold stat bands. Salesforce-style confidence — used sparingly, for impact.</p>
+        <div class="use"><b>Use for:</b> the network/Flock story, pricing, marketing hero accents, dashboards — moments selling the platform vision.</div>
+      </div>
+    </div>
+  </div>
+  <div class="vs">
+    <b>The rule:</b> calm is the default and carries ~80% of every surface. Confident mode is a deliberate accent — a few moments per marketing page, and in-product only on dashboards or the Flock view, never the document-triage screens.<br>
+    <b>What keeps it one brand:</b> identical palette, Inter type, pill/card shapes, and the robin mark across both modes. Only the <em>intensity</em> changes, never the ingredients.
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-label">02 — Color</div>
+  <div class="sec-title">Palette</div>
+  <p class="sec-sub">A cool, trust-forward family — the palette's own intent is security / trust / tranquility / purity / calm, which maps cleanly onto a records product. Royal blue is the brand workhorse; violet and aqua are the friendly accents; deep indigo anchors text and the confident blocks; pale blue and a cool gray ramp keep everything light.</p>
+
+  <p class="group-title">Royal blue — brand & primary action</p>
+  <div class="swatch-row">
+    <div class="swatch"><div class="chip" style="background:#172B7A"><span class="role">Pressed</span></div><div class="meta"><div class="name">Blue 800</div><div class="hex">#172B7A</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#223FAA"><span class="role">Primary</span></div><div class="meta"><div class="name">Blue 600</div><div class="hex">#223FAA</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#3D5AC7"><span class="role">Hover</span></div><div class="meta"><div class="name">Blue 500</div><div class="hex">#3D5AC7</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#8FA1E0"><span class="role">Soft</span></div><div class="meta"><div class="name">Blue 300</div><div class="hex">#8FA1E0</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#EEF1FB;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#223FAA">Wash</span></div><div class="meta"><div class="name">Blue 50</div><div class="hex">#EEF1FB</div></div></div>
+  </div>
+
+  <p class="group-title">Indigo — anchor & confident blocks</p>
+  <div class="swatch-row">
+    <div class="swatch"><div class="chip" style="background:#101A52"><span class="role">Deepest</span></div><div class="meta"><div class="name">Indigo 900</div><div class="hex">#101A52</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#191346"><span class="role">Anchor / text</span></div><div class="meta"><div class="name">Indigo</div><div class="hex">#191346</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#5A5C77"><span class="role">Secondary text</span></div><div class="meta"><div class="name">Gray 600</div><div class="hex">#5A5C77</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#D3D6E2"><span class="role" style="color:#191346">Hairline</span></div><div class="meta"><div class="name">Gray 300</div><div class="hex">#D3D6E2</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F4F5FA;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#5A5C77">Section</span></div><div class="meta"><div class="name">Gray 100</div><div class="hex">#F4F5FA</div></div></div>
+  </div>
+
+  <p class="group-title">Violet & aqua — friendly accents</p>
+  <div class="swatch-row">
+    <div class="swatch"><div class="chip" style="background:#7E6BCB"><span class="role">Violet deep</span></div><div class="meta"><div class="name">Violet 600</div><div class="hex">#7E6BCB</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#AC9FE2"><span class="role" style="color:#2e2455">Violet</span></div><div class="meta"><div class="name">Violet 400</div><div class="hex">#AC9FE2</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#7CCBCB"><span class="role">Aqua deep</span></div><div class="meta"><div class="name">Aqua 500</div><div class="hex">#7CCBCB</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#AAE2E2"><span class="role" style="color:#235a5a">Aqua</span></div><div class="meta"><div class="name">Aqua 400</div><div class="hex">#AAE2E2</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#C0CFED"><span class="role" style="color:#2c4377">Pale</span></div><div class="meta"><div class="name">Pale 300</div><div class="hex">#C0CFED</div></div></div>
+  </div>
+
+  <p class="group-title">The signature gradient wash (calm mode)</p>
+  <div class="swatch-row">
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#DDE6F6,#D6CFF1 50%,#DEF4F4)"><span class="role" style="color:#223FAA">Hero wash</span></div><div class="meta"><div class="name">Wash</div><div class="hex">pale → violet → aqua</div></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#EDF2FB,#F1EEFB)"><span class="role" style="color:#5A5C77">Soft wash</span></div><div class="meta"><div class="name">Wash soft</div><div class="hex">panels / stat bands</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#DEF4F4;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#2d7373">Flock / aqua</span></div><div class="meta"><div class="name">Aqua 100</div><div class="hex">#DEF4F4</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F1EEFB;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#7E6BCB">Violet 50</span></div><div class="meta"><div class="name">Violet 50</div><div class="hex">#F1EEFB</div></div></div>
+  </div>
+
+  <div class="note"><strong>Allocation:</strong> roughly <b>royal/neutral 70</b> · <b>violet 12</b> · <b>aqua 10</b> · <b>indigo blocks 8</b>. Each accent has a fixed job so the system stays legible: <b>royal</b> = brand &amp; primary action; <b>violet</b> = the Patient layer &amp; secondary action; <b>aqua</b> = the Flock / network layer; <b>indigo</b> = text everywhere, plus confident blocks. Keeping color tied to <em>meaning</em> (not decoration) is what lets the app stay calm while still feeling branded.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-label">03 — The Three Clouds</div>
+  <div class="sec-title">Product structure = color system</div>
+  <p class="sec-sub">RobinDock's platform is framed as three "clouds," and each owns one accent color. This is the bridge between the two modes: on marketing it's bold cloud cards; in-product it's the same colors as quiet tags, top-bars, and dots. One mental model, head to tail.</p>
+  <div class="preview white">
+    <div class="cloudcards">
+      <div class="cc"><div class="bar" style="background:#223FAA"></div><div class="in"><h4>Document Cloud</h4><p>Capture &amp; organize. <b style="color:#223FAA">Royal blue.</b></p></div></div>
+      <div class="cc"><div class="bar" style="background:#AC9FE2"></div><div class="in"><h4>Patient Cloud</h4><p>Tag &amp; timeline. <b style="color:#7E6BCB">Violet.</b></p></div></div>
+      <div class="cc"><div class="bar" style="background:#7CCBCB"></div><div class="in"><h4>Flock Network</h4><p>Exchange between practices. <b style="color:#2d7373">Aqua.</b></p></div></div>
+    </div>
+  </div>
+  <div class="note"><strong>Why it works:</strong> a referral that arrives <em>via the Flock</em> gets an aqua tag; a patient timeline accent is violet; a primary "Tag to pet" button is royal. The user learns the color language without being taught it — and the marketing site's bold cloud cards reinforce the exact same code.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-label">04 — Typography</div>
+  <div class="sec-title">Type System</div>
+  <p class="sec-sub">One typeface, both modes. Inter stands in for SF Pro — big calm headlines at 800 weight with tight tracking, neutral body, mono for data. In confident mode the same headlines simply move onto a color block; the letterforms never change.</p>
+
+  <div class="specimen wash">
+    <div class="tag"><span>Display — Inter 800 · calm mode</span><span class="pair-tag">on pale wash</span></div>
+    <div class="t-display">Calm, secure,<br>in order.</div>
+    <p class="t-body" style="margin-top:16px;color:#3f4168">The everyday headline: deep indigo on a pale wash, big and quiet. Scale carries the confidence — no decoration needed.</p>
+  </div>
+
+  <div class="specimen block">
+    <div class="tag"><span>Display — Inter 800 · confident mode</span><span class="pair-tag">on indigo block</span></div>
+    <div class="t-display" style="color:#fff">Your practice,<br><span style="color:#AAE2E2">connected.</span></div>
+    <p class="t-body" style="margin-top:16px">The same type on a deep block for platform moments — an aqua word adds a friendly pop. Reserved for the Flock, pricing, and hero accents.</p>
+  </div>
+
+  <p class="group-title" style="margin-top:30px">Type scale</p>
+  <table class="scale-table">
+    <tr><td class="tok">display-xl</td><td style="font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.04em">RobinDock</td><td class="px">72 / 0.98 / -4%</td><td>Hero</td></tr>
+    <tr><td class="tok">display</td><td style="font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.025em">Section title</td><td class="px">42 / 1.04</td><td>Marketing</td></tr>
+    <tr><td class="tok">h1</td><td style="font-family:var(--f-body);font-weight:700;font-size:23px;letter-spacing:-.01em">Page heading</td><td class="px">28 / 1.2</td><td>App page</td></tr>
+    <tr><td class="tok">body</td><td style="font-family:var(--f-body);font-size:15px;color:#5A5C77">Default paragraph text</td><td class="px">16 / 1.47</td><td>Everywhere</td></tr>
+    <tr><td class="tok">caption</td><td style="font-family:var(--f-body);font-size:13px;color:#838599">Helper &amp; metadata</td><td class="px">13 / 1.4</td><td>Dense UI</td></tr>
+    <tr><td class="tok">mono</td><td style="font-family:var(--f-mono);font-size:13px;color:#223FAA">DOC-4821</td><td class="px">13 / 1.4</td><td>IDs &amp; data</td></tr>
+  </table>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-label">05 — Components</div>
+  <div class="sec-title">In context</div>
+  <p class="sec-sub">Soft 11px radii, hairline borders, pill tags. Buttons: royal primary, violet secondary, light tertiary. Status uses the meaning-mapped accents. Bird mark is a placeholder pending trademark clearance and a designer.</p>
+
+  <div class="preview wash" style="margin-bottom:16px;text-align:center">
+    <div style="font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.03em;color:var(--gray-950);margin-bottom:18px">Calm, secure, in order.</div>
+    <div class="searchbar" style="margin:0 auto"><input placeholder="Enter your clinic's fax number" /><button class="btn btn-blue">Get started</button></div>
+  </div>
+
+  <div class="preview white" style="margin-bottom:16px">
+    <div class="row" style="justify-content:space-between">
+      <div class="logo-lockup"><div class="logo-mark"><div class="breast"></div></div><div class="logo-word">RobinDock</div></div>
+      <span class="pill" style="background:var(--blue-50);color:var(--blue-700)"><span class="d" style="background:var(--blue-600)"></span>3 need routing</span>
+    </div>
+    <div class="row">
+      <button class="btn btn-blue">Tag to pet</button>
+      <button class="btn btn-violet">Book a demo</button>
+      <button class="btn btn-light">Route to chart</button>
+      <button class="btn btn-text">Snooze</button>
+    </div>
+    <div class="row" style="margin-bottom:0">
+      <span class="pill" style="background:#E2F2EC;color:#27674f"><span class="d" style="background:var(--ok)"></span>Routed</span>
+      <span class="pill" style="background:var(--violet-50);color:var(--violet-600)"><span class="d" style="background:var(--violet-400)"></span>Patient · review</span>
+      <span class="pill" style="background:var(--aqua-100);color:#2d7373"><span class="d" style="background:var(--aqua-500)"></span>Via the Flock</span>
+      <span class="pill" style="background:#F6E2DD;color:#9c3f2c"><span class="d" style="background:var(--bad)"></span>Failed</span>
+    </div>
+  </div>
+
+  <div class="preview white">
+    <div class="stats">
+      <div class="s"><div class="n">3,500<span class="u">+</span></div><div class="l">vet teams</div></div>
+      <div class="s"><div class="n">2.4M<span class="u">+</span></div><div class="l">documents / month</div></div>
+      <div class="s"><div class="n">38<span class="u">%</span></div><div class="l">time saved weekly</div></div>
+      <div class="s"><div class="n">99.99<span class="u">%</span></div><div class="l">uptime</div></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-label">06 — Rules</div>
+  <div class="sec-title">Do &amp; don't</div>
+  <div class="dd">
+    <div class="col do">
+      <h5>Do</h5>
+      <ul>
+        <li>Keep the product in calm mode — light surfaces, the document is the hero.</li>
+        <li>Reserve indigo/royal blocks for the Flock, pricing, dashboards, and marketing accents.</li>
+        <li>Tie each accent to its meaning: royal=action, violet=patient, aqua=network.</li>
+        <li>Let headlines carry weight through scale, not decoration.</li>
+        <li>Use generous whitespace and hairlines to keep dense screens calm.</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h5>Don't</h5>
+      <ul>
+        <li>Drop dark indigo blocks into document-triage or list screens.</li>
+        <li>Use violet and aqua interchangeably — they carry different meaning.</li>
+        <li>Stack multiple bold color blocks back-to-back; one accent moment at a time.</li>
+        <li>Add a second typeface or decorative display font.</li>
+        <li>Let confident mode exceed ~20% of any surface.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note"><strong>On the logo:</strong> the placeholder robin mark (royal square, aqua "breast" detail) stands in until trademark clearance and a designer produce the real mark. The wordmark is Inter 700. Whatever the final mark, it should read cleanly at 24px in a nav and hold up in a single color.</div>
+</div></section>
+
+<footer><div class="wrap">RobinDock Brand Foundation · The combined system · calm core + confident accents · royal #223FAA · violet #AC9FE2 · aqua #AAE2E2 · indigo #191346 · Inter</div></footer>

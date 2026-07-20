@@ -1,0 +1,136 @@
+
+=== xl/worksheets/sheet1.xml ===
+Robin Dock — OCR / Extraction (Office Tier)
+Requirements spec — session output for architecture handoff to Fable. Model-agnostic.
+Purpose | Specify the OCR + content-extraction capability that defines the Office tier ($149/location). Office is where Robin Dock crosses the deterministic-trust line on purpose: it reads document content. Everything here is checked against the governing principle below.
+Governing principle | Extraction PROPOSES; humans and deterministic rules DISPOSE. AI output is always a reviewable suggestion with visible provenance — never a silent mutation of identity, patient-binding, or the record.
+Push rule (thesis) | The AI never pushes to PIMS. Completion makes a track ELIGIBLE. A human push (single or bulk) executes it. Completion authorizes; the push acts; the AI never does either.
+Two-pass model | Pass 1 CLASSIFICATION runs only on cold/untyped docs deterministic routing couldn't type (drains Missing Doc Type). Pass 2 FIELD+PATIENT EXTRACTION runs on EVERY typed doc regardless of how it was typed. Two separately-triggered, separately-costed operations.
+Trust ladder | Per-field-class auto-write eligibility, gated by BOTH a confidence threshold AND deterministic validation. Doc-type can auto-apply at high confidence; fields auto-populate above threshold / leave empty below; patient-binding is suggest-only in v1; nothing reaches PIMS without human completion.
+Counter-positioning | vs. Documo/Valerie (auto-write-to-record on confident branch). Robin Dock's divergence: the confident branch still proposes. Review/confirmation is the design center for anything touching identity, patient-binding, or the record — not just the exception path.
+Status of zones | A / B / C / E / F LOCKED. D delivered as an output contract (write-back mechanics are a separate parked session). See per-zone tabs.
+Cadence note | Locked decisions in green. Parked / open items in amber (see Parked tab). Cross-session hand-offs on the Cross-Session tab.
+=== xl/worksheets/sheet10.xml ===
+Cross-Session Dependencies (what this session feeds)
+Consuming session / surface | What extraction hands it | Notes
+Detail Page | The confirm/complete work surface: extracted fields render pre-populated with per-field confirm; empty where below-threshold. AI-suggested patient match renders as ranked candidates (suggest-only). Provenance marker per field → source-region reveal. Contact↔patient tie tab. | Valerie-screenshot shape: source doc left, fields right. All fields reviewed uniformly.
+Inbox List Page | Greyed-out 'processing' row treatment (transient). 4-state aggregate row status. High-confidence patient shown on row (unconfirmed) / blank if conflict or low-confidence. Completed-vs-active track visual distinction. | Pipeline status = row-level; per-tag work-status = chip-level. Keep separate.
+Folder List Page | Accordion: parent aggregate + child rich per-track status, scoped to the folder's filter. Filter/sort operate on child tracks. | Folders = filters (Gmail model), can span multiple doc-types.
+History tab | Extraction event (System, model+confidence, one entry). Correction events (one each, old→new value, user, ts). Append-only / tamper-evident. | Source of provenance / route-reason for extracted values.
+PIMS write-back (future) | The Zone D output contract: per-track confirmed + provenance-stamped payload, eligible at completion. Patient ref may be null. Push = manual single/bulk, human-triggered. | The AI never pushes. Completion authorizes; push executes.
+Deterministic suggestion engine (7-15-20) | Keep lanes separate: 7-15-20 suggests deterministic contact/number ROUTING rules; the A4b correction loop tunes extraction CONFIDENCE. No cross-write, no double-suggest. | Two subsystems informing different things.
+Contacts / Patients (asset layer) | The contact↔patient tie is built from confirmed matches and surfaced bidirectionally on a dedicated tab. Must be inspectable + correctable. | Cross-tier value chain: Send-tier asset makes Office-tier match safer.
+=== xl/worksheets/sheet2.xml ===
+Zone A — Extraction Scope (what gets read and pulled)
+ID | Feature | Decision (LOCKED) | Notes / consequences
+A1 | Content-based doc-typing | Reads cold/untyped fax → proposes doc-type. High-confidence classification MAY auto-apply (reversible, low-harm, drains Missing Doc Type). Low/med confidence lands as a suggestion. | The only capability allowed to auto-apply on day one. Pass-1 operation; runs only on docs deterministic routing couldn't type.
+A2 | Field extraction (per doc-type schema) | Extract per-doc-type field schema on EVERY typed doc. Identity fields (patient name, client/owner) held to highest threshold + validation gate; non-identity fields auto-populate above threshold / empty below. | Pass-2 operation; runs regardless of how the doc was typed. v1 = Tier-1 full extraction (see Doc-Type Grid). Tier-2 fast-follow.
+A3 | Patient/contact match (suggest-only v1) | Suggest-only in v1. Requires >=2 agreeing corroborating keys to be high-confidence-eligible; single key (e.g. name alone) is always low-confidence. Hard conflict (e.g. species mismatch) VETOES regardless of score. Ambiguous match surfaces ranked candidates, never auto-picks. No-match surfaces 'create new?' (never auto-creates). | Highest-harm error class. Contact-history tie (see A3b) is a strong corroborating key. Preserves locked 'Complete without confirmed match'.
+A3b | Contact↔patient tie (match key + card tab) | A confirmed association between a contact and patients they've historically sent docs about. Counts as a STRONG corroborating key toward the >=2-key rule. Surfaced bidirectionally on a dedicated TAB (connected patients on the contact; connected contacts on the patient). Built from confirmed matches; inspectable + correctable. | Deterministic asset (exchange history) makes AI patient-match safer — cross-tier value chain. Weak early, strengthens as practice confirms (earn-into-it). A wrong tie must not silently poison future matches.
+A4 | Multi-type detection | Propose BOTH tags when a doc carries two types (e.g. referral containing labs). Each type is an independent suggestion with its own confidence and its own per-tag completion track. | Operational payoff of 'folders are filters, not bins'. Mixed states on one doc are fine (e.g. Referral auto-applied, Lab suggested).
+A4b | Post-completion reconciliation loop | At FULL doc completion, compare AI-proposed types vs. final human-confirmed types. The delta is the calibration signal (accuracy logging). Runs at full completion only, not per-tag. | Feeds per-practice accuracy mapping. MUST stay in a separate lane from the deterministic 7-15-20 engine (no double-suggest). Manual typing of an extraction-failed doc is the highest-value correction signal.
+A5 | Confidence signal | Every extraction carries confidence, surfaced plain-language (high/med/low, never a raw 0.87). Confidence is PER-FIELD and PER-CLASSIFICATION, not per-document. Must map to MEASURED per-practice accuracy, not raw model score (calibration). | Engine must record confirmations/corrections from day one to build the calibration mapping, even before it uses it to auto-flow.
+A6 | Second-pass targeting (cost) | CLASSIFICATION runs strictly on the Missing-Doc-Type-bound (cold) docs, automatically at arrival as the fallback branch of deterministic routing — before a human sees it. FIELD extraction runs on every typed doc. | Do NOT spend model cost second-guessing a deterministic route's TYPE. But field/patient extraction is universal — it's the core value and must run even on deterministically-typed docs.
+A7 | Junk / spam classification | AI may SUGGEST junk/spam; human confirms. Never auto-applies spam (misclassifying a real referral as spam is high-harm). | Routes to existing bulk-spam machinery on confirm.
+=== xl/worksheets/sheet3.xml ===
+Zone B — Trust Surface & Threshold Architecture
+ID | Item | Decision (LOCKED) | Notes
+B1 | Auto-write eligibility ladder | Per-field-class behavior. Doc-type: auto-apply eligible above classification threshold, else suggested. Non-identity fields: auto-populate above extraction threshold, else empty. Patient-binding: suggest-only v1 (highest threshold + validation gate). Clinical values / PIMS write: staged. | Two INDEPENDENT thresholds — classification vs. extraction.
+B2 | Below-threshold behavior | Leave-empty / staged, never applied (industry standard). The record is never briefly wrong. Human provides the value during the confirm pass. | Chosen over fill-then-flag/undo.
+B3 | Validation gate (v1) | A field must pass BOTH its confidence threshold AND a deterministic validation check to be auto-apply eligible. Patient-match specifically requires 'unambiguous matching record exists'. Validation failure forces review regardless of model confidence. | Cheap deterministic logic; on-brand. Lets autonomy be safely raised later.
+B4 | Required-field-missing trigger | If a required field for a doc-type can't be extracted, the doc goes to review even if everything else cleared. | Independent of confidence (MuleSoft rule).
+B5 | Provenance — field level | Each extracted field shows a lightweight marker (AI-extracted + plain-language confidence); clicking reveals the source region on the doc. | Inspectable like route-reason. Design owns exact treatment.
+B6 | Provenance — History level | Extraction logs ONE event ('System extracted, model X, N fields, confidences') — not one entry per field. Each CORRECTION logs its own entry with old→new value, user, timestamp. History is append-only / tamper-evident. | Matches Documo 'Info & History' + Docsumo event model. Corrections double as the calibration signal.
+B7 | Correction application | Corrections apply INSTANTLY to the doc, but only influence FUTURE extraction via the calibration layer's periodic recompute — never a live per-correction model change. | The 'no silent black-box drift' guarantee.
+B8 | Per-doc-type tuning affordance | Ship conservative defaults; expose a plain-language per-doc-type dial (Documo-style slider) for admins. No per-field numeric exposure in v1. Range: from 'stage everything for this type' up to 'auto-apply the eligible classes' — never past the identity/clinical carve-out floor. | 'Turn auto-apply off for a type' = the slider at its most conservative end. Carve-outs are floors the slider can't cross.
+B9 | Calibration posture | Plain-language high/med/low must map to measured per-practice accuracy. Defaults start conservative (lean 'stage it'); autonomy is justified by accumulated confirmation/correction data. | Why auto-write is earned, not day-one — no calibration data yet at activation.
+Auto-write eligibility matrix
+Field class | Above threshold + valid | Below threshold OR fails validation
+Doc-type classification | Auto-apply tag (confirmed) | Stays SUGGESTED, pending confirm
+Non-identity fields (dates, test names, referring clinic) | Auto-populate | Left EMPTY, staged for reconciliation
+Patient-binding | Suggest-only v1 (highest threshold + 'unambiguous match exists' gate) | Suggest-only, flagged
+Clinical values / PIMS write | Staged; push earned per-doc-type after calibration | Staged
+=== xl/worksheets/sheet4.xml ===
+Zone C — Reconciliation with Locked Models (status & routing)
+ID | Item | Decision (LOCKED) | Notes
+C1 | Extraction feeds the existing funnel | AI-suggested type flows through the SAME deterministic folder-filter routing as a deterministic type. Extraction feeds the top of the funnel; it never gets its own routing path. Single routing spine. | Keeps the deterministic spine authoritative.
+C2 | Suggested vs. confirmed doc-type | An unconfirmed AI type is a distinct SUGGESTED object, structurally separate from a confirmed type. It does NOT create per-tag completion work until promoted. Promotion (human confirm OR high-confidence auto-apply) writes permanent identity. Dismissing a suggestion is NOT a tag-strip (stripping stays classification-correction only). | Prevents polluting permanent, never-stripped identity. High-confidence auto-apply writes CONFIRMED directly (skips suggested → not in review).
+C3 | Processing happens at arrival | Classify + extract + patient-match all run at arrival, BEFORE a human opens the doc. The doc lands unread, already processed. 'Needs review' is not a mid-stream flag. | Corrects earlier over-engineered 'review flag' model.
+C4 | Review signal = unread | Because processing completes at arrival, UNREAD remains the review signal (as in Organize). No separate review-flag state reintroduced. What's pre-populated vs. empty is shown ON the doc, not as a queue state. | The confirm-and-complete pass IS the work surface (Valerie-screenshot shape: doc left, fields right).
+C5 | Inbox row status = 4-state aggregate | Inbox shows a document-level rollup: In Review → (review done) → Not Started → In Progress → Complete. In Review = AI extracted, needs help/manual. Not Started = review done, no workflow item begun. In Progress = >=1 workflow item open. Complete = all tracks done. | Inbox is unfiltered → can't resolve a single track → must aggregate.
+C6 | Folders = filters (Gmail model) | A folder is a saved filter that can match one or many doc-types (e.g. Admin = Labs+Records+Billing). A doc lives once and surfaces in every matching folder. Never a bin; never duplicated. | Confirmed against 'folders are filters, not bins'.
+C7 | Folder status = per-track, scoped | In a folder, a row shows a rich status chip for EACH of the doc's tracks that the folder's filter matches (not other tracks). Single-track-in-view → one rich status. The filter that admits the doc selects which chips show. | A doc in Admin because it's Lab+Records shows Lab + Records status here, not its Referral status.
+C8 | Multi-track display = accordion | Multi-type doc collapses to a parent row showing the 4-state aggregate; expands to one child row per in-folder-matching track, each with its own rich status. Single-type docs don't expand. Completed tracks grey out; active ones colored. | Parent = aggregate; child = rich. Resolves multi-status without forking the doc or duplicating rows.
+C8b | Accordion rules | Aggregate at parent, rich at child. Filter/sort operate on CHILD tracks (a parent surfaces if any in-folder child matches). Children shown = only tracks matching this folder's filter. Accordion exists in FOLDERS only; inbox stays flat aggregate. | Design owns density/treatment.
+C9 | typed ≠ completed | Auto-typing (even high-confidence) creates a track a human must still complete. Auto-apply speeds SETUP; completion (and thus push-eligibility) always has a human. Architectural rule. | The seam where 'AI drains the pile' and 'human gates the PIMS' coexist.
+Status vocabulary (enumerable set)
+Status | Scope | Meaning
+(greyed / Processing) | Pipeline (transient) | Extraction running at arrival; row visible but not-yet-actionable. Resolves to workable or to a failure state.
+In Review | Shared | Extraction landed; needs confirm-and-complete pass (confirm populated fields or fill manually).
+Confirm Match | Shared | Extraction confirmed; patient match pending.
+Confirm to Referrer | Referral only | 1-click acknowledgment back to the referring vet.
+Schedule | Referral only (optional) | Patient scheduling action prepped.
+Fulfill Request | Records-request only | Outbound: send requested records out. Replaces Sync for this type.
+Syncing to PIMS | Shared (pipeline) | Eligible + pushed; write-back in flight (write-back session owns mechanics).
+Complete | Shared | All work-status closed for the track.
+Failed / Unreadable / Partial·Page-Cap | Pipeline (terminal) | Inherited from inbox pipeline states; doc becomes a normal workable untyped doc on failure.
+=== xl/worksheets/sheet5.xml ===
+Doc-Type Grid — field schema + ordered workflow (Tier 1 = v1)
+Shared spine: Review → Confirm Match → [type-specific insertion] → Sync/Fulfill → Complete. Tracks advance independently across types on one doc.
+Doc-type | Tier | v1 scope | Field schema (extracted) | Ordered workflow (statuses)
+Referral | 1 | Full extraction | Patient name, species/breed, client/owner, doc date; referring vet, referring clinic, reason for referral, requested service/specialty | Review → Confirm Match → Confirm to Referrer → [Schedule] → Sync → Complete
+Lab result | 1 | Full extraction | Patient name, species/breed, client/owner, doc date; test panel/name, result values, collection date, ordering vet | Review → Confirm Match → Sync → Complete
+Medical records (incoming) | 1 | Full extraction | Patient name, species/breed, client/owner, doc date; date range covered, patient identifiers | Review → Confirm Match → Sync → Complete
+Records request | 1 | Full extraction | Patient name, species/breed, client/owner, doc date; requesting party, date range, patient identifiers | Review → Confirm Match → Fulfill Request → Complete (no Sync — outbound)
+Vaccine / rabies cert | 1 | Full extraction | Patient name, species/breed, client/owner, doc date; vaccine type, lot number, administering vet, expiry/due date | Review → Confirm Match → Sync → Complete
+Imaging / radiology report | 2 | Classify-only v1 | (Tier-2 field schema TBD) | Shared spine
+Discharge summary/instructions | 2 | Classify-only v1 | (Tier-2) | Shared spine
+Consult request | 2 | Classify-only v1 | (Tier-2) | Shared spine
+Prescription / Rx / refill request | 2 | Classify-only v1 | (Tier-2) | Shared spine
+Pathology / histopathology | 2 | Classify-only v1 | (Tier-2) | Shared spine
+Deceased / euthanasia notice | 2 | Classify-only v1 | (Tier-2) | Shared spine
+Junk / spam | — | Suggest-only, human confirms | (none) | AI suggests → human confirms → existing spam machinery
+SOAP notes, surgical reports, estimates/invoices, insurance/claim forms, etc. | 3 | Long tail — not in v1 | (future) | —
+=== xl/worksheets/sheet6.xml ===
+Zone D — PIMS Output Contract (write-back mechanics are PARKED)
+This session defines only the clean payload write-back consumes. The AI never pushes. Completion → eligible. Human push (single/bulk) executes.
+ID | Item | Decision (LOCKED as contract) | Notes
+D1 | One payload per doc-type TRACK | A confirmed extraction payload is emitted per doc-type track when THAT track reaches confirmed/complete — not one bundled per-document payload. A Referral+Lab doc emits two payloads independently. | Matches per-tag completion. Avoids forcing both tracks to finish before anything can write back.
+D2 | Payload carries per-field provenance (audit only) | Each field carries value + confidence + source region + confirmation-state (human-confirmed / auto-applied / left-empty). This provenance is for AUDIT/History, NOT a write-back gate. | The completion gate — not a per-field label — is the safety mechanism (see D5).
+D3 | Emit / eligibility timing | The payload becomes AVAILABLE (eligible) at track completion. Whether it is pushed then, batched, or synced later is the write-back session's call. | Data ready the moment its own track is done, regardless of sibling tracks.
+D4 | Push trigger (v1 rule) | Manual, human-triggered push (Documo model). Single (from detail page) AND bulk (select multiple eligible items). Scheduled/daily sync is PARKED as a future setting. The AI never pushes. | Bulk operates ONLY on eligible (completed, not-yet-pushed) tracks — the eligibility gate doubles as the bulk-select filter.
+D5 | Completion gate = the safeguard | Nothing pushes unless its track is COMPLETE, and completion requires a human. So anything eligible to push has been human-reviewed by construction. Even a future auto-sync is safe: it only sweeps completed (=human-cleared) tracks. | 'The AI never pushes; completion pushes; completion is always human.'
+D6 | Payload envelope | Document identity (doc ID, source, arrival ts, page count, source-PDF link); confirmed doc-type; patient binding (record ref OR null — Complete-without-match is valid — plus human-confirmed vs high-confidence-auto flag); extracted fields (per D2); provenance envelope (model version, extraction ts, calibration snapshot ref); workflow completion state (track, final status, who, when); eligibility/push-state (eligible; downstream pushed/not-yet-pushed). | Contract shape for Fable + the write-back session.
+=== xl/worksheets/sheet7.xml ===
+Zone E — Failure Modes, Cost, Latency
+ID | Item | Decision (LOCKED) | Notes
+E1 | Unreadable / low-quality faxes | Extraction degrades gracefully, never makes a doc worse than Organize. Garbage scan → lands untyped (or partial), human does the work. Partial extraction is valid (extract legible pages, leave rest empty). Confidence collapses naturally → nothing auto-applies → safe path. | Office is never worse than Organize on a bad fax; at worst equal.
+E1b | Legibility pre-screen | A cheap legibility check gates the expensive extraction call. A black/noise page fails the screen and lands untyped WITHOUT burning a full model call. | Cost control on exactly the docs that would waste spend.
+E2 | Latency / async UX (greyed-out model) | Doc appears in the list on arrival but GREYED-OUT / not-yet-actionable until extraction completes or fails. No mid-process work access (prevents hand-typing into a doc about to auto-populate). No verbose 'Reading/Extracting' status vocabulary — greyed-out IS the signal. No per-doc cancel. | Matches Documo/Docsumo (Processing → Review). Extraction is usually seconds, so grey flickers by; it only lingers on genuinely slow docs (big records PDF), which is exactly when the signal is wanted.
+E2b | Failure resolution | On failure the greyed state lifts and the doc becomes a normal workable untyped doc (UNREADABLE / FAILED / PARTIAL·PAGE-CAP inherited from inbox pipeline states). | Graceful degradation to the Organize baseline.
+E3 | Run-once | Extraction runs one time at arrival. Re-extraction ONLY on explicit human trigger (e.g. a cleaner copy arrives), never automatically. | Cost discipline + avoids silently re-processing a doc someone already worked.
+E4 | Cost model | Classification cost bounded (cold docs only). Field-extraction cost = real per-doc spend, runs on every typed doc — the cost line that justifies the $149 tier. Legibility pre-screen trims waste. | Volume/overage exposure noted for pricing (parked, not this spec).
+E5 | Push modes | Manual single + bulk (see D4). Bulk needs an eligibility filter/view ('Completed — ready to push'). Partial-failure handling & per-track-vs-per-doc bulk selection PARKED to write-back session. | 
+=== xl/worksheets/sheet8.xml ===
+Zone F — The Organize → Office Upgrade Moment
+Same screen, different fill level. Felt, not navigated to. Quiet by default.
+ID | Item | Decision (LOCKED) | Notes
+F1 | Same screen, different fill level | Office is not a new UI — it's the Organize UI with the Missing Doc Type pile draining itself and detail-page fields arriving pre-populated (staged for confirm) instead of blank. No new screen architecture; extraction is a layer underneath. | The pre-agreed hook this whole session builds on.
+F2 | Quiet by default (no AI theater) | The drain is SILENT on working screens. No 'AI did this' badges/narration. Docs just arrive sorted and pre-filled; the magic is the absence of work, not an announcement of it. The user notices the difference when switching FROM their old platform, not via in-product chrome. | Reverses an earlier 'surface the AI' lean. Teaching belongs in empty/first-run states, not working screens.
+F2b | History as on-demand audit only | History still logs extraction events (System-attributed, provenance) — but History is a quiet audit log you consult when something's wrong, not surfaced chrome. No contradiction with quiet-by-default. | All fields reviewed uniformly at completion regardless of AI vs. human origin — no 'this was AI / reversible' call-out.
+F3 | Conservative defaults + accuracy logging (v1) | At activation the per-doc-type sliders ship in a stage-heavy (cautious) position. The A4b reconciliation loop LOGS accuracy (simple arithmetic, no model training). If a practice wants more autonomy on a type, THEY move the slider — manual, visible, their choice. | Honest v1 scope. No auto-tuning, no per-practice model in v1.
+F4 | Upgrade prompt (CUT from spec) | Speculative extraction on non-paying Organize accounts to generate an upsell is CUT — real COGS on non-payers + thrown-away work. Prefer a zero-cost deterministic pile-count pitch ('you manually typed 40 cold docs last week — Office automates this'). Evaluate as a separate growth/PLG question. | Parked. Not extraction scope.
+=== xl/worksheets/sheet9.xml ===
+Parked & Open Items
+Item | Status | Owner / next step
+PIMS write-back mechanics | Parked — own session | robin-dock-pims-writeback. Consumes the Zone D output contract. Owns push-state transitions, manual-push UX, sync scheduling.
+Bulk-push partial-failure handling | Parked | Write-back session. Per-item success/failure feedback, not all-or-nothing.
+Bulk selection: per-track vs per-doc | Parked | Write-back session (lean: per-track eligible; selection UX theirs).
+Scheduled / daily auto-sync | Parked — future setting | Write-back session. Safe by construction (only sweeps completed tracks).
+Auto-tuning / per-practice learning | Parked — own session | 'Self-tuning thresholds' is a silent-drift risk; needs dedicated design. v1 = manual sliders + accuracy logging only.
+Tier-2 doc-type field schemas | Fast-follow | Define per-type field schemas after Tier-1 extraction is stable. Tier-2 is classify-only in v1.
+Tier-3 long-tail doc-types | Future | Out of v1 scope entirely.
+F4 upsell via speculative extraction | Cut from spec — growth question | Prefer zero-cost deterministic pile-count version. Evaluate with growth economics, not here.
+Volume / overage pricing exposure | Flagged — pricing, not spec | Field-extraction cost scales with volume; flat per-location absorbs normal volume. Kai owns.
+Source-PDF peek while greyed | Design refinement | Default is fully-greyed row. Allowing a source-PDF peek mid-extraction is a Design option, not a requirement.
+Valerie Health specifics | Unverified | Did not surface in Mar–May 2026 search. Treat as archetype; Documo is the verified concrete stand-in. Search before asserting Valerie specifics.

@@ -1,0 +1,139 @@
+/* ============================================================
+   RobinDock — My Work · PAGE STYLES
+   The personal, cross-department list. Builds on the shared
+   tokens + components + dept.css (queue rows, signals, picker,
+   toasts are all inherited from dept.css). Only the My-Work
+   specifics live here: personal header, stat pills, the
+   department column, in-progress / needs-review status, the
+   grouping + filter toolbar, grouped sections, completed
+   drawer and the all-caught-up empty state.
+   ============================================================ */
+
+.mw-page{max-width:1180px;margin:0 auto}
+
+/* ---- personal header — avatar + title + access note ---- */
+.mw-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:20px}
+.mw-head .mw-av{position:relative;flex-shrink:0}
+.mw-head .mw-av .ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--blue-100)}
+.mw-head .mw-main{flex:1;min-width:0}
+.mw-head h1{font-family:var(--f-display);font-weight:800;font-size:29px;letter-spacing:-.03em;color:var(--gray-950);line-height:1.05}
+.mw-head .mw-sub{font-size:14.5px;color:var(--gray-600);margin-top:8px;max-width:62ch;line-height:1.5}
+.mw-head .mw-aside{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:10px;padding-top:3px}
+.mw-head .mw-scope{font-size:12px;color:var(--gray-500)}
+.mw-head .mw-scope b{color:var(--gray-950);font-weight:700}
+
+/* ---- stat pills — scannable status, not analytics ---- */
+.mw-stats{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}
+.mw-stat{display:inline-flex;align-items:baseline;gap:8px;background:#fff;border:1px solid var(--gray-200);
+  border-radius:var(--r-pill);box-shadow:var(--sh-sm);padding:8px 16px 8px 13px;position:relative}
+.mw-stat::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gray-300);align-self:center}
+.mw-stat .n{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--gray-950);line-height:1}
+.mw-stat .l{font-size:12.5px;color:var(--gray-500);font-weight:500}
+.mw-stat.active::before{background:var(--blue-600)}
+.mw-stat.crit::before{background:var(--bad)}
+.mw-stat.crit .n{color:var(--bad-ink)}
+.mw-stat.review::before{background:var(--violet-400)}
+.mw-stat.review .n{color:var(--violet-600)}
+.mw-stat.aging::before{background:var(--warn)}
+.mw-stat.aging .n{color:var(--warn-ink)}
+
+/* ---- toolbar — grouping + filters (left) · sort + scope selects (right) ---- */
+.mw-toolbar{display:flex;align-items:center;gap:12px 14px;flex-wrap:wrap;margin-bottom:16px}
+/* the segmented controls are <button>s — strip the UA button chrome so the
+   design-system .segs track + white .on pill reads correctly */
+.mw-toolbar .segs .seg{appearance:none;-webkit-appearance:none;background:none;border:none;
+  font-family:var(--f-body);font-size:12.5px;line-height:1;padding:7px 14px}
+.mw-toolbar .segs .seg:hover{color:var(--gray-950)}
+.mw-toolbar .segs .seg.on{background:#fff;color:var(--gray-950);box-shadow:var(--sh-sm)}
+.mw-toolbar .mw-right{margin-left:auto;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.mw-sel{position:relative}
+.mw-sel select.input{font-size:12.5px;font-weight:600;padding:8px 32px 8px 14px;border-radius:var(--r-pill);
+  width:auto;min-width:120px;color:var(--gray-800)}
+.mw-sel::after{content:"";position:absolute;right:13px;top:50%;width:7px;height:7px;
+  border-right:2px solid var(--gray-500);border-bottom:2px solid var(--gray-500);
+  transform:translateY(-65%) rotate(45deg);pointer-events:none}
+.mw-sel .sl{font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.04em;
+  position:absolute;left:14px;top:-7px;background:var(--gray-100);padding:0 4px;display:none}
+
+/* ---- DEPARTMENT column — a quiet pill that links to that dept's queue ---- */
+.mw-dept{display:inline-flex;align-items:center;gap:8px;max-width:100%;text-decoration:none;
+  background:var(--gray-100);border:1px solid var(--gray-200);border-radius:var(--r-pill);
+  padding:4px 12px 4px 7px;transition:.13s}
+.mw-dept:hover{background:#fff;border-color:var(--blue-300);box-shadow:var(--sh-sm)}
+.mw-dept .di{width:22px;height:22px;border-radius:7px;background:var(--wash);color:var(--blue-600);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mw-dept .di svg{width:14px;height:14px}
+.mw-dept .dn{font-size:12.5px;font-weight:600;color:var(--gray-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mw-dept:hover .dn{color:var(--blue-700)}
+
+/* ---- STATUS — In progress vs Needs review (review = violet, the
+   review-effort axis; in-progress = calm blue) ---- */
+.mw-st{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.mw-st.prog{color:var(--blue-700)}
+.mw-st.prog .pdot{width:8px;height:8px;border-radius:50%;background:var(--blue-500);flex-shrink:0;position:relative}
+.mw-st.prog .pdot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--blue-300);opacity:.6}
+.mw-st.review{color:var(--violet-600)}
+.mw-st.review svg{flex-shrink:0}
+.mw-st.review .rv{background:var(--violet-50);border:1px solid var(--violet-200);border-radius:var(--r-pill);
+  padding:3px 10px 3px 8px;display:inline-flex;align-items:center;gap:6px}
+
+/* needs-review rows get a faint violet wash + left tick, like critrow does red */
+.qt tbody tr.reviewrow{background:linear-gradient(90deg,rgba(124,99,214,.06),rgba(124,99,214,.012) 46%,transparent)}
+.qt tbody tr.reviewrow:hover{background:linear-gradient(90deg,rgba(124,99,214,.1),rgba(124,99,214,.025) 46%,var(--gray-50))}
+.qt tbody tr.reviewrow td:first-child{box-shadow:inset 3px 0 0 var(--violet-400)}
+/* critical still wins the left tick when both apply (handled in JS class order) */
+
+/* ---- the My-Work queue table — own column widths (Assigned → Department) ---- */
+.qt-mywork{table-layout:fixed;width:100%}
+.qt-mywork thead th:nth-child(1){width:11%}
+.qt-mywork thead th:nth-child(2){width:27%}
+.qt-mywork thead th:nth-child(3){width:16%}
+.qt-mywork thead th:nth-child(4){width:16%}
+.qt-mywork thead th:nth-child(5){width:14%}
+.qt-mywork thead th:nth-child(6){width:10%}
+.qt-mywork thead th:nth-child(7){width:6%}
+.qt-mywork tbody td:nth-child(2){overflow:visible}
+.qt-mywork tbody td:last-child{text-align:right}
+
+/* row kebab → reassign / hand-off / release (opens the shared picker) */
+.mw-kebab{width:30px;height:30px;border-radius:50%;border:none;background:none;color:var(--gray-400);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.12s}
+.mw-kebab:hover,.mw-kebab.active{background:var(--gray-100);color:var(--gray-700)}
+
+/* ---- grouped-by-department sections ---- */
+.mw-group{margin-bottom:22px}
+.mw-group .mw-ghead{display:flex;align-items:center;gap:11px;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid var(--gray-200)}
+.mw-group .mw-ghead .gi{width:30px;height:30px;border-radius:9px;background:var(--wash);color:var(--blue-600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mw-group .mw-ghead h3{font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:-.02em;color:var(--gray-950)}
+.mw-group .mw-ghead .gc{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--gray-500);
+  background:var(--gray-100);border-radius:var(--r-pill);padding:2px 9px}
+.mw-group .mw-ghead .gopen{margin-left:auto;font-size:12px;font-weight:600;color:var(--blue-600);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.mw-group .mw-ghead .gopen:hover{text-decoration:underline}
+.mw-group .mw-ghead .gopen svg{width:14px;height:14px}
+
+/* ---- recently-completed drawer ---- */
+.mw-done{margin-top:6px;border-top:1px solid var(--gray-200);padding-top:18px}
+.mw-done .mw-dtoggle{display:inline-flex;align-items:center;gap:9px;background:none;border:none;cursor:pointer;
+  font-family:var(--f-body);font-size:13.5px;font-weight:600;color:var(--gray-700);padding:4px 2px}
+.mw-done .mw-dtoggle:hover{color:var(--gray-950)}
+.mw-done .mw-dtoggle .cv{display:inline-flex;color:var(--gray-400);transition:transform .18s ease}
+.mw-done .mw-dtoggle.open .cv{transform:rotate(90deg)}
+.mw-done .mw-dtoggle .gc{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--gray-500);
+  background:var(--gray-100);border-radius:var(--r-pill);padding:2px 9px}
+.mw-done .mw-dbody{margin-top:12px}
+.mw-done .mw-dnote{font-size:12.5px;color:var(--gray-500);margin-bottom:10px;line-height:1.5}
+
+/* ---- all-caught-up empty state — a good state, calm not error ---- */
+.mw-empty{border:1.5px dashed var(--ok);border-radius:var(--r-2xl);background:var(--ok-bg);
+  min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px}
+.mw-empty .ei{width:64px;height:64px;border-radius:18px;background:#fff;color:var(--ok);box-shadow:var(--sh-sm);
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.mw-empty h2{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--ok-ink)}
+.mw-empty p{font-size:14px;color:var(--gray-600);margin-top:12px;max-width:46ch;line-height:1.55}
+.mw-empty .ea{margin-top:22px}
+
+/* filtered-to-zero (active list non-empty but the current filter hides all) */
+.mw-noresult{border:1px dashed var(--gray-300);border-radius:var(--r-lg);background:var(--gray-50);
+  padding:34px;text-align:center}
+.mw-noresult h4{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--gray-700)}
+.mw-noresult p{font-size:13px;color:var(--gray-500);margin-top:7px}

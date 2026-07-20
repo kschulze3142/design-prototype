@@ -1,0 +1,485 @@
+<div id="rd-site"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  #rd-site{
+    --gray-950:#191346; --gray-800:#2C2A57; --gray-600:#5A5C77; --gray-500:#838599;
+    --gray-300:#D3D6E2; --gray-200:#E7E9F1; --gray-100:#F4F5FA; --gray-50:#FAFBFD; --white:#FFFFFF;
+    --blue-900:#101A52; --blue-800:#172B7A; --blue-700:#1C3490; --blue-600:#223FAA; --blue-500:#3D5AC7; --blue-300:#8FA1E0; --blue-100:#DEE4F7; --blue-50:#EEF1FB;
+    --violet-600:#7E6BCB; --violet-500:#9A8AD9; --violet-400:#AC9FE2; --violet-200:#D6CFF1; --violet-50:#F1EEFB;
+    --pale-300:#C0CFED; --pale-100:#DDE6F6; --pale-50:#EDF2FB;
+    --aqua-500:#7CCBCB; --aqua-400:#AAE2E2; --aqua-100:#DEF4F4;
+    --indigo:#191346;
+    --wash:linear-gradient(135deg,#DDE6F6 0%,#D6CFF1 50%,#DEF4F4 100%);
+    --wash-soft:linear-gradient(135deg,#EDF2FB 0%,#F1EEFB 100%);
+    --ink:#191346; --ok:#3A8A6F; --warn:#C8902E; --bad:#C2503A;
+    --f-display:'Inter',-apple-system,system-ui,sans-serif; --f-body:'Inter',-apple-system,system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,monospace;
+    --sh-sm:0 1px 3px rgba(25,19,70,.05),0 1px 2px rgba(25,19,70,.04);
+    --sh-md:0 6px 22px rgba(25,19,70,.09);
+    --sh-lg:0 22px 54px rgba(34,63,170,.16);
+    font-family:var(--f-body);color:var(--ink);line-height:1.47;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;background:var(--white)}
+  #rd-site *{box-sizing:border-box;margin:0;padding:0}
+  #rd-site .wrap{max-width:1340px;margin:0 auto;padding:0 56px}
+  #rd-site a{text-decoration:none;color:inherit}
+
+  #rd-site .promo{background:var(--violet-400);text-align:center;font-size:13px;font-weight:600;color:var(--gray-950);padding:9px 20px;letter-spacing:-.01em}
+  #rd-site .promo a{font-weight:700;text-decoration:underline}
+
+  #rd-site .navbar{position:sticky;top:0;z-index:50;background:rgba(244,245,250,.8);backdrop-filter:saturate(160%) blur(18px);border-bottom:1px solid var(--gray-200)}
+  #rd-site .nav-inner{height:68px;display:flex;align-items:center;justify-content:space-between}
+  #rd-site .brand{display:flex;align-items:center;gap:10px}
+  #rd-site .mark{width:32px;height:32px;border-radius:9px;background:var(--blue-600);display:flex;align-items:center;justify-content:center;position:relative}
+  #rd-site .mark .b{width:11px;height:11px;border-radius:50% 50% 50% 2px;background:var(--aqua-400);transform:rotate(-10deg)}
+  #rd-site .word{font-family:var(--f-display);font-weight:700;font-size:21px;color:var(--gray-950);letter-spacing:-.02em}
+  #rd-site .nav-mid{display:flex;gap:30px;align-items:center}
+  #rd-site .nav-mid a{font-size:15px;font-weight:500;color:var(--gray-950);display:flex;align-items:center;gap:5px}
+  #rd-site .nav-mid a .ca{font-size:9px;color:var(--gray-500)}
+  #rd-site .nav-mid a:hover{color:var(--blue-600)}
+  #rd-site .nav-right{display:flex;gap:10px;align-items:center}
+  #rd-site .nav-right .login{font-size:15px;font-weight:500;color:var(--gray-950);padding:0 10px}
+  #rd-site .btn{font-family:var(--f-body);font-weight:600;font-size:14.5px;border:none;border-radius:11px;padding:11px 20px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;letter-spacing:-.01em}
+  #rd-site .btn-blue{background:var(--blue-600);color:#fff} #rd-site .btn-blue:hover{background:var(--blue-700)}
+  #rd-site .btn-violet{background:var(--violet-400);color:var(--gray-950)} #rd-site .btn-violet:hover{background:var(--violet-500);color:#fff}
+  #rd-site .btn-light{background:var(--white);color:var(--gray-950);border:1px solid var(--gray-300)} #rd-site .btn-light:hover{border-color:var(--gray-950)}
+  #rd-site .btn-onblock{background:#fff;color:var(--blue-700)} #rd-site .btn-onblock:hover{background:var(--gray-100)}
+  #rd-site .btn-ghost-block{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.28)} #rd-site .btn-ghost-block:hover{background:rgba(255,255,255,.18)}
+  #rd-site .btn-lg{padding:13px 26px;font-size:16px}
+
+  /* HERO — airy wash (option 12 calm base) */
+  #rd-site .hero{background:var(--wash);text-align:center;padding:76px 0 0;position:relative;overflow:hidden}
+  #rd-site .hero::before{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;opacity:.5;background-image:linear-gradient(90deg,rgba(34,63,170,.07) 1px,transparent 1px);background-size:9px 100%;mask-image:linear-gradient(to top,#000,transparent);-webkit-mask-image:linear-gradient(to top,#000,transparent);pointer-events:none}
+  #rd-site .hero .wrap{position:relative;z-index:1}
+  #rd-site .hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--blue-700);background:rgba(255,255,255,.7);border:1px solid rgba(34,63,170,.18);padding:7px 15px;border-radius:100px;margin-bottom:22px}
+  #rd-site .hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(48px,7vw,84px);line-height:.98;letter-spacing:-.04em;color:var(--gray-950);max-width:15ch;margin:0 auto}
+  #rd-site .hero .sub{font-size:clamp(18px,2vw,21px);font-weight:500;color:var(--gray-600);margin-top:20px;letter-spacing:-.01em;max-width:540px;margin-left:auto;margin-right:auto}
+  #rd-site .searchbar{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);border-radius:100px;padding:8px 8px 8px 24px;box-shadow:var(--sh-lg);max-width:560px;margin:34px auto 0}
+  #rd-site .searchbar input{flex:1;border:none;outline:none;background:transparent;font-family:var(--f-body);font-size:16px;color:var(--gray-950);font-weight:500;min-width:0}
+  #rd-site .searchbar input::placeholder{color:var(--gray-500);font-weight:400}
+  #rd-site .hero-meta{display:flex;gap:24px;justify-content:center;margin-top:20px;font-size:13.5px;color:var(--gray-600);font-weight:500}
+  #rd-site .hero-meta span{display:flex;align-items:center;gap:7px}
+  #rd-site .hero-meta .ck{width:15px;height:8px;border-left:2px solid var(--blue-600);border-bottom:2px solid var(--blue-600);transform:rotate(-45deg)}
+  #rd-site .hero-vis{margin:50px auto 0;max-width:1080px;padding:0 24px}
+  #rd-site .app{background:#fff;border:1px solid var(--gray-200);border-radius:18px 18px 0 0;box-shadow:var(--sh-lg);overflow:hidden;text-align:left}
+  #rd-site .app-top{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--gray-200)}
+  #rd-site .app-top .tl{width:11px;height:11px;border-radius:50%;background:var(--gray-300)}
+  #rd-site .app-top .title{margin-left:10px;font-size:13px;font-weight:600;color:var(--gray-600)}
+  #rd-site .app-top .pillc{margin-left:auto;font-size:12px;font-weight:600;background:var(--blue-50);color:var(--blue-700);padding:5px 12px;border-radius:100px}
+  #rd-site .app-body{display:flex;height:330px}
+  #rd-site .app-side{width:200px;border-right:1px solid var(--gray-200);padding:16px 12px;background:var(--gray-50)}
+  #rd-site .app-side .sec{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);margin:14px 8px 6px}
+  #rd-site .app-side .sec:first-child{margin-top:0}
+  #rd-site .app-side .si{font-size:13px;color:var(--gray-800);padding:8px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;margin-bottom:1px}
+  #rd-site .app-side .si.on{background:var(--white);color:var(--gray-950);font-weight:600;box-shadow:var(--sh-sm)}
+  #rd-site .app-side .si .d{width:13px;height:13px;border-radius:4px;background:var(--gray-300)}
+  #rd-site .app-side .si.on .d{background:var(--blue-600)}
+  #rd-site .app-side .si .ct{margin-left:auto;font-size:11px;background:var(--violet-400);color:var(--gray-950);border-radius:100px;padding:0 7px;font-weight:600}
+  #rd-site .app-list{flex:1;padding:18px 20px;overflow:hidden}
+  #rd-site .app-list .lh{font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.02em;margin-bottom:14px}
+  #rd-site .drow{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid var(--gray-200)}
+  #rd-site .drow:first-of-type{border-top:none}
+  #rd-site .drow .ic{width:30px;height:38px;border-radius:6px;background:var(--blue-50);border:1px solid var(--blue-100);flex-shrink:0}
+  #rd-site .drow .m{flex:1;min-width:0}
+  #rd-site .drow .m .t{font-size:14px;font-weight:600;color:var(--gray-950)}
+  #rd-site .drow .m .s{font-family:var(--f-mono);font-size:10.5px;color:var(--gray-500);margin-top:3px}
+  #rd-site .drow .tg{font-size:11px;font-weight:600;padding:5px 12px;border-radius:100px;white-space:nowrap}
+  #rd-site .drow .tg.a{background:var(--blue-600);color:#fff}
+  #rd-site .drow .tg.d{background:var(--blue-50);color:var(--blue-700)}
+
+  #rd-site .trust{padding:50px 0 56px;background:var(--white)}
+  #rd-site .trust .lab{text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--gray-500);margin-bottom:30px}
+  #rd-site .trust .row{display:flex;align-items:center;justify-content:center;gap:18px 56px;flex-wrap:wrap}
+  #rd-site .trust .ln{font-family:var(--f-display);font-weight:700;font-size:19px;color:var(--gray-300);letter-spacing:-.02em}
+
+  #rd-site .center-title{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,4.6vw,52px);letter-spacing:-.03em;color:var(--gray-950);text-align:center;line-height:1.04}
+  #rd-site .center-title .pop{color:var(--blue-600)}
+  #rd-site .center-sub{font-size:19px;color:var(--gray-600);text-align:center;max-width:600px;margin:16px auto 0;font-weight:500;letter-spacing:-.01em}
+
+  /* CLOUD CARDS — option 13 platform framing, on light */
+  #rd-site .cloudsec{padding:90px 0;background:var(--gray-100)}
+  #rd-site .cloud-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+  #rd-site .cloudcard{background:#fff;border:1px solid var(--gray-200);border-radius:18px;box-shadow:var(--sh-sm);overflow:hidden}
+  #rd-site .cloudcard .bar{height:6px}
+  #rd-site .cloudcard .in{padding:26px}
+  #rd-site .cloudcard .ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  #rd-site .cloudcard h3{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--gray-950);margin-bottom:8px;letter-spacing:-.01em}
+  #rd-site .cloudcard p{font-size:14px;color:var(--gray-600);line-height:1.5;margin-bottom:16px}
+  #rd-site .cloudcard .lk{font-size:13.5px;font-weight:600;color:var(--blue-600)}
+
+  /* WORKFLOW */
+  #rd-site .wfsec{padding:88px 0;background:var(--white)}
+  #rd-site .wf-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:52px}
+  #rd-site .wf-col{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:16px;padding:26px}
+  #rd-site .wf-ic{width:56px;height:56px;border-radius:14px;background:var(--blue-50);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  #rd-site .wf-col .step{font-family:var(--f-mono);font-size:11px;color:var(--violet-600);letter-spacing:.04em;margin-bottom:8px}
+  #rd-site .wf-col h3{font-family:var(--f-display);font-weight:700;font-size:19px;color:var(--gray-950);margin-bottom:9px;letter-spacing:-.01em}
+  #rd-site .wf-col p{font-size:14px;color:var(--gray-600);line-height:1.5}
+
+  /* FEATURE — light & airy (option 12) */
+  #rd-site .featsec{padding:90px 0;background:var(--gray-100)}
+  #rd-site .pillmenu{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:100px;padding:5px;margin:46px auto 56px;width:fit-content;max-width:100%}
+  #rd-site .pillmenu .pm{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--gray-600);padding:10px 18px;border-radius:100px;cursor:default}
+  #rd-site .pillmenu .pm.on{background:var(--blue-600);color:#fff;font-weight:600}
+  #rd-site .feat-row{display:grid;grid-template-columns:.82fr 1.18fr;gap:64px;align-items:center}
+  #rd-site .feat-copy h3{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--gray-950);margin-bottom:28px;letter-spacing:-.025em;line-height:1.08}
+  #rd-site .feat-copy .li{margin-bottom:20px;display:flex;gap:13px}
+  #rd-site .feat-copy .li .ck{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:var(--blue-50);display:flex;align-items:center;justify-content:center;margin-top:1px}
+  #rd-site .feat-copy .li .ck::after{content:"";width:8px;height:5px;border-left:2px solid var(--blue-600);border-bottom:2px solid var(--blue-600);transform:rotate(-45deg);margin-top:-2px}
+  #rd-site .feat-copy .li .k{font-size:16px;font-weight:600;color:var(--gray-950);margin-bottom:2px}
+  #rd-site .feat-copy .li .d{font-size:14.5px;color:var(--gray-600);line-height:1.5}
+  #rd-site .feat-shot{background:var(--wash);border-radius:20px;padding:34px 0 0 34px;height:440px;overflow:hidden;position:relative}
+  #rd-site .feat-shot .toggle{position:absolute;top:18px;left:50%;transform:translateX(-15%);z-index:3;background:var(--white);border-radius:100px;box-shadow:var(--sh-md);display:flex;gap:2px;padding:4px}
+  #rd-site .feat-shot .toggle span{font-size:12px;font-weight:600;color:var(--gray-500);padding:6px 14px;border-radius:100px}
+  #rd-site .feat-shot .toggle span.on{background:var(--blue-600);color:#fff}
+  #rd-site .feat-shot .pillfloat{position:absolute;left:20px;bottom:74px;z-index:3;background:var(--violet-400);color:var(--gray-950);font-size:12.5px;font-weight:600;padding:11px 18px;border-radius:100px;box-shadow:var(--sh-md)}
+  #rd-site .shotcard{background:var(--white);border-radius:14px 0 0 0;box-shadow:var(--sh-md);height:100%;display:flex;overflow:hidden}
+  #rd-site .shotcard .sb{width:160px;border-right:1px solid var(--gray-200);padding:16px 12px;flex-shrink:0;background:var(--gray-50)}
+  #rd-site .shotcard .sb .w{font-family:var(--f-display);font-weight:700;font-size:14px;color:var(--gray-950);margin-bottom:14px;letter-spacing:-.01em}
+  #rd-site .shotcard .sb .sec{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-500);margin:12px 0 6px}
+  #rd-site .shotcard .sb .si{font-size:12px;color:var(--gray-800);padding:7px 9px;border-radius:8px;display:flex;align-items:center;gap:8px;margin-bottom:1px;font-weight:500}
+  #rd-site .shotcard .sb .si.on{background:var(--white);color:var(--gray-950);font-weight:600;box-shadow:var(--sh-sm)}
+  #rd-site .shotcard .sb .si .d{width:11px;height:11px;border-radius:4px;background:var(--gray-300)}
+  #rd-site .shotcard .sb .si.on .d{background:var(--blue-600)}
+  #rd-site .shotcard .list{flex:1;padding:18px;overflow:hidden}
+  #rd-site .shotcard .list .h{font-family:var(--f-display);font-weight:700;font-size:18px;margin-bottom:14px;letter-spacing:-.01em}
+  #rd-site .shotcard .lr{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--gray-200)}
+  #rd-site .shotcard .lr:first-of-type{border-top:none}
+  #rd-site .shotcard .lr .di{width:28px;height:34px;border-radius:5px;background:var(--blue-50);border:1px solid var(--blue-100);flex-shrink:0}
+  #rd-site .shotcard .lr .m{flex:1}
+  #rd-site .shotcard .lr .m .t{font-size:12.5px;font-weight:600;color:var(--gray-950)}
+  #rd-site .shotcard .lr .m .s{font-family:var(--f-mono);font-size:10px;color:var(--gray-500);margin-top:2px}
+  #rd-site .shotcard .lr .tg{font-size:9.5px;font-weight:600;padding:4px 10px;border-radius:100px}
+  #rd-site .shotcard .lr .tg.a{background:var(--blue-600);color:#fff}
+  #rd-site .shotcard .lr .tg.d{background:var(--blue-50);color:var(--blue-700)}
+
+  /* THE FLOCK — indigo color block (option 13 confident moment) */
+  #rd-site .flocksec{padding:50px 56px}
+  #rd-site .flock-band{max-width:1228px;margin:0 auto;background:var(--indigo);border-radius:28px;padding:64px 56px;position:relative;overflow:hidden;color:#fff}
+  #rd-site .flock-band::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(172,159,226,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(172,159,226,.06) 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(620px 400px at 78% 0,#000,transparent 72%);-webkit-mask-image:radial-gradient(620px 400px at 78% 0,#000,transparent 72%)}
+  #rd-site .flock-band::after{content:"";position:absolute;top:-120px;right:-80px;width:420px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(122,203,203,.2),transparent 64%)}
+  #rd-site .flock-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  #rd-site .flock-copy .eyebrow{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--aqua-400);margin-bottom:14px}
+  #rd-site .flock-copy h2{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,3.6vw,44px);letter-spacing:-.03em;line-height:1.05}
+  #rd-site .flock-copy h2 .pop{color:var(--aqua-400)}
+  #rd-site .flock-copy p{font-size:16px;color:#B7BBD6;margin-top:16px;max-width:420px;font-weight:500;line-height:1.55}
+  #rd-site .flock-copy .ca{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+  #rd-site .flock-diagram{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:28px;backdrop-filter:blur(6px)}
+  #rd-site .flock-node{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  #rd-site .flock-node:last-child{margin-bottom:0}
+  #rd-site .flock-node .dot{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:13px;color:#fff}
+  #rd-site .flock-node .nm{flex:1;font-size:13.5px;font-weight:600;color:#fff}
+  #rd-site .flock-node .st{font-size:11px;font-weight:600;color:var(--aqua-400);background:rgba(122,203,203,.14);padding:4px 10px;border-radius:100px}
+
+  /* VALUE PROPS */
+  #rd-site .valsec{padding:80px 0;background:var(--white)}
+  #rd-site .val-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+  #rd-site .val{text-align:center;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:16px;padding:28px 18px}
+  #rd-site .val .ic{width:50px;height:50px;border-radius:13px;background:var(--blue-50);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  #rd-site .val h4{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--gray-950);margin-bottom:7px;letter-spacing:-.01em}
+  #rd-site .val p{font-size:12.5px;color:var(--gray-600);line-height:1.5}
+
+  /* STATS — light wash band (calm) */
+  #rd-site .statsec{padding:70px 0;background:var(--gray-100)}
+  #rd-site .stat-panel{max-width:1228px;margin:0 auto;background:var(--wash-soft);border:1px solid var(--gray-200);border-radius:24px;display:flex;flex-wrap:wrap}
+  #rd-site .stat{flex:1;min-width:160px;padding:40px 28px;border-left:1px solid rgba(25,19,70,.08);text-align:center}
+  #rd-site .stat:first-child{border-left:none}
+  #rd-site .stat .n{font-family:var(--f-display);font-weight:800;font-size:46px;color:var(--gray-950);letter-spacing:-.03em;line-height:1}
+  #rd-site .stat .n .u{color:var(--blue-600)}
+  #rd-site .stat .l{font-size:13px;color:var(--gray-600);margin-top:10px;line-height:1.45}
+
+  /* PRICING — confident block teaser (13) */
+  #rd-site .pricesec{padding:88px 0;background:var(--white)}
+  #rd-site .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:50px}
+  #rd-site .price{background:var(--white);border:1px solid var(--gray-200);border-radius:18px;padding:26px 22px;box-shadow:var(--sh-sm);position:relative}
+  #rd-site .price.feat{background:var(--indigo);color:#fff;border-color:var(--indigo);box-shadow:var(--sh-lg)}
+  #rd-site .price .pn{font-family:var(--f-display);font-weight:700;font-size:17px;margin-bottom:4px}
+  #rd-site .price .pp{font-family:var(--f-display);font-weight:800;font-size:34px;letter-spacing:-.03em;margin:10px 0 2px}
+  #rd-site .price .pp .per{font-family:var(--f-body);font-size:14px;font-weight:500;color:var(--gray-500)}
+  #rd-site .price.feat .pp .per{color:#9A9DC0}
+  #rd-site .price .pd{font-size:13px;color:var(--gray-500);margin-bottom:18px;min-height:38px}
+  #rd-site .price.feat .pd{color:#B7BBD6}
+  #rd-site .price ul{list-style:none;margin-bottom:20px}
+  #rd-site .price li{font-size:13px;color:var(--gray-600);padding:6px 0 6px 22px;position:relative}
+  #rd-site .price.feat li{color:#D7D9EC}
+  #rd-site .price li::before{content:"";position:absolute;left:0;top:10px;width:8px;height:5px;border-left:2px solid var(--blue-600);border-bottom:2px solid var(--blue-600);transform:rotate(-45deg)}
+  #rd-site .price.feat li::before{border-color:var(--aqua-400)}
+  #rd-site .price .tag{position:absolute;top:-11px;right:18px;font-size:11px;font-weight:700;background:var(--aqua-400);color:var(--indigo);padding:4px 12px;border-radius:100px}
+  #rd-site .price .btn{width:100%;justify-content:center}
+
+  /* TESTIMONIALS */
+  #rd-site .testsec{padding:88px 0;background:var(--gray-100)}
+  #rd-site .tcards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  #rd-site .tc{background:var(--white);border:1px solid var(--gray-200);border-radius:18px;padding:30px;box-shadow:var(--sh-sm);display:flex;flex-direction:column}
+  #rd-site .tc .stars{color:var(--violet-500);font-size:14px;letter-spacing:2px;margin-bottom:14px}
+  #rd-site .tc blockquote{font-size:17px;line-height:1.45;color:var(--gray-950);font-weight:500;flex:1;letter-spacing:-.01em}
+  #rd-site .tc .who{display:flex;align-items:center;gap:12px;border-top:1px solid var(--gray-200);padding-top:18px;margin-top:22px}
+  #rd-site .tc .who .av{width:42px;height:42px;border-radius:50%;flex-shrink:0}
+  #rd-site .tc .who .av.a{background:var(--violet-200)}#rd-site .tc .who .av.b{background:var(--aqua-400)}#rd-site .tc .who .av.c{background:var(--blue-300)}
+  #rd-site .tc .who .nm{font-size:13.5px;font-weight:700;color:var(--gray-950)}
+  #rd-site .tc .who .ti{font-size:12px;color:var(--gray-500);margin-top:2px}
+
+  #rd-site .intsec{padding:70px 0;background:var(--white);text-align:center;border-top:1px solid var(--gray-200)}
+  #rd-site .intsec .lab{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--gray-500);margin-bottom:34px}
+  #rd-site .int-row{display:flex;align-items:center;justify-content:center;gap:24px 56px;flex-wrap:wrap;margin-bottom:24px}
+  #rd-site .int-row .ln{font-family:var(--f-display);font-weight:700;font-size:22px;color:var(--gray-300);letter-spacing:-.02em}
+  #rd-site .intsec .more{font-size:15px;font-weight:500;color:var(--blue-600)}
+
+  /* CTA — airy wash (calm close) */
+  #rd-site .ctasec{padding:30px 0 60px}
+  #rd-site .cta-band{max-width:1228px;margin:0 auto;background:var(--wash);border-radius:28px;padding:72px 40px;text-align:center;position:relative;overflow:hidden}
+  #rd-site .cta-band::before{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;opacity:.5;background-image:linear-gradient(90deg,rgba(34,63,170,.07) 1px,transparent 1px);background-size:9px 100%;mask-image:linear-gradient(to top,#000,transparent);-webkit-mask-image:linear-gradient(to top,#000,transparent)}
+  #rd-site .cta-band .in{position:relative;z-index:1}
+  #rd-site .cta-band h2{font-family:var(--f-display);font-weight:800;font-size:clamp(32px,4vw,52px);letter-spacing:-.035em;color:var(--gray-950);line-height:1.0;max-width:16ch;margin:0 auto}
+  #rd-site .cta-band p{font-size:18px;color:var(--gray-600);margin-top:16px;font-weight:500}
+  #rd-site .cta-band .ca{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+
+  #rd-site footer.ft{background:var(--white);padding:56px 0 40px;border-top:1px solid var(--gray-200);font-size:12px;color:var(--gray-500);line-height:1.6}
+  #rd-site .ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.4fr;gap:32px;padding-bottom:36px;border-bottom:1px solid var(--gray-200)}
+  #rd-site .ft .brand{margin-bottom:12px}
+  #rd-site .ft .blurb{font-size:13px;color:var(--gray-600);max-width:220px;line-height:1.55}
+  #rd-site .ft h5{font-size:12px;font-weight:600;color:var(--gray-950);margin-bottom:14px}
+  #rd-site .ft a{display:block;font-size:13px;margin-bottom:10px;color:var(--gray-600)}
+  #rd-site .ft a:hover{color:var(--blue-600)}
+  #rd-site .ft .news p{font-size:13px;color:var(--gray-600);margin-bottom:12px;line-height:1.5}
+  #rd-site .ft .news .form{display:flex;gap:8px}
+  #rd-site .ft .news input{flex:1;border:1px solid var(--gray-300);border-radius:11px;padding:10px 15px;font-family:var(--f-body);font-size:13px;background:var(--white);outline:none}
+  #rd-site .ft-bot{padding-top:22px;display:flex;gap:8px 22px;flex-wrap:wrap}
+  #rd-site .ft-bot .right{margin-left:auto}
+
+  @media(max-width:1000px){
+    #rd-site .wrap{padding:0 24px}
+    #rd-site .feat-row,#rd-site .flock-inner{grid-template-columns:1fr;gap:36px}#rd-site .feat-shot{height:auto;min-height:380px}
+    #rd-site .cloud-grid,#rd-site .wf-cols,#rd-site .val-grid,#rd-site .price-grid{grid-template-columns:repeat(2,1fr)}
+    #rd-site .tcards{grid-template-columns:1fr}
+    #rd-site .nav-mid{display:none}
+    #rd-site .app-side{display:none}
+    #rd-site .stat{border-left:none}
+    #rd-site .ft-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+
+<div id="rd-site">
+
+  <div class="promo">Try RobinDock free for 30 days &nbsp;·&nbsp; <a>The document platform built for vet teams →</a></div>
+
+  <div class="navbar"><div class="wrap"><div class="nav-inner">
+    <div class="brand"><div class="mark"><div class="b"></div></div><div class="word">RobinDock</div></div>
+    <div class="nav-mid"><a>Platform <span class="ca">▾</span></a><a>For Practices <span class="ca">▾</span></a><a>The Flock</a><a>Pricing</a><a>Resources <span class="ca">▾</span></a></div>
+    <div class="nav-right"><a class="login">Log in</a><a class="btn btn-blue">Get a demo</a></div>
+  </div></div></div>
+
+  <!-- HERO (calm/airy) -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">DOCUMENT MANAGEMENT, MADE FOR VETERINARIANS</span>
+      <h1>Calm, secure, in order.</h1>
+      <div class="sub">The vertical document platform for veterinary clinics — captured, organized, and routed, automatically.</div>
+      <div class="searchbar">
+        <input placeholder="Enter your clinic's fax number" />
+        <button class="btn btn-blue btn-lg">Get started</button>
+      </div>
+      <div class="hero-meta">
+        <span><span class="ck"></span>30-day free trial</span>
+        <span><span class="ck"></span>No credit card</span>
+        <span><span class="ck"></span>Keep your number</span>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="app">
+        <div class="app-top"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="title">RobinDock — Inbox</span><span class="pillc">3 need routing</span></div>
+        <div class="app-body">
+          <div class="app-side">
+            <div class="sec">Track</div>
+            <div class="si on"><span class="d"></span>Inbox<span class="ct">12</span></div>
+            <div class="si"><span class="d"></span>All Documents</div>
+            <div class="si"><span class="d"></span>Starred</div>
+            <div class="sec">Organize</div>
+            <div class="si"><span class="d"></span>Patients</div>
+            <div class="si"><span class="d"></span>The Flock</div>
+            <div class="sec">Review</div>
+            <div class="si"><span class="d"></span>Needs Review</div>
+          </div>
+          <div class="app-list">
+            <div class="lh">Inbox</div>
+            <div class="drow"><div class="ic"></div><div class="m"><div class="t">CBC Results — Bella</div><div class="s">Antech · 8:47 AM · 1pp</div></div><span class="tg a">Tag to pet</span></div>
+            <div class="drow"><div class="ic"></div><div class="m"><div class="t">Referral — Max</div><div class="s">Lakeside Vet · 8:31 AM · 2pp</div></div><span class="tg d">Routed</span></div>
+            <div class="drow"><div class="ic"></div><div class="m"><div class="t">Radiology Report</div><div class="s">Vet Imaging · Yesterday · 3pp</div></div><span class="tg d">Routed</span></div>
+            <div class="drow"><div class="ic"></div><div class="m"><div class="t">Vaccine record — Luna</div><div class="s">via Flock · Yesterday · 1pp</div></div><span class="tg d">Routed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="trust"><div class="wrap">
+    <div class="lab">Trusted by veterinary practices of all sizes</div>
+    <div class="row">
+      <span class="ln">Mountain West</span><span class="ln">Bark City</span><span class="ln">South Mountain</span><span class="ln">Wasatch ER</span><span class="ln">Canyon Vet</span>
+    </div>
+  </div></section>
+
+  <!-- CLOUD CARDS (platform framing, light) -->
+  <section class="cloudsec"><div class="wrap">
+    <h2 class="center-title">One platform, <span class="pop">three clouds.</span></h2>
+    <p class="center-sub">Everything your clinic's documents need — capture, organize, and exchange — in one connected system.</p>
+    <div class="cloud-grid">
+      <div class="cloudcard"><div class="bar" style="background:#223FAA"></div><div class="in"><div class="ic" style="background:#EEF1FB"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#223FAA" stroke-width="1.8"/><path d="M4 10h6l1.5 2.5h3" stroke="#223FAA" stroke-width="1.8"/></svg></div><h3>Document Cloud</h3><p>Every fax, lab result, and referral captured, previewed, and organized automatically.</p><span class="lk">Explore Document Cloud →</span></div></div>
+      <div class="cloudcard"><div class="bar" style="background:#AC9FE2"></div><div class="in"><div class="ic" style="background:#F1EEFB"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.4" stroke="#7E6BCB" stroke-width="1.8"/><path d="M5 19c0-4 3.5-6.5 7-6.5s7 2.5 7 6.5" stroke="#7E6BCB" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3>Patient Cloud</h3><p>Tag any document to the right patient and build a complete, searchable timeline.</p><span class="lk" style="color:#7E6BCB">Explore Patient Cloud →</span></div></div>
+      <div class="cloudcard"><div class="bar" style="background:#7CCBCB"></div><div class="in"><div class="ic" style="background:#DEF4F4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="18" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="12" cy="17" r="2.4" stroke="#2d7373" stroke-width="1.8"/><path d="M8 8l3 6M16 8l-3 6" stroke="#2d7373" stroke-width="1.8"/></svg></div><h3>Flock Network</h3><p>Exchange documents directly between connected practices — no fax round-trip.</p><span class="lk" style="color:#2d7373">Explore the Flock →</span></div></div>
+    </div>
+  </div></section>
+
+  <!-- WORKFLOW -->
+  <section class="wfsec"><div class="wrap">
+    <h2 class="center-title">Everything in <span class="pop">its place.</span></h2>
+    <p class="center-sub">RobinDock captures incoming documents, organizes them by patient, and routes them where your team needs them.</p>
+    <div class="wf-cols">
+      <div class="wf-col">
+        <div class="wf-ic"><svg width="26" height="26" viewBox="0 0 64 64" fill="none"><rect x="12" y="16" width="40" height="40" rx="6" stroke="#223FAA" stroke-width="3.5"/><path d="M32 16v22M22 30l10 10 10-10" stroke="#AC9FE2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="step">01</div><h3>Capture</h3><p>Faxes, referrals, and records arrive previewed and page-counted.</p>
+      </div>
+      <div class="wf-col">
+        <div class="wf-ic"><svg width="26" height="26" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="26" r="11" stroke="#223FAA" stroke-width="3.5"/><path d="M16 52c0-9 7-15 16-15s16 6 16 15" stroke="#223FAA" stroke-width="3.5" stroke-linecap="round"/><path d="M42 24l5 5 9-10" stroke="#AC9FE2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="step">02</div><h3>Tag</h3><p>Attach any document to the right patient in two clicks.</p>
+      </div>
+      <div class="wf-col">
+        <div class="wf-ic"><svg width="26" height="26" viewBox="0 0 64 64" fill="none"><circle cx="20" cy="20" r="8" stroke="#223FAA" stroke-width="3.5"/><circle cx="20" cy="56" r="6" stroke="#223FAA" stroke-width="3.5"/><circle cx="52" cy="38" r="8" stroke="#AC9FE2" stroke-width="3.5"/><path d="M28 20h8c5 0 8 5 8 16M26 53h10c5 0 8-4 8-13" stroke="#223FAA" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+        <div class="step">03</div><h3>Route</h3><p>Deliver to the right person or chart, with full status tracking.</p>
+      </div>
+      <div class="wf-col">
+        <div class="wf-ic"><svg width="26" height="26" viewBox="0 0 64 64" fill="none"><rect x="14" y="28" width="36" height="24" rx="5" stroke="#223FAA" stroke-width="3.5"/><path d="M22 28v-5a10 10 0 0120 0v5" stroke="#223FAA" stroke-width="3.5"/><circle cx="32" cy="40" r="3.5" fill="#AC9FE2"/></svg></div>
+        <div class="step">04</div><h3>Store</h3><p>Secure, searchable, and always on the right patient's record.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- FEATURE (airy) -->
+  <section class="featsec"><div class="wrap">
+    <h2 class="center-title">Everything you <span class="pop">need.</span></h2>
+    <p class="center-sub">A complete document workflow, built for the way veterinary teams work.</p>
+    <div class="pillmenu">
+      <div class="pm on">Inbox</div><div class="pm">Patient timeline</div><div class="pm">Routing</div><div class="pm">The Flock</div><div class="pm">Search</div><div class="pm">Access</div>
+    </div>
+    <div class="feat-row">
+      <div class="feat-copy">
+        <h3>An inbox that doesn't feel like a fax machine</h3>
+        <div class="li"><span class="ck"></span><div><div class="k">Live preview</div><div class="d">Read every document without printing a page.</div></div></div>
+        <div class="li"><span class="ck"></span><div><div class="k">Tag to a pet</div><div class="d">Attach any document to the right patient in two clicks.</div></div></div>
+        <div class="li"><span class="ck"></span><div><div class="k">One shared queue</div><div class="d">Your whole team works the same organized inbox.</div></div></div>
+        <div class="li"><span class="ck"></span><div><div class="k">Status at a glance</div><div class="d">New, routed, and waiting states on every document.</div></div></div>
+      </div>
+      <div class="feat-shot">
+        <div class="toggle"><span class="on">Inbox</span><span>Folders</span><span>Sent</span></div>
+        <div class="pillfloat">Tag to a pet</div>
+        <div class="shotcard">
+          <div class="sb">
+            <div class="w">RobinDock</div>
+            <div class="sec">Track</div>
+            <div class="si on"><span class="d"></span>Inbox</div>
+            <div class="si"><span class="d"></span>All Documents</div>
+            <div class="sec">Organize</div>
+            <div class="si"><span class="d"></span>Patients</div>
+            <div class="si"><span class="d"></span>The Flock</div>
+            <div class="sec">Review</div>
+            <div class="si"><span class="d"></span>Needs Review</div>
+          </div>
+          <div class="list">
+            <div class="h">Inbox</div>
+            <div class="lr"><div class="di"></div><div class="m"><div class="t">CBC Results — Bella</div><div class="s">Antech · 8:47 AM</div></div><span class="tg a">Tag</span></div>
+            <div class="lr"><div class="di"></div><div class="m"><div class="t">Referral — Max</div><div class="s">Lakeside · 8:31 AM</div></div><span class="tg d">Routed</span></div>
+            <div class="lr"><div class="di"></div><div class="m"><div class="t">Radiology Report</div><div class="s">Vet Imaging · Yesterday</div></div><span class="tg d">Routed</span></div>
+            <div class="lr"><div class="di"></div><div class="m"><div class="t">Bloodwork Results</div><div class="s">Idexx · Yesterday</div></div><span class="tg d">Routed</span></div>
+            <div class="lr"><div class="di"></div><div class="m"><div class="t">Vaccine record — Luna</div><div class="s">via Flock · May 13</div></div><span class="tg d">Routed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- THE FLOCK (confident indigo block — the platform/network moment) -->
+  <section class="flocksec"><div class="flock-band"><div class="flock-inner">
+    <div class="flock-copy">
+      <div class="eyebrow">THE FLOCK · NETWORK</div>
+      <h2>Your practice, <span class="pop">connected.</span></h2>
+      <p>When the clinics you work with are on RobinDock, documents move between you instantly — referrals, records, and results, with no fax round-trip. The more of your network joins, the less paper everyone chases.</p>
+      <div class="ca"><a class="btn btn-onblock btn-lg">Explore the Flock</a><a class="btn btn-ghost-block btn-lg">See who's connected</a></div>
+    </div>
+    <div class="flock-diagram">
+      <div class="flock-node"><div class="dot" style="background:#223FAA">MW</div><div class="nm">Mountain West Specialists</div><div class="st">Connected</div></div>
+      <div class="flock-node"><div class="dot" style="background:#7E6BCB">BC</div><div class="nm">Bark City Veterinary</div><div class="st">Connected</div></div>
+      <div class="flock-node"><div class="dot" style="background:#7CCBCB;color:#173E2E">SM</div><div class="nm">South Mountain Pet Care</div><div class="st">Connected</div></div>
+      <div class="flock-node" style="opacity:.6"><div class="dot" style="background:rgba(255,255,255,.2)">+</div><div class="nm">Invite a practice…</div></div>
+    </div>
+  </div></div></section>
+
+  <!-- VALUE PROPS -->
+  <section class="valsec"><div class="wrap">
+    <h2 class="center-title" style="margin-bottom:8px">Built for veterinary teams.</h2>
+    <p class="center-sub" style="margin-bottom:50px">The details that matter, handled.</p>
+    <div class="val-grid">
+      <div class="val"><div class="ic"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><rect x="16" y="26" width="32" height="24" rx="5" stroke="#223FAA" stroke-width="3.5"/><path d="M24 26v-5a8 8 0 0116 0v5" stroke="#223FAA" stroke-width="3.5"/></svg></div><h4>HIPAA Compliant</h4><p>Built for security and peace of mind.</p></div>
+      <div class="val"><div class="ic"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><path d="M32 12l18 7v12c0 12-8 20-18 24-10-4-18-12-18-24V19l18-7z" stroke="#223FAA" stroke-width="3.5" stroke-linejoin="round"/></svg></div><h4>Secure & Encrypted</h4><p>Your documents are always protected.</p></div>
+      <div class="val"><div class="ic"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><path d="M10 22a4 4 0 014-4h14l6 6h16a4 4 0 014 4v22a4 4 0 01-4 4H14a4 4 0 01-4-4V22z" stroke="#223FAA" stroke-width="3.5" stroke-linejoin="round"/></svg></div><h4>Organized Automatically</h4><p>Documents sorted and tagged for you.</p></div>
+      <div class="val"><div class="ic"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="20" stroke="#223FAA" stroke-width="3.5"/><path d="M32 20v12l8 5" stroke="#AC9FE2" stroke-width="3.5" stroke-linecap="round"/></svg></div><h4>Save Hours Each Week</h4><p>Less admin. More time for patients.</p></div>
+      <div class="val"><div class="ic"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><path d="M16 40v-8a16 16 0 0132 0v8" stroke="#223FAA" stroke-width="3.5"/><rect x="12" y="38" width="9" height="14" rx="3" stroke="#223FAA" stroke-width="3.5"/><rect x="43" y="38" width="9" height="14" rx="3" stroke="#223FAA" stroke-width="3.5"/></svg></div><h4>U.S.-Based Support</h4><p>Real people who understand vet med.</p></div>
+    </div>
+  </div></section>
+
+  <!-- STATS (calm wash) -->
+  <section class="statsec"><div class="wrap"><div class="stat-panel">
+    <div class="stat"><div class="n">3,500<span class="u">+</span></div><div class="l">Vet teams trust RobinDock</div></div>
+    <div class="stat"><div class="n">2.4M<span class="u">+</span></div><div class="l">Documents handled monthly</div></div>
+    <div class="stat"><div class="n">38<span class="u">%</span></div><div class="l">Average time saved each week</div></div>
+    <div class="stat"><div class="n">99.99<span class="u">%</span></div><div class="l">Uptime you can count on</div></div>
+  </div></div></section>
+
+  <!-- PRICING (confident teaser w/ one indigo block) -->
+  <section class="pricesec"><div class="wrap">
+    <h2 class="center-title">Pricing that grows <span class="pop">with you.</span></h2>
+    <p class="center-sub">From a single practice to a connected group — one platform, plans for every size.</p>
+    <div class="price-grid">
+      <div class="price"><div class="pn">Solo</div><div class="pp">$99<span class="per">/mo</span></div><div class="pd">For a single practice getting organized.</div><ul><li>1 location</li><li>Unlimited Flock exchange</li><li>500 fax pages/mo</li><li>Email support</li></ul><a class="btn btn-light">Start free</a></div>
+      <div class="price feat"><span class="tag">Most popular</span><div class="pn">Practice</div><div class="pp">$199<span class="per">/mo</span></div><div class="pd">For busy clinics with a full team.</div><ul><li>1 location, unlimited users</li><li>Unlimited Flock exchange</li><li>2,000 fax pages/mo</li><li>Priority support</li></ul><a class="btn btn-onblock">Get a demo</a></div>
+      <div class="price"><div class="pn">Multi</div><div class="pp">$379<span class="per">/mo</span></div><div class="pd">For multi-location practices.</div><ul><li>Up to 5 locations</li><li>Shared patient timeline</li><li>5,000 fax pages/mo</li><li>Onboarding included</li></ul><a class="btn btn-light">Start free</a></div>
+      <div class="price"><div class="pn">Group</div><div class="pp">$799<span class="per">+/mo</span></div><div class="pd">For corporate &amp; specialty groups.</div><ul><li>Unlimited locations</li><li>Group analytics</li><li>Custom integrations</li><li>Dedicated success</li></ul><a class="btn btn-light">Talk to sales</a></div>
+    </div>
+  </div></section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testsec"><div class="wrap">
+    <h2 class="center-title" style="margin-bottom:50px">What veterinary teams say.</h2>
+    <div class="tcards">
+      <div class="tc"><div class="stars">★★★★★</div><blockquote>"RobinDock completely changed how we handle incoming documents. It's organized, secure, and saves our team so much time every day."</blockquote><div class="who"><span class="av a"></span><div><div class="nm">Dr. Megan Lewis, DVM</div><div class="ti">Maple Creek Animal Hospital</div></div></div></div>
+      <div class="tc"><div class="stars">★★★★★</div><blockquote>"Finally, a document platform that understands vet medicine. Routing, folders, tags — it just works the way our team thinks."</blockquote><div class="who"><span class="av b"></span><div><div class="nm">Brittany R.</div><div class="ti">Hospital Manager, River Oaks</div></div></div></div>
+      <div class="tc"><div class="stars">★★★★★</div><blockquote>"We used to lose faxes and chase results. Now everything's in one place and nothing falls through the cracks."</blockquote><div class="who"><span class="av c"></span><div><div class="nm">Dr. James Park, DVM</div><div class="ti">Paw & Claw Veterinary Clinic</div></div></div></div>
+    </div>
+  </div></section>
+
+  <section class="intsec"><div class="wrap">
+    <div class="lab">Connects with the tools you already use</div>
+    <div class="int-row"><span class="ln">IDEXX</span><span class="ln">Covetrus</span><span class="ln">ezyVet</span><span class="ln">AVImark</span><span class="ln">Cornerstone</span></div>
+    <a class="more">View all integrations →</a>
+  </div></section>
+
+  <section class="ctasec"><div class="wrap"><div class="cta-band"><div class="in">
+    <h2>Ready to get your documents in order?</h2>
+    <p>Try RobinDock free for 30 days. No credit card required.</p>
+    <div class="ca"><a class="btn btn-blue btn-lg">Get started</a><a class="btn btn-light btn-lg">Book a demo</a></div>
+  </div></div></div></section>
+
+  <footer class="ft"><div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <div class="brand" style="display:flex;align-items:center;gap:9px">
+          <div class="mark" style="width:28px;height:28px"><div class="b"></div></div><span class="word" style="font-size:18px">RobinDock</span>
+        </div>
+        <p class="blurb">The trusted document platform built for veterinary teams.</p>
+      </div>
+      <div><h5>Platform</h5><a>Document Cloud</a><a>Patient Cloud</a><a>The Flock</a><a>Security</a><a>Pricing</a></div>
+      <div><h5>For Practices</h5><a>Veterinary Clinics</a><a>Multi-Location</a><a>PIMS Integrations</a></div>
+      <div><h5>Resources</h5><a>Help Center</a><a>Documentation</a><a>Blog</a><a>Status</a></div>
+      <div class="news"><h5>Stay in the loop</h5><p>Tips and product updates for veterinary teams.</p><div class="form"><input placeholder="Email address" /><a class="btn btn-blue">Subscribe</a></div></div>
+    </div>
+    <div class="ft-bot"><span>© 2026 RobinDock, Inc. All rights reserved.</span><span>Privacy</span><span>Terms</span><span>Security</span><span class="right">robindock.com</span></div>
+  </div></footer>
+
+</div>

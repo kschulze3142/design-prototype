@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RobinDock — Sent Detail</title>
+<link rel="icon" type="image/svg+xml" href="../design-system/robindock-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../design-system/foundations.css" />
+<link rel="stylesheet" href="../design-system/components.css" />
+<link rel="stylesheet" href="../design-system/components-ext.css" />
+<link rel="stylesheet" href="../design-system/app-shell.css" />
+<link rel="stylesheet" href="outbound.css" />
+<link rel="stylesheet" href="sent-detail.css" />
+</head>
+<body class="app-body">
+
+<!-- ============ RobinDock mark (reusable SVG symbol) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rdIconGrad" x1="70" y1="55" x2="445" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3D5AC7"></stop><stop offset="1" stop-color="#223FAA"></stop>
+    </linearGradient>
+    <clipPath id="rdBirdClip">
+      <path d="M88 420 C103 354 121 278 142 204 C159 144 205 103 260 103 C309 103 348 128 370 169 L425 169 L372 208 L372 308 C372 371 323 420 260 420 Z"></path>
+    </clipPath>
+    <symbol id="rdMark" viewBox="0 0 512 512">
+      <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#rdIconGrad)"></rect>
+      <path d="M88 420 C103 354 121 278 142 204 C159 144 205 103 260 103 C309 103 348 128 370 169 L425 169 L372 208 L372 308 C372 371 323 420 260 420 Z" fill="#FFFFFF"></path>
+      <path d="M205 420 C256 414 302 389 334 351 C359 321 372 286 372 247 L372 208 Z" fill="#AAE2E2" clip-path="url(#rdBirdClip)"></path>
+      <circle cx="285" cy="163" r="19" fill="#223FAA"></circle>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- ============================ LEFT RAIL ============================ -->
+  <aside class="app-rail">
+    <div class="rail-head">
+      <svg class="mark" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+      <span class="logo-word">Robin<span class="dk">Dock</span></span>
+    </div>
+
+    <div class="rail-body">
+      <div class="compose">
+        <a class="compose-btn" href="../compose/Robin Dock - Composer.html" title="Compose">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 20h4l10-10a2.1 2.1 0 00-3-3L5 17v3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span class="nl">Compose</span>
+        </a>
+      </div>
+
+      <div class="navsec">Workspace</div>
+      <a class="nav-i" data-nav="inbox" href="../inbox/Robin Dock - Inbox.html" title="Inbox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 13l2.5-7A2 2 0 018.4 4.7h7.2a2 2 0 011.9 1.3L20 13M4 13v4.5A1.5 1.5 0 005.5 19h13a1.5 1.5 0 001.5-1.5V13M4 13h4l1.5 2.5h5L16 13h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="nl">Inbox</span><span class="ct">412</span>
+      </a>
+      <a class="nav-i" data-nav="cases" href="../cases/Robin Dock - Cases.html" title="Cases">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span class="nl">Cases</span><span class="ct">38</span>
+      </a>
+      <a class="nav-i on" data-nav="outbound" href="Robin Dock - Outbound.html" title="Outbound">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h11m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 5v14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="nl">Outbound</span>
+      </a>
+      <a class="nav-i" data-nav="clients" href="../clients/Robin Dock - Clients.html" title="Clients">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 19c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="nl">Clients</span>
+      </a>
+      <a class="nav-i" data-nav="contacts" href="../contacts/Robin Dock - Contacts.html" title="Contacts">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="11" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 16c.5-1.6 1.7-2.2 3-2.2s2.5.6 3 2.2M15 9h3M15 13h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span class="nl">Contacts</span>
+      </a>
+    </div>
+
+    <div class="rail-util">
+      <a class="nav-i" data-nav="connected" href="#/connected" title="Connected Apps">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="4" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="13" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.7"/><path d="M16.5 13.5v6M13.5 16.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="nl">Connected Apps</span>
+      </a>
+      <a class="nav-i" data-nav="audit" href="#/audit" title="Audit">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l3 3v13a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="nl">Audit</span>
+      </a>
+      <a class="nav-i" data-nav="settings" href="#/settings" title="Settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3m14.5-6.5l-1.8 1.8M8.3 15.7L6.5 17.5m11 0l-1.8-1.8M8.3 8.3L6.5 6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="nl">Settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============================ MAIN COLUMN ============================ -->
+  <div class="app-main">
+    <header class="app-top">
+      <span class="iconbtn rail-toggle" id="railToggle" title="Collapse sidebar">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </span>
+      <a class="app-crumb" href="Robin Dock - Outbound.html">Outbound</a>
+      <span class="app-crumb-sep">/</span>
+      <span class="app-title" id="appTitle">Sent detail</span>
+
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#838599" stroke-width="1.8"/><path d="M16 16l4 4" stroke="#838599" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input placeholder="Search cases, documents, clients…" aria-label="Global search" />
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <div class="top-right">
+        <button class="orgsw" title="Current practice">
+          <span class="obadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 20V8l5-3 5 3v12M5 20h14M5 20V8m10 12V8l4 2.5V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="oname">Mountain West Veterinary</span>
+          <span class="och">▾</span>
+        </button>
+
+        <div class="bellwrap">
+          <span class="bell" id="bellBtn" title="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 21a2 2 0 01-3 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span class="nd" id="bellDot"></span>
+          </span>
+          <div class="notif" id="notifPanel">
+            <div class="nh"><h4>Notifications</h4><span class="mark-read" id="clearNotif">Clear all</span></div>
+            <div class="nlist" id="notifList">
+              <div class="ni unread"><span class="nic" style="background:var(--bad-bg);color:var(--bad)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="ntext"><div class="nt">A referral to <b>Wasatch Veterinary Surgical</b> failed after 3 retries.</div><div class="nw">just now</div></div></div>
+              <div class="ni"><span class="nic" style="background:var(--ok-bg);color:var(--ok)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="ntext"><div class="nt">Records request to <b>Paws &amp; Claws</b> delivered.</div><div class="nw">40 min ago</div></div></div>
+            </div>
+            <div class="nfoot"><a href="#/audit">View all activity →</a></div>
+          </div>
+        </div>
+
+        <div class="usermenu">
+          <div class="utrigger" id="userBtn">
+            <span class="av blue" style="--av:34px">KS</span>
+            <span class="uch">▾</span>
+          </div>
+          <div class="menu" id="userPanel" style="width:230px">
+            <div class="mhead"><span class="av blue" style="--av:38px">KS</span><div><div class="mn">Kai Sandoval</div><div class="mr">Front desk · Mountain West</div></div></div>
+            <a class="mi" href="#/profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 19c0-3.4 2.9-5.5 6.5-5.5s6.5 2.1 6.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Profile</a>
+            <a class="mi" href="#/settings"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M12 4v2M12 18v2M20 12h-2M6 12H4m13-5l-1.5 1.5M8.5 15.5L7 17m10 0l-1.5-1.5M8.5 8.5L7 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Settings</a>
+            <div class="msep"></div>
+            <a class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h7a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12H9m10 0l-3-3m3 3l-3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Log out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content" id="appContent"><!-- sent detail renders here --></main>
+  </div>
+
+</div>
+
+<!-- access-logged / action toasts mount -->
+<div class="logtoasts" id="logToasts"></div>
+
+<script src="outbound-data.js"></script>
+<script src="sent-detail.js"></script>
+
+<!-- shell chrome: rail collapse + dropdowns -->
+<script>
+(function () {
+  var app = document.getElementById('app');
+  var KEY = 'rd_rail_collapsed';
+  if (localStorage.getItem(KEY) === '1') app.classList.add('collapsed');
+  var rt = document.getElementById('railToggle');
+  if (rt) rt.addEventListener('click', function () {
+    app.classList.toggle('collapsed');
+    localStorage.setItem(KEY, app.classList.contains('collapsed') ? '1' : '0');
+  });
+  var notifPanel = document.getElementById('notifPanel');
+  var userPanel = document.getElementById('userPanel');
+  function closeMenus(except) {
+    if (notifPanel && except !== notifPanel) notifPanel.classList.remove('open');
+    if (userPanel && except !== userPanel) userPanel.classList.remove('open');
+  }
+  var bell = document.getElementById('bellBtn');
+  if (bell) bell.addEventListener('click', function (e) {
+    e.stopPropagation(); var open = !notifPanel.classList.contains('open'); closeMenus(notifPanel); notifPanel.classList.toggle('open', open);
+  });
+  var userBtn = document.getElementById('userBtn');
+  if (userBtn) userBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); var open = !userPanel.classList.contains('open'); closeMenus(userPanel); userPanel.classList.toggle('open', open);
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.bellwrap') && !e.target.closest('.usermenu')) closeMenus(null);
+  });
+})();
+</script>
+</body>
+</html>

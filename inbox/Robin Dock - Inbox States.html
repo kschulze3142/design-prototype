@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="design_doc_mode" content="canvas" />
+<title>RobinDock — Inbox · Active States</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#191346; --gray-600:#5A5C77; --gray-500:#838599; --gray-400:#A1A3B5;
+    --gray-300:#D3D6E2; --gray-200:#E7E9F1; --blue-600:#223FAA; --violet-600:#7E6BCB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:#EDEEF4;-webkit-font-smoothing:antialiased}
+
+  .frame{position:absolute}
+  .frame .meta{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px}
+  .frame .num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--violet-600)}
+  .frame .ttl{font-family:'Inter',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.025em;color:var(--ink)}
+  .frame .desc{font-size:14px;color:var(--gray-500);font-weight:500;max-width:64ch;line-height:1.45}
+  .frame .screen{width:1440px;height:900px;border-radius:18px;overflow:hidden;
+    background:#fff;border:1px solid var(--gray-300);box-shadow:0 30px 70px rgba(25,19,70,.16)}
+  .frame iframe{width:1440px;height:900px;border:0;display:block}
+</style>
+</head>
+<body>
+
+  <!-- 1 · Populated (baseline) -->
+  <div class="frame" style="left:120px;top:120px">
+    <div class="meta"><span class="num">01</span><span class="ttl">Populated</span></div>
+    <div class="desc" style="margin:-8px 0 16px">The default moment — the list is the hero. Day-grouped, dense, calm at rest.</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html" title="Inbox — populated"></iframe></div>
+  </div>
+
+  <!-- 2 · Selection / bulk mode -->
+  <div class="frame" style="left:1720px;top:120px">
+    <div class="meta"><span class="num">02</span><span class="ttl">Selection · bulk mode</span></div>
+    <div class="desc" style="margin:-8px 0 16px">Rows checked → a floating bar at bottom-center. It only clears on ✕ / Clear, so it won't vanish on a misclick.</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html?demo=select" title="Inbox — selection"></iframe></div>
+  </div>
+
+  <!-- 3 · Search active -->
+  <div class="frame" style="left:120px;top:1200px">
+    <div class="meta"><span class="num">03</span><span class="ttl">Search active</span></div>
+    <div class="desc" style="margin:-8px 0 16px">Quick-filter chips, then grouped entities — Source · Contact · Client · Patient (one with a Tab hint) — then live documents and an “All results” footer.</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html?demo=search" title="Inbox — search"></iframe></div>
+  </div>
+
+  <!-- 4 · Spam confirm modal -->
+  <div class="frame" style="left:1720px;top:1200px">
+    <div class="meta"><span class="num">04</span><span class="ttl">Spam confirm</span></div>
+    <div class="desc" style="margin:-8px 0 16px">Marking spam asks first and names the sender being blocked — deliberate, because spam blocks a sender (trash is silent + undoable).</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html?demo=spam" title="Inbox — spam confirm"></iframe></div>
+  </div>
+
+  <!-- 5 · Empty — pile cleared -->
+  <div class="frame" style="left:120px;top:2280px">
+    <div class="meta"><span class="num">05</span><span class="ttl">Empty · pile cleared</span></div>
+    <div class="desc" style="margin:-8px 0 16px">Everything handled — a calm, satisfying zero state. A healthy inbox trends here.</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html?demo=empty" title="Inbox — pile cleared"></iframe></div>
+  </div>
+
+  <!-- 6 · Empty — filtered to nothing -->
+  <div class="frame" style="left:1720px;top:2280px">
+    <div class="meta"><span class="num">06</span><span class="ttl">Empty · filtered to nothing</span></div>
+    <div class="desc" style="margin:-8px 0 16px">Filters match nothing — distinct from a truly empty inbox, with a one-tap Clear all filters.</div>
+    <div class="screen"><iframe src="Robin%20Dock%20-%20Inbox.html?demo=filtered" title="Inbox — filtered empty"></iframe></div>
+  </div>
+
+</body>
+</html>

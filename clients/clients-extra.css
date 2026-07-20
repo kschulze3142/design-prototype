@@ -1,0 +1,202 @@
+/* ============================================================
+   RobinDock — Clients prototype · PAGE-SPECIFIC STYLES
+   Builds only on the shared tokens + components. Roster rows,
+   patient-preview, detail layout, account-status, log toast.
+   ============================================================ */
+
+/* ---- content width for these read surfaces ---- */
+.cl-page{max-width:1140px;margin:0 auto}
+
+/* ============================================================
+   CLIENT LIST — search-first hero
+   ============================================================ */
+.cl-head{margin-bottom:22px}
+.cl-head h1{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.03em;color:var(--gray-950);line-height:1.05}
+.cl-head .sub{font-size:15px;color:var(--gray-600);margin-top:7px}
+
+.cl-hero{background:var(--wash);border:1px solid transparent;border-radius:var(--r-2xl);
+  padding:30px 32px;position:relative;overflow:hidden;margin-bottom:22px}
+.cl-hero::before{content:"";position:absolute;left:0;right:0;bottom:0;height:70%;opacity:.5;
+  background-image:linear-gradient(90deg,rgba(34,63,170,.06) 1px,transparent 1px);background-size:9px 100%;
+  -webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent);pointer-events:none}
+.cl-hero .in{position:relative;z-index:1;max-width:680px}
+.cl-hero .lbl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--blue-700);margin-bottom:12px}
+.cl-hero .searchbar{max-width:680px}
+.cl-hero .hint{font-size:12.5px;color:var(--blue-800);opacity:.8;margin-top:12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.cl-hero .hint b{font-weight:700}
+.cl-hero .clearx{cursor:pointer;color:var(--gray-500);display:flex;flex-shrink:0}
+.cl-hero .clearx:hover{color:var(--gray-800)}
+
+/* toolbar above the roster: result count + sort + filter */
+.cl-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.cl-toolbar .count{font-size:13.5px;color:var(--gray-600)}
+.cl-toolbar .count b{color:var(--gray-950);font-weight:700}
+.cl-toolbar .right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cl-toolbar .sortlbl{font-size:12px;font-weight:600;color:var(--gray-500)}
+
+/* ============================================================
+   ROSTER — hybrid rows (taller, with patient preview)
+   ============================================================ */
+.roster .ct tbody td{padding-top:17px;padding-bottom:17px;vertical-align:middle}
+.roster .ct tbody tr{cursor:pointer}
+
+/* household cell: name + signer/phone disambiguator */
+.hh{min-width:0}
+.hh .nm{display:flex;align-items:center;gap:9px;font-family:var(--f-body);font-weight:700;font-size:15px;color:var(--gray-950);letter-spacing:-.01em}
+.hh .nm .home{width:28px;height:28px;border-radius:8px;background:var(--blue-50);color:var(--blue-600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hh .sig{font-size:12.5px;color:var(--gray-600);margin-top:5px;padding-left:37px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hh .sig .ph{font-family:var(--f-mono);font-size:11.5px;color:var(--gray-500);white-space:nowrap}
+.hh .sig .dot{width:3px;height:3px;border-radius:50%;background:var(--gray-300);flex-shrink:0}
+.hh .acctid{font-family:var(--f-mono);font-size:11px;color:var(--gray-400);white-space:nowrap}
+
+/* patient preview — secondary, individually clickable */
+.ppreview{display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:340px}
+.ppreview .pl{font-size:13px;font-weight:500;color:var(--gray-600);padding:2px 4px;border-radius:6px;
+  white-space:nowrap;transition:.12s;cursor:pointer}
+.ppreview .pl:hover{color:var(--blue-700);background:var(--blue-50)}
+.ppreview .pl.dead{color:var(--gray-400);text-decoration:line-through;text-decoration-color:var(--gray-300)}
+.ppreview .sepd{width:3px;height:3px;border-radius:50%;background:var(--gray-300);flex-shrink:0}
+.ppreview .more{font-size:12px;font-weight:600;color:var(--gray-400);white-space:nowrap}
+.ppreview .none{font-size:13px;color:var(--gray-400);font-style:italic}
+.pcount{font-family:var(--f-mono);font-size:12px;color:var(--gray-500);white-space:nowrap}
+
+/* open-task activity indicator */
+.act-ind{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--blue-700);
+  background:var(--blue-50);border:1px solid var(--blue-100);padding:3px 10px 3px 8px;border-radius:var(--r-pill);white-space:nowrap}
+.act-ind .d{width:6px;height:6px;border-radius:50%;background:var(--blue-600)}
+.act-ind.none{color:var(--gray-400);background:transparent;border-color:transparent;padding-left:0}
+
+/* match highlight from search */
+.hl{background:rgba(170,226,226,.55);color:var(--gray-950);font-weight:700;border-radius:3px;padding:0 1px;box-decoration-break:clone}
+
+/* archived/inactive client row — de-emphasized */
+.roster .ct tbody tr.dim td{opacity:.62}
+.roster .ct tbody tr.dim:hover td{opacity:1}
+.acct-mini{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--gray-500);background:var(--gray-100);border:1px solid var(--gray-200);
+  padding:2px 8px;border-radius:var(--r-pill);margin-left:8px}
+
+/* ============================================================
+   CLIENT DETAIL
+   ============================================================ */
+.cd-back{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--gray-500);
+  margin-bottom:16px;cursor:pointer;transition:.12s}
+.cd-back:hover{color:var(--blue-600)}
+
+/* identity header */
+.cd-id{background:var(--wash);border-radius:var(--r-2xl);padding:26px 30px;position:relative;overflow:hidden;margin-bottom:22px}
+.cd-id::before{content:"";position:absolute;left:0;right:0;bottom:0;height:64%;opacity:.5;
+  background-image:linear-gradient(90deg,rgba(34,63,170,.06) 1px,transparent 1px);background-size:9px 100%;
+  -webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent);pointer-events:none}
+.cd-id .in{position:relative;z-index:1;display:flex;align-items:flex-start;gap:18px}
+.cd-id .big{width:66px;height:66px;border-radius:18px;background:#fff;color:var(--blue-600);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-sm);flex-shrink:0}
+.cd-id .meta{flex:1;min-width:0}
+.cd-id h1{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.03em;color:var(--gray-950);
+  line-height:1.05;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cd-id .line{font-size:13.5px;color:var(--gray-600);margin-top:8px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.cd-id .line .id{font-family:var(--f-mono);font-size:12px;color:var(--blue-700);background:rgba(255,255,255,.6);
+  border:1px solid var(--pale-300);padding:2px 9px;border-radius:var(--r-pill)}
+.cd-id .line .dot{width:3px;height:3px;border-radius:50%;background:var(--gray-400)}
+.cd-id .actions{display:flex;gap:9px;flex-shrink:0;flex-wrap:wrap}
+
+/* account-status badge */
+.acct-status{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.02em;
+  padding:5px 12px;border-radius:var(--r-pill)}
+.acct-status .d{width:7px;height:7px;border-radius:50%}
+.acct-status.active{background:var(--ok-bg);color:var(--ok-ink)} .acct-status.active .d{background:var(--ok)}
+.acct-status.inactive{background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-300)} .acct-status.inactive .d{background:var(--gray-400)}
+.acct-status.archived{background:var(--warn-bg);color:var(--warn-ink)} .acct-status.archived .d{background:var(--warn)}
+
+/* two-up: household info + signers */
+.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
+@media(max-width:900px){.cd-grid{grid-template-columns:1fr}}
+
+/* labeled info block */
+.infoblock{display:grid;grid-template-columns:1fr 1fr;gap:2px 26px;padding:4px 24px 22px}
+.infoblock .f{padding:12px 0 0;border-top:1px solid var(--gray-100)}
+.infoblock .f.full{grid-column:1 / -1}
+.infoblock .f:nth-child(-n+2){border-top:none}
+.infoblock .k{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);margin-bottom:4px}
+.infoblock .v{font-size:14px;font-weight:600;color:var(--gray-950)}
+.infoblock .v.mono{font-family:var(--f-mono);font-size:12.5px;font-weight:500;color:var(--gray-700)}
+
+/* signers */
+.signers{padding:6px 24px 20px}
+.signer{display:flex;align-items:flex-start;gap:13px;padding:14px 0;border-top:1px solid var(--gray-100)}
+.signer:first-child{border-top:none}
+.signer.primary{padding-top:6px}
+.signer .av{flex-shrink:0}
+.signer .sm{flex:1;min-width:0}
+.signer .sn{font-size:15px;font-weight:700;color:var(--gray-950);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.signer .rel{font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:var(--r-pill)}
+.signer .rel.lead{background:var(--blue-50);color:var(--blue-700)}
+.signer .rel.sec{background:var(--gray-100);color:var(--gray-600)}
+.signer .contact{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:7px}
+.signer .contact .c{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--gray-600);white-space:nowrap}
+.signer .contact .c svg{color:var(--gray-400);flex-shrink:0}
+.signer .contact .c.mono{font-family:var(--f-mono);font-size:12px}
+.signer .rowedit{flex-shrink:0;font-size:12px;font-weight:600;color:var(--gray-400);cursor:pointer;opacity:0;transition:.12s}
+.signer:hover .rowedit{opacity:1}
+.signer .rowedit:hover{color:var(--blue-600)}
+.signer-foot{padding:14px 0 2px;border-top:1px solid var(--gray-100);margin-top:4px}
+.addlink{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--blue-600);cursor:pointer}
+.addlink:hover{color:var(--blue-700)}
+
+/* patient / case table niceties */
+.ins-cell{display:inline-flex;align-items:center;gap:7px;color:var(--gray-800);font-weight:500}
+.ins-cell svg{flex-shrink:0;color:var(--violet-600)}
+.ins-none{color:var(--gray-400);font-weight:500}
+.sortth{cursor:pointer;user-select:none}
+.sortth:hover{color:var(--gray-800)}
+.sortth .ar{color:var(--blue-600);font-size:9px;margin-left:4px}
+
+/* deceased / inactive patient row */
+.ct tbody tr.dead td{opacity:.55}
+.ct tbody tr.dead:hover td{opacity:.78}
+.deadtag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--gray-500);background:var(--gray-100);border:1px solid var(--gray-200);
+  padding:1px 7px;border-radius:var(--r-pill);margin-left:8px}
+
+/* multi-patient cell in cases table */
+.pmulti{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pmulti .pl{font-weight:600;color:var(--gray-800);cursor:pointer}
+.pmulti .pl:hover{color:var(--blue-700);text-decoration:underline}
+.pmulti .amp{color:var(--gray-400);font-size:12px}
+
+/* case-status chips (reuse .st semantics with extra states) */
+.st.open{color:var(--blue-700)} .st.open .d{background:var(--blue-600)}
+.st.inprog{color:var(--warn-ink)} .st.inprog .d{background:var(--warn)}
+.st.complete{color:var(--ok-ink)} .st.complete .d{background:var(--ok)}
+.st.archived{color:var(--gray-500)} .st.archived .d{background:var(--gray-400)}
+
+.refnote{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--gray-500);
+  padding:11px 24px;background:var(--gray-50);border-top:1px solid var(--gray-100)}
+.refnote svg{flex-shrink:0;color:var(--gray-400)}
+
+/* ============================================================
+   ACCESS-LOGGED TOASTS (prototype affordance)
+   ============================================================ */
+.logtoasts{position:fixed;right:22px;bottom:22px;z-index:120;display:flex;flex-direction:column;gap:10px;align-items:flex-end;pointer-events:none}
+.logtoast{display:flex;align-items:center;gap:11px;background:var(--indigo);color:#fff;
+  border-radius:var(--r-md);box-shadow:var(--sh-lg);padding:11px 15px;max-width:330px;
+  animation:logIn .22s cubic-bezier(.4,0,.2,1);pointer-events:auto}
+.logtoast.out{animation:logOut .28s ease forwards}
+.logtoast .lic{width:26px;height:26px;border-radius:8px;background:rgba(170,226,226,.16);color:var(--aqua-400);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logtoast .lt{font-size:12.5px;font-weight:700;letter-spacing:-.01em}
+.logtoast .ls{font-size:11.5px;color:#B7BBD6;margin-top:1px}
+@keyframes logIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes logOut{to{opacity:0;transform:translateY(6px)}}
+@media(prefers-reduced-motion:reduce){.logtoast{animation:none}.logtoast.out{animation:none;opacity:0}}
+
+/* stub page (patient / case detail not built) */
+.stub{max-width:680px;margin:6vh auto 0;text-align:center}
+.stub .ic{width:64px;height:64px;border-radius:18px;background:var(--blue-50);color:var(--blue-600);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.stub h1{font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.025em;color:var(--gray-950)}
+.stub .badge{display:inline-block;font-family:var(--f-mono);font-size:11px;color:var(--violet-600);background:var(--violet-50);
+  border:1px solid var(--violet-200);border-radius:var(--r-pill);padding:4px 12px;margin-top:12px}
+.stub p{font-size:14.5px;color:var(--gray-600);margin-top:14px;line-height:1.55;max-width:46ch;margin-left:auto;margin-right:auto}
+.stub .kvs{max-width:380px;margin:22px auto 0;text-align:left}
+.stub .eactions{display:flex;gap:10px;justify-content:center;margin-top:24px}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">RobinDock icon</title>
+  <desc id="desc">A white geometric robin with an aqua breast inside a royal blue rounded square.</desc>
+  <defs>
+    <linearGradient id="iconBlue" x1="70" y1="55" x2="445" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3D5AC7"></stop>
+      <stop offset="1" stop-color="#223FAA"></stop>
+    </linearGradient>
+    <clipPath id="birdClip">
+      <path d="M88 420&#xA;        C103 354 121 278 142 204&#xA;        C159 144 205 103 260 103&#xA;        C309 103 348 128 370 169&#xA;        L425 169&#xA;        L372 208&#xA;        L372 308&#xA;        C372 371 323 420 260 420&#xA;        Z"></path>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#iconBlue)"></rect>
+
+  <path d="M88 420&#xA;    C103 354 121 278 142 204&#xA;    C159 144 205 103 260 103&#xA;    C309 103 348 128 370 169&#xA;    L425 169&#xA;    L372 208&#xA;    L372 308&#xA;    C372 371 323 420 260 420&#xA;    Z" fill="#FFFFFF"></path>
+
+  <path d="M205 420&#xA;    C256 414 302 389 334 351&#xA;    C359 321 372 286 372 247&#xA;    L372 208&#xA;    Z" fill="#AAE2E2" clip-path="url(#birdClip)"></path>
+
+  <circle cx="285" cy="163" r="19" fill="#223FAA"></circle>
+</svg>

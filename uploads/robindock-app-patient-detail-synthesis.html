@@ -1,0 +1,264 @@
+<div id="rd-app"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  #rd-app{
+    --gray-950:#191346; --gray-800:#2C2A57; --gray-600:#5A5C77; --gray-500:#838599;
+    --gray-400:#A1A3B5; --gray-300:#D3D6E2; --gray-200:#E7E9F1; --gray-100:#F4F5FA; --gray-50:#FAFBFD; --white:#FFFFFF;
+    --blue-900:#101A52; --blue-800:#172B7A; --blue-700:#1C3490; --blue-600:#223FAA; --blue-500:#3D5AC7; --blue-300:#8FA1E0; --blue-100:#DEE4F7; --blue-50:#EEF1FB;
+    --violet-600:#7E6BCB; --violet-500:#9A8AD9; --violet-400:#AC9FE2; --violet-200:#D6CFF1; --violet-50:#F1EEFB;
+    --pale-300:#C0CFED; --pale-100:#DDE6F6; --pale-50:#EDF2FB;
+    --aqua-500:#7CCBCB; --aqua-400:#AAE2E2; --aqua-100:#DEF4F4;
+    --indigo:#191346;
+    --wash:linear-gradient(135deg,#DDE6F6 0%,#D6CFF1 50%,#DEF4F4 100%);
+    --wash-soft:linear-gradient(135deg,#EDF2FB 0%,#F1EEFB 100%);
+    --ink:#191346; --ok:#3A8A6F; --warn:#C8902E; --bad:#C2503A;
+    --f-display:'Inter',-apple-system,system-ui,sans-serif; --f-body:'Inter',-apple-system,system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,monospace;
+    --sh-sm:0 1px 3px rgba(25,19,70,.05),0 1px 2px rgba(25,19,70,.04);
+    --sh-md:0 6px 22px rgba(25,19,70,.09);
+    --sh-lg:0 22px 54px rgba(34,63,170,.16);
+    font-family:var(--f-body);color:var(--ink);line-height:1.45;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;background:var(--gray-100)}
+  #rd-app *{box-sizing:border-box;margin:0;padding:0}
+  #rd-app a{text-decoration:none;color:inherit}
+  #rd-app .shell{display:flex;min-height:820px;max-width:1440px;margin:0 auto;background:var(--gray-100)}
+
+  /* SIDEBAR — airy frosted */
+  #rd-app .rail{width:230px;flex-shrink:0;background:rgba(244,245,250,.8);backdrop-filter:saturate(160%) blur(18px);border-right:1px solid var(--gray-200);padding:18px 14px;display:flex;flex-direction:column}
+  #rd-app .brand{display:flex;align-items:center;gap:9px;padding:6px 8px 18px}
+  #rd-app .mark{width:30px;height:30px;border-radius:9px;background:var(--blue-600);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+  #rd-app .mark .b{width:11px;height:11px;border-radius:50% 50% 50% 2px;background:var(--aqua-400);transform:rotate(-10deg)}
+  #rd-app .brand .w{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--gray-950)}
+  #rd-app .newbtn{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--blue-600);color:#fff;font-size:13.5px;font-weight:600;padding:10px;border-radius:11px;margin-bottom:16px}
+  #rd-app .navsec{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-500);margin:14px 8px 6px}
+  #rd-app .nav-i{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;color:var(--gray-800);padding:8px 10px;border-radius:9px;margin-bottom:1px}
+  #rd-app .nav-i:hover{background:var(--gray-200)}
+  #rd-app .nav-i.on{background:var(--white);color:var(--gray-950);font-weight:600;box-shadow:var(--sh-sm)}
+  #rd-app .nav-i svg{flex-shrink:0}
+  #rd-app .nav-i .ct{margin-left:auto;font-size:10.5px;font-weight:600;background:var(--violet-400);color:var(--gray-950);border-radius:100px;padding:1px 7px}
+  #rd-app .nav-i.on .ct{background:var(--blue-600);color:#fff}
+  #rd-app .rail-foot{margin-top:auto;border-top:1px solid var(--gray-200);padding-top:12px;display:flex;align-items:center;gap:10px}
+  #rd-app .rail-foot .av{width:32px;height:32px;border-radius:50%;background:var(--violet-200);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--violet-600)}
+  #rd-app .rail-foot .who .n{font-size:12.5px;font-weight:600;color:var(--gray-950)}
+  #rd-app .rail-foot .who .r{font-size:11px;color:var(--gray-500)}
+
+  /* MAIN */
+  #rd-app .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  #rd-app .topbar{height:56px;background:rgba(255,255,255,.7);backdrop-filter:saturate(160%) blur(18px);border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 26px;gap:10px;position:sticky;top:0;z-index:10}
+  #rd-app .crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--gray-500);font-weight:500}
+  #rd-app .crumb a:hover{color:var(--blue-600)}
+  #rd-app .crumb .sep{color:var(--gray-300)}
+  #rd-app .crumb .cur{color:var(--gray-950);font-weight:600}
+  #rd-app .topbar .actions{margin-left:auto;display:flex;gap:9px;align-items:center}
+  #rd-app .iconbtn{width:34px;height:34px;border-radius:10px;border:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:center;color:var(--gray-600)}
+  #rd-app .btn{font-family:var(--f-body);font-weight:600;font-size:13.5px;border:none;border-radius:11px;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;letter-spacing:-.01em;white-space:nowrap}
+  #rd-app .btn-blue{background:var(--blue-600);color:#fff} #rd-app .btn-blue:hover{background:var(--blue-700)}
+  #rd-app .btn-light{background:var(--white);color:var(--gray-950);border:1px solid var(--gray-300)} #rd-app .btn-light:hover{border-color:var(--gray-950)}
+
+  #rd-app .scroll{flex:1;overflow:hidden}
+
+  /* HERO — airy wash (calm base) */
+  #rd-app .phero{background:var(--wash);padding:30px 36px 26px;position:relative;overflow:hidden;border-bottom:1px solid var(--gray-200)}
+  #rd-app .phero::before{content:"";position:absolute;left:0;right:0;bottom:0;height:70%;opacity:.5;background-image:linear-gradient(90deg,rgba(34,63,170,.06) 1px,transparent 1px);background-size:9px 100%;mask-image:linear-gradient(to top,#000,transparent);-webkit-mask-image:linear-gradient(to top,#000,transparent);pointer-events:none}
+  #rd-app .phero .in{position:relative;z-index:1;display:flex;align-items:flex-start;gap:20px;max-width:1180px;margin:0 auto}
+  #rd-app .phero .big{width:74px;height:74px;border-radius:20px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:var(--sh-sm);flex-shrink:0}
+  #rd-app .phero .hmeta{flex:1;min-width:0}
+  #rd-app .phero h1{font-family:var(--f-display);font-weight:800;font-size:34px;letter-spacing:-.035em;color:var(--gray-950);display:flex;align-items:center;gap:11px}
+  #rd-app .phero h1 .badge{font-size:11px;font-weight:600;padding:5px 12px;border-radius:100px;background:rgba(255,255,255,.7);color:var(--blue-700);letter-spacing:0}
+  #rd-app .phero .line{font-size:14px;color:var(--gray-600);margin-top:7px;font-weight:500}
+  #rd-app .phero .hactions{display:flex;gap:9px;flex-shrink:0}
+
+  #rd-app .body{display:flex;gap:24px;padding:24px 36px 40px;max-width:1180px;margin:0 auto;align-items:flex-start}
+  #rd-app .col-main{flex:1;min-width:0}
+  #rd-app .col-side{width:312px;flex-shrink:0}
+
+  /* stat cards with cloud-style colored top-bars (subtle 13 accent) */
+  #rd-app .statcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  #rd-app .sc{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;overflow:hidden;box-shadow:var(--sh-sm)}
+  #rd-app .sc .bar{height:3px}
+  #rd-app .sc .scin{padding:15px 18px}
+  #rd-app .sc .n{font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.03em;color:var(--gray-950)}
+  #rd-app .sc .n .u{color:var(--blue-600)}
+  #rd-app .sc .l{font-size:12px;color:var(--gray-500);margin-top:3px}
+
+  #rd-app .tabs{display:flex;gap:4px;border-bottom:1px solid var(--gray-200);margin-bottom:22px}
+  #rd-app .tabs .t{font-size:13.5px;font-weight:600;color:var(--gray-600);padding:10px 14px;cursor:default;border-bottom:2px solid transparent;margin-bottom:-1px}
+  #rd-app .tabs .t.on{color:var(--gray-950);border-bottom-color:var(--blue-600)}
+
+  #rd-app .panel{background:var(--white);border:1px solid var(--gray-200);border-radius:16px;padding:20px;box-shadow:var(--sh-sm);margin-bottom:20px}
+  #rd-app .panel .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  #rd-app .panel .ph h3{font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:-.01em}
+  #rd-app .panel .ph .more{font-size:12.5px;font-weight:600;color:var(--violet-600)}
+  #rd-app .trend{display:flex;align-items:flex-end;gap:10px;height:96px;padding-top:6px}
+  #rd-app .trend .bar{flex:1;background:var(--blue-50);border-radius:6px 6px 0 0;position:relative;display:flex;justify-content:center}
+  #rd-app .trend .bar .fill{position:absolute;bottom:0;left:0;right:0;background:var(--blue-300);border-radius:6px 6px 0 0}
+  #rd-app .trend .bar.hot .fill{background:var(--violet-400)}
+  #rd-app .trend .bar .v{position:absolute;top:-18px;font-family:var(--f-mono);font-size:10px;color:var(--gray-500)}
+  #rd-app .trend-x{display:flex;gap:10px;margin-top:8px}
+  #rd-app .trend-x span{flex:1;text-align:center;font-family:var(--f-mono);font-size:9.5px;color:var(--gray-400)}
+
+  #rd-app .tl-date{font-family:var(--f-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);margin:0 0 12px}
+  #rd-app .tl-group{margin-bottom:22px}
+  #rd-app .doc{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh-sm)}
+  #rd-app .doc:hover{box-shadow:var(--sh-md)}
+  #rd-app .doc .di{width:38px;height:48px;border-radius:7px;background:var(--blue-50);border:1px solid var(--blue-100);flex-shrink:0;position:relative}
+  #rd-app .doc .di::after{content:"";position:absolute;top:10px;left:8px;right:8px;height:2px;background:var(--blue-300);box-shadow:0 7px 0 var(--blue-100),0 14px 0 var(--blue-100)}
+  #rd-app .doc .di.violet{background:var(--violet-50);border-color:var(--violet-200)}
+  #rd-app .doc .di.violet::after{background:var(--violet-400);box-shadow:0 7px 0 var(--violet-200),0 14px 0 var(--violet-200)}
+  #rd-app .doc .dm{flex:1;min-width:0}
+  #rd-app .doc .dm .dt{font-size:14.5px;font-weight:600;color:var(--gray-950)}
+  #rd-app .doc .dm .ds{font-family:var(--f-mono);font-size:11px;color:var(--gray-500);margin-top:4px}
+  #rd-app .doc .dtag{font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;white-space:nowrap}
+  #rd-app .doc .dtag.lab{background:var(--blue-50);color:var(--blue-700)}
+  #rd-app .doc .dtag.ref{background:var(--violet-50);color:var(--violet-600)}
+  #rd-app .doc .dtag.vax{background:var(--aqua-100);color:#2d7373}
+  #rd-app .doc .dtag.img{background:var(--gray-100);color:var(--gray-600)}
+  #rd-app .doc .chev{color:var(--gray-300);flex-shrink:0}
+
+  #rd-app .side-card{background:var(--white);border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:16px}
+  #rd-app .side-card .bar{height:3px}
+  #rd-app .side-card .scin{padding:20px}
+  #rd-app .side-card h3{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:16px}
+  #rd-app .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--gray-100);font-size:13px}
+  #rd-app .kv:first-of-type{border-top:none}
+  #rd-app .kv .k{color:var(--gray-500)}
+  #rd-app .kv .v{color:var(--gray-950);font-weight:600;text-align:right}
+  #rd-app .kv .v.mono{font-family:var(--f-mono);font-size:12px;font-weight:500}
+  #rd-app .owner{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  #rd-app .owner .oav{width:44px;height:44px;border-radius:50%;background:var(--violet-200);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--violet-600);flex-shrink:0}
+  #rd-app .owner .on-name{font-size:15px;font-weight:700;color:var(--gray-950)}
+  #rd-app .owner .on-sub{font-size:12px;color:var(--gray-500);margin-top:1px}
+  #rd-app .contactrow{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--gray-800);padding:8px 0;border-top:1px solid var(--gray-100)}
+  #rd-app .contactrow svg{flex-shrink:0;color:var(--gray-400)}
+  #rd-app .flock{background:var(--aqua-100);border:1px solid #BFE8E8;border-radius:16px;padding:18px}
+  #rd-app .flock .ft{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#2d7373;margin-bottom:6px}
+  #rd-app .flock p{font-size:12.5px;color:#3a6363;line-height:1.5}
+
+  @media(max-width:1080px){
+    #rd-app .body{flex-direction:column}#rd-app .col-side{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    #rd-app .col-side .side-card,#rd-app .col-side .flock{margin-bottom:0}
+    #rd-app .rail{width:64px}
+    #rd-app .rail .brand .w,#rd-app .rail .newbtn span,#rd-app .rail .navsec,#rd-app .rail .nav-i span,#rd-app .rail .nav-i .ct,#rd-app .rail-foot .who{display:none}
+    #rd-app .rail .nav-i{justify-content:center}
+  }
+  @media(max-width:680px){ #rd-app .statcards{grid-template-columns:1fr 1fr}#rd-app .col-side{grid-template-columns:1fr} }
+</style>
+
+<div id="rd-app"><div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="rail">
+    <div class="brand"><div class="mark"><div class="b"></div></div><div class="w">RobinDock</div></div>
+    <div class="newbtn"><span>＋ New document</span></div>
+    <div class="navsec">Track</div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#5A5C77" stroke-width="1.7"/><path d="M4 10h5l1.5 2.5h3L15 10h5" stroke="#5A5C77" stroke-width="1.7"/></svg><span>Inbox</span><span class="ct">12</span></div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 12h16M4 19h16" stroke="#5A5C77" stroke-width="1.7" stroke-linecap="round"/></svg><span>All Documents</span></div>
+    <div class="navsec">Organize</div>
+    <div class="nav-i on"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="#223FAA" stroke-width="1.7"/><path d="M3.5 19c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="#223FAA" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="9" r="2.4" stroke="#223FAA" stroke-width="1.7"/><path d="M15 19c0-2.2 1-4 3-4.4" stroke="#223FAA" stroke-width="1.7" stroke-linecap="round"/></svg><span>Patients</span></div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#5A5C77" stroke-width="1.7"/></svg><span>Folders</span></div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><circle cx="17" cy="7" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><circle cx="12" cy="17" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><path d="M9 8.5l2 6M15 8.5l-2 6" stroke="#5A5C77" stroke-width="1.7"/></svg><span>The Flock</span></div>
+    <div class="navsec">Review</div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="#5A5C77" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Needs Review</span><span class="ct" style="background:var(--bad);color:#fff">3</span></div>
+    <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 19V9M12 19V5M19 19v-6" stroke="#5A5C77" stroke-width="1.7" stroke-linecap="round"/></svg><span>Reports</span></div>
+    <div class="rail-foot"><div class="av">KS</div><div class="who"><div class="n">Kai S.</div><div class="r">Mountain West</div></div></div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb"><a>Patients</a><span class="sep">›</span><span class="cur">Bella</span></div>
+      <div class="actions">
+        <div class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M12 4v16" stroke="#5A5C77" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="#5A5C77"/><circle cx="12" cy="12" r="1.6" fill="#5A5C77"/><circle cx="12" cy="19" r="1.6" fill="#5A5C77"/></svg></div>
+        <button class="btn btn-light">Edit</button>
+        <button class="btn btn-blue">＋ Add document</button>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <!-- HERO -->
+      <div class="phero"><div class="in">
+        <div class="big">🐕</div>
+        <div class="hmeta">
+          <h1>Bella <span class="badge">Active patient</span></h1>
+          <div class="line">Golden Retriever · Female, spayed · 4 yrs · 28.4 kg</div>
+        </div>
+      </div></div>
+
+      <!-- BODY -->
+      <div class="body">
+        <div class="col-main">
+          <div class="statcards">
+            <div class="sc"><div class="bar" style="background:var(--blue-600)"></div><div class="scin"><div class="n">24</div><div class="l">Documents on file</div></div></div>
+            <div class="sc"><div class="bar" style="background:var(--violet-400)"></div><div class="scin"><div class="n">3</div><div class="l">This month</div></div></div>
+            <div class="sc"><div class="bar" style="background:var(--aqua-500)"></div><div class="scin"><div class="n"><span class="u">2</span></div><div class="l">Via the Flock</div></div></div>
+            <div class="sc"><div class="bar" style="background:var(--gray-300)"></div><div class="scin"><div class="n">May 13</div><div class="l">Last activity</div></div></div>
+          </div>
+
+          <div class="tabs">
+            <div class="t on">Timeline</div>
+            <div class="t">Documents</div>
+            <div class="t">Lab results</div>
+            <div class="t">Notes</div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h3>Weight trend</h3><span class="more">View lab history →</span></div>
+            <div class="trend">
+              <div class="bar" style="height:64%"><span class="v">26.1</span><span class="fill" style="height:100%"></span></div>
+              <div class="bar" style="height:70%"><span class="v">27.0</span><span class="fill" style="height:100%"></span></div>
+              <div class="bar" style="height:68%"><span class="v">26.6</span><span class="fill" style="height:100%"></span></div>
+              <div class="bar" style="height:76%"><span class="v">27.8</span><span class="fill" style="height:100%"></span></div>
+              <div class="bar hot" style="height:82%"><span class="v">28.4</span><span class="fill" style="height:100%"></span></div>
+            </div>
+            <div class="trend-x"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span></div>
+          </div>
+
+          <div class="tl-group">
+            <div class="tl-date">Today · May 14, 2026</div>
+            <div class="doc"><div class="di"></div><div class="dm"><div class="dt">CBC Results — Bella</div><div class="ds">DOC-4821 · Antech Diagnostics · 8:47 AM · 1 page</div></div><span class="dtag lab">Lab result</span><span class="chev">›</span></div>
+          </div>
+          <div class="tl-group">
+            <div class="tl-date">Yesterday · May 13, 2026</div>
+            <div class="doc"><div class="di violet"></div><div class="dm"><div class="dt">Referral — Orthopedic consult</div><div class="ds">DOC-4815 · Mountain West Vet Specialists · via Flock · 2 pages</div></div><span class="dtag ref">Referral</span><span class="chev">›</span></div>
+            <div class="doc"><div class="di"></div><div class="dm"><div class="dt">Radiology Report — Left stifle</div><div class="ds">DOC-4810 · Vet Imaging Center · 3 pages</div></div><span class="dtag img">Imaging</span><span class="chev">›</span></div>
+          </div>
+          <div class="tl-group">
+            <div class="tl-date">May 2, 2026</div>
+            <div class="doc"><div class="di"></div><div class="dm"><div class="dt">Vaccine record — Rabies, DHPP</div><div class="ds">DOC-4602 · Bark City Veterinary · 1 page</div></div><span class="dtag vax">Vaccine</span><span class="chev">›</span></div>
+            <div class="doc"><div class="di"></div><div class="dm"><div class="dt">Wellness exam summary</div><div class="ds">DOC-4598 · Mountain West Vet · 2 pages</div></div><span class="dtag img">Record</span><span class="chev">›</span></div>
+          </div>
+        </div>
+
+        <div class="col-side">
+          <div class="side-card"><div class="bar" style="background:var(--blue-600)"></div><div class="scin">
+            <h3>Patient details</h3>
+            <div class="kv"><span class="k">Species</span><span class="v">Canine</span></div>
+            <div class="kv"><span class="k">Breed</span><span class="v">Golden Retriever</span></div>
+            <div class="kv"><span class="k">Sex</span><span class="v">Female, spayed</span></div>
+            <div class="kv"><span class="k">Date of birth</span><span class="v">Mar 8, 2022</span></div>
+            <div class="kv"><span class="k">Weight</span><span class="v">28.4 kg</span></div>
+            <div class="kv"><span class="k">Microchip</span><span class="v mono">985•••231</span></div>
+            <div class="kv"><span class="k">Patient ID</span><span class="v mono">PT-02841</span></div>
+          </div></div>
+
+          <div class="side-card"><div class="bar" style="background:var(--violet-400)"></div><div class="scin">
+            <h3>Owner</h3>
+            <div class="owner">
+              <div class="oav">SM</div>
+              <div><div class="on-name">Sarah Mitchell</div><div class="on-sub">Client since 2023</div></div>
+            </div>
+            <div class="contactrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 6a2 2 0 012-2h2l2 4-2 1a10 10 0 005 5l1-2 4 2v2a2 2 0 01-2 2A14 14 0 014 6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>(801) 555-0142</div>
+            <div class="contactrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 7l7 5 7-5" stroke="currentColor" stroke-width="1.7"/></svg>sarah.m@email.com</div>
+            <div class="contactrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.7"/></svg>Provo, UT</div>
+          </div></div>
+
+          <div class="flock">
+            <div class="ft"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.5" stroke="#2d7373" stroke-width="1.7"/><circle cx="17" cy="7" r="2.5" stroke="#2d7373" stroke-width="1.7"/><circle cx="12" cy="17" r="2.5" stroke="#2d7373" stroke-width="1.7"/><path d="M9 8.5l2 6M15 8.5l-2 6" stroke="#2d7373" stroke-width="1.7"/></svg>2 documents via the Flock</div>
+            <p>Bella's referral and imaging came directly from Mountain West Vet Specialists — no fax round-trip.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div></div>

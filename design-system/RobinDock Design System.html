@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RobinDock — Design System</title>
+<link rel="icon" type="image/svg+xml" href="robindock-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="foundations.css" />
+<link rel="stylesheet" href="components.css" />
+<link rel="stylesheet" href="components-ext.css" />
+</head>
+<body>
+<!-- ============ RobinDock mark (reusable SVG symbol) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rdIconGrad" x1="70" y1="55" x2="445" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3D5AC7"></stop><stop offset="1" stop-color="#223FAA"></stop>
+    </linearGradient>
+    <clipPath id="rdBirdClip">
+      <path d="M88 420 C103 354 121 278 142 204 C159 144 205 103 260 103 C309 103 348 128 370 169 L425 169 L372 208 L372 308 C372 371 323 420 260 420 Z"></path>
+    </clipPath>
+    <symbol id="rdMark" viewBox="0 0 512 512">
+      <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#rdIconGrad)"></rect>
+      <path d="M88 420 C103 354 121 278 142 204 C159 144 205 103 260 103 C309 103 348 128 370 169 L425 169 L372 208 L372 308 C372 371 323 420 260 420 Z" fill="#FFFFFF"></path>
+      <path d="M205 420 C256 414 302 389 334 351 C359 321 372 286 372 247 L372 208 Z" fill="#AAE2E2" clip-path="url(#rdBirdClip)"></path>
+      <circle cx="285" cy="163" r="19" fill="#223FAA"></circle>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================ COVER ============================ -->
+<header class="cover">
+  <div class="cwrap">
+    <div class="lockup">
+      <svg class="mark" style="--ms:46px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+      <span class="logo-word" style="--lw:27px">Robin<span class="dk">Dock</span></span>
+    </div>
+    <div class="kicker">Design System · v1.0</div>
+    <h1>Calm to work in. Confident when it counts.</h1>
+    <p class="sub">The complete reference for RobinDock — one brand in two registers, with every token, component, and pattern the product and marketing surfaces are built from.</p>
+    <div class="meta">
+      <span class="m"><b>Inter</b> + JetBrains Mono</span>
+      <span class="m">Royal <b>#223FAA</b></span>
+      <span class="m">Violet <b>#AC9FE2</b></span>
+      <span class="m">Aqua <b>#AAE2E2</b></span>
+      <span class="m">Indigo <b>#191346</b></span>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ LAYOUT ============================ -->
+<div class="layout">
+
+  <!-- CONTENTS RAIL -->
+  <nav class="toc" id="toc">
+    <div class="tt">
+      <svg class="mark" style="--ms:26px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+      <span class="logo-word">Robin<span class="dk">Dock</span></span>
+    </div>
+    <div class="grp">Foundations</div>
+    <a href="#registers">Two registers</a>
+    <a href="#color">Color</a>
+    <a href="#clouds">Three clouds</a>
+    <a href="#type">Typography</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#radius">Radii</a>
+    <a href="#elevation">Elevation &amp; focus</a>
+    <a href="#icons">Iconography</a>
+    <a href="#grid">Layout &amp; shell</a>
+    <div class="grp">Components</div>
+    <a href="#buttons">Buttons</a>
+    <a href="#forms">Forms &amp; inputs</a>
+    <a href="#search">Search</a>
+    <a href="#suggest">Search suggestions</a>
+    <a href="#tags">Tags &amp; status</a>
+    <a href="#badges">Badges &amp; avatars</a>
+    <a href="#cards">Cards &amp; panels</a>
+    <a href="#stats">Stat &amp; cloud cards</a>
+    <a href="#cardtables">Card tables</a>
+    <a href="#datatable">Data table</a>
+    <a href="#nav">Navigation</a>
+    <a href="#tabs">Tabs &amp; filters</a>
+    <a href="#feedback">Feedback</a>
+    <a href="#overlays">Overlays</a>
+    <a href="#loading">Loading</a>
+    <a href="#empty">Empty states</a>
+    <div class="grp">App components</div>
+    <a href="#upload">File upload</a>
+    <a href="#viewer">Document viewer</a>
+    <a href="#drawer">Detail drawer</a>
+    <a href="#timeline">Activity timeline</a>
+    <a href="#stepper">Stepper &amp; wizard</a>
+    <a href="#tracker">Status tracker</a>
+    <a href="#datepicker">Date picker</a>
+    <a href="#combobox">Combobox &amp; tokens</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#accordion">Accordion</a>
+    <a href="#popover">Popover &amp; avatars</a>
+    <a href="#settings">Settings rows</a>
+    <div class="grp">Patterns</div>
+    <a href="#patterns">Registers in context</a>
+    <a href="#voice">Voice</a>
+    <a href="#rules">Do &amp; don't</a>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <!-- ===================== TWO REGISTERS ===================== -->
+    <section class="sec" id="registers">
+      <div class="sec-num">01 — Foundations</div>
+      <h2 class="sec-title">Two registers, one system</h2>
+      <p class="sec-sub">RobinDock serves two people from one brand: the <b>owner / office manager</b> who must trust it with patient records, and the <b>front-desk or tech staffer</b> who lives in it all shift. The brand runs in two modes built from the <b>same palette, type, and shapes</b> — so it always reads as one product. Only the intensity changes, never the ingredients.</p>
+      <div class="cols2" style="margin-top:24px">
+        <div class="card">
+          <div class="pad" style="background:var(--wash)">
+            <div class="pair-tag" style="margin-bottom:8px">Mode A — default</div>
+            <div class="t-display" style="font-size:30px">Calm</div>
+          </div>
+          <div class="pad">
+            <div class="sub-head" style="margin:0 0 6px;font-size:15px">Light, airy, legible</div>
+            <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">Pale gradient washes, white surfaces, hairlines, big quiet headlines, generous space. Apple-clean — nothing competes with the content.</p>
+            <p style="font-size:12px;color:var(--gray-500);margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-100)"><b style="color:var(--gray-950)">Use for:</b> the entire product UI, most of the marketing page, anything read or worked in for long stretches. <b style="color:var(--gray-950)">~80% of every surface.</b></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="pad block" style="border-radius:0;padding:24px">
+            <div class="pair-tag" style="margin-bottom:8px;color:var(--aqua-400)">Mode B — accent</div>
+            <div class="t-display" style="font-size:30px;color:#fff">Confident <span style="color:var(--aqua-400)">·</span></div>
+          </div>
+          <div class="pad">
+            <div class="sub-head" style="margin:0 0 6px;font-size:15px">Bold color blocks, platform presence</div>
+            <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">Deep indigo or royal blocks, the "three clouds" framing, bold stat bands. Platform confidence — used sparingly, for impact.</p>
+            <p style="font-size:12px;color:var(--gray-500);margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-100)"><b style="color:var(--gray-950)">Use for:</b> the Flock / network story, pricing, marketing hero accents, dashboards. <b style="color:var(--gray-950)">A deliberate accent — never the document-triage screens.</b></p>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>The rule:</b> calm is the default and carries roughly 80% of every surface. Confident mode is a deliberate accent — a few moments per marketing page, and in-product only on dashboards or the Flock view. What keeps it one brand: identical palette, Inter type, pill / card shapes, and the robin mark across both modes.</div>
+    </section>
+
+    <!-- ===================== COLOR ===================== -->
+    <section class="sec" id="color">
+      <div class="sec-num">02 — Foundations</div>
+      <h2 class="sec-title">Color</h2>
+      <p class="sec-sub">A cool, trust-forward family — security, tranquility, calm — mapped onto a records product. <b>Royal blue</b> is the workhorse; <b>violet</b> and <b>aqua</b> are the friendly accents; <b>deep indigo</b> anchors text and the confident blocks; a cool gray ramp keeps everything light. <span style="font-size:13px;color:var(--gray-500)">Tip: click any swatch to copy its hex.</span></p>
+
+      <p class="group-title">Royal blue — brand &amp; primary action</p>
+      <div class="ramp">
+        <div class="swatch" data-hex="#172B7A"><div class="chip" style="background:#172B7A"><span class="role">Pressed</span></div><div class="meta"><div class="name">Blue 800</div><div class="hex">#172B7A <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#1C3490"><div class="chip" style="background:#1C3490"><span class="role">Hover-dk</span></div><div class="meta"><div class="name">Blue 700</div><div class="hex">#1C3490 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#223FAA"><div class="chip" style="background:#223FAA"><span class="role">Primary</span></div><div class="meta"><div class="name">Blue 600</div><div class="hex">#223FAA <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#3D5AC7"><div class="chip" style="background:#3D5AC7"><span class="role">Hover</span></div><div class="meta"><div class="name">Blue 500</div><div class="hex">#3D5AC7 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#8FA1E0"><div class="chip" style="background:#8FA1E0"><span class="role">Soft</span></div><div class="meta"><div class="name">Blue 300</div><div class="hex">#8FA1E0 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#DEE4F7"><div class="chip" style="background:#DEE4F7"><span class="role" style="color:#223FAA">Border</span></div><div class="meta"><div class="name">Blue 100</div><div class="hex">#DEE4F7 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#EEF1FB"><div class="chip" style="background:#EEF1FB;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#223FAA">Wash</span></div><div class="meta"><div class="name">Blue 50</div><div class="hex">#EEF1FB <span class="cp">copy</span></div></div></div>
+      </div>
+
+      <p class="group-title">Indigo &amp; neutral — anchor, text &amp; surfaces</p>
+      <div class="ramp">
+        <div class="swatch" data-hex="#101A52"><div class="chip" style="background:#101A52"><span class="role">Deepest</span></div><div class="meta"><div class="name">Indigo 900</div><div class="hex">#101A52 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#191346"><div class="chip" style="background:#191346"><span class="role">Anchor / text</span></div><div class="meta"><div class="name">Indigo · Gray 950</div><div class="hex">#191346 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#2C2A57"><div class="chip" style="background:#2C2A57"><span class="role">Strong text</span></div><div class="meta"><div class="name">Gray 800</div><div class="hex">#2C2A57 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#5A5C77"><div class="chip" style="background:#5A5C77"><span class="role">Secondary</span></div><div class="meta"><div class="name">Gray 600</div><div class="hex">#5A5C77 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#838599"><div class="chip" style="background:#838599"><span class="role">Muted</span></div><div class="meta"><div class="name">Gray 500</div><div class="hex">#838599 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#A1A3B5"><div class="chip" style="background:#A1A3B5"><span class="role">Faint</span></div><div class="meta"><div class="name">Gray 400</div><div class="hex">#A1A3B5 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#D3D6E2"><div class="chip" style="background:#D3D6E2"><span class="role" style="color:#191346">Hairline</span></div><div class="meta"><div class="name">Gray 300</div><div class="hex">#D3D6E2 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#E7E9F1"><div class="chip" style="background:#E7E9F1"><span class="role" style="color:#5A5C77">Border</span></div><div class="meta"><div class="name">Gray 200</div><div class="hex">#E7E9F1 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#F4F5FA"><div class="chip" style="background:#F4F5FA;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#5A5C77">Section</span></div><div class="meta"><div class="name">Gray 100</div><div class="hex">#F4F5FA <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#FAFBFD"><div class="chip" style="background:#FAFBFD;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#838599">Header fill</span></div><div class="meta"><div class="name">Gray 50</div><div class="hex">#FAFBFD <span class="cp">copy</span></div></div></div>
+      </div>
+
+      <p class="group-title">Violet &amp; aqua — friendly accents</p>
+      <div class="ramp">
+        <div class="swatch" data-hex="#7E6BCB"><div class="chip" style="background:#7E6BCB"><span class="role">Violet deep</span></div><div class="meta"><div class="name">Violet 600</div><div class="hex">#7E6BCB <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#9A8AD9"><div class="chip" style="background:#9A8AD9"><span class="role">Violet 500</span></div><div class="meta"><div class="name">Violet 500</div><div class="hex">#9A8AD9 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#AC9FE2"><div class="chip" style="background:#AC9FE2"><span class="role" style="color:#2e2455">Secondary</span></div><div class="meta"><div class="name">Violet 400</div><div class="hex">#AC9FE2 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#D6CFF1"><div class="chip" style="background:#D6CFF1"><span class="role" style="color:#5b4f86">Soft</span></div><div class="meta"><div class="name">Violet 200</div><div class="hex">#D6CFF1 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#F1EEFB"><div class="chip" style="background:#F1EEFB;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#7E6BCB">Wash</span></div><div class="meta"><div class="name">Violet 50</div><div class="hex">#F1EEFB <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#7CCBCB"><div class="chip" style="background:#7CCBCB"><span class="role">Aqua deep</span></div><div class="meta"><div class="name">Aqua 500</div><div class="hex">#7CCBCB <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#AAE2E2"><div class="chip" style="background:#AAE2E2"><span class="role" style="color:#235a5a">Aqua</span></div><div class="meta"><div class="name">Aqua 400</div><div class="hex">#AAE2E2 <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#DEF4F4"><div class="chip" style="background:#DEF4F4;border-bottom:1px solid #E7E9F1"><span class="role" style="color:#2d7373">Wash</span></div><div class="meta"><div class="name">Aqua 100</div><div class="hex">#DEF4F4 <span class="cp">copy</span></div></div></div>
+      </div>
+
+      <p class="group-title">Semantic — status meaning</p>
+      <div class="ramp">
+        <div class="swatch" data-hex="#3A8A6F"><div class="chip" style="background:#3A8A6F"><span class="role">Success</span></div><div class="meta"><div class="name">OK · Routed</div><div class="hex">#3A8A6F <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#C8902E"><div class="chip" style="background:#C8902E"><span class="role">Warning</span></div><div class="meta"><div class="name">Warn · Review</div><div class="hex">#C8902E <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#C2503A"><div class="chip" style="background:#C2503A"><span class="role">Danger</span></div><div class="meta"><div class="name">Bad · Failed</div><div class="hex">#C2503A <span class="cp">copy</span></div></div></div>
+        <div class="swatch" data-hex="#223FAA"><div class="chip" style="background:#223FAA"><span class="role">Info</span></div><div class="meta"><div class="name">Info · New</div><div class="hex">#223FAA <span class="cp">copy</span></div></div></div>
+      </div>
+
+      <p class="group-title">Signature gradients</p>
+      <div class="gradrow">
+        <div class="grad"><div class="g" style="background:var(--wash)"></div><div class="meta"><div class="name">Hero wash</div><div class="desc">pale → violet → aqua, 135°</div><div class="tok">--wash</div></div></div>
+        <div class="grad"><div class="g" style="background:var(--wash-soft)"></div><div class="meta"><div class="name">Wash soft</div><div class="desc">panels &amp; stat bands</div><div class="tok">--wash-soft</div></div></div>
+        <div class="grad"><div class="g" style="background:var(--indigo)"></div><div class="meta"><div class="name">Confident block</div><div class="desc">indigo + faint grid mask</div><div class="tok">--indigo</div></div></div>
+      </div>
+
+      <p class="group-title">Allocation</p>
+      <div class="alloc">
+        <span style="flex:70;background:var(--blue-600)">Royal / neutral · 70</span>
+        <span style="flex:12;background:var(--violet-400);color:var(--gray-950)">Violet 12</span>
+        <span style="flex:10;background:var(--aqua-500)">Aqua 10</span>
+        <span style="flex:8;background:var(--indigo)">Indigo 8</span>
+      </div>
+      <div class="note">Each accent has a fixed job so the system stays legible: <b>royal</b> = brand &amp; primary action · <b>violet</b> = the Patient layer &amp; secondary action · <b>aqua</b> = the Flock / network layer · <b>indigo</b> = text everywhere, plus confident blocks. Color is tied to <b>meaning</b>, not decoration — that's what lets the app stay calm while still feeling branded.</div>
+    </section>
+
+    <!-- ===================== THREE CLOUDS ===================== -->
+    <section class="sec" id="clouds">
+      <div class="sec-num">03 — Foundations</div>
+      <h2 class="sec-title">The three clouds</h2>
+      <p class="sec-sub">RobinDock's platform is framed as three "clouds," and each owns one accent color. This is the bridge between the two modes: on marketing it's bold cloud cards; in-product it's the same colors as quiet tags, top-bars, and dots. One mental model, head to tail.</p>
+      <div class="cloudmap">
+        <div class="cmap"><div class="bar" style="background:var(--blue-600)"></div><div class="in">
+          <div class="ic" style="background:var(--blue-50)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#223FAA" stroke-width="1.8"/><path d="M4 10h6l1.5 2.5h3" stroke="#223FAA" stroke-width="1.8"/></svg></div>
+          <h4>Document Cloud</h4><div class="job">Capture &amp; organize every fax, lab, and referral.</div>
+          <div class="uses"><b style="color:var(--blue-700)">Royal blue.</b> Primary actions, document tiles, "tag to pet."</div>
+        </div></div>
+        <div class="cmap"><div class="bar" style="background:var(--violet-400)"></div><div class="in">
+          <div class="ic" style="background:var(--violet-50)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.4" stroke="#7E6BCB" stroke-width="1.8"/><path d="M5 19c0-4 3.5-6.5 7-6.5s7 2.5 7 6.5" stroke="#7E6BCB" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <h4>Patient Cloud</h4><div class="job">Tag documents to the right patient &amp; timeline.</div>
+          <div class="uses"><b style="color:var(--violet-600)">Violet.</b> Patient tags, secondary actions, referral type.</div>
+        </div></div>
+        <div class="cmap"><div class="bar" style="background:var(--aqua-500)"></div><div class="in">
+          <div class="ic" style="background:var(--aqua-100)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="18" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="12" cy="17" r="2.4" stroke="#2d7373" stroke-width="1.8"/><path d="M8 8l3 6M16 8l-3 6" stroke="#2d7373" stroke-width="1.8"/></svg></div>
+          <h4>Flock Network</h4><div class="job">Exchange documents directly between practices.</div>
+          <div class="uses"><b style="color:#2d7373">Aqua.</b> "Via Flock" tags, network status, connected nodes.</div>
+        </div></div>
+      </div>
+      <div class="note aqua"><b>Why it works:</b> a referral that arrives via the Flock gets an aqua tag; a patient timeline accent is violet; a primary "Tag to pet" button is royal. Users learn the color language without being taught it — and the marketing site's bold cloud cards reinforce the exact same code.</div>
+    </section>
+
+    <!-- ===================== TYPOGRAPHY ===================== -->
+    <section class="sec" id="type">
+      <div class="sec-num">04 — Foundations</div>
+      <h2 class="sec-title">Typography</h2>
+      <p class="sec-sub">One typeface, both modes. <b>Inter</b> carries display and body — big calm headlines at 800 weight with tight tracking, neutral body, with <b>JetBrains Mono</b> for IDs and data. In confident mode the same headlines simply move onto a color block; the letterforms never change.</p>
+
+      <div class="specimen wash" style="margin-bottom:14px">
+        <div class="tag"><span>Display — Inter 800 · calm mode</span><span class="pair-tag">on pale wash</span></div>
+        <div class="t-display">Calm, secure,<br>in order.</div>
+        <p class="t-body" style="margin-top:16px;color:#3f4168">The everyday headline: deep indigo on a pale wash, big and quiet. Scale carries the confidence — no decoration needed.</p>
+      </div>
+      <div class="specimen block">
+        <div class="tag"><span>Display — Inter 800 · confident mode</span><span class="pair-tag">on indigo block</span></div>
+        <div class="t-display" style="color:#fff">Your practice,<br><span style="color:var(--aqua-400)">connected.</span></div>
+        <p class="t-body" style="margin-top:16px">The same type on a deep block for platform moments — an aqua word adds a friendly pop. Reserved for the Flock, pricing, and hero accents.</p>
+      </div>
+
+      <p class="group-title">Type scale</p>
+      <table class="scale-table">
+        <tr><td class="tok">display-xl</td><td style="font-family:var(--f-display);font-weight:800;font-size:32px;letter-spacing:-.04em">RobinDock</td><td class="px">72 / 0.95 / -4.5%</td><td class="use">Hero</td></tr>
+        <tr><td class="tok">display</td><td style="font-family:var(--f-display);font-weight:800;font-size:27px;letter-spacing:-.03em">Section title</td><td class="px">42 / 1.04 / -3%</td><td class="use">Marketing &amp; section</td></tr>
+        <tr><td class="tok">h1</td><td style="font-family:var(--f-display);font-weight:800;font-size:23px;letter-spacing:-.025em">Page heading</td><td class="px">24 / 1.1 / -2.5%</td><td class="use">App page lead</td></tr>
+        <tr><td class="tok">h2</td><td style="font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.02em">Card / panel title</td><td class="px">18–19 / 1.2</td><td class="use">Card heads</td></tr>
+        <tr><td class="tok">h3</td><td style="font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:-.01em">Sub-panel title</td><td class="px">15–16 / 1.3</td><td class="use">Side cards</td></tr>
+        <tr><td class="tok">body</td><td style="font-family:var(--f-body);font-size:15px;color:#5A5C77">Default paragraph text</td><td class="px">14–16 / 1.47</td><td class="use">Everywhere</td></tr>
+        <tr><td class="tok">caption</td><td style="font-family:var(--f-body);font-size:13px;color:#838599">Helper &amp; metadata</td><td class="px">13 / 1.4</td><td class="use">Dense UI</td></tr>
+        <tr><td class="tok">label</td><td style="font-family:var(--f-body);font-size:11px;font-weight:600;color:#838599;text-transform:uppercase;letter-spacing:.06em">Column header</td><td class="px">11 / .06em caps</td><td class="use">Table heads, eyebrows</td></tr>
+        <tr><td class="tok">mono</td><td style="font-family:var(--f-mono);font-size:13px;color:#223FAA">DOC-4821</td><td class="px">12–13 / 1.4</td><td class="use">IDs &amp; data</td></tr>
+      </table>
+      <div class="note"><b>Weights:</b> 800 display · 700 titles &amp; emphasis · 600 buttons, labels, links · 500 nav &amp; sub-copy · 400 body. <b>Don't</b> introduce a second display face or decorative font — scale and weight do the work.</div>
+    </section>
+
+    <!-- ===================== SPACING ===================== -->
+    <section class="sec" id="spacing">
+      <div class="sec-num">05 — Foundations</div>
+      <h2 class="sec-title">Spacing</h2>
+      <p class="sec-sub">A 4px base grid. Generous whitespace is the primary tool that keeps dense record screens calm — favour the larger steps for surface padding and section rhythm, the smaller ones for control internals.</p>
+      <div class="stage white">
+        <div class="scaleviz">
+          <div class="r"><span class="lab"><b>sp-1</b> · 4px</span><span class="bar" style="width:4px"></span></div>
+          <div class="r"><span class="lab"><b>sp-2</b> · 8px</span><span class="bar" style="width:8px"></span></div>
+          <div class="r"><span class="lab"><b>sp-3</b> · 12px</span><span class="bar" style="width:12px"></span></div>
+          <div class="r"><span class="lab"><b>sp-4</b> · 16px</span><span class="bar" style="width:16px"></span></div>
+          <div class="r"><span class="lab"><b>sp-5</b> · 20px</span><span class="bar" style="width:20px"></span></div>
+          <div class="r"><span class="lab"><b>sp-6</b> · 24px</span><span class="bar" style="width:24px"></span></div>
+          <div class="r"><span class="lab"><b>sp-7</b> · 28px</span><span class="bar" style="width:28px"></span></div>
+          <div class="r"><span class="lab"><b>sp-8</b> · 32px</span><span class="bar" style="width:32px"></span></div>
+          <div class="r"><span class="lab"><b>sp-10</b> · 40px</span><span class="bar" style="width:40px"></span></div>
+          <div class="r"><span class="lab"><b>sp-12</b> · 48px</span><span class="bar" style="width:48px"></span></div>
+          <div class="r"><span class="lab"><b>sp-16</b> · 64px</span><span class="bar" style="width:64px"></span></div>
+        </div>
+      </div>
+      <div class="note">Common in-product values: control padding <b>8–11px</b> · card padding <b>20–24px</b> · table cell <b>13–16px</b> · section gap <b>20–28px</b>. Marketing sections breathe at <b>70–90px</b> vertical.</div>
+    </section>
+
+    <!-- ===================== RADII ===================== -->
+    <section class="sec" id="radius">
+      <div class="sec-num">06 — Foundations</div>
+      <h2 class="sec-title">Radii</h2>
+      <p class="sec-sub">Soft, friendly corners — never sharp, never fully round except for pills and avatars. Larger surfaces get larger radii so nesting reads cleanly.</p>
+      <div class="stage white">
+        <div class="radviz">
+          <div class="r"><div class="box" style="border-radius:6px"></div><div class="lab"><b>--r-xs</b>6px · doc tiles, pager</div></div>
+          <div class="r"><div class="box" style="border-radius:9px"></div><div class="lab"><b>--r-sm</b>9px · nav, sm btn, chips</div></div>
+          <div class="r"><div class="box" style="border-radius:11px"></div><div class="lab"><b>--r-md</b>11px · compact controls</div></div>
+          <div class="r"><div class="box" style="border-radius:14px"></div><div class="lab"><b>--r-lg</b>14px · cards, tags row</div></div>
+          <div class="r"><div class="box" style="border-radius:18px"></div><div class="lab"><b>--r-xl</b>18px · large cards</div></div>
+          <div class="r"><div class="box" style="border-radius:28px"></div><div class="lab"><b>--r-2xl</b>28px · marketing bands</div></div>
+          <div class="r"><div class="box" style="border-radius:100px"></div><div class="lab"><b>--r-pill</b>100px · buttons, fields, pills</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ELEVATION ===================== -->
+    <section class="sec" id="elevation">
+      <div class="sec-num">07 — Foundations</div>
+      <h2 class="sec-title">Elevation &amp; focus</h2>
+      <p class="sec-sub">Three soft, indigo-tinted shadow tiers — never harsh black. Most surfaces sit at <b>sm</b>; <b>md</b> marks hover and bulk bars; <b>lg</b> is reserved for floating elements (search bars, toasts, modals). Focus is a soft royal ring.</p>
+      <div class="stage white">
+        <div class="elev">
+          <div class="e"><div class="box" style="height:64px;background:#fff;border-radius:12px;box-shadow:var(--sh-sm)"></div><div class="lab"><b>--sh-sm</b>cards, controls</div></div>
+          <div class="e"><div class="box" style="height:64px;background:#fff;border-radius:12px;box-shadow:var(--sh-md)"></div><div class="lab"><b>--sh-md</b>hover, raised</div></div>
+          <div class="e"><div class="box" style="height:64px;background:#fff;border-radius:12px;box-shadow:var(--sh-lg)"></div><div class="lab"><b>--sh-lg</b>floating / overlay</div></div>
+          <div class="e"><div class="box" style="height:64px;background:#fff;border-radius:12px;box-shadow:var(--ring),0 0 0 1px var(--blue-300)"></div><div class="lab"><b>--ring</b>focus state</div></div>
+        </div>
+      </div>
+      <div class="spec"><table>
+        <tr><td class="k">Shadow sm</td><td><span class="px">0 1px 3px rgba(25,19,70,.05), 0 1px 2px rgba(25,19,70,.04)</span></td></tr>
+        <tr><td class="k">Shadow md</td><td><span class="px">0 6px 22px rgba(25,19,70,.09)</span></td></tr>
+        <tr><td class="k">Shadow lg</td><td><span class="px">0 22px 54px rgba(34,63,170,.16)</span></td></tr>
+        <tr><td class="k">Focus ring</td><td><span class="px">0 0 0 3px var(--blue-50)</span> + border <span class="px">--blue-300</span></td></tr>
+      </table></div>
+    </section>
+
+    <!-- ===================== ICONOGRAPHY ===================== -->
+    <section class="sec" id="icons">
+      <div class="sec-num">08 — Foundations</div>
+      <h2 class="sec-title">Iconography</h2>
+      <p class="sec-sub">Clean line icons on a <b>24×24 grid</b>, <b>1.7px stroke</b>, round caps and joins, drawn in <code style="font-family:var(--f-mono);font-size:12px">currentColor</code> so they inherit text color. Three motifs recur: the <b>document tile</b>, the <b>paw</b>, and the <b>three-node flock</b>.</p>
+      <div class="stage white">
+        <div class="icongrid">
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h5l1.5 2.5h3L15 10h5" stroke="currentColor" stroke-width="1.7"/></svg><div class="nm">inbox</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><div class="nm">documents</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 19c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M15 19c0-2.2 1-4 3-4.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><div class="nm">patients</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="currentColor" stroke-width="1.7"/></svg><div class="nm">folders</div></div>
+          <div class="iconcell" style="color:#2d7373"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="7" r="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="17" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M9 8.5l2 6M15 8.5l-2 6" stroke="currentColor" stroke-width="1.7"/></svg><div class="nm">flock</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><div class="nm">review</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><div class="nm">search</div></div>
+          <div class="iconcell" style="color:#223FAA"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="10" r="1.8" fill="currentColor"/><circle cx="10" cy="6.5" r="1.8" fill="currentColor"/><circle cx="14.5" cy="6.5" r="1.8" fill="currentColor"/><circle cx="18.5" cy="10" r="1.8" fill="currentColor"/><path d="M12.3 11c2.4 0 4.4 1.8 4.4 4 0 1.6-1.4 2.4-3 2.4-.8 0-1-.3-1.6-.3s-.8.3-1.6.3c-1.6 0-3-.8-3-2.4 0-2.2 2-4 4.4-4z" fill="currentColor"/></svg><div class="nm">paw</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="nm">route</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><div class="nm">add</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 12.5a1.5 1.5 0 01-1.5 1.5H7a1.5 1.5 0 01-1.5-1.5L4 7z" stroke="currentColor" stroke-width="1.6"/><path d="M9 7V5a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 5v2" stroke="currentColor" stroke-width="1.6"/></svg><div class="nm">archive</div></div>
+          <div class="iconcell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 19V9M12 19V5M19 19v-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><div class="nm">reports</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LAYOUT / SHELL ===================== -->
+    <section class="sec" id="grid">
+      <div class="sec-num">09 — Foundations</div>
+      <h2 class="sec-title">Layout &amp; app shell</h2>
+      <p class="sec-sub">The product is a fixed left rail + fluid main column. The rail is a frosted neutral surface; the topbar sits sticky and translucent; content is capped for readability. Marketing uses a wider centered wrap.</p>
+      <div class="spec"><table>
+        <tr><td class="k">App sidebar rail</td><td><span class="px">230px</span> · frosted gray-100/80 · collapses to 64px under 1100px</td></tr>
+        <tr><td class="k">App topbar</td><td><span class="px">56–60px</span> · sticky · translucent white + blur · hairline base</td></tr>
+        <tr><td class="k">App content cap</td><td><span class="px">max 1080–1180px</span> · padding 22–30px</td></tr>
+        <tr><td class="k">App shell max</td><td><span class="px">1440px</span> centered on gray-100</td></tr>
+        <tr><td class="k">Marketing wrap</td><td><span class="px">max 1340px</span> · padding 56px (24px mobile)</td></tr>
+        <tr><td class="k">Section rhythm</td><td>marketing <span class="px">70–90px</span> vertical · alternating white / gray-100</td></tr>
+      </table></div>
+      <div class="note">The rail, topbar, and frosted surfaces all use <code style="font-family:var(--f-mono);font-size:12px">backdrop-filter: blur</code> over a translucent fill — that softness is part of the calm register. See the full <a href="#nav" style="color:var(--blue-600);font-weight:600">navigation components</a> below.</div>
+    </section>
+
+    <!-- ===================== BUTTONS ===================== -->
+    <section class="sec" id="buttons">
+      <div class="sec-num">10 — Components</div>
+      <h2 class="sec-title">Buttons</h2>
+      <p class="sec-sub">Royal primary, violet secondary, light tertiary, text quaternary — plus on-block variants for the confident register. <b>One primary action per view.</b> Hover, active, focus, and disabled states are live below.</p>
+
+      <div class="stage white">
+        <span class="stage-lbl">variants</span>
+        <div class="stage-row">
+          <button class="btn btn-blue">Tag to pet</button>
+          <button class="btn btn-violet">Book a demo</button>
+          <button class="btn btn-light">Route to chart</button>
+          <button class="btn btn-text">Snooze</button>
+          <button class="btn btn-blue" disabled>Disabled</button>
+        </div>
+        <div class="stage-row" style="margin-top:14px">
+          <button class="btn btn-blue btn-lg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Upload</button>
+          <button class="btn btn-blue">Default</button>
+          <button class="btn btn-blue btn-sm">Small</button>
+          <span class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg></span>
+        </div>
+      </div>
+      <div class="stage block" style="margin-top:14px">
+        <span class="stage-lbl" style="color:rgba(255,255,255,.4)">on confident block</span>
+        <div class="stage-row">
+          <button class="btn btn-onblock btn-lg">Explore the Flock</button>
+          <button class="btn btn-ghost btn-lg">See who's connected</button>
+        </div>
+      </div>
+
+      <div class="cols2" style="margin-top:14px">
+        <div class="spec"><table>
+          <tr><td class="k">Primary</td><td><span class="tok">btn-blue</span> · blue-600, white · fully rounded</td></tr>
+          <tr><td class="k">Secondary</td><td><span class="tok">btn-violet</span> · violet-400, indigo text</td></tr>
+          <tr><td class="k">Tertiary</td><td><span class="tok">btn-light</span> · white, gray-300 border</td></tr>
+          <tr><td class="k">Text</td><td><span class="tok">btn-text</span> · blue-600, underline on hover</td></tr>
+          <tr><td class="k">Sizes</td><td><span class="px">lg 13/26</span> · <span class="px">def 11/20</span> · <span class="px">sm 7/13</span></td></tr>
+        </table></div>
+        <div class="dd" style="margin-top:0">
+          <div class="col do"><h5>Do</h5><ul><li>One royal primary per view.</li><li>Pair with violet for the secondary path.</li><li>Lead icon, then label, 8px gap.</li></ul></div>
+          <div class="col dont"><h5>Don't</h5><ul><li>Stack two royal buttons together.</li><li>Use violet for a destructive action.</li><li>Put on-block buttons on light surfaces.</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FORMS ===================== -->
+    <section class="sec" id="forms">
+      <div class="sec-num">11 — Components</div>
+      <h2 class="sec-title">Forms &amp; inputs <span class="added">extended</span></h2>
+      <p class="sec-sub">The source files lean on search and filter controls; these standard fields, selects, toggles, and choice controls round out the set in the same calm language — gray-300 borders, 11px radius, soft royal focus ring.</p>
+      <div class="stage white">
+        <div class="stage-row" style="align-items:flex-start;gap:28px">
+          <div class="field">
+            <label class="lab">Clinic name</label>
+            <input class="input" value="Mountain West Veterinary" />
+            <span class="hint">Shown on outgoing documents.</span>
+          </div>
+          <div class="field">
+            <label class="lab">Fax number</label>
+            <input class="input" placeholder="(801) 555-0000" />
+          </div>
+          <div class="field">
+            <label class="lab">Default routing</label>
+            <div class="selectwrap"><select class="input"><option>Front desk queue</option><option>Dr. Mitchell</option><option>Records</option></select></div>
+          </div>
+        </div>
+        <div class="stage-row" style="align-items:flex-start;gap:28px;margin-top:20px">
+          <div class="field">
+            <label class="lab">Note</label>
+            <textarea class="input" placeholder="Add an internal note…"></textarea>
+          </div>
+          <div class="field">
+            <label class="lab" style="color:var(--bad-ink)">Email</label>
+            <input class="input bad" value="sarah.m@" />
+            <span class="err">Enter a valid email address.</span>
+          </div>
+          <div class="field">
+            <label class="lab">Disabled</label>
+            <input class="input" value="Locked field" disabled />
+          </div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px">
+        <span class="stage-lbl">choice controls</span>
+        <div class="stage-row" style="gap:30px">
+          <div class="stage-col">
+            <label class="optrow"><span class="ck on" data-toggle></span> Auto-tag from sender</label>
+            <label class="optrow"><span class="ck" data-toggle></span> Notify on failed routing</label>
+          </div>
+          <div class="stage-col">
+            <div class="optrow"><span class="radio on" data-pick></span> Route to a person<span class="radio" data-pick style="margin-left:18px"></span> Route to a chart</div>
+          </div>
+          <label class="optrow"><span class="toggle on" data-toggle></span> Flock auto-accept</label>
+        </div>
+      </div>
+      <div class="note">Interactive — toggle the checkboxes, switch, and radio. Focus any field to see the royal ring. Error state uses <span class="tok" style="font-family:var(--f-mono);font-size:12px;color:var(--violet-600)">.input.bad</span> with a red focus ring.</div>
+    </section>
+
+    <!-- ===================== SEARCH ===================== -->
+    <section class="sec" id="search">
+      <div class="sec-num">12 — Components</div>
+      <h2 class="sec-title">Search</h2>
+      <p class="sec-sub">Two registers of the same idea: the quiet <b>pill search</b> for topbars and inside card tables, and the elevated <b>hero search</b> floating on the wash — RobinDock's signature "enter your fax number" entry point.</p>
+      <div class="stage white">
+        <span class="stage-lbl">topbar / inline</span>
+        <div class="search" style="max-width:420px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#838599" stroke-width="1.8"/><path d="M16 16l4 4" stroke="#838599" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input placeholder="Search documents, patients, senders…" />
+          <span class="kbd">⌘K</span>
+        </div>
+      </div>
+      <div class="stage wash" style="margin-top:14px">
+        <span class="stage-lbl" style="color:var(--blue-700)">hero / elevated</span>
+        <div class="searchbar" style="margin:6px auto">
+          <input placeholder="Enter your clinic's fax number" />
+          <button class="btn btn-blue btn-lg">Get started</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== AUTOSUGGEST ===================== -->
+    <section class="sec" id="suggest">
+      <div class="sec-num">12.1 — Components</div>
+      <h2 class="sec-title">Search suggestions <span class="added">extended</span></h2>
+      <p class="sec-sub">A Gmail-style autosuggest for global search (⌘K). As you type, RobinDock surfaces the most relevant <b>patient or sender</b> first, then matching <b>documents</b> — matched letters bolded inline — with quick filter chips up top and an "all results" escape hatch. Fully live: <b>type to filter</b>, <b>↑ ↓ to move</b>, <b>Enter</b> to open, <b>Esc</b> to clear.</p>
+      <div class="stage white" style="overflow:visible">
+        <span class="stage-lbl">try typing</span>
+        <div class="ss-wrap open" id="rdSuggest">
+          <div class="ss-field">
+            <span class="ss-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19.5 4.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4L17 6.4l1.5-.5.5-1.4z" fill="currentColor"/></svg></span>
+            <input class="ss-input" type="text" value="be" placeholder="Search documents, patients, senders…" aria-label="Search" />
+            <span class="ss-act ss-clear" title="Clear"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <span class="ss-div"></span>
+            <span class="ss-act" title="Advanced filters"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M8 12h8M10 17h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          </div>
+          <div class="ss-panel">
+            <div class="ss-chips">
+              <span class="ss-chip">Needs review</span>
+              <span class="ss-chip">Last 7 days</span>
+              <span class="ss-chip">Via Flock</span>
+              <span class="ss-chip">Has attachment</span>
+            </div>
+            <div class="ss-entity-host"></div>
+            <div class="ss-results"></div>
+            <div class="ss-foot">
+              <span class="ss-fico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+              <span class="q"></span>
+              <span class="enter">Press ENTER</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cols2" style="margin-top:14px">
+        <div class="spec"><table>
+          <tr><td class="k">Order</td><td>Top entity (patient → sender) first, then up to 5 documents, then "all results"</td></tr>
+          <tr><td class="k">Match highlight</td><td>Every occurrence of the query bolded inline (<span class="tok">&lt;b&gt;</span>, weight 800)</td></tr>
+          <tr><td class="k">Empty state</td><td>Shows a <b>Recent</b> list — recents beat a blank panel</td></tr>
+          <tr><td class="k">Keyboard</td><td><span class="px">↑ ↓</span> move · <span class="px">Enter</span> open · <span class="px">Esc</span> clear</td></tr>
+          <tr><td class="k">Surface</td><td>Panel floats on <span class="tok">--sh-lg</span>, radius <span class="px">18px</span>, below the pill field</td></tr>
+        </table></div>
+        <div class="dd" style="margin-top:0">
+          <div class="col do"><h5>Where it fits</h5><ul>
+            <li>Global ⌘K search in the topbar.</li>
+            <li>"Tag to patient" — same pattern, patients only.</li>
+            <li>Sender &amp; assignee pickers in the filter bar.</li>
+          </ul></div>
+          <div class="col dont"><h5>Keep it calm</h5><ul>
+            <li>Cap visible results (~5) — link to the full list.</li>
+            <li>Bold the match, don't recolor the whole row.</li>
+            <li>One entity suggestion, not a wall of people.</li>
+          </ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TAGS / STATUS ===================== -->
+    <section class="sec" id="tags">
+      <div class="sec-num">13 — Components</div>
+      <h2 class="sec-title">Tags &amp; status</h2>
+      <p class="sec-sub">Two distinct families. <b>Type tags</b> (pill, colored dot) say <i>what a document is</i> and follow the cloud colors. <b>Status</b> (dot + label, no fill) says <i>where it is in the workflow</i> and follows the semantic palette.</p>
+      <div class="cols2">
+        <div class="stage white"><span class="stage-lbl">type tags</span>
+          <div class="stage-row">
+            <span class="tag lab"><span class="d"></span>Lab result</span>
+            <span class="tag ref"><span class="d"></span>Referral</span>
+            <span class="tag flock"><span class="d"></span>Via Flock</span>
+            <span class="tag img"><span class="d"></span>Imaging</span>
+            <span class="tag vax"><span class="d"></span>Vaccine</span>
+          </div>
+        </div>
+        <div class="stage white"><span class="stage-lbl">status</span>
+          <div class="stage-row">
+            <span class="st routed"><span class="d"></span>Routed</span>
+            <span class="st review"><span class="d"></span>Needs review</span>
+            <span class="st new"><span class="d"></span>New</span>
+            <span class="st failed"><span class="d"></span>Failed to route</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px"><span class="stage-lbl">meaning-mapped pills</span>
+        <div class="stage-row">
+          <span class="pill blue"><span class="d"></span>3 need routing</span>
+          <span class="pill violet"><span class="d"></span>Patient · review</span>
+          <span class="pill aqua"><span class="d"></span>Via the Flock</span>
+          <span class="pill ok"><span class="d"></span>Routed</span>
+          <span class="pill bad"><span class="d"></span>Failed</span>
+        </div>
+      </div>
+      <div class="note"><b>Map type tags to the cloud colors:</b> blue = lab / document, violet = referral / patient, aqua = Flock, gray = imaging / generic, amber = vaccine. <b>Don't</b> use violet and aqua interchangeably — they carry different meaning.</div>
+    </section>
+
+    <!-- ===================== BADGES / AVATARS ===================== -->
+    <section class="sec" id="badges">
+      <div class="sec-num">14 — Components</div>
+      <h2 class="sec-title">Badges, avatars &amp; logo</h2>
+      <p class="sec-sub">Count badges sit on nav items and table headers; the NEW flag marks fresh documents. Avatars are initials on a tinted fill. The <b>RobinDock logo</b> — mark, wordmark, and lockup — closes out the section.</p>
+      <div class="cols2">
+        <div class="stage white"><span class="stage-lbl">badges</span>
+          <div class="stage-row">
+            <span class="countbadge">12</span>
+            <span class="countbadge blue">3</span>
+            <span class="countbadge bad">3</span>
+            <span style="font-size:14px;color:var(--gray-800)">CBC Results <span class="newbadge">NEW</span></span>
+          </div>
+        </div>
+        <div class="stage white"><span class="stage-lbl">avatars</span>
+          <div class="stage-row">
+            <span class="av" style="--av:44px">SM</span>
+            <span class="av blue" style="--av:40px">KS</span>
+            <span class="av aqua" style="--av:36px">MW</span>
+            <span class="av" style="--av:32px">JP</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px"><span class="stage-lbl">logo lockup</span>
+        <div class="stage-row" style="gap:34px;align-items:center">
+          <span class="logo-lockup"><svg class="mark" style="--ms:44px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg><span class="logo-word" style="--lw:26px">Robin<span class="dk">Dock</span></span></span>
+          <span class="logo-lockup"><svg class="mark" style="--ms:30px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg><span class="logo-word" style="--lw:18px">Robin<span class="dk">Dock</span></span></span>
+        </div>
+      </div>
+      <div class="cols2" style="margin-top:14px">
+        <div class="stage white"><span class="stage-lbl">mark · size ramp</span>
+          <div class="stage-row" style="align-items:flex-end;gap:24px">
+            <svg class="mark" style="--ms:64px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+            <svg class="mark" style="--ms:40px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+            <svg class="mark" style="--ms:28px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+            <svg class="mark" style="--ms:20px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg>
+          </div>
+          <div style="font-family:var(--f-mono);font-size:10.5px;color:var(--gray-400);margin-top:12px">64 · 40 · 28 · 20px (favicon)</div>
+        </div>
+        <div class="stage" style="background:var(--indigo)"><span class="stage-lbl" style="color:rgba(255,255,255,.4)">on confident surface</span>
+          <div class="stage-row" style="gap:30px;align-items:center;padding:6px 0">
+            <span class="logo-lockup"><svg class="mark" style="--ms:40px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg><span class="logo-word" style="--lw:22px;color:#fff">Robin<span class="dk" style="color:var(--aqua-400)">Dock</span></span></span>
+          </div>
+        </div>
+      </div>
+      <div class="note violet"><b>On the mark:</b> a white geometric robin with an aqua breast inside a royal rounded-square tile (a <span class="tok" style="font-family:var(--f-mono);font-size:12px;color:var(--violet-600)">#3D5AC7 → #223FAA</span> gradient), with a royal eye. The wordmark is set in <b>Inter 700</b> to match the system type, two-toned <b>Robin</b> (indigo) + <b>Dock</b> (royal) — and on the confident indigo surface, "Dock" shifts to aqua. The mark is true vector and reads cleanly from a 20px favicon up. Keep clear space around it equal to the tile's corner radius; don't recolor the tile or stretch the lockup.</div>
+    </section>
+
+    <!-- ===================== CARDS / PANELS ===================== -->
+    <section class="sec" id="cards">
+      <div class="sec-num">15 — Components</div>
+      <h2 class="sec-title">Cards &amp; panels</h2>
+      <p class="sec-sub">White surfaces, hairline border, soft <b>sm</b> shadow, 14–18px radius. The <b>side card</b> adds a 3px cloud-colored top-bar and key-value rows. The <b>indigo block</b> is the confident-register surface.</p>
+      <div class="cols2">
+        <div class="panel">
+          <div class="ph"><h3>Weight trend</h3><span class="more">View history →</span></div>
+          <div class="trend">
+            <div class="bar" style="height:64%"><span class="v">26.1</span><span class="fill" style="height:100%"></span></div>
+            <div class="bar" style="height:70%"><span class="v">27.0</span><span class="fill" style="height:100%"></span></div>
+            <div class="bar" style="height:68%"><span class="v">26.6</span><span class="fill" style="height:100%"></span></div>
+            <div class="bar" style="height:76%"><span class="v">27.8</span><span class="fill" style="height:100%"></span></div>
+            <div class="bar hot" style="height:82%"><span class="v">28.4</span><span class="fill" style="height:100%"></span></div>
+          </div>
+          <div class="trend-x"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span></div>
+        </div>
+        <div class="sidecard">
+          <div class="bar" style="background:var(--blue-600)"></div>
+          <div class="scin">
+            <h3>Patient details</h3>
+            <div class="kv"><span class="k">Species</span><span class="v">Canine</span></div>
+            <div class="kv"><span class="k">Breed</span><span class="v">Golden Retriever</span></div>
+            <div class="kv"><span class="k">Sex</span><span class="v">Female, spayed</span></div>
+            <div class="kv"><span class="k">Microchip</span><span class="v mono">985•••231</span></div>
+            <div class="kv"><span class="k">Patient ID</span><span class="v mono">PT-02841</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="block" style="margin-top:14px">
+        <div class="pair-tag" style="color:var(--aqua-400);margin-bottom:10px">The Flock · network</div>
+        <div class="t-display" style="font-size:34px;color:#fff;max-width:14ch">Your practice, <span style="color:var(--aqua-400)">connected.</span></div>
+        <p class="t-body" style="margin-top:14px;max-width:46ch">The confident surface: deep indigo, faint grid mask, an aqua glow. Reserved for the Flock, pricing, dashboards, and marketing accents.</p>
+      </div>
+    </section>
+
+    <!-- ===================== STAT / CLOUD CARDS ===================== -->
+    <section class="sec" id="stats">
+      <div class="sec-num">16 — Components</div>
+      <h2 class="sec-title">Stat &amp; cloud cards</h2>
+      <p class="sec-sub">Stat cards carry a single big <b>Inter 800</b> number with a cloud-colored top-bar; the unit gets the royal pop. Cloud cards are the marketing expression of the same three-cloud system.</p>
+      <div class="statcards">
+        <div class="sc"><div class="bar" style="background:var(--blue-600)"></div><div class="scin"><div class="n">24</div><div class="l">Documents on file</div></div></div>
+        <div class="sc"><div class="bar" style="background:var(--violet-400)"></div><div class="scin"><div class="n">3</div><div class="l">This month</div></div></div>
+        <div class="sc"><div class="bar" style="background:var(--aqua-500)"></div><div class="scin"><div class="n"><span class="u">2</span></div><div class="l">Via the Flock</div></div></div>
+        <div class="sc"><div class="bar" style="background:var(--gray-300)"></div><div class="scin"><div class="n">38<span class="u">%</span></div><div class="l">Time saved</div></div></div>
+      </div>
+      <div class="cloudcards" style="margin-top:16px">
+        <div class="cc"><div class="bar" style="background:var(--blue-600)"></div><div class="in"><div class="ic" style="background:var(--blue-50)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#223FAA" stroke-width="1.8"/><path d="M4 10h6l1.5 2.5h3" stroke="#223FAA" stroke-width="1.8"/></svg></div><h4>Document Cloud</h4><p>Every fax, lab, and referral captured and organized automatically.</p><span class="lk">Explore →</span></div></div>
+        <div class="cc"><div class="bar" style="background:var(--violet-400)"></div><div class="in"><div class="ic" style="background:var(--violet-50)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.4" stroke="#7E6BCB" stroke-width="1.8"/><path d="M5 19c0-4 3.5-6.5 7-6.5s7 2.5 7 6.5" stroke="#7E6BCB" stroke-width="1.8" stroke-linecap="round"/></svg></div><h4>Patient Cloud</h4><p>Tag any document to the right patient and build a searchable timeline.</p><span class="lk" style="color:#7E6BCB">Explore →</span></div></div>
+        <div class="cc"><div class="bar" style="background:var(--aqua-500)"></div><div class="in"><div class="ic" style="background:var(--aqua-100)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="18" cy="7" r="2.4" stroke="#2d7373" stroke-width="1.8"/><circle cx="12" cy="17" r="2.4" stroke="#2d7373" stroke-width="1.8"/><path d="M8 8l3 6M16 8l-3 6" stroke="#2d7373" stroke-width="1.8"/></svg></div><h4>Flock Network</h4><p>Exchange documents directly between connected practices.</p><span class="lk" style="color:#2d7373">Explore →</span></div></div>
+      </div>
+    </section>
+
+    <!-- ===================== CARD TABLES ===================== -->
+    <section class="sec" id="cardtables">
+      <div class="sec-num">17 — Components</div>
+      <h2 class="sec-title">Card tables</h2>
+      <p class="sec-sub">The signature embedded-summary pattern: a titled card wrapping a table, optionally with an inline search + filter toolbar and a "view all" footer. Used on patient and client detail screens.</p>
+      <div class="ctable">
+        <div class="ct-head">
+          <h3>Recent documents <span class="c">(24)</span></h3>
+          <span class="linkmuted">Export</span>
+        </div>
+        <div class="ct-tools">
+          <div class="ct-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#838599" stroke-width="1.8"/><path d="M16 16l4 4" stroke="#838599" stroke-width="1.8" stroke-linecap="round"/></svg><input placeholder="Search documents…"/></div>
+          <div class="fdrop"><span class="lbl">Type</span> All <span class="ch">▾</span></div>
+          <div class="fdrop active"><span class="lbl">Status</span> Needs review <span class="ch">▾</span></div>
+        </div>
+        <table class="ct">
+          <thead><tr><th>Document</th><th>Type</th><th>Patient</th><th>Status</th><th class="right">Received</th></tr></thead>
+          <tbody>
+            <tr><td><div class="dcell"><span class="di"></span><span class="dn">CBC Results</span></div></td><td><span class="tag lab"><span class="d"></span>Lab result</span></td><td>Luna</td><td><span class="st review"><span class="d"></span>Needs review</span></td><td class="right" style="font-family:var(--f-mono);font-size:12px;color:var(--gray-500)">8:47 AM</td></tr>
+            <tr><td><div class="dcell"><span class="di violet"></span><span class="dn">Referral — Cardiology</span></div></td><td><span class="tag ref"><span class="d"></span>Referral</span></td><td>Cosmo</td><td><span class="st routed"><span class="d"></span>Routed</span></td><td class="right" style="font-family:var(--f-mono);font-size:12px;color:var(--gray-500)">Yesterday</td></tr>
+            <tr><td><div class="dcell"><span class="di aqua"></span><span class="dn">Vaccine record</span></div></td><td><span class="tag flock"><span class="d"></span>Via Flock</span></td><td>Luna</td><td><span class="st routed"><span class="d"></span>Routed</span></td><td class="right" style="font-family:var(--f-mono);font-size:12px;color:var(--gray-500)">May 13</td></tr>
+          </tbody>
+        </table>
+        <div class="ct-foot"><a>View all 24 documents →</a></div>
+      </div>
+      <div class="cols2" style="margin-top:16px">
+        <div class="ctable">
+          <div class="ct-head"><h3>Account</h3><span class="linkmuted">Edit</span></div>
+          <table class="ct kvtable"><tbody>
+            <tr><td class="k">Client ID</td><td class="v"><span class="mono">CL-1042</span></td></tr>
+            <tr><td class="k">Primary phone</td><td class="v">(801) 555-0142</td></tr>
+            <tr><td class="k">Preferred contact</td><td class="v">Email</td></tr>
+            <tr><td class="k">Balance</td><td class="v">$0.00</td></tr>
+          </tbody></table>
+        </div>
+        <div class="ctable">
+          <div class="ct-head"><h3>Outstanding tasks <span class="c">(0)</span></h3><span class="act"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Add task</span></div>
+          <div class="ct-empty">
+            <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M5 12h14M5 17h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M18 16l2 2 3-3" stroke="#3A8A6F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h4>All caught up</h4>
+            <p>No outstanding tasks. New tasks will appear here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DATA TABLE ===================== -->
+    <section class="sec" id="datatable">
+      <div class="sec-num">18 — Components</div>
+      <h2 class="sec-title">Data table</h2>
+      <p class="sec-sub">The full document list: selectable rows, sortable headers, hover row actions, an indigo <b>bulk-action bar</b> when rows are selected, and pagination. Selection tints rows royal; the bulk bar is the one in-product confident-register moment.</p>
+      <div class="bulkbar" style="margin-bottom:12px">
+        <div class="cnt"><span>3</span> selected</div>
+        <div class="sep"></div>
+        <div class="ba"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M6 19c0-3.5 2.5-5 6-5s6 1.5 6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Tag to patient</div>
+        <div class="ba"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Route</div>
+        <div class="ba"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 12.5a1.5 1.5 0 01-1.5 1.5H7a1.5 1.5 0 01-1.5-1.5L4 7z" stroke="currentColor" stroke-width="1.6"/></svg>Archive</div>
+        <div class="right">Deselect all</div>
+      </div>
+      <div class="tablewrap">
+        <table class="dt">
+          <thead><tr>
+            <th class="cb"><span class="ck dash"></span></th>
+            <th>Document <span class="sar">↓</span></th>
+            <th>Type</th><th>Patient</th><th>Sender</th><th>Status</th>
+            <th>Received</th><th class="center">Pages</th><th class="right"></th>
+          </tr></thead>
+          <tbody>
+            <tr class="sel"><td class="cb"><span class="ck on" data-toggle></span></td><td><div class="dcell"><div class="di"></div><div><div class="dn">CBC Results — Bella <span class="newbadge">NEW</span></div><div class="dsub">DOC-4821</div></div></div></td><td><span class="tag lab"><span class="d"></span>Lab result</span></td><td><a class="plink">Bella</a></td><td>Antech Diagnostics</td><td><span class="st review"><span class="d"></span>Needs review</span></td><td class="mono">8:47 AM</td><td class="center muted">1</td><td class="right"><span class="rowact">⋯</span></td></tr>
+            <tr class="sel"><td class="cb"><span class="ck on" data-toggle></span></td><td><div class="dcell"><div class="di violet"></div><div><div class="dn">Referral — Orthopedic consult</div><div class="dsub">DOC-4815 · via Flock</div></div></div></td><td><span class="tag ref"><span class="d"></span>Referral</span></td><td><a class="plink">Bella</a></td><td>Mountain West Specialists</td><td><span class="st new"><span class="d"></span>New</span></td><td class="mono">8:31 AM</td><td class="center muted">2</td><td class="right"><span class="rowact">⋯</span></td></tr>
+            <tr><td class="cb"><span class="ck" data-toggle></span></td><td><div class="dcell"><div class="di img"></div><div><div class="dn">Radiology Report — Left stifle</div><div class="dsub">DOC-4806</div></div></div></td><td><span class="tag img"><span class="d"></span>Imaging</span></td><td><a class="plink">Bella</a></td><td>Vet Imaging Center</td><td><span class="st routed"><span class="d"></span>Routed</span></td><td class="mono">Yesterday</td><td class="center muted">3</td><td class="right"><span class="rowact">⋯</span></td></tr>
+            <tr><td class="cb"><span class="ck" data-toggle></span></td><td><div class="dcell"><div class="di aqua"></div><div><div class="dn">Vaccine record — Luna</div><div class="dsub">DOC-4798 · via Flock</div></div></div></td><td><span class="tag flock"><span class="d"></span>Via Flock</span></td><td><a class="plink">Luna</a></td><td>Paws &amp; Claws</td><td><span class="st routed"><span class="d"></span>Routed</span></td><td class="mono">May 13</td><td class="center muted">1</td><td class="right"><span class="rowact">⋯</span></td></tr>
+            <tr><td class="cb"><span class="ck" data-toggle></span></td><td><div class="dcell"><div class="di"></div><div><div class="dn">Lab panel — Senior wellness</div><div class="dsub">DOC-4590</div></div></div></td><td><span class="tag lab"><span class="d"></span>Lab result</span></td><td><span class="muted">Unassigned</span></td><td>Antech Diagnostics</td><td><span class="st failed"><span class="d"></span>Failed to route</span></td><td class="mono">May 12</td><td class="center muted">4</td><td class="right"><span class="rowact">⋯</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager" style="margin-top:16px">
+        <div class="info">Showing <b>1–5</b> of <b>2,418</b></div>
+        <div class="ctrl">
+          <span class="pb dis">‹</span>
+          <span class="pb on">1</span><span class="pb">2</span><span class="pb">3</span>
+          <span class="pb" style="border:none;background:none">…</span>
+          <span class="pb">269</span>
+          <span class="pb">›</span>
+        </div>
+        <div class="rows"><span class="selbox">25 rows ▾</span></div>
+      </div>
+      <div class="note">Try clicking the checkboxes — they toggle live. In production, selecting any row reveals the bulk bar and the header checkbox switches to the indeterminate <span class="tok" style="font-family:var(--f-mono);font-size:12px;color:var(--violet-600)">.ck.dash</span> state.</div>
+    </section>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <section class="sec" id="nav">
+      <div class="sec-num">19 — Components</div>
+      <h2 class="sec-title">Navigation</h2>
+      <p class="sec-sub">The sidebar rail groups destinations under <b>Track / Organize / Review</b>, with count badges and a frosted active state. The topbar carries the page title or breadcrumb, search, and the primary action.</p>
+      <div class="stage" style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+        <aside class="rail">
+          <div class="brand"><svg class="mark" style="--ms:30px" viewBox="0 0 512 512"><use href="#rdMark"></use></svg><span class="w">Robin<span class="dk">Dock</span></span></div>
+          <div class="newbtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></svg> New document</div>
+          <div class="navsec">Track</div>
+          <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" stroke="#5A5C77" stroke-width="1.7"/><path d="M4 10h5l1.5 2.5h3L15 10h5" stroke="#5A5C77" stroke-width="1.7"/></svg>Inbox<span class="ct">12</span></div>
+          <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 12h16M4 19h16" stroke="#5A5C77" stroke-width="1.7" stroke-linecap="round"/></svg>All Documents</div>
+          <div class="navsec">Organize</div>
+          <div class="nav-i on"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="#223FAA" stroke-width="1.7"/><path d="M3.5 19c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="#223FAA" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="9" r="2.4" stroke="#223FAA" stroke-width="1.7"/><path d="M15 19c0-2.2 1-4 3-4.4" stroke="#223FAA" stroke-width="1.7" stroke-linecap="round"/></svg>Patients</div>
+          <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><circle cx="17" cy="7" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><circle cx="12" cy="17" r="2.5" stroke="#5A5C77" stroke-width="1.7"/><path d="M9 8.5l2 6M15 8.5l-2 6" stroke="#5A5C77" stroke-width="1.7"/></svg>The Flock</div>
+          <div class="navsec">Review</div>
+          <div class="nav-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="#5A5C77" stroke-width="1.7" stroke-linejoin="round"/></svg>Needs Review<span class="ct bad" style="background:var(--bad);color:#fff">3</span></div>
+          <div class="rail-foot"><span class="av" style="--av:32px">KS</span><div class="who"><div class="n">Kai S.</div><div class="r">Mountain West</div></div></div>
+        </aside>
+        <div style="flex:1;min-width:300px;display:flex;flex-direction:column;gap:14px">
+          <div class="topbar">
+            <h1>Documents</h1>
+            <div class="search" style="max-width:280px;margin-left:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#838599" stroke-width="1.8"/><path d="M16 16l4 4" stroke="#838599" stroke-width="1.8" stroke-linecap="round"/></svg><input placeholder="Search…" /></div>
+            <div class="actions"><span class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#5A5C77" stroke-width="1.8" stroke-linecap="round"/></svg></span><button class="btn btn-blue btn-sm">Upload</button></div>
+          </div>
+          <div class="topbar" style="height:auto;padding:14px 18px">
+            <div class="crumb"><a>Patients</a><span class="sep">›</span><span class="cur">Bella</span></div>
+            <div class="actions"><button class="btn btn-light btn-sm">Edit</button><button class="btn btn-blue btn-sm">Add document</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="note">The active rail item gets a white fill + sm shadow (it "lifts" off the frosted surface). Count badges are violet by default, red for anything needing attention. Under 1100px the rail collapses to a 64px icon-only strip.</div>
+    </section>
+
+    <!-- ===================== TABS / FILTERS ===================== -->
+    <section class="sec" id="tabs">
+      <div class="sec-num">20 — Components</div>
+      <h2 class="sec-title">Tabs &amp; filters</h2>
+      <p class="sec-sub">Three switchers for different jobs: <b>segmented tabs</b> (filter a set, with counts), <b>underline tabs</b> (switch panels within a record), and the marketing <b>pill menu</b>. The filter bar combines dropdowns, removable filter pills, and a view toggle — all interactive below.</p>
+      <div class="stage white"><span class="stage-lbl">segmented</span>
+        <div class="segs">
+          <div class="seg on" data-pick>All <span class="n">2,418</span></div>
+          <div class="seg" data-pick>Labs <span class="n">1,042</span></div>
+          <div class="seg" data-pick>Referrals <span class="n">386</span></div>
+          <div class="seg" data-pick>Imaging <span class="n">274</span></div>
+          <div class="seg" data-pick>Via Flock <span class="n">512</span></div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px"><span class="stage-lbl">underline</span>
+        <div class="utabs">
+          <div class="t on" data-pick>Timeline</div>
+          <div class="t" data-pick>Documents</div>
+          <div class="t" data-pick>Lab results</div>
+          <div class="t" data-pick>Notes</div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px"><span class="stage-lbl">pill menu · marketing</span>
+        <div class="pillmenu">
+          <div class="pm on" data-pick>Inbox</div><div class="pm" data-pick>Patient timeline</div><div class="pm" data-pick>Routing</div><div class="pm" data-pick>The Flock</div><div class="pm" data-pick>Search</div>
+        </div>
+      </div>
+      <div class="stage white" style="margin-top:14px"><span class="stage-lbl">filter bar</span>
+        <div class="filterbar">
+          <div class="fdrop active"><span class="lbl">Status</span> Needs review <span class="ch">▾</span></div>
+          <div class="fdrop"><span class="lbl">Type</span> All <span class="ch">▾</span></div>
+          <div class="fdrop active"><span class="lbl">Sender</span> Antech +1 <span class="ch">▾</span></div>
+          <div class="fdrop"><span class="lbl">Date</span> Last 30 days <span class="ch">▾</span></div>
+          <div style="flex:1"></div>
+          <div class="vtoggle"><div class="v on" data-pick><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="v" data-pick><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg></div></div>
+        </div>
+        <div class="filterbar" style="margin-top:14px">
+          <span style="font-size:11.5px;color:var(--gray-500);font-weight:600">Filters:</span>
+          <span class="fpill">Status: Needs review <span class="x">✕</span></span>
+          <span class="fpill">Sender: Antech <span class="x">✕</span></span>
+          <span class="fpill">Sender: Idexx <span class="x">✕</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEEDBACK ===================== -->
+    <section class="sec" id="feedback">
+      <div class="sec-num">21 — Components</div>
+      <h2 class="sec-title">Feedback <span class="added">extended</span></h2>
+      <p class="sec-sub">Inline banners and the promo bar communicate state without interrupting; semantic colors carry meaning. These extend the system to cover messaging the source screens imply but don't yet show.</p>
+      <div class="promo" style="margin-bottom:14px">Try RobinDock free for 30 days &nbsp;·&nbsp; <a>The document platform built for vet teams →</a></div>
+      <div class="stage-col" style="gap:12px;display:flex">
+        <div class="banner info"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>3 documents are waiting to be routed.<span class="x">✕</span></div>
+        <div class="banner ok"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>All 5 documents routed to Bella's chart.<span class="x">✕</span></div>
+        <div class="banner warn"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>This sender isn't verified yet — review before routing.<span class="x">✕</span></div>
+        <div class="banner bad"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>A document failed to route. We'll retry automatically.<span class="x">✕</span></div>
+      </div>
+    </section>
+
+    <!-- ===================== OVERLAYS ===================== -->
+    <section class="sec" id="overlays">
+      <div class="sec-num">22 — Components</div>
+      <h2 class="sec-title">Overlays <span class="added">extended</span></h2>
+      <p class="sec-sub">Toasts, dropdown menus, tooltips, and dialogs. All float on the <b>lg</b> shadow. The dialog scrim dims with an indigo tint and a light blur. Try the buttons.</p>
+      <div class="stage white" style="overflow:visible">
+        <div class="stage-row" style="gap:30px;align-items:flex-start">
+          <div class="stage-col" style="gap:12px">
+            <button class="btn btn-blue" data-toast="#demoToast">Show toast</button>
+            <div class="toast" id="demoToast" style="opacity:0;transform:translateY(8px);transition:.25s">
+              <span class="ic ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div><div class="tt">Routed to Bella's chart</div><div class="ts">3 documents · undo</div></div>
+              <span class="x">✕</span>
+            </div>
+          </div>
+          <div class="menu">
+            <div class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M6 19c0-3.5 2.5-5 6-5s6 1.5 6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Tag to patient</div>
+            <div class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Route</div>
+            <div class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Archive</div>
+            <div class="msep"></div>
+            <div class="mi bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Delete</div>
+          </div>
+          <div class="stage-col" style="gap:18px;align-items:center;padding-top:6px">
+            <div class="tip">Document ID: DOC-4821</div>
+            <button class="btn btn-light" data-modal-open="#demoModal">Open dialog</button>
+          </div>
+        </div>
+        <div class="modal-scrim" id="demoModal" style="display:none">
+          <div class="modal">
+            <div class="mh"><h3>Route 3 documents?</h3></div>
+            <div class="mb">These documents will be delivered to <b>Bella's chart</b> and marked routed. You can undo this from the activity log.</div>
+            <div class="mf"><button class="btn btn-light" data-modal-close>Cancel</button><button class="btn btn-blue" data-modal-close>Route documents</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LOADING ===================== -->
+    <section class="sec" id="loading">
+      <div class="sec-num">23 — Components</div>
+      <h2 class="sec-title">Loading <span class="added">extended</span></h2>
+      <p class="sec-sub">Skeletons mirror the shape of the content they replace; the spinner and progress bar use royal. Motion respects <code style="font-family:var(--f-mono);font-size:12px">prefers-reduced-motion</code>.</p>
+      <div class="cols2">
+        <div class="stage white"><span class="stage-lbl">skeleton row</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="skel" style="width:30px;height:38px;border-radius:6px"></div>
+            <div style="flex:1"><div class="skel" style="height:13px;width:60%;margin-bottom:8px"></div><div class="skel" style="height:11px;width:35%"></div></div>
+            <div class="skel" style="width:72px;height:22px;border-radius:100px"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:16px">
+            <div class="skel" style="width:30px;height:38px;border-radius:6px"></div>
+            <div style="flex:1"><div class="skel" style="height:13px;width:75%;margin-bottom:8px"></div><div class="skel" style="height:11px;width:40%"></div></div>
+            <div class="skel" style="width:72px;height:22px;border-radius:100px"></div>
+          </div>
+        </div>
+        <div class="stage white"><span class="stage-lbl">spinner &amp; progress</span>
+          <div class="stage-row" style="gap:24px;align-items:center">
+            <span class="spinner"></span>
+            <span style="font-size:13px;color:var(--gray-500)">Processing…</span>
+          </div>
+          <div style="margin-top:22px"><div class="progress"><div class="fill" style="width:62%"></div></div><div style="font-family:var(--f-mono);font-size:11px;color:var(--gray-500);margin-top:8px">Importing · 62%</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EMPTY STATES ===================== -->
+    <section class="sec" id="empty">
+      <div class="sec-num">24 — Components</div>
+      <h2 class="sec-title">Empty states</h2>
+      <p class="sec-sub">Calm and reassuring, never alarming — a soft icon tile, a short positive headline, one line of guidance, and (where useful) a single action. "All caught up" beats "No results."</p>
+      <div class="cols2">
+        <div class="ctable"><div class="ct-empty">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M5 12h14M5 17h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M18 16l2 2 3-3" stroke="#3A8A6F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4>All caught up</h4>
+          <p>No documents waiting to be routed. New arrivals appear here automatically.</p>
+        </div></div>
+        <div class="ctable"><div class="ct-empty">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <h4>No matching documents</h4>
+          <p>Try a different search term or clear your filters.</p>
+          <button class="btn btn-light btn-sm" style="margin-top:14px">Clear filters</button>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ===================== FILE UPLOAD ===================== -->
+    <section class="sec" id="upload">
+      <div class="sec-num">25 — Components · App</div>
+      <h2 class="sec-title">File upload <span class="added">app</span></h2>
+      <p class="sec-sub">Documents enter RobinDock by drag-and-drop or picker. The dropzone is calm at rest, lifts to royal on hover, and glows on drag-over; each file uploads as a row with live progress, then a green check. Core to the <b>Upload</b> action in the topbar.</p>
+      <div class="stage white">
+        <span class="stage-lbl">drag a file over me</span>
+        <div class="dropzone">
+          <div class="dzic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v1.5A2.5 2.5 0 006.5 21h11a2.5 2.5 0 002.5-2.5V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <h4>Drop documents here, or <span class="lk">browse</span></h4>
+          <p>PDF, TIFF, JPG or PNG · up to 25 MB each</p>
+        </div>
+        <div class="uplist">
+          <div class="upitem">
+            <div class="uic"></div>
+            <div class="umain"><div class="un">Antech_CBC_Bella.pdf</div><div class="us">1.2 MB · uploaded</div></div>
+            <div class="ustat"><span class="udone"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ux"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></div>
+          </div>
+          <div class="upitem">
+            <div class="uic"></div>
+            <div class="umain"><div class="un">Radiology_LeftStifle.tiff</div><div class="us">4.8 MB · 64%</div><div class="uprog"><div class="f" style="width:64%"></div></div></div>
+            <div class="ustat"><span class="spinner" style="width:18px;height:18px"></span><span class="ux"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cols2" style="margin-top:14px">
+        <div class="spec"><table>
+          <tr><td class="k">Rest</td><td>Dashed <span class="tok">gray-300</span> border on <span class="tok">gray-50</span></td></tr>
+          <tr><td class="k">Hover</td><td>Royal border + <span class="tok">blue-50</span> fill, icon tile turns white</td></tr>
+          <tr><td class="k">Drag-over</td><td><span class="tok">.drag</span> — blue-600 border + focus ring</td></tr>
+          <tr><td class="k">Per-file</td><td>Row with thumb, name, size, progress bar → green check</td></tr>
+        </table></div>
+        <div class="dd" style="margin-top:0">
+          <div class="col do"><h5>Do</h5><ul><li>Accept both drop and click-to-browse.</li><li>Show per-file progress and a clear done state.</li><li>State accepted types and size up front.</li></ul></div>
+          <div class="col dont"><h5>Don't</h5><ul><li>Block the UI while uploads run.</li><li>Fail silently — surface a retry on error.</li><li>Hide what file types are allowed.</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DOCUMENT VIEWER ===================== -->
+    <section class="sec" id="viewer">
+      <div class="sec-num">26 — Components · App</div>
+      <h2 class="sec-title">Document viewer <span class="added">app</span></h2>
+      <p class="sec-sub">The review surface — where a fax or lab is read before routing. A page-thumbnail rail on the left, a toolbar with title + zoom, and the page stage on a neutral gray backdrop. The document is always the hero; chrome stays quiet.</p>
+      <div class="stage white" style="padding:0;overflow:hidden">
+        <div class="viewer">
+          <div class="thumbs">
+            <div class="thumb on" data-pick></div>
+            <div class="thumb" data-pick></div>
+            <div class="thumb" data-pick></div>
+          </div>
+          <div class="vmain">
+            <div class="vbar">
+              <div><div class="vt">CBC Results — Bella</div><div class="vsub">DOC-4821 · Antech Diagnostics</div></div>
+              <div class="vspace"></div>
+              <div class="vzoom"><span class="zb">−</span><span class="zl">100%</span><span class="zb">+</span></div>
+              <span class="iconbtn" title="Download"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0 0l-4-4m4 4l4-4" stroke="#5A5C77" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5A5C77" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="vstage">
+              <div class="page">
+                <div class="ph"><span class="lbl">ANTECH DIAGNOSTICS</span><span class="lbl">PAGE 1 / 3</span></div>
+                <div class="ln m"></div><div class="ln"></div><div class="ln s"></div>
+                <div class="ln" style="margin-top:18px"></div><div class="ln m"></div><div class="ln"></div><div class="ln s"></div>
+                <div class="ln" style="margin-top:18px"></div><div class="ln m"></div><div class="ln s"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">Pair the viewer with the <a href="#drawer" style="color:var(--blue-600);font-weight:600">detail drawer</a> (metadata + actions) or the <a href="#tracker" style="color:var(--blue-600);font-weight:600">status tracker</a>. Thumbnails are clickable; zoom controls live in the toolbar so the page area stays uncluttered.</div>
+    </section>
+
+    <!-- ===================== DRAWER ===================== -->
+    <section class="sec" id="drawer">
+      <div class="sec-num">27 — Components · App</div>
+      <h2 class="sec-title">Detail drawer <span class="added">app</span></h2>
+      <p class="sec-sub">Selecting a document or patient slides a panel in from the right over a dimmed scrim — review metadata and act without losing your place in the list. Click <b>Open drawer</b> to try it; click the scrim or ✕ to close.</p>
+      <div class="stage white">
+        <button class="btn btn-blue" data-drawer-open="#demoDrawer">Open drawer</button>
+        <div class="drawer-demo" id="demoDrawer" style="margin-top:16px">
+          <div style="padding:20px">
+            <div class="ct-head" style="padding:0 0 14px;border:none"><h3 style="font-size:16px">Documents</h3></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="upitem" style="cursor:pointer"><div class="uic"></div><div class="umain"><div class="un">CBC Results — Bella</div><div class="us">Antech · 8:47 AM</div></div><span class="st review"><span class="d"></span>Review</span></div>
+              <div class="upitem" style="cursor:pointer"><div class="uic"></div><div class="umain"><div class="un">Referral — Orthopedic</div><div class="us">Mountain West · 8:31 AM</div></div><span class="st new"><span class="d"></span>New</span></div>
+            </div>
+          </div>
+          <div class="drawer-scrim"></div>
+          <aside class="drawer">
+            <div class="dh">
+              <span class="ss-tile" style="width:34px;height:42px"></span>
+              <div><div class="dtitle">CBC Results — Bella</div><div class="dmeta">DOC-4821 · 1 page</div></div>
+              <span class="dx" data-drawer-close><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="dbody">
+              <div><div class="group-title" style="margin:0 0 10px">Details</div>
+                <div class="kv"><span class="k">Type</span><span class="v"><span class="tag lab"><span class="d"></span>Lab result</span></span></div>
+                <div class="kv"><span class="k">Patient</span><span class="v">Bella</span></div>
+                <div class="kv"><span class="k">Sender</span><span class="v">Antech Diagnostics</span></div>
+                <div class="kv"><span class="k">Status</span><span class="v"><span class="st review"><span class="d"></span>Needs review</span></span></div>
+                <div class="kv"><span class="k">Received</span><span class="v mono">May 14 · 8:47 AM</span></div>
+              </div>
+              <div class="banner info" style="margin:0"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Auto-matched to Bella — confirm to route.</div>
+            </div>
+            <div class="dfoot">
+              <button class="btn btn-light" data-drawer-close>Close</button>
+              <button class="btn btn-blue" data-drawer-close>Route to chart</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+      <div class="note"><b>Drawer vs. modal:</b> use a drawer for reviewing or editing a record alongside its list (keeps context); use a <a href="#overlays" style="color:var(--blue-600);font-weight:600">modal</a> only for short, focused confirmations that must interrupt.</div>
+    </section>
+
+    <!-- ===================== TIMELINE ===================== -->
+    <section class="sec" id="timeline">
+      <div class="sec-num">28 — Components · App</div>
+      <h2 class="sec-title">Activity timeline <span class="added">app</span></h2>
+      <p class="sec-sub">The vertical feed behind a patient's <b>Timeline</b> tab and the document activity log. Cloud-colored dots tie each event to its layer; document events nest a small card. Reads top-down, newest first.</p>
+      <div class="stage white">
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-dot ok"><i></i></span><div class="tl-when">Today · 8:47 AM</div><div class="tl-title"><b>CBC results</b> routed to chart <span class="tl-by">· by Kai S.</span></div>
+            <div class="tl-card"><span class="ss-tile" style="width:24px;height:30px"></span><div><div class="tn">CBC Results — Bella</div><div class="ts">Antech · 1 page</div></div></div></div>
+          <div class="tl-item"><span class="tl-dot violet"><i></i></span><div class="tl-when">Yesterday · 4:12 PM</div><div class="tl-title">Referral received <span class="tl-by">· auto-tagged to Bella</span></div></div>
+          <div class="tl-item"><span class="tl-dot aqua"><i></i></span><div class="tl-when">May 13 · 9:30 AM</div><div class="tl-title">Vaccine record arrived <b>via the Flock</b> <span class="tl-by">· Paws &amp; Claws</span></div></div>
+          <div class="tl-item"><span class="tl-dot blue"><i></i></span><div class="tl-when">May 2 · 11:05 AM</div><div class="tl-title">Wellness exam summary uploaded <span class="tl-by">· by Dana R.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEPPER ===================== -->
+    <section class="sec" id="stepper">
+      <div class="sec-num">29 — Components · App</div>
+      <h2 class="sec-title">Stepper &amp; wizard <span class="added">app</span></h2>
+      <p class="sec-sub">Guides multi-step flows — onboarding (<b>connect fax → verify → route rules → done</b>) and guided routing. Completed steps fill royal, the current step rings, upcoming steps stay gray. Use <b>Back / Next</b> to step the demo.</p>
+      <div class="stage white">
+        <div class="stepper" id="demoStepper" style="max-width:620px;margin:6px auto 0">
+          <div class="step done"><span class="ring"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="slabel">Connect fax</span></div>
+          <div class="step on"><span class="ring">2</span><span class="slabel">Verify number</span></div>
+          <div class="step"><span class="ring">3</span><span class="slabel">Routing rules</span></div>
+          <div class="step"><span class="ring">4</span><span class="slabel">Done</span></div>
+        </div>
+        <div class="stage-row" style="justify-content:center;margin-top:24px">
+          <button class="btn btn-light btn-sm" data-step="back">Back</button>
+          <button class="btn btn-blue btn-sm" data-step="next">Next</button>
+          <button class="btn btn-text btn-sm" data-step="reset">Reset</button>
+        </div>
+      </div>
+      <div class="sub-head">Vertical stepper</div>
+      <div class="sub-note">For settings flows and checklists where each step carries a description.</div>
+      <div class="stage white">
+        <div class="vstepper" style="max-width:420px">
+          <div class="vstep done"><span class="vring"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="vmain"><div class="vtitle">Fax number connected</div><div class="vdesc">(801) 555-0142 · verified</div></div></div>
+          <div class="vstep on"><span class="vring">2</span><div class="vmain"><div class="vtitle">Set routing rules</div><div class="vdesc">Auto-tag senders to patients &amp; queues.</div></div></div>
+          <div class="vstep"><span class="vring">3</span><div class="vmain"><div class="vtitle">Invite your team</div><div class="vdesc">Add front-desk &amp; tech staff.</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATUS TRACKER ===================== -->
+    <section class="sec" id="tracker">
+      <div class="sec-num">30 — Components · App</div>
+      <h2 class="sec-title">Document status tracker <span class="added">app</span></h2>
+      <p class="sec-sub">A document's life in one glance: <b>received → reviewed → routed → filed</b>. Completed stages fill green with a check, the current stage rings royal, upcoming stays gray. Sits at the top of the viewer or in the detail drawer.</p>
+      <div class="stage white">
+        <div class="tracker" style="max-width:620px">
+          <div class="tk done"><span class="tkdot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tklab">Received</span><span class="tkbar"></span></div>
+          <div class="tk done"><span class="tkdot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tklab">Reviewed</span><span class="tkbar"></span></div>
+          <div class="tk cur"><span class="tkdot"><i style="width:7px;height:7px;border-radius:50%;background:currentColor"></i></span><span class="tklab">Routing</span><span class="tkbar"></span></div>
+          <div class="tk"><span class="tkdot"><i style="width:7px;height:7px;border-radius:50%;background:currentColor"></i></span><span class="tklab">Filed</span></div>
+        </div>
+      </div>
+      <div class="note">Maps to the <a href="#tags" style="color:var(--blue-600);font-weight:600">status</a> vocabulary — green = complete, royal = in progress. Keep stages to 3–5; for richer history use the <a href="#timeline" style="color:var(--blue-600);font-weight:600">activity timeline</a> instead.</div>
+    </section>
+
+    <!-- ===================== DATE PICKER ===================== -->
+    <section class="sec" id="datepicker">
+      <div class="sec-num">31 — Components · App</div>
+      <h2 class="sec-title">Date picker <span class="added">app</span></h2>
+      <p class="sec-sub">Powers the <b>Date</b> filter and any scheduling. A calendar on the <b>lg</b> shadow with quick presets; today is ringed, selection fills royal, ranges tint <span class="tok" style="font-family:var(--f-mono);font-size:12px;color:var(--violet-600)">blue-50</span>. Click a day to select.</p>
+      <div class="stage" style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+        <div class="cal">
+          <div class="ch"><span class="mo">May 2026</span><span class="nav"><span>‹</span><span>›</span></span></div>
+          <div class="grid">
+            <span class="dow">S</span><span class="dow">M</span><span class="dow">T</span><span class="dow">W</span><span class="dow">T</span><span class="dow">F</span><span class="dow">S</span>
+            <span class="day mut">27</span><span class="day mut">28</span><span class="day mut">29</span><span class="day mut">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span>
+            <span class="day">4</span><span class="day">5</span><span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span>
+            <span class="day">11</span><span class="day">12</span><span class="day today">13</span><span class="day range r0">14</span><span class="day range">15</span><span class="day range">16</span><span class="day range r1">17</span>
+            <span class="day">18</span><span class="day">19</span><span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span>
+            <span class="day">25</span><span class="day">26</span><span class="day">27</span><span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
+          </div>
+          <div class="cfoot"><span class="preset">Today</span><span class="preset on">Last 7 days</span><span class="preset">Last 30 days</span><span class="preset">This month</span></div>
+        </div>
+        <div class="spec" style="flex:1;min-width:240px;margin:0"><table>
+          <tr><td class="k">Today</td><td>Ringed <span class="tok">blue-300</span>, blue-700 text</td></tr>
+          <tr><td class="k">Selected</td><td><span class="tok">.on</span> — blue-600 fill, white</td></tr>
+          <tr><td class="k">Range</td><td><span class="tok">.range</span> — blue-50 band, rounded ends</td></tr>
+          <tr><td class="k">Presets</td><td>Pills for the common filter windows</td></tr>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ===================== COMBOBOX + TOKENS ===================== -->
+    <section class="sec" id="combobox">
+      <div class="sec-num">32 — Components · App</div>
+      <h2 class="sec-title">Combobox &amp; token input <span class="added">app</span></h2>
+      <p class="sec-sub">The single-select <b>combobox</b> drives pickers like Assignee and routing destination; the <b>token input</b> handles multi-value fields — assigning multiple tags or recipients. Both interactive: open the combobox and pick; remove tokens with ✕.</p>
+      <div class="cols2">
+        <div class="stage white" style="overflow:visible"><span class="stage-lbl">combobox · single</span>
+          <div style="font-size:12.5px;font-weight:600;color:var(--gray-800);margin-bottom:7px">Assignee</div>
+          <div class="combo">
+            <div class="cfield"><span class="cval">Kai S.</span><span class="cch">▾</span></div>
+            <div class="cmenu">
+              <div class="copt" data-val="Anyone">Anyone</div>
+              <div class="copt sel" data-val="Kai S.">Kai S. <span class="ck-mini"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              <div class="copt" data-val="Dana R.">Dana R. <span class="ck-mini"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              <div class="copt" data-val="Tom Reed">Tom Reed <span class="ck-mini"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="stage white"><span class="stage-lbl">token input · multi</span>
+          <div style="font-size:12.5px;font-weight:600;color:var(--gray-800);margin-bottom:7px">Tags</div>
+          <div class="tokeninput">
+            <span class="token">Lab result <span class="tx">✕</span></span>
+            <span class="token violet">Bella <span class="tx">✕</span></span>
+            <span class="token aqua">Via Flock <span class="tx">✕</span></span>
+            <input placeholder="Add tag…" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </section>
+
+    <!-- ===================== NOTIFICATIONS ===================== -->
+    <section class="sec" id="notifications">
+      <div class="sec-num">33 — Components · App</div>
+      <h2 class="sec-title">Notification panel <span class="added">app</span></h2>
+      <p class="sec-sub">The bell dropdown in the topbar. Unread items carry a royal tint, a dot, and a left marker; cloud-colored icon tiles tie each notice to its layer. Click an item or <b>Mark all read</b> to clear the unread state.</p>
+      <div class="stage" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+        <div class="bellwrap"><span class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 21a2 2 0 01-3 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="nd"></span></span></div>
+        <div class="notif">
+          <div class="nh"><h4>Notifications</h4><span class="mark-read">Mark all read</span></div>
+          <div class="nlist">
+            <div class="ni unread"><span class="nic" style="background:var(--warn-bg);color:var(--warn)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="ntext"><div class="nt"><b>3 documents</b> need review before routing.</div><div class="nw">2 min ago</div></div></div>
+            <div class="ni unread"><span class="nic" style="background:var(--aqua-100);color:#2d7373"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="7" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="17" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M9 8l2 6M15 8l-2 6" stroke="currentColor" stroke-width="1.7"/></svg></span><div class="ntext"><div class="nt">Vaccine record arrived <b>via the Flock</b> from Paws &amp; Claws.</div><div class="nw">1 hr ago</div></div></div>
+            <div class="ni"><span class="nic" style="background:var(--ok-bg);color:var(--ok)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="ntext"><div class="nt">CBC results routed to <b>Bella's chart</b>.</div><div class="nw">Yesterday</div></div></div>
+          </div>
+          <div class="nfoot"><a>View all activity →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ACCORDION ===================== -->
+    <section class="sec" id="accordion">
+      <div class="sec-num">34 — Components · App</div>
+      <h2 class="sec-title">Accordion <span class="added">app</span></h2>
+      <p class="sec-sub">Collapsible sections for settings groups, grouped filters, and help. Click a header to expand; the chevron rotates to royal. This group allows one open at a time. Try it.</p>
+      <div class="stage white">
+        <div class="accordion" data-acc-single style="max-width:600px">
+          <div class="acc open"><div class="ahead"><span class="atitle">Routing rules</span><span class="act"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="abody"><div class="ainner">Decide where documents go automatically. Map a sender to a patient or a queue, and RobinDock will pre-route matching arrivals — you confirm before anything lands in a chart.</div></div></div>
+          <div class="acc"><div class="ahead"><span class="atitle">Connected senders</span><span class="act"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="abody"><div class="ainner">Labs and partner practices you receive from — Antech, Idexx, and any clinic on the Flock. Verified senders can be auto-trusted.</div></div></div>
+          <div class="acc"><div class="ahead"><span class="atitle">Team &amp; permissions</span><span class="act"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="abody"><div class="ainner">Invite front-desk and tech staff, and choose who can route, archive, or change settings.</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== POPOVER + AVATAR GROUP ===================== -->
+    <section class="sec" id="popover">
+      <div class="sec-num">35 — Components · App</div>
+      <h2 class="sec-title">Popover &amp; avatar group <span class="added">app</span></h2>
+      <p class="sec-sub">A <b>popover</b> is a small floating card anchored to an element — a patient hovercard, a quick info bubble. The <b>avatar group</b> stacks assignees or collaborators with an overflow count. Distinct from the menu (actions) and tooltip (one line).</p>
+      <div class="stage" style="display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start">
+        <div class="popover">
+          <div class="pv-top"><span class="av" style="--av:42px">🐾</span><div><div class="pv-name">Bella</div><div class="pv-sub">Golden Retriever · 4 yr</div></div></div>
+          <div class="pv-kv">
+            <div class="row"><span class="k">Owner</span><span class="v">Sarah Mitchell</span></div>
+            <div class="row"><span class="k">Documents</span><span class="v">24</span></div>
+            <div class="row"><span class="k">Last visit</span><span class="v">May 2</span></div>
+          </div>
+          <div class="pv-foot"><a>Open patient →</a></div>
+        </div>
+        <div class="stage-col" style="gap:18px;padding-top:6px">
+          <div><div class="group-title" style="margin:0 0 10px">Avatar group</div>
+            <div class="avgroup">
+              <span class="av blue" style="--av:36px">KS</span>
+              <span class="av" style="--av:36px">DR</span>
+              <span class="av aqua" style="--av:36px">TR</span>
+              <span class="more" style="--av:36px">+3</span>
+            </div>
+          </div>
+          <div><div class="group-title" style="margin:0 0 10px">Tooltip · one line</div>
+            <span class="tip">Received via the Flock</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SETTINGS ROWS ===================== -->
+    <section class="sec" id="settings">
+      <div class="sec-num">36 — Components · App</div>
+      <h2 class="sec-title">Settings list rows <span class="added">app</span></h2>
+      <p class="sec-sub">The settings screen pattern: grouped rows pairing an icon, a title + description, and a control (toggle, combobox, or value). Each row is one decision. Toggles and the combobox here are live.</p>
+      <div class="stage white" style="padding:0;overflow:visible">
+        <div class="settings">
+          <div class="setgroup-title">Notifications</div>
+          <div class="setrow">
+            <div class="sic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="smain"><div class="stitle">New document alerts</div><div class="sdesc">Notify me when a document needs routing.</div></div>
+            <div class="sctrl"><span class="toggle on" data-toggle></span></div>
+          </div>
+          <div class="setrow">
+            <div class="sic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.7"/><path d="M4 8l8 5 8-5" stroke="currentColor" stroke-width="1.7"/></svg></div>
+            <div class="smain"><div class="stitle">Failed-routing email</div><div class="sdesc">Email a daily digest of documents that couldn't route.</div></div>
+            <div class="sctrl"><span class="toggle" data-toggle></span></div>
+          </div>
+          <div class="setgroup-title">Routing</div>
+          <div class="setrow">
+            <div class="sic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="smain"><div class="stitle">Default queue</div><div class="sdesc">Where unmatched documents land.</div></div>
+            <div class="sctrl">
+              <div class="combo"><div class="cfield" style="padding:7px 12px"><span class="cval" style="font-size:13px">Front desk</span><span class="cch">▾</span></div>
+                <div class="cmenu"><div class="copt sel" data-val="Front desk">Front desk</div><div class="copt" data-val="Records">Records</div><div class="copt" data-val="Dr. Mitchell">Dr. Mitchell</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="setrow">
+            <div class="sic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="7" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="17" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M9 8l2 6M15 8l-2 6" stroke="currentColor" stroke-width="1.7"/></svg></div>
+            <div class="smain"><div class="stitle">Flock auto-accept</div><div class="sdesc">Automatically accept documents from connected practices.</div></div>
+            <div class="sctrl"><span class="toggle on" data-toggle></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="patterns">
+      <div class="sec-num">37 — Patterns</div>
+      <h2 class="sec-title">Registers in context</h2>
+      <p class="sec-sub">The same content, placed in each register. <b>Calm</b> is the working surface — the document is the hero. <b>Confident</b> is a deliberate accent for the platform / network story. The rule of thumb: if a user reads or works here for minutes at a time, keep it calm.</p>
+      <div class="cols2">
+        <div class="stage wash" style="display:flex;flex-direction:column;justify-content:center;min-height:230px">
+          <div class="pair-tag" style="color:var(--blue-700);margin-bottom:10px">Calm · default · ~80%</div>
+          <div class="t-display" style="font-size:30px">Calm, secure,<br>in order.</div>
+          <p style="font-size:13.5px;color:#3f4168;margin-top:12px;max-width:42ch">Product UI, list and triage screens, long-form reading, most marketing.</p>
+        </div>
+        <div class="block" style="display:flex;flex-direction:column;justify-content:center;min-height:230px">
+          <div class="pair-tag" style="color:var(--aqua-400);margin-bottom:10px">Confident · accent · ≤20%</div>
+          <div class="t-display" style="font-size:30px;color:#fff">Your practice,<br><span style="color:var(--aqua-400)">connected.</span></div>
+          <p style="font-size:13.5px;color:#B7BBD6;margin-top:12px;max-width:42ch">The Flock, pricing, dashboards, hero accents, the bulk-action bar.</p>
+        </div>
+      </div>
+      <div class="note">Both surfaces share the exact same palette, Inter type, pill / card shapes, and robin mark. Only the <b>intensity</b> changes — that's what keeps it one brand across the marketing site and the app.</div>
+    </section>
+
+    <!-- ===================== VOICE ===================== -->
+    <section class="sec" id="voice">
+      <div class="sec-num">38 — Patterns</div>
+      <h2 class="sec-title">Voice</h2>
+      <p class="sec-sub">Plain, calm, and reassuring — the way a trusted colleague talks. Short sentences. Active verbs from the product's own vocabulary: <b>capture, tag, route, store</b>. Confidence comes from clarity, never hype.</p>
+      <div class="dd" style="margin-top:6px">
+        <div class="col do"><h5>Sounds like us</h5><ul>
+          <li>"Calm, secure, in order."</li>
+          <li>"3 need routing"</li>
+          <li>"All caught up"</li>
+          <li>"Tag to a pet"</li>
+          <li>"No fax round-trip."</li>
+        </ul></div>
+        <div class="col dont"><h5>Not us</h5><ul>
+          <li>"Revolutionary AI-powered synergy"</li>
+          <li>"ERROR: 3 items require action!"</li>
+          <li>"You have no documents."</li>
+          <li>"Associate this file with a patient record"</li>
+          <li>Exclamation marks &amp; jargon</li>
+        </ul></div>
+      </div>
+      <div class="note">Use the workflow verbs consistently — <b>capture → tag → route → store</b> — across UI labels, empty states, and marketing. Status reads as a calm fact ("Routed," "Needs review"), never an alarm.</div>
+    </section>
+
+    <!-- ===================== DO / DON'T ===================== -->
+    <section class="sec" id="rules">
+      <div class="sec-num">39 — Patterns</div>
+      <h2 class="sec-title">Do &amp; don't</h2>
+      <p class="sec-sub">The rules that keep the system coherent as it grows.</p>
+      <div class="dd" style="margin-top:6px">
+        <div class="col do"><h5>Do</h5><ul>
+          <li>Keep the product in calm mode — light surfaces, the document is the hero.</li>
+          <li>Reserve indigo / royal blocks for the Flock, pricing, dashboards, and marketing accents.</li>
+          <li>Tie each accent to its meaning: royal = action, violet = patient, aqua = network.</li>
+          <li>Let headlines carry weight through scale, not decoration.</li>
+          <li>Use generous whitespace and hairlines to keep dense screens calm.</li>
+          <li>Keep one royal primary action per view.</li>
+        </ul></div>
+        <div class="col dont"><h5>Don't</h5><ul>
+          <li>Drop dark indigo blocks into document-triage or list screens.</li>
+          <li>Use violet and aqua interchangeably — they carry different meaning.</li>
+          <li>Stack multiple bold color blocks back-to-back; one accent moment at a time.</li>
+          <li>Add a second typeface or decorative display font.</li>
+          <li>Let confident mode exceed ~20% of any surface.</li>
+          <li>Invent new accent colors — the four jobs are fixed.</li>
+        </ul></div>
+      </div>
+      <div class="note">When in doubt, choose calm. The product earns trust by getting out of the way; the brand earns confidence in a few well-chosen moments.</div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="ft">
+  <span class="logo-word">Robin<span class="dk">Dock</span></span> Design System · v1.0 · calm core + confident accents · royal #223FAA · violet #AC9FE2 · aqua #AAE2E2 · indigo #191346 · Inter
+</footer>
+
+<script src="ds.js"></script>
+<script src="suggest.js"></script>
+
+<template id="__bundler_thumbnail" data-bg-color="#223FAA">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#223FAA"/>
+    <g transform="translate(344 144) scale(1)">
+      <rect x="0" y="0" width="512" height="512" rx="116" fill="#3D5AC7"/>
+      <path d="M88 420 C103 354 121 278 142 204 C159 144 205 103 260 103 C309 103 348 128 370 169 L425 169 L372 208 L372 308 C372 371 323 420 260 420 Z" fill="#FFFFFF"/>
+      <path d="M205 420 C256 414 302 389 334 351 C359 321 372 286 372 247 L372 208 L205 420 Z" fill="#AAE2E2"/>
+      <circle cx="285" cy="163" r="19" fill="#223FAA"/>
+    </g>
+  </svg>
+</template>
+</body>
+</html>

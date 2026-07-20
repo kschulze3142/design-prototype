@@ -1,0 +1,118 @@
+
+Robin Dock — OCR / Extraction Implementation Plan
+Status: v6 (post 5 improvement passes — see CHANGELOG.md) Companion: ARCHITECTURE.md (section references like §4.2 point there)
+
+Greenfield. Each phase is independently shippable and testable; each ends with a working system, not a stub. Phases are ordered so that every phase's deliverable is valuable even if the next phase never ships. Ticket prefixes follow the existing BE-/FE-/CLEANUP- convention.
+
+Phase 0 — The deterministic spine (no AI)
+Delivers: a working fax inbox — the Organize-tier core extraction will sit under.
+
+Scope:
+
+Repo + environments: Next.js app, Supabase project, worker container (Railway/Fly), pgmq installed, CI with migrations + eval-harness scaffold (empty corpus, runnable).
+Migrations: documents, document_pages, contacts, patients, doc_tracks, track_step_events, workflow_defs, doc_type_suggestions (schema only, unused yet), history_events (append-only grants + hash chain), practice_type_settings, RLS on everything, the three DB roles (§8.2) with grants as specified — including the absent grants that carry the invariants.
+Ingest: Telnyx webhook (signature verify, idempotency on fax id) → Storage → documents row → q_pipeline. Worker skeleton: S0→S1 raster only (no legibility scoring yet — pages rasterized, doc lands ready immediately).
+Deadline sweeper ships here, not with OCR: the moment pipeline_status=processing exists (it does, from this phase — a raster job can hang on a malformed PDF), grey must be guaranteed to resolve. The sweeper (§3.1) is part of the spine, and its test ("kill the worker mid-job; the doc un-greys as workable within the deadline") is a Phase-0 invariant test.
+Deterministic routing v1: contact/number rules → confirmed tracks (origin=deterministic_route). Manual typing UI (creates tracks, origin=manual).
+UI: flat inbox (unread signal, pipeline states), folder-as-filter CRUD + folder views with the accordion derivation (§7.2), detail page shell (PDF viewer, tracks, manual workflow stepping, History tab), track completion flow (human-only, trigger-enforced). The §7.2 display-state matrix is the Design review artifact for freezing the inbox view — walk it with Design before the view ships; the derivation is code, the matrix is its spec.
+Deterministic routing runs at ingest (content-free, before raster/OCR — §3.1 ordering), so it belongs to this phase's ingest path, not to Phase 1.
+Track workflow engine: workflow_defs-driven steps, step events, work_complete transition + completion trigger.
+
+Shippable test: a practice can receive faxes, see them route by sender rules, manually type cold docs, walk tracks through their steps, complete them (human-gated), and audit everything in History. This is sellable Organize functionality.
+
+Gates later phases: everything. Nothing else starts until the completion trigger and role grants pass their tests (there are dedicated tests that attempt to violate each invariant from the worker role and must fail).
+
+Phase 1 — OCR layer + legibility + eval scaffold with teeth
+Delivers: searchable documents, unreadable-fax detection, the measurement substrate.
+
+Scope:
+
+S1 legibility scoring (per-page heuristics + 1-page OCR sample), full-doc-fail → unreadable, un-grey path. (Deadline sweeper already live from Phase 0.)
+S2 Document AI integration behind OcrProvider (Textract adapter stubbed to prove the interface), per-page artifacts persisted, full-text search over OCR text.
+Greyed-row treatment in inbox (docs now spend real time in processing).
+Eval harness v1: synthetic degraded-fax generator, golden corpus seeded per Tier-1 type, harness runs S1–S2 and scores legibility/OCR quality. CI job exists and gates provider/config changes.
+Red-team fixture set (§10.1) seeded now, six categories; the instructed-action-reachability=0 assertion (A1) becomes a permanent CI gate the moment Phase 2 gives it an LLM to attack. Categories 1–2 and 6 are testable against S1–S2 already (parsing/caps).
+
+Shippable test: upload/receive degraded faxes; garbage lands unreadable without downstream cost; clean docs are searchable; the harness produces a scored report.
+
+Depends on: Phase 0. Gates: Phases 2–4 (both passes consume the OCR layer).
+
+Phase 2 — Pass 1: classification (drains Missing Doc Type)
+Delivers: the cold-doc pile drains itself — the first felt Office-tier moment.
+
+Scope:
+
+LlmProvider interface + Anthropic adapter (structured output, pinned model/prompt versions).
+S4 classifier: fires per §3.2 trigger rules only (cold docs, legibility-passed). Label set = Tier 1 + Tier 2 + junk/spam. Junk/spam is suggest-only and excluded from any Pass-2 hypothesis (§3.2).
+doc_type_suggestions live: pending → promoted/dismissed flows, promote/dismiss UI on rows and detail page, suggested-chip rendering in folder views (union routing, §7.1), promotion-collision rule (§4.2).
+Auto-apply gate wired through the eligibility function (§5) at slider L1 default: high band + validation ⇒ confirmed track (origin=auto_apply). Slider UI (L0–L3) per doc type; L0 verified to fully disable auto-apply.
+Calibration lane v1: calibration_observations written for every suggestion resolution + A4b full-completion type reconciliation; nightly calibration_maps recompute with the n≥50 floor; runs stamped with snapshot refs.
+Eval: classification accuracy + confusion matrix on the corpus; threshold defaults set from eval, conservatively.
+
+Shippable test: cold faxes arrive pre-typed (auto-applied) or pre-suggested; nothing auto-applies at L0; junk never auto-applies; the Missing Doc Type pile measurably drains; every resolution lands a calibration observation.
+
+Depends on: Phases 0–1. Independent of: Phase 3 (suggestions are useful with zero field extraction — this phase ships alone).
+
+Phase 3 — Pass 2: field extraction on Tier-1 types
+Delivers: the detail page arrives pre-populated — the core $149 value and the real cost line.
+
+Scope:
+
+Field-schema registry: Tier-1 schemas per the Doc-Type Grid + field_class registry (identity/non_identity/clinical/patient_binding). Tier-2 types = core-only schemas (classify-only falls out, §11).
+S5 extractor: hypothesis-triggered per §3.2 (including speculative runs at the medium+ floor, junk excluded), PAGE_CAP=30 with partial_page_cap, grounding-span requirement, structured output.
+S7 validation gate: parse/plausibility/cross-field/provenance-grounding checks; field-state assignment at attach time via the eligibility function (§5); required-field-missing blocks review exit (B4).
+Detail-page confirm surface: doc left / fields right; staged vs populated vs empty rendering; per-field provenance marker → source-region reveal; per-field correction (instant, logged); track-level review confirmation with blanket-confirm semantics (§4.3.1); re-open flow (§4.7.1); explicit re-extraction trigger with the human-value-preservation merge rule (§4.6).
+History: extraction events (one per run), correction events, re-extraction events.
+Calibration: field-level observations (confirmed_blanket vs corrected vs filled_from_empty vs confirmed_individual), plus manual_type_after_failure observations.
+Cost metering: per-run tokens/cost, nightly per-practice rollup, dismissal-rate metric on speculative runs.
+Eval: per-field precision/recall per type, grounding-resolution rate, calibration curves; deploy gate active for model/prompt/schema bumps.
+
+Phase 3 is the heaviest phase and should land in three internal milestones (not separately shippable, but separately mergeable and testable): 3a extractor + validation + staged fields rendering read-only on the detail page; 3b the confirm surface — per-field correction, blanket confirm, provenance reveal; 3c re-open, re-extraction, metering. 3a alone is not a shippable product state (staged-but-uncorrectable fields are worse than blank ones), which is why 3a–3c are one phase with one release, in this order.
+
+Shippable test: a typed referral lands with fields staged/populated per slider level, every populated value's provenance region resolves, below-threshold fields render empty, corrections log and apply instantly, completion emits calibration observations, cost per doc lands within the §9 envelope.
+
+Depends on: Phases 0–2. Gates: Phase 4 (match consumes extracted identity fields) and Phase 5 (payload wraps fields).
+
+Phase 4 — Patient match (suggest-only) + contact↔patient ties
+Delivers: ranked match candidates on the confirm surface; the tie asset begins compounding.
+
+Scope:
+
+Patient directory v1: CSV import from PIMS exports + manual creation + a staleness indicator (import age). (Open dependency §11.4 — confirmed as the v1 answer.)
+S6 resolver: deterministic candidate generation (trigram on names, tie-linked candidates first), key-agreement scoring, ≥2-keys rule, species-mismatch veto, unambiguity margin; eligibility high/ranked/none.
+Confirm Match step UI: ranked candidates, confirm / reject / create-new / complete-without-match (explicit action); inbox-row unconfirmed-patient display for high only.
+contact_patient_ties: written on human match confirmation; bidirectional tab on contact and patient; deactivate affordance; deactivated ties excluded from scoring.
+Calibration: match-outcome observations (confirmed rank-1, confirmed rank-n, rejected-all, completed-without).
+Eval: the §4.5.1 calibration protocol in full — distractor-seeded fixture directory, weight/margin grid-search under the zero-false-high constraint, tie ablation, and the acceptance gates (high-tier precision 1.0, ranked p@3 ≥ 0.9, veto correctness 1.0). Weights ship as versioned matcher_version config; hand-set weights are a review-blocking offense.
+
+Shippable test: a lab for "Bella / canine / Schulze" surfaces the right Bella first when ≥2 keys agree; a species conflict never surfaces as high; nothing ever binds without a click; a deactivated tie stops influencing scores immediately.
+
+Depends on: Phases 0–3. Independent of: Phase 5.
+
+Phase 5 — Zone D payloads + eligibility surface
+Delivers: the write-back session's entire input, plus the "ready to push" operational view.
+
+Scope:
+
+track_payloads materialization in the completion transaction (SECURITY DEFINER, §6); immutable snapshots; supersession on re-open; revocation on strip (§4.7).
+Contract fixtures + JSON-schema validation in CI (the contract is versioned and machine-checked from day one).
+Eligibility view + UI: "Completed — ready to push" filter (eligible ∧ ¬pushed), bulk-select of eligible tracks (selection only — the push button is the write-back session's; it renders disabled with the payload count so the seam is visible and testable).
+Verification harness: attempt to mutate a payload / set push columns from every existing role — all must fail.
+
+Shippable test: completing any track materializes a contract-valid payload atomically; stripping revokes it; re-open supersedes it; no existing role can push. The write-back session can start from fixtures alone.
+
+Depends on: Phase 3 (fields), benefits from Phase 4 (patient_ref population) but doesn't require it (patient_ref: null is first-class).
+
+Cross-phase rules
+Invariant tests are permanent CI citizens from Phase 0: each invariant has a test that attempts to violate it (worker completes a track, worker inserts an origin=manual track, anything sets push columns, history UPDATE, suggestion mutates a track on dismissal) and must fail at the database layer, not the app layer.
+Eval gate from Phase 2 on: model/prompt/schema version bumps require corpus results ≥ baseline.
+No phase relitigates a locked decision. If implementation surfaces a conflict, it stops and flags — the CHANGELOG records two such flags already raised to Kai (§11.1, §11.2).
+Trello mapping: each phase decomposes into BE-/FE- tickets along the scope bullets; Phase 0 is roughly BE-heavy 2:1, Phases 2–4 closer to 1:1.
+Sequencing summary
+P0 spine ──► P1 OCR ──► P2 classify ──► P3 extract ──► P4 match
+
+                                            │
+
+                                            └────────► P5 payloads   (P4 ∥ P5)
+
+Hard gates: P0→all (roles/triggers), P1→P2/P3 (OCR layer), P3→P4/P5 (fields). Parallelizable: P4 and P5 after P3. Everything before P3 is deliberately thin so the expensive, schema-sensitive work (P3) starts on a proven substrate.
